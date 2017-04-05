@@ -3,7 +3,7 @@ composer.phar
 vendor/
 
 # Local configs
-config/autoload/*.local.php
+config/development.config.php
 
 # Binary gettext files
 *.mo
@@ -11,6 +11,7 @@ config/autoload/*.local.php
 # Data
 data/logs/
 data/cache/
+!data/cache/.gitkeep
 data/sessions/
 data/tmp/
 temp/
@@ -19,7 +20,5 @@ temp/
 data/DoctrineORMModule/Proxy/
 data/DoctrineORMModule/cache/
 
-
-# Legacy ZF1
-demos/
-extras/documentation
+.vagrant/
+phpunit.xml
