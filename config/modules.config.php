@@ -12,7 +12,6 @@
  */
 return [
     'Zend\Session',
-    'Zend\Mvc\Plugin\Prg',
     'Zend\Mvc\I18n',
     'Zend\Log',
     'Zend\Form',
@@ -20,5 +19,6 @@ return [
     'Zend\Cache',
     'Zend\Router',
     'Zend\Validator',
+    'Setup',
     'Application',
 ];
