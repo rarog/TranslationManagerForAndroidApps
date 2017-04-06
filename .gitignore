@@ -5,9 +5,6 @@ vendor/
 # Local configs
 config/development.config.php
 
-# Binary gettext files
-*.mo
-
 # Data
 data/logs/
 data/cache/
