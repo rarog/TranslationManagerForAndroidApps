@@ -24,7 +24,7 @@ class Module
             $session->start();
         }
 
-        $container = new Container('initialized');
+        $container = new \Zend\Session\Container('initialized');
         if (!isset($container->init)) {
             $serviceManager = $e->getApplication()
                                 ->getServiceManager();
@@ -81,8 +81,8 @@ class Module
             }
         }
 
-        $translator = $serviceManager->get('translator');
         if (!is_null($translatorCache)) {
+            $translator = $serviceManager->get('translator');
             $translator->setCache($translatorCache);
         }
     }
