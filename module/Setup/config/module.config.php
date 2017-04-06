@@ -15,7 +15,7 @@ return [
         'factories' => [
             Controller\SetupController::class => InvokableFactory::class,
         ],
-    ]
+    ],
     'router' => [
         'routes' => [
             'setup' => [
@@ -24,27 +24,27 @@ return [
                     'route'    => '/setup[/:action]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                    ]
+                    ],
                     'defaults' => [
                         'controller' => Controller\SetupController::class,
                         'action'     => 'index',
-                    ]
-                ]
-            ]
-        ]
-    ]
+                    ],
+                ],
+            ],
+        ],
+    ],
     'translator' => [
         'translation_file_patterns' => [
             [
                 'type'     => 'gettext',
                 'base_dir' => __DIR__ . '/../language',
                 'pattern'  => '%s.mo',
-            ]
-        ]
-    ]
+            ],
+        ],
+    ],
     'view_manager' => [
         'template_path_stack' => [
             'setup' => __DIR__ . '/../view',
-        ]
-    ]
+        ],
+    ],
 ];
