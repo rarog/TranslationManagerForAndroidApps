@@ -82,7 +82,7 @@ class Module
         }
 
         if (!is_null($translatorCache)) {
-            $translator = $serviceManager->get('translator');
+            $translator = $serviceManager->get('MvcTranslator');
             $translator->setCache($translatorCache);
         }
     }
