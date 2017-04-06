@@ -10,42 +10,41 @@ namespace Setup;
 use Zend\Router\Http\Segment;
 use Zend\ServiceManager\Factory\InvokableFactory;
 
-return array(
-    'controllers' => array(
+return [
+    'controllers' => [
         'factories' => [
             Controller\SetupController::class => InvokableFactory::class,
         ],
-    ),
-    'router' => array(
-        'routes' => array(
-            'setup' => array(
+    ]
+    'router' => [
+        'routes' => [
+            'setup' => [
                 'type'    => Segment::class,
-                'options' => array(
+                'options' => [
                     'route'    => '/setup[/:action]',
-                    'constraints' => array(
+                    'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                    ),
-                    'defaults' => array(
+                    ]
+                    'defaults' => [
                         'controller' => Controller\SetupController::class,
                         'action'     => 'index',
-                    ),
-                ),
-            ),
-        ),
-    ),
-    'translator' => array(
-        'locale' => 'en_US',
-        'translation_file_patterns' => array(
-            array(
+                    ]
+                ]
+            ]
+        ]
+    ]
+    'translator' => [
+        'translation_file_patterns' => [
+            [
                 'type'     => 'gettext',
                 'base_dir' => __DIR__ . '/../language',
                 'pattern'  => '%s.mo',
-            ),
-        ),
-    ),
-    'view_manager' => array(
-        'template_path_stack' => array(
+            ]
+        ]
+    ]
+    'view_manager' => [
+        'template_path_stack' => [
             'setup' => __DIR__ . '/../view',
-        ),
-    ),
- );
+        ]
+    ]
+];
