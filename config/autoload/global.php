@@ -30,20 +30,19 @@ return [
             ],
         ],
     ],
-    'session' => [
-        'config' => [
-            'class' => 'Zend\Session\Config\SessionConfig',
-            'options' => [
-                'name' => 'ordermanager:session',
-                'gc_maxlifetime' => 900,
-                'remember_me_seconds' => 900,
-            ],
-        ],
-        'storage' => 'Zend\Session\Storage\SessionArrayStorage',
+    'session_config' => [
+        'name' => 'tmfaa:session',
+        'gc_maxlifetime' => 900,
+        'remember_me_seconds' => 900,
+    ],
+    'session_manager' => [
         'validators' => [
-            'Zend\Session\Validator\RemoteAddr',
-            'Zend\Session\Validator\HttpUserAgent',
-        ],
+            \Zend\Session\Validator\RemoteAddr::class,
+            \Zend\Session\Validator\HttpUserAgent::class,
+        ]
+    ],
+    'session_storage' => [
+        'type' => \Zend\Session\Storage\SessionArrayStorage::class
     ],
     'settings' => [
         'translator_cache' => 'Cache\Persistent',
