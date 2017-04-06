@@ -11,7 +11,7 @@ class Module
 {
     const VERSION = '0.1-dev';
 
-    public function bootstrapSession($e)
+    public function bootstrapSession(\Zend\Mvc\MvcEvent $e)
     {
         $session = $e->getApplication()
                      ->getServiceManager()
@@ -62,7 +62,7 @@ class Module
         }
     }
 
-    public function bootstrapTranslator($e)
+    public function bootstrapTranslator(\Zend\Mvc\MvcEvent $e)
     {
         $serviceManager = $e->getApplication()
                             ->getServiceManager();
@@ -92,7 +92,7 @@ class Module
         return include __DIR__ . '/../config/module.config.php';
     }
 
-    public function onBootstrap(MvcEvent $e)
+    public function onBootstrap(\Zend\Mvc\MvcEvent $e)
     {
         $this->bootstrapSession($e);
         $this->bootstrapTranslator($e);
