@@ -15,7 +15,6 @@ msgstr ""
 "X-Generator: Poedit 1.8.11\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
-"X-Poedit-SearchPathExcluded-0: view/zfc-user\n"
 
 #: view/setup/setup/index.phtml:3
 msgid "Setup"
