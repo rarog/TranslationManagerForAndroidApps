@@ -47,5 +47,9 @@ return [
     'settings' => [
         'translator_cache' => 'Cache\Persistent',
         'session_cache' => 'Cache\Persistent',
+        'supported_languages' => [
+            'de_DE' => 'German (Germany)/Deutsch (Deutschland)',
+            'en_US' => 'English (USA)',
+        ],
     ],
 ];
