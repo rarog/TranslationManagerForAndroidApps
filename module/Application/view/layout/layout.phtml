@@ -1,6 +1,6 @@
 <?= $this->doctype() ?>
 
-<html lang="en">
+<html lang="<?= \Locale::getPrimaryLanguage($this->plugin('translate')->getTranslator()->getLocale()) ?>">
     <head>
         <meta charset="utf-8">
         <?= $this->headTitle('Translation Manager for Android Apps')->setSeparator(' - ')->setAutoEscape(false) ?>
