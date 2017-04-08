@@ -14,21 +14,18 @@ class SetupController extends AbstractActionController
 {
     protected $translator;
 
-    protected function getTranslator()
+    public function __construct(\Zend\I18n\Translator\Translator $translator)
     {
-        if (!$this->translator) {
-            $this->translator = $this->getServiceLocator()->get('MvcTranslator');
-        }
-        return $this->translator;
+        $this->translator = $translator;
     }
-    
+
     public function indexAction()
     {
         $setupConfig = $this->configHelp('setup');
         $languages = $setupConfig->available_languages->toArray();
         
         $step1 = new \Setup\Model\Step1(array(
-            'setup_language' => $this->getTranslator()->getLocale(),
+            'setup_language' => $this->translator->getLocale(),
         ));
 
         $formStep1 = new \Setup\Form\Step1Form();
