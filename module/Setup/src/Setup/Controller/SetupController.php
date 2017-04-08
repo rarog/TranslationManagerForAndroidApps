@@ -15,7 +15,7 @@ class SetupController extends AbstractActionController
     public function indexAction()
     {
         $setupConfig = $this->configHelp('setup');
-        $languages = $setupConfig->available_languages;
+        $languages = $setupConfig->available_languages->toArray();
 
         $formStep1 = new \Setup\Form\Step1Form();
         $formStep1->get('setup_language')->setValueOptions($languages);

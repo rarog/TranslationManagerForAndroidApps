@@ -10,7 +10,7 @@ class Step1Form extends Form
     {
         parent::__construct('Step1');
         $this->setAttribute('method', 'post');
-        $this->setHydrator(new \Zend\Stdlib\Hydrator\ClassMethods());
+        $this->setHydrator(new \Zend\Hydrator\ClassMethods());
 
         $this->add(array(
             'name' => 'setup_language',
@@ -52,7 +52,7 @@ class Step1Form extends Form
         ));
 
         $this->add(array(
-            'name' => 'submit',
+            'name' => 'next',
             'type'  => 'Button',
             'attributes' => array(
                 'type'  => 'submit',

@@ -25,6 +25,7 @@ return [
     'Zend\Router',
     'Zend\Validator',
     'ConfigHelper',
+    'TwbBundle',
     'Setup',
     'Application',
 ];
