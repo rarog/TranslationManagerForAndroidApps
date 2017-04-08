@@ -14,6 +14,14 @@ class SetupController extends AbstractActionController
 {
     public function indexAction()
     {
-        return new ViewModel();
+        $setupConfig = $this->configHelp('setup');
+        $languages = $setupConfig->available_languages;
+
+        $formStep1 = new OrderAddFollowupForm();
+        $formStep1->get('setup_language')->setValueOptions($languages);
+
+        return new ViewModel(array(
+            'formStep1' => $formStep1,
+        ));
     }
 }

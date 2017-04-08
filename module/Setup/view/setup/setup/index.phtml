@@ -1,3 +1,7 @@
+<?php
+    $formStep1 = $this->formStep1;
+    $formStep1->setAttribute('action', $this->url('setup/index'));
+?>
 <div class="row">
     <div class="col-lg-12">
         <h1 class="page-header"><?= $this->escapeHtml($this->translate('Setup')) ?> - <?= $this->escapeHtml(sprintf($this->translate('Step %d'), 1)) ?></h1>
@@ -11,6 +15,6 @@
     </div>
     <div class="col-lg-10">
         <p><?= $this->escapeHtml($this->translate('Welcome to the setup routine.')) ?></p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button">Begin Setup</a></p>
+        <p><?= $this->form($formStep1, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZONTAL); ?></p>
     </div>
 </div>
