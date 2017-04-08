@@ -24,6 +24,7 @@ return [
     'Zend\Cache',
     'Zend\Router',
     'Zend\Validator',
+    'ConfigHelper',
     'Setup',
     'Application',
 ];
