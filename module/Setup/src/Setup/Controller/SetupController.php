@@ -17,7 +17,7 @@ class SetupController extends AbstractActionController
         $setupConfig = $this->configHelp('setup');
         $languages = $setupConfig->available_languages;
 
-        $formStep1 = new OrderAddFollowupForm();
+        $formStep1 = new \Setup\Form\Step1Form();
         $formStep1->get('setup_language')->setValueOptions($languages);
 
         return new ViewModel(array(
