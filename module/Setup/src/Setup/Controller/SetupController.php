@@ -28,7 +28,7 @@ class SetupController extends AbstractActionController
         $languages = $setupConfig->available_languages->toArray();
         
         $step1 = new \Setup\Model\Step1(array(
-            'setup_language' = $this->getTranslator()->getLocale(),
+            'setup_language' => $this->getTranslator()->getLocale(),
         ));
 
         $formStep1 = new \Setup\Form\Step1Form();
