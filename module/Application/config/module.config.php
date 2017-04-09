@@ -41,6 +41,13 @@ return [
             Controller\IndexController::class => InvokableFactory::class,
         ],
     ],
+    'service_manager' => [
+        'delegators' => [
+            \Zend\Mvc\I18n\Translator::class => [
+                Delegator\TranslatorDelegator::class,
+            ],
+        ],
+    ],
     'translator' => [
         'locale' => 'en_US',
         'translation_file_patterns' => [

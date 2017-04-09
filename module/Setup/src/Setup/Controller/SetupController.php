@@ -40,8 +40,8 @@ class SetupController extends AbstractActionController
         if (!is_null($this->container->currentLanguage) &&
             array_key_exists($this->container->currentLanguage, $this->getAvailableLanguages())) {
             $this->translator
-                 ->setFallbackLocale($this->fallbackLocale)
-                 ->setLocale($this->container->currentLanguage);
+                 ->setLocale($this->container->currentLanguage)
+                 ->setFallbackLocale(\Locale::getPrimaryLanguage($this->container->currentLanguage));
         }
     }
 

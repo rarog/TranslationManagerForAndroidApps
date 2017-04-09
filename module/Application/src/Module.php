@@ -81,10 +81,11 @@ class Module
             }
         }
 
+        $translator = $serviceManager->get('MvcTranslator');
         if (!is_null($translatorCache)) {
-            $translator = $serviceManager->get('MvcTranslator');
             $translator->setCache($translatorCache);
         }
+        \Zend\Validator\AbstractValidator::setDefaultTranslator($translator);
     }
 
     public function getConfig()
