@@ -56,9 +56,9 @@ class SetupController extends AbstractActionController
     {
         $this->setCurrentLanguage();
         
-        $step1 = new \Setup\Model\Step1(array(
+        $step1 = new \Setup\Model\Step1([
             'setup_language' => $this->translator->getLocale(),
-        ));
+        ]);
 
         $formStep1 = new \Setup\Form\Step1Form();
         $formStep1->get('setup_language')->setValueOptions($this->getAvailableLanguages());
@@ -71,12 +71,38 @@ class SetupController extends AbstractActionController
              if ($formStep1->isValid() &&
                  array_key_exists($step1->SetupLanguage, $this->getAvailableLanguages())) {
                  $this->container->currentLanguage = $step1->SetupLanguage;
-                 $this->setCurrentLanguage();
+
+                 return $this->redirect()->toRoute('setup/step2');
              }
         }
 
-        return new ViewModel(array(
+        return new ViewModel([
             'formStep1' => $formStep1,
-        ));
+        ]);
+    }
+
+    public function step2Action()
+    {
+        $this->setCurrentLanguage();
+        
+        $step2 = new \Setup\Model\Step1([
+            //'setup_language' => $this->translator->getLocale(),
+        ]);
+
+        $formStep2 = new \Setup\Form\Step2Form();
+        $formStep2->get('setup_language')->setValueOptions($this->getAvailableLanguages());
+        $formStep2->bind($step2);
+
+        $request  = $this->getRequest();
+        if ($request->isPost()) {
+            $formStep2->setInputFilter($step1->getInputFilter());
+            $formStep2->setData($request->getPost());
+             if ($formStep2->isValid()) {
+                 // TODO: Writing into the local.php config file
+             }
+        }
+    	return new ViewModel([
+            'formStep2' => $formStep2,
+    	]);
     }
 }

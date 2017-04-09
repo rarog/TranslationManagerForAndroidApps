@@ -10,5 +10,7 @@ return array(
     'Setup\Controller\SetupController'        => __DIR__ . '/src/Setup/Controller/SetupController.php',
     'Setup\Controller\SetupControllerFactory' => __DIR__ . '/src/Setup/Controller/SetupControllerFactory.php',
     'Setup\Form\Step1Form'                    => __DIR__ . '/src/Setup/Form/Step1Form.php',
+    'Setup\Form\Step2Form'                    => __DIR__ . '/src/Setup/Form/Step2Form.php',
     'Setup\Model\Step1'                       => __DIR__ . '/src/Setup/Model/Step1.php',
+    'Setup\Model\Step2'                       => __DIR__ . '/src/Setup/Model/Step2.php',
 );

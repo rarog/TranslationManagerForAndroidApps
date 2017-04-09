@@ -12,56 +12,56 @@ class Step1Form extends Form
         $this->setAttribute('method', 'post');
         $this->setHydrator(new \Zend\Hydrator\ClassMethods());
 
-        $this->add(array(
+        $this->add([
             'name' => 'setup_language',
             'type' => 'Select',
-            'attributes' => array(
+            'attributes' => [
                 'id' => 'setup_language',
-            ),
-            'options' => array(
+            ],
+            'options' => [
                 'column-size' => 'sm-10',
                 'label' => _('Setup language'),
-                'label_attributes' => array(
+                'label_attributes' => [
                     'class' => 'col-sm-2',
-                ),
-            ),
-        ));
+                ],
+            ],
+        ]);
 
-        $this->add(array(
+        $this->add([
             'type' => 'Csrf',
             'name' => 'csrf_step1',
-            'options' => array(
-                'csrf_options' => array(
+            'options' => [
+                'csrf_options' => [
                     'timeout' => null,
-                )
-            )
-        ));
+                ]
+            ]
+        ]);
 
-        $this->add(array(
+        $this->add([
             'name' => 'previous',
             'type' => 'Button',
-            'attributes' => array(
+            'attributes' => [
                 'type'  => 'button',
                 'value' => _('Previous'),
                 'class' => 'disabled',
-            ),
-            'options' => array(
+            ],
+            'options' => [
                 'column-size' => 'sm-10 col-sm-offset-2',
                 'button-group' => 'group-1',
-            ),
-        ));
+            ],
+        ]);
 
-        $this->add(array(
+        $this->add([
             'name' => 'next',
             'type'  => 'Button',
-            'attributes' => array(
+            'attributes' => [
                 'type'  => 'submit',
                 'value' => _('Next'),
                 'class' => 'btn-primary',
-            ),
-            'options' => array(
+            ],
+            'options' => [
                 'button-group' => 'group-1',
-            ),
-        ));
+            ],
+        ]);
     }
 }
