@@ -7,8 +7,13 @@
 
 namespace Setup\Model;
 
-class Step1
+use Zend\InputFilter\InputFilter;
+use Zend\InputFilter\InputFilterAwareInterface;
+use Zend\InputFilter\InputFilterInterface;
+
+class Step1 implements InputFilterAwareInterface
 {
+    protected $inputFilter;
     protected $setupLanguage;
 
     public function __construct(array $data = null)
@@ -57,5 +62,21 @@ class Step1
         return array(
             'setup_language' => $this->SetupLanguage,
         );
+    }
+
+    public function setInputFilter(InputFilterInterface $inputFilter)
+    {
+        throw new \Exception('Not used');
+    }
+
+    public function getInputFilter()
+    {
+        if (!$this->inputFilter) {
+            $inputFilter = new InputFilter();
+
+            $this->inputFilter = $inputFilter;
+        }
+
+        return $this->inputFilter;
     }
 }

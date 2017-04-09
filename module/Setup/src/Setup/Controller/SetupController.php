@@ -32,6 +32,12 @@ class SetupController extends AbstractActionController
         $formStep1->get('setup_language')->setValueOptions($languages);
         $formStep1->bind($step1);
 
+        $request  = $this->getRequest();
+        if ($request->isPost()) {
+            $formStep1->setInputFilter($step1->getInputFilter());
+            $formStep1->setData($request->getPost());
+        }
+
         return new ViewModel(array(
             'formStep1' => $formStep1,
         ));
