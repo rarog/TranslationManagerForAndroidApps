@@ -10,12 +10,25 @@
  * If you have a ./config/autoload/ directory set up for your project, you can
  * drop this config file in it and change the values as you wish.
  */
-$settings = array(
+$settings = [ 
+    /**
+     * Languages available during setup
+     */
     'available_languages' => [
         'de_DE' => 'German (Germany)/Deutsch (Deutschland)',
         'en_US' => 'English (USA)',
     ],
-        
+
+    /**
+     * Supported databases
+     * Must be from https://zendframework.github.io/zend-db/adapter/ or
+     * http://php.net/manual/de/pdo.drivers.php
+     */
+    /*'drivers' => [
+        'Pdo_Mysql'  => 'MySQL/MariaDB',
+        'Pdo_Sqlite' => 'SQLite',
+    ],*/
+
     /**
      * User table name
      */
@@ -35,7 +48,7 @@ $settings = array(
      * User table password column name
      */
     //'user_table_password_column_name' => 'password',
-);
+];
 
 /**
  * You do not need to edit below this line
