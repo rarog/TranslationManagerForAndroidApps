@@ -14,7 +14,7 @@ class SetupController extends AbstractActionController
 {
     protected $translator;
 
-    public function __construct(\Zend\I18n\Translator\Translator $translator)
+    public function __construct(\Zend\Mvc\I18n\Translator $translator)
     {
         $this->translator = $translator;
     }
