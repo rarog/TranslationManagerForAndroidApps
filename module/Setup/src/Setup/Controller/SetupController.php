@@ -72,7 +72,7 @@ class SetupController extends AbstractActionController
                  array_key_exists($step1->SetupLanguage, $this->getAvailableLanguages())) {
                  $this->container->currentLanguage = $step1->SetupLanguage;
 
-                 return $this->redirect()->toRoute('setup/step2');
+                 return $this->redirect()->toRoute('setup', ['action' => 'step2']);
              }
         }
 
@@ -90,12 +90,12 @@ class SetupController extends AbstractActionController
         ]);
 
         $formStep2 = new \Setup\Form\Step2Form();
-        $formStep2->get('setup_language')->setValueOptions($this->getAvailableLanguages());
+        //$formStep2->get('setup_language')->setValueOptions($this->getAvailableLanguages());
         $formStep2->bind($step2);
 
         $request  = $this->getRequest();
         if ($request->isPost()) {
-            $formStep2->setInputFilter($step1->getInputFilter());
+            $formStep2->setInputFilter($step2->getInputFilter());
             $formStep2->setData($request->getPost());
              if ($formStep2->isValid()) {
                  // TODO: Writing into the local.php config file

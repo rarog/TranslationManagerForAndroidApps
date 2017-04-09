@@ -1,6 +1,6 @@
 <?php
     $formStep2 = $this->formStep2;
-    $formStep2->setAttribute('action', $this->url('setup/step2'));
+    $formStep2->setAttribute('action', $this->url('setup', ['action' => 'step2']));
 ?>
 <div class="row">
     <div class="col-lg-12">
@@ -10,7 +10,7 @@
 <div class="row">
     <div class="col-lg-2">
         <ul class="nav nav-pills nav-stacked">
-            <li role="presentation"><a id="step1" href="<?= $this->url('setup/step1') ?>"><?= $this->escapeHtml(sprintf($this->translate('Step %d'), 1)) ?></a></li>
+            <li role="presentation"><a id="step1" href="<?= $this->url('setup') ?>"><?= $this->escapeHtml(sprintf($this->translate('Step %d'), 1)) ?></a></li>
             <li role="presentation" class="active"><a id="step2" href="#"><?= $this->escapeHtml(sprintf($this->translate('Step %d'), 2)) ?></a></li>
         </ul>
     </div>
