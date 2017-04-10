@@ -61,21 +61,21 @@ class SetupController extends AbstractActionController
     {
         $this->setCurrentLanguage();
 
-        $step1 = new \Setup\Model\Step1([
+        $setupLanguage = new \Setup\Model\SetupLanguage([
             'setup_language' => $this->translator->getLocale(),
         ]);
 
         $formStep1 = new \Setup\Form\Step1Form();
         $formStep1->get('setup_language')->setValueOptions($this->getAvailableLanguages());
-        $formStep1->bind($step1);
+        $formStep1->bind($setupLanguage);
 
         $request  = $this->getRequest();
         if ($request->isPost()) {
-            $formStep1->setInputFilter($step1->getInputFilter());
+            $formStep1->setInputFilter($setupLanguage->getInputFilter());
             $formStep1->setData($request->getPost());
              if ($formStep1->isValid() &&
-                 array_key_exists($step1->SetupLanguage, $this->getAvailableLanguages())) {
-                 $this->container->currentLanguage = $step1->SetupLanguage;
+                 array_key_exists($setupLanguage->SetupLanguage, $this->getAvailableLanguages())) {
+                 $this->container->currentLanguage = $setupLanguage->SetupLanguage;
 
                  return $this->redirect()->toRoute('setup', ['action' => 'step2']);
              }
@@ -93,17 +93,17 @@ class SetupController extends AbstractActionController
     {
         $this->setCurrentLanguage();
 
-        $step2 = new \Setup\Model\Step2(
+        $database = new \Setup\Model\Database(
             ($this->configHelp()->db) ? $this->configHelp()->db->toArray() : []
         );
 
         $formStep2 = new \Setup\Form\Step2Form();
         $formStep2->get('driver')->setValueOptions($this->getSetupConfig()->drivers->toArray());
-        $formStep2->bind($step2);
+        $formStep2->bind($database);
 
         $request  = $this->getRequest();
         if ($request->isPost()) {
-            $formStep2->setInputFilter($step2->getInputFilter());
+            $formStep2->setInputFilter($database->getInputFilter());
             $formStep2->setData($request->getPost());
              if ($formStep2->isValid()) {
                  // Reading current local.php config file
@@ -113,7 +113,7 @@ class SetupController extends AbstractActionController
                  }
 
                  // Replacing old db config with new
-                 $localPhpSettings['db'] = $step2->getArrayCopy();
+                 $localPhpSettings['db'] = $database->getArrayCopy();
                  $configWriter = new \Zend\Config\Writer\PhpArray();
                  $configWriter->setUseBracketArraySyntax(true)
                               ->toFile('config/autoload/local.php', new \Zend\Config\Config($localPhpSettings, false));

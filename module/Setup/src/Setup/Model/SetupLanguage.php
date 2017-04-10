@@ -11,7 +11,7 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 
-class Step1 implements InputFilterAwareInterface
+class SetupLanguage implements InputFilterAwareInterface
 {
     protected $inputFilter;
     protected $setupLanguage;
