@@ -7,7 +7,9 @@
 
 namespace Setup\Controller;
 
+use Zend\ModuleManager\Listener\ListenerOptions;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\ViewModel;
 
 class SetupController extends AbstractActionController
@@ -16,7 +18,7 @@ class SetupController extends AbstractActionController
     protected $container;
     protected $setupConfig;
     protected $availableLanguages;
-    protected $fallbackLocale;
+    protected $listenerOptions;
 
     protected function getSetupConfig()
     {
@@ -45,17 +47,20 @@ class SetupController extends AbstractActionController
         }
     }
 
-    public function __construct(\Zend\Mvc\I18n\Translator $translator)
+    public function __construct(Translator $translator, ListenerOptions $listenerOptions)
     {
         $this->translator = $translator;
         $this->container = new \Zend\Session\Container('setup');
-        $this->fallbackLocale = $translator->getLocale();
+        $this->listenerOptions = $listenerOptions;
     }
 
+    /**
+     * Action for step 1 - welcome screen and setup language selection
+     */
     public function indexAction()
     {
         $this->setCurrentLanguage();
-        
+
         $step1 = new \Setup\Model\Step1([
             'setup_language' => $this->translator->getLocale(),
         ]);
@@ -81,6 +86,9 @@ class SetupController extends AbstractActionController
         ]);
     }
 
+    /**
+     * Action for step 2 - setup of the database connection
+     */
     public function step2Action()
     {
         $this->setCurrentLanguage();
@@ -98,9 +106,25 @@ class SetupController extends AbstractActionController
             $formStep2->setInputFilter($step2->getInputFilter());
             $formStep2->setData($request->getPost());
              if ($formStep2->isValid()) {
-                 // TODO: Writing into the local.php config file
+                 // Reading current local.php config file
+                 $localPhpSettings = include('config/autoload/local.php');
+                 if (!is_array($localPhpSettings)) {
+                     $localPhpSettings = [];
+                 }
+
+                 // Replacing old db config with new
+                 $localPhpSettings['db'] = $step2->getArrayCopy();
+                 $configWriter = new \Zend\Config\Writer\PhpArray();
+                 $configWriter->setUseBracketArraySyntax(true)
+                              ->toFile('config/autoload/local.php', new \Zend\Config\Config($localPhpSettings, false));
+
+                 // Clearing config cache if enabled
+                 if ($this->listenerOptions->getConfigCacheEnabled()) {
+                     unlink($this->listenerOptions->getConfigCacheFile());
+                 }
              }
         }
+
     	return new ViewModel([
             'formStep2' => $formStep2,
     	]);
