@@ -15,7 +15,8 @@
         </ul>
     </div>
     <div class="col-lg-10">
-        <p><?= $this->escapeHtml($this->translate('Database setup')) ?></p>
-        <p><?= $this->form($formStep2, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZONTAL); ?></p>
+        <h3><?= $this->escapeHtml($this->translate('Database setup')) ?></h3>
+        <div id="step2StatusCheck"></div>
+        <div><?= $this->form($formStep2, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZONTAL); ?></div>
     </div>
 </div>
