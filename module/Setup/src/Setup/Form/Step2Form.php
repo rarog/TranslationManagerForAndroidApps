@@ -41,16 +41,76 @@ class Step2Form extends Form
                 ],
             ],
         ]);
+        
+        $this->add([
+            'name' => 'username',
+            'type' => 'Text',
+            'attributes' => [
+                'id' => 'username',
+            ],
+            'options' => [
+                'column-size' => 'sm-10',
+                'label' => _('Username'),
+                'label_attributes' => [
+                    'class' => 'col-sm-2',
+                ],
+            ],
+        ]);
 
+        $this->add([
+            'name' => 'password',
+            'type' => 'Text',
+            'attributes' => [
+                'id' => 'password',
+            ],
+            'options' => [
+                'column-size' => 'sm-10',
+                'label' => _('Password'),
+                'label_attributes' => [
+                    'class' => 'col-sm-2',
+                ],
+            ],
+        ]);
+        
         $this->add([
             'name' => 'hostname',
             'type' => 'Text',
             'attributes' => [
-                'id' => 'host',
+                'id' => 'hostname',
             ],
             'options' => [
                 'column-size' => 'sm-10',
                 'label' => _('Hostname'),
+                'label_attributes' => [
+                    'class' => 'col-sm-2',
+                ],
+            ],
+        ]);
+        
+        $this->add([
+            'name' => 'port',
+            'type' => 'Number',
+            'attributes' => [
+                'id' => 'port',
+            ],
+            'options' => [
+                'column-size' => 'sm-10',
+                'label' => _('Port'),
+                'label_attributes' => [
+                    'class' => 'col-sm-2',
+                ],
+            ],
+        ]);
+        
+        $this->add([
+            'name' => 'charset',
+            'type' => 'Text',
+            'attributes' => [
+                'id' => 'charset',
+            ],
+            'options' => [
+                'column-size' => 'sm-10',
+                'label' => _('Charset'),
                 'label_attributes' => [
                     'class' => 'col-sm-2',
                 ],

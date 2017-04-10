@@ -13,8 +13,14 @@ use Zend\InputFilter\InputFilterInterface;
 
 class Step2 implements InputFilterAwareInterface
 {
-    protected $inputFilter;
-    protected $database;
+	protected $inputFilter;
+	protected $driver;
+	protected $database;
+	protected $username;
+	protected $password;
+	protected $hostname;
+	protected $port;
+	protected $charset;
 
     public function __construct(array $data = null)
     {
@@ -40,6 +46,17 @@ class Step2 implements InputFilterAwareInterface
         }
         return $this->$method();
     }
+    
+    public function setDriver($driver)
+    {
+    	$this->driver = (is_null($driver)) ? null : (string) $driver;
+    	return $this;
+    }
+    
+    public function getDriver()
+    {
+    	return $this->driver;
+    }
 
     public function setDatabase($database)
     {
@@ -51,16 +68,83 @@ class Step2 implements InputFilterAwareInterface
     {
         return $this->database;
     }
+    
+    public function setUsername($username)
+    {
+        $this->username = (is_null($username)) ? null : (string) $username;
+        return $this;
+    }
+    
+    public function getUsername()
+    {
+        return $this->username;
+    }
+    
+    public function setPassword($password)
+    {
+        $this->password = (is_null($password)) ? null : (string) $password;
+        return $this;
+    }
+    
+    public function getPassword()
+    {
+        return $this->password;
+    }
+    
+    public function setHostname($hostname)
+    {
+        $this->hostname = (is_null($hostname)) ? null : (string) $hostname;
+        return $this;
+    }
+    
+    public function getHostname()
+    {
+        return $this->hostname;
+    }
+    
+    public function setPort($port)
+    {
+        $this->port = (is_null($port)) ? null : (int) $port;
+        return $this;
+    }
+    
+    public function getPort()
+    {
+        return $this->port;
+    }
+    
+    public function setCharset($charset)
+    {
+        $this->charset = (is_null($charset)) ? null : (string) $charset;
+        return $this;
+    }
+    
+    public function getCharset()
+    {
+        return $this->charset;
+    }
 
     public function exchangeArray($data)
     {
-        $this->setDatabase((!empty($data['database'])) ? $data['database'] : null);
+    	$this->setDriver((!empty($data['driver'])) ? $data['driver'] : null);
+    	$this->setDatabase((!empty($data['database'])) ? $data['database'] : null);
+    	$this->setUsername((!empty($data['username'])) ? $data['username'] : null);
+    	$this->setPassword((!empty($data['password'])) ? $data['password'] : null);
+    	$this->setHostname((!empty($data['hostname'])) ? $data['hostname'] : null);
+    	$this->setPort((!empty($data['port'])) ? $data['port'] : null);
+    	$this->setCharset((!empty($data['charset'])) ? $data['charset'] : null);
     }
 
     public function getArrayCopy()
     {
-        return array(
-            'database' => $this->Database,
+    	return array(
+            'driver'   => $this->Driver,
+    	    'database' => $this->Database,
+    	    'username' => $this->Username,
+    	    'password' => $this->Password,
+    	    'hostname' => $this->Hostname,
+    	    'port'     => $this->Port,
+    	    'charset'  => $this->Charset,
         );
     }
 
@@ -74,7 +158,7 @@ class Step2 implements InputFilterAwareInterface
         if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
 
-            $inputFilter->add($factory->createInput([
+            $inputFilter->add([
                 'name'     => 'database',
                 'required' => true,
                 'filters'  => [
@@ -90,7 +174,48 @@ class Step2 implements InputFilterAwareInterface
                         ],
                     ],
                 ],
-            ]));
+            ]);
+            
+            $inputFilter->add([
+                'name'     => 'username',
+                'required' => false,
+                'filters'  => [
+                    ['name' => 'StripTags'],
+                    ['name' => 'StringTrim'],
+                ],
+            ]);
+            
+            $inputFilter->add([
+                'name'     => 'password',
+                'required' => false,
+                'filters'  => [
+                    ['name' => 'StripTags'],
+                    ['name' => 'StringTrim'],
+                ],
+            ]);
+            
+            $inputFilter->add([
+                'name'     => 'hostname',
+                'required' => false,
+                'filters'  => [
+                    ['name' => 'StripTags'],
+                    ['name' => 'StringTrim'],
+                ],
+            ]);
+            
+            $inputFilter->add([
+                'name'     => 'port',
+                'required' => false,
+            ]);
+            
+            $inputFilter->add([
+                'name'     => 'charset',
+                'required' => false,
+                'filters'  => [
+                    ['name' => 'StripTags'],
+                    ['name' => 'StringTrim'],
+                ],
+            ]);
 
             $this->inputFilter = $inputFilter;
         }

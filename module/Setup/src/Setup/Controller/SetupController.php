@@ -84,13 +84,13 @@ class SetupController extends AbstractActionController
     public function step2Action()
     {
         $this->setCurrentLanguage();
-        
-        $step2 = new \Setup\Model\Step1([
-            //'setup_language' => $this->translator->getLocale(),
-        ]);
+
+        $step2 = new \Setup\Model\Step2(
+            ($this->configHelp()->db) ? $this->configHelp()->db->toArray() : []
+        );
 
         $formStep2 = new \Setup\Form\Step2Form();
-        //$formStep2->get('setup_language')->setValueOptions($this->getAvailableLanguages());
+        $formStep2->get('driver')->setValueOptions($this->getSetupConfig()->drivers->toArray());
         $formStep2->bind($step2);
 
         $request  = $this->getRequest();
