@@ -13,9 +13,15 @@ data/sessions/
 data/tmp/
 temp/
 
-#Doctrine 2
+# Doctrine 2
 data/DoctrineORMModule/Proxy/
 data/DoctrineORMModule/cache/
 
+# Eclipse files
+.buildpath
+.project
+.settings/
+
+# Other
 .vagrant/
 phpunit.xml
