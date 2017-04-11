@@ -1,9 +1,9 @@
 <?php
 
 namespace Setup\Form;
- 
+
 use Zend\Form\Form;
- 
+
 class Step2Form extends Form
 {
     public function __construct($name = null)
@@ -41,7 +41,7 @@ class Step2Form extends Form
                 ],
             ],
         ]);
-        
+
         $this->add([
             'name' => 'username',
             'type' => 'Text',
@@ -71,7 +71,7 @@ class Step2Form extends Form
                 ],
             ],
         ]);
-        
+
         $this->add([
             'name' => 'hostname',
             'type' => 'Text',
@@ -86,7 +86,7 @@ class Step2Form extends Form
                 ],
             ],
         ]);
-        
+
         $this->add([
             'name' => 'port',
             'type' => 'Number',
@@ -101,7 +101,7 @@ class Step2Form extends Form
                 ],
             ],
         ]);
-        
+
         $this->add([
             'name' => 'charset',
             'type' => 'Text',
@@ -128,29 +128,43 @@ class Step2Form extends Form
         ]);
 
         $this->add([
-        		'name' => 'previous',
-        		'type' => 'Button',
-        		'attributes' => [
-        				'type'  => 'button',
-        				'value' => _('Previous'),
-        		],
-        		'options' => [
-        				'column-size' => 'sm-10 col-sm-offset-2',
-        				'button-group' => 'group-1',
-        		],
+            'name' => 'previous',
+            'type' => 'Button',
+            'attributes' => [
+                'type'  => 'button',
+                'value' => _('Previous'),
+            ],
+            'options' => [
+                'column-size' => 'sm-10 col-sm-offset-2',
+                'button-group' => 'group-1',
+            ],
         ]);
-        
+
         $this->add([
-        		'name' => 'next',
-        		'type'  => 'Button',
-        		'attributes' => [
-        				'type'  => 'submit',
-        				'value' => _('Next'),
-        				'class' => 'btn-primary',
-        		],
-        		'options' => [
-        				'button-group' => 'group-1',
-        		],
+            'name' => 'test_connection',
+            'type'  => 'Button',
+            'attributes' => [
+                'id'    => 'testConnection',
+                'type'  => 'button',
+                'value' => _('Test connection'),
+                'class' => 'btn-info',
+            ],
+            'options' => [
+                'button-group' => 'group-1',
+            ],
+        ]);
+
+        $this->add([
+            'name' => 'next',
+            'type'  => 'Button',
+            'attributes' => [
+                'type'  => 'submit',
+                'value' => _('Next'),
+                'class' => 'btn-primary',
+            ],
+            'options' => [
+                'button-group' => 'group-1',
+            ],
         ]);
     }
 }
