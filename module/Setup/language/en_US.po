@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TranslationManagerForAndroidApps\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-06 09:34+0200\n"
-"PO-Revision-Date: 2017-04-06 09:37+0200\n"
-"Last-Translator: Evan Coury <me@evancoury.com>\n"
+"POT-Creation-Date: 2017-04-11 19:07+0200\n"
+"PO-Revision-Date: 2017-04-11 19:07+0200\n"
+"Last-Translator: rarog <rarogit@gmail.com>\n"
 "Language-Team: \n"
 "Language: en_US\n"
 "MIME-Version: 1.0\n"
@@ -12,19 +12,95 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-KeywordsList: translate;_\n"
 "X-Poedit-Basepath: ..\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.0.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: view/setup/setup/index.phtml:3
+#: src/Setup/Controller/SetupController.php:78
+msgid "<strong>Error:</strong> Invalid POST data was provided."
+msgstr ""
+
+#: src/Setup/Form/Step1Form.php:23
+msgid "Setup language"
+msgstr ""
+
+#: src/Setup/Form/Step1Form.php:45 src/Setup/Form/Step2Form.php:135
+msgid "Back"
+msgstr ""
+
+#: src/Setup/Form/Step1Form.php:59 src/Setup/Form/Step2Form.php:162
+msgid "Next"
+msgstr ""
+
+#: src/Setup/Form/Step2Form.php:23
+msgid "Database driver"
+msgstr ""
+
+#: src/Setup/Form/Step2Form.php:38
+msgid "Database name"
+msgstr ""
+
+#: src/Setup/Form/Step2Form.php:53
+msgid "Username"
+msgstr ""
+
+#: src/Setup/Form/Step2Form.php:68
+msgid "Password"
+msgstr ""
+
+#: src/Setup/Form/Step2Form.php:83
+msgid "Hostname"
+msgstr ""
+
+#: src/Setup/Form/Step2Form.php:98
+msgid "Port"
+msgstr ""
+
+#: src/Setup/Form/Step2Form.php:113
+msgid "Charset"
+msgstr ""
+
+#: src/Setup/Form/Step2Form.php:149
+msgid "Test connection"
+msgstr ""
+
+#: src/Setup/Model/DatabaseChecks.php:33
+msgid "Database connection successfully established."
+msgstr ""
+
+#: src/Setup/Model/DatabaseChecks.php:33
+msgid "Could not establish database connection."
+msgstr ""
+
+#: view/setup/setup/index.phtml:7 view/setup/setup/step2.phtml:27
 msgid "Setup"
 msgstr ""
 
-#: view/setup/setup/index.phtml:3 view/setup/setup/index.phtml:9
+#: view/setup/setup/index.phtml:7 view/setup/setup/index.phtml:13
+#: view/setup/setup/index.phtml:14 view/setup/setup/step2.phtml:27
+#: view/setup/setup/step2.phtml:33 view/setup/setup/step2.phtml:34
 #, php-format
 msgid "Step %d"
 msgstr ""
 
-#: view/setup/setup/index.phtml:13
+#: view/setup/setup/index.phtml:7 view/setup/setup/index.phtml:13
+#: view/setup/setup/step2.phtml:33
+msgid "Language"
+msgstr ""
+
+#: view/setup/setup/index.phtml:14 view/setup/setup/step2.phtml:27
+#: view/setup/setup/step2.phtml:34
+msgid "Database"
+msgstr ""
+
+#: view/setup/setup/index.phtml:18
 msgid "Welcome to the setup routine."
+msgstr ""
+
+#: view/setup/setup/step2.phtml:17
+msgid "An error occured during AJAX request."
+msgstr ""
+
+#: view/setup/setup/step2.phtml:38
+msgid "Database setup"
 msgstr ""

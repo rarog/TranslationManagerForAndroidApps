@@ -38,11 +38,11 @@ class Step1Form extends Form
         ]);
 
         $this->add([
-            'name' => 'previous',
+            'name' => 'back',
             'type' => 'Button',
             'attributes' => [
                 'type'  => 'button',
-                'value' => _('Previous'),
+                'value' => _('Back'),
                 'class' => 'disabled',
             ],
             'options' => [

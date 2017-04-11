@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TranslationManagerForAndroidApps\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-06 09:37+0200\n"
-"PO-Revision-Date: 2017-04-06 09:38+0200\n"
-"Last-Translator: Evan Coury <me@evancoury.com>\n"
+"POT-Creation-Date: 2017-04-11 19:07+0200\n"
+"PO-Revision-Date: 2017-04-11 19:07+0200\n"
+"Last-Translator: rarog <rarogit@gmail.com>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
@@ -12,19 +12,95 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-KeywordsList: translate;_\n"
 "X-Poedit-Basepath: ..\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.0.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: view/setup/setup/index.phtml:3
+#: src/Setup/Controller/SetupController.php:78
+msgid "<strong>Error:</strong> Invalid POST data was provided."
+msgstr "<strong>Fehler:</strong> Es wurden ungültige POST-Daten übermittelt."
+
+#: src/Setup/Form/Step1Form.php:23
+msgid "Setup language"
+msgstr "Setup-Sprache"
+
+#: src/Setup/Form/Step1Form.php:45 src/Setup/Form/Step2Form.php:135
+msgid "Back"
+msgstr "Zurück"
+
+#: src/Setup/Form/Step1Form.php:59 src/Setup/Form/Step2Form.php:162
+msgid "Next"
+msgstr "Weiter"
+
+#: src/Setup/Form/Step2Form.php:23
+msgid "Database driver"
+msgstr "Datenbanktreiber"
+
+#: src/Setup/Form/Step2Form.php:38
+msgid "Database name"
+msgstr "Datenbankname"
+
+#: src/Setup/Form/Step2Form.php:53
+msgid "Username"
+msgstr "Benutzername"
+
+#: src/Setup/Form/Step2Form.php:68
+msgid "Password"
+msgstr "Passwort"
+
+#: src/Setup/Form/Step2Form.php:83
+msgid "Hostname"
+msgstr "Hostname"
+
+#: src/Setup/Form/Step2Form.php:98
+msgid "Port"
+msgstr "Port"
+
+#: src/Setup/Form/Step2Form.php:113
+msgid "Charset"
+msgstr "Zeichensatz"
+
+#: src/Setup/Form/Step2Form.php:149
+msgid "Test connection"
+msgstr "Verbindung testen"
+
+#: src/Setup/Model/DatabaseChecks.php:33
+msgid "Database connection successfully established."
+msgstr "Datenbankverbindung wurde erfolgreich hergestellt."
+
+#: src/Setup/Model/DatabaseChecks.php:33
+msgid "Could not establish database connection."
+msgstr "Datenbankverbindung konnte nicht hergestellt werden."
+
+#: view/setup/setup/index.phtml:7 view/setup/setup/step2.phtml:27
 msgid "Setup"
 msgstr "Setup"
 
-#: view/setup/setup/index.phtml:3 view/setup/setup/index.phtml:9
+#: view/setup/setup/index.phtml:7 view/setup/setup/index.phtml:13
+#: view/setup/setup/index.phtml:14 view/setup/setup/step2.phtml:27
+#: view/setup/setup/step2.phtml:33 view/setup/setup/step2.phtml:34
 #, php-format
 msgid "Step %d"
 msgstr "Schritt %d"
 
-#: view/setup/setup/index.phtml:13
+#: view/setup/setup/index.phtml:7 view/setup/setup/index.phtml:13
+#: view/setup/setup/step2.phtml:33
+msgid "Language"
+msgstr "Sprache"
+
+#: view/setup/setup/index.phtml:14 view/setup/setup/step2.phtml:27
+#: view/setup/setup/step2.phtml:34
+msgid "Database"
+msgstr "Datenbank"
+
+#: view/setup/setup/index.phtml:18
 msgid "Welcome to the setup routine."
 msgstr "Willkommen bei der Setup-Routine."
+
+#: view/setup/setup/step2.phtml:17
+msgid "An error occured during AJAX request."
+msgstr "Ein Fehler trat während des AJAX-Requests auf."
+
+#: view/setup/setup/step2.phtml:38
+msgid "Database setup"
+msgstr "Datenbank-Setup"

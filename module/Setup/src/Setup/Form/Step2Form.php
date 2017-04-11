@@ -128,11 +128,11 @@ class Step2Form extends Form
         ]);
 
         $this->add([
-            'name' => 'previous',
+            'name' => 'back',
             'type' => 'Button',
             'attributes' => [
                 'type'  => 'button',
-                'value' => _('Previous'),
+                'value' => _('Back'),
             ],
             'options' => [
                 'column-size' => 'sm-10 col-sm-offset-2',

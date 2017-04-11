@@ -75,7 +75,7 @@ class SetupController extends AbstractActionController
             $message = $dbCheck->getLastMessage();
         } else {
             $type = 'danger';
-            $message = $this->translator->translate('<strong>Error:</strong> Invalid post data was provided.');
+            $message = $this->translator->translate('<strong>Error:</strong> Invalid POST data was provided.');
         }
 
         $viewModel = new ViewModel([
