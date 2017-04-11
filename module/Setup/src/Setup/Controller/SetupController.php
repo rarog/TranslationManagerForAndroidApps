@@ -70,8 +70,9 @@ class SetupController extends AbstractActionController
             $request->isPost() &&
             ($postData = $request->getPost()->toArray())) {
 
-            $type = 'info';
-            $message = 'TODO: Handle AJAX data received via post.';
+            $dbCheck = new \Setup\Model\DatabaseChecks($postData, $this->translator);
+            $type = ($dbCheck->canConnect()) ? 'success' : 'danger';
+            $message = $dbCheck->getLastMessage();
         } else {
             $type = 'danger';
             $message = $this->translator->translate('<strong>Error:</strong> Invalid post data was provided.');
