@@ -8,7 +8,7 @@ class Step1Form extends Form
 {
     public function __construct($name = null)
     {
-        parent::__construct('Step1');
+        parent::__construct('formStep1');
         $this->setAttribute('method', 'post');
         $this->setHydrator(new \Zend\Hydrator\ClassMethods());
 

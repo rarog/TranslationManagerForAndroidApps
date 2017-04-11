@@ -10,7 +10,9 @@ namespace Setup\Controller;
 use Zend\ModuleManager\Listener\ListenerOptions;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
+use Zend\View\Renderer\PhpRenderer as Renderer;
 
 class SetupController extends AbstractActionController
 {
@@ -19,6 +21,7 @@ class SetupController extends AbstractActionController
     protected $setupConfig;
     protected $availableLanguages;
     protected $listenerOptions;
+    protected $renderer;
 
     protected function getSetupConfig()
     {
@@ -47,11 +50,47 @@ class SetupController extends AbstractActionController
         }
     }
 
-    public function __construct(Translator $translator, ListenerOptions $listenerOptions)
+    public function __construct(Translator $translator, ListenerOptions $listenerOptions, Renderer $renderer)
     {
         $this->translator = $translator;
         $this->container = new \Zend\Session\Container('setup');
         $this->listenerOptions = $listenerOptions;
+        $this->renderer = $renderer;
+    }
+
+    /**
+     * Action for database connection test call via JSON
+     */
+    public function databaseconnectiontestAction()
+    {
+        $this->setCurrentLanguage();
+
+        $request = $this->getRequest();
+        if ($request->isXmlHttpRequest() &&
+            $request->isPost() &&
+            ($postData = $request->getPost()->toArray())) {
+
+            $type = 'info';
+            $message = 'TODO: Handle AJAX data received via post.';
+        } else {
+            $type = 'danger';
+            $message = $this->translator->translate('<strong>Error:</strong> Invalid post data was provided.');
+        }
+
+        $viewModel = new ViewModel([
+            'type' => $type,
+            'message' => $message,
+        ]);
+        $viewModel->setTemplate('partial/alert.phtml')
+                  ->setTerminal(true);
+        $htmlOutput = $this->renderer->render($viewModel);
+
+        $jsonModel = new JsonModel([
+            'html' => $htmlOutput,
+        ]);
+        $jsonModel->setTerminal(true);
+
+        return $jsonModel;
     }
 
     /**

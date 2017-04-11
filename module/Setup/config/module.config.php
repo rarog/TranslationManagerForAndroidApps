@@ -43,6 +43,9 @@ return [
         ],
     ],
     'view_manager' => [
+        'strategies' => [
+            'ViewJsonStrategy',
+        ],
         'template_path_stack' => [
             'setup' => __DIR__ . '/../view',
         ],

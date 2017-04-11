@@ -18,7 +18,8 @@ class SetupControllerFactory implements FactoryInterface
         $listenerOptions  = new \Zend\ModuleManager\Listener\ListenerOptions($configuration['module_listener_options']);
         return new \Setup\Controller\SetupController(
             $container->get(\Zend\Mvc\I18n\Translator::class),
-            new \Zend\ModuleManager\Listener\ListenerOptions($configuration['module_listener_options'])
+            new \Zend\ModuleManager\Listener\ListenerOptions($configuration['module_listener_options']),
+            $container->get('ViewRenderer')
         );
     }
 }

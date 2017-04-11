@@ -1,6 +1,26 @@
 <?php
     $formStep2 = $this->formStep2;
     $formStep2->setAttribute('action', $this->url('setup', ['action' => 'step2']));
+
+    $this->inlineScript()->appendScript('
+$("#testConnection").on("click", function () {
+    var url = "' . $this->url('setup', ['action' => 'databaseconnectiontest']) . '";
+    var post = $("#formStep2").serialize();
+    try {
+        $.post(url, post, function(data) {
+            if (data.html) {
+                $("#step2StatusCheck").prepend(data.html);
+            } else {
+                $("#step2StatusCheck").prepend("<div>" + data + "</div>");
+            }
+        }, "json").fail(function() {
+                $("#step2StatusCheck").prepend("' . $this->escapeHtml($this->translate('An error occured during AJAX request.')) . '");
+            }
+        );
+    } catch(ex) {
+        $("#step2StatusCheck").prepend("<div>" + ex.message + "</div>");
+    }
+})');
 ?>
 <div class="row">
     <div class="col-lg-12">
