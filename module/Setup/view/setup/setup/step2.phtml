@@ -1,6 +1,6 @@
 <?php
-    $formStep2 = $this->formStep2;
-    $formStep2->setAttribute('action', $this->url('setup', ['action' => 'step2']));
+    $formStep3 = $this->formStep2;
+    $formStep3->setAttribute('action', $this->url('setup', ['action' => 'step2']));
 
     $this->inlineScript()->appendScript('
 $("#testConnection").on("click", function () {
@@ -32,11 +32,12 @@ $("#testConnection").on("click", function () {
         <ul class="nav nav-pills nav-stacked">
             <li role="presentation"><a id="step1" href="<?= $this->url('setup') ?>"><?= $this->escapeHtml(sprintf($this->translate('Step %d'), 1)) ?> &ndash; <?= $this->escapeHtml($this->translate('Language'))?></a></li>
             <li role="presentation" class="active"><a id="step2" href="#"><?= $this->escapeHtml(sprintf($this->translate('Step %d'), 2)) ?> &ndash; <?= $this->escapeHtml($this->translate('Database'))?></a></li>
+            <li role="presentation" class="disabled"><a id="step3" href="#"><?= $this->escapeHtml(sprintf($this->translate('Step %d'), 2)) ?> &ndash; <?= $this->escapeHtml($this->translate('Database schema'))?></a></li>
         </ul>
     </div>
     <div class="col-lg-9">
         <h3><?= $this->escapeHtml($this->translate('Database setup')) ?></h3>
         <div id="step2StatusCheck"></div>
-        <div><?= $this->form($formStep2, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZONTAL); ?></div>
+        <div><?= $this->form($formStep3, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZONTAL); ?></div>
     </div>
 </div>

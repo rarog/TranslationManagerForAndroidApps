@@ -11,6 +11,9 @@ return array(
     'Setup\Controller\SetupControllerFactory' => __DIR__ . '/src/Setup/Controller/SetupControllerFactory.php',
     'Setup\Form\Step1Form'                    => __DIR__ . '/src/Setup/Form/Step1Form.php',
     'Setup\Form\Step2Form'                    => __DIR__ . '/src/Setup/Form/Step2Form.php',
+    'Setup\Form\Step3Form'                    => __DIR__ . '/src/Setup/Form/Step3Form.php',
     'Setup\Model\Database'                    => __DIR__ . '/src/Setup/Model/Database.php',
+    'Setup\Model\DatabaseChecks'              => __DIR__ . '/src/Setup/Model/DatabaseChecks.php',
+    'Setup\Model\DatabaseSchema'              => __DIR__ . '/src/Setup/Model/DatabaseSchema.php',
     'Setup\Model\SetupLanguage'               => __DIR__ . '/src/Setup/Model/SetupLanguage.php',
 );

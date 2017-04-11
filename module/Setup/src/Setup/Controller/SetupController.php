@@ -22,6 +22,7 @@ class SetupController extends AbstractActionController
     protected $availableLanguages;
     protected $listenerOptions;
     protected $renderer;
+    protected $lastStep;
 
     protected function getSetupConfig()
     {
@@ -48,6 +49,11 @@ class SetupController extends AbstractActionController
                  ->setLocale($this->container->currentLanguage)
                  ->setFallbackLocale(\Locale::getPrimaryLanguage($this->container->currentLanguage));
         }
+    }
+    
+    protected function checkSetupStep(int $currentStep)
+    {
+        ;
     }
 
     public function __construct(Translator $translator, ListenerOptions $listenerOptions, Renderer $renderer)
@@ -100,6 +106,7 @@ class SetupController extends AbstractActionController
     public function indexAction()
     {
         $this->setCurrentLanguage();
+        $this->lastStep = 1;
 
         $setupLanguage = new \Setup\Model\SetupLanguage([
             'setup_language' => $this->translator->getLocale(),
@@ -117,6 +124,7 @@ class SetupController extends AbstractActionController
                  array_key_exists($setupLanguage->SetupLanguage, $this->getAvailableLanguages())) {
                  $this->container->currentLanguage = $setupLanguage->SetupLanguage;
 
+                 $this->lastStep = 2;
                  return $this->redirect()->toRoute('setup', ['action' => 'step2']);
              }
         }
@@ -132,6 +140,7 @@ class SetupController extends AbstractActionController
     public function step2Action()
     {
         $this->setCurrentLanguage();
+        $this->checkSetupStep(2);
 
         $database = new \Setup\Model\Database(
             ($this->configHelp()->db) ? $this->configHelp()->db->toArray() : []
@@ -162,11 +171,44 @@ class SetupController extends AbstractActionController
                  if ($this->listenerOptions->getConfigCacheEnabled()) {
                      unlink($this->listenerOptions->getConfigCacheFile());
                  }
+
+                 $this->lastStep = 3;
+                 return $this->redirect()->toRoute('setup', ['action' => 'step2']);
              }
         }
 
     	return new ViewModel([
             'formStep2' => $formStep2,
+    	]);
+    }
+
+    /**
+     * Action for step 3 - setup of the database schema
+     */
+    public function step3Action()
+    {
+        $this->setCurrentLanguage();
+        $this->checkSetupStep(3);
+
+        $databaseSchema = new \Setup\Model\DatabaseSchema();
+
+        $formStep3 = new \Setup\Form\Step3Form();
+        $formStep3->bind($databaseSchema);
+
+        $request  = $this->getRequest();
+        if ($request->isPost()) {
+            $formStep3->setInputFilter($databaseSchema->getInputFilter());
+            $formStep3->setData($request->getPost());
+             if ($formStep3->isValid()) {
+                 // TODO: Initiating the db schema installation.
+             }
+        } else {
+            $nextButton = $formStep3->get('next');
+            $nextButton->setAttribute('class', $nextButton->getAttribute('class') . ' disabled');
+        }
+
+    	return new ViewModel([
+            'formStep3' => $formStep3,
     	]);
     }
 }

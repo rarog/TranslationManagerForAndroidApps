@@ -18,16 +18,56 @@ $settings = [
         'de_DE' => 'German (Germany)/Deutsch (Deutschland)',
         'en_US' => 'English (USA)',
     ],
-
+    
     /**
      * Supported databases
-     * Must be from https://zendframework.github.io/zend-db/adapter/ or
-     * http://php.net/manual/de/pdo.drivers.php
-     */
+    *
+    * Must be from https://zendframework.github.io/zend-db/adapter/ or
+    * http://php.net/manual/de/pdo.drivers.php
+    */
     'drivers' => [
         'Pdo_Mysql'  => 'MySQL/MariaDB',
         'Pdo_Sqlite' => 'SQLite',
     ],
+    
+    /**
+     * Database schema path
+    *
+    * Minimal schemas needed for this module are in /data/schema of this module and should be copied
+    * to the application path defined in this configuration key.
+    */
+    'db_schema_path' => '/data/schema',
+    
+    /**
+     * Database schema naming
+    *
+    * This array must have identical keys as 'drivers'.
+    * Example for Pdo_Mysql: Setup module searching for a file "APP_ROOT/data/schema/schema.mysql.sql"
+    * Schema updates files are called "update.{i}.mysql.sql" with {i} corresponding the db version in it.
+    * When checking, it will allways be looked for existance of "update.{MAX(version) + 1}.mysql.sql",
+    * So you have to provide all files correctly incremented.
+    */
+    'db_schema_naming' => [
+        'Pdo_Mysql'  => 'mysql',
+        'Pdo_Sqlite' => 'sqlite',
+    ],
+    
+    /**
+     * Database schema version table
+    *
+    * If this table is renamed, the schema files in the application path should be modified accordingly.
+    * The table contains 2 columns:
+    * 1) version - an incremented version as integer number where MAX(version) = current version in the db.
+    * 2) timestamp - unixtime value in UTC, when the db version was installed.
+    */
+    'db_schema_version_table' => 'database_schema_version',
+    
+    /**
+     * Database schema init version
+    *
+    * Version, that is written into the table in db_schema_version_table, when schema is installed.
+    */
+    'db_schema_init_version' => 1,
 
     /**
      * User table name
