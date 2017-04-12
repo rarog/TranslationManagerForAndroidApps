@@ -51,9 +51,25 @@ class SetupController extends AbstractActionController
         }
     }
     
+    protected function getLastStep() {
+        return (int) $this->container->lastStep;
+    }
+    
+    protected function setLastStep(int $lastStep) {
+        $this->container->lastStep = $lastStep;
+    }
+    
     protected function checkSetupStep(int $currentStep)
     {
-        ;
+        // TODO: Check if starting setup is allowed at all.
+        $lastStep = $this->getLastStep();//echo $lastStep.$currentStep;exit;
+        if ($currentStep > $lastStep) {
+            $action = [];
+            if ($lastStep > 1) {
+                $action['action'] = 'step' . $lastStep;
+            }
+            $this->redirect()->toRoute('setup', $action);
+        }
     }
 
     public function __construct(Translator $translator, ListenerOptions $listenerOptions, Renderer $renderer)
@@ -106,7 +122,7 @@ class SetupController extends AbstractActionController
     public function indexAction()
     {
         $this->setCurrentLanguage();
-        $this->lastStep = 1;
+        $this->setLastStep(1);
 
         $setupLanguage = new \Setup\Model\SetupLanguage([
             'setup_language' => $this->translator->getLocale(),
@@ -124,7 +140,7 @@ class SetupController extends AbstractActionController
                  array_key_exists($setupLanguage->SetupLanguage, $this->getAvailableLanguages())) {
                  $this->container->currentLanguage = $setupLanguage->SetupLanguage;
 
-                 $this->lastStep = 2;
+                 $this->setLastStep(2);
                  return $this->redirect()->toRoute('setup', ['action' => 'step2']);
              }
         }
@@ -172,8 +188,8 @@ class SetupController extends AbstractActionController
                      unlink($this->listenerOptions->getConfigCacheFile());
                  }
 
-                 $this->lastStep = 3;
-                 return $this->redirect()->toRoute('setup', ['action' => 'step2']);
+                 $this->setLastStep(3);
+                 return $this->redirect()->toRoute('setup', ['action' => 'step3']);
              }
         }
 
@@ -197,11 +213,7 @@ class SetupController extends AbstractActionController
 
         $request  = $this->getRequest();
         if ($request->isPost()) {
-            $formStep3->setInputFilter($databaseSchema->getInputFilter());
-            $formStep3->setData($request->getPost());
-             if ($formStep3->isValid()) {
-                 // TODO: Initiating the db schema installation.
-             }
+            // TODO: Initiating the db schema installation.
         } else {
             $nextButton = $formStep3->get('next');
             $nextButton->setAttribute('class', $nextButton->getAttribute('class') . ' disabled');

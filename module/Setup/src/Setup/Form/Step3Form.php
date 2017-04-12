@@ -13,6 +13,23 @@ class Step3Form extends Form
         $this->setHydrator(new \Zend\Hydrator\ClassMethods());
 
         $this->add([
+            'name' => 'output',
+            'type' => 'Textarea',
+            'attributes' => [
+                'id' => 'output',
+                'readonly' => 'readonly',
+                'style' => 'height: 400px',
+            ],
+            'options' => [
+                'column-size' => 'sm-10',
+                'label' => _('Installation output'),
+                'label_attributes' => [
+                    'class' => 'col-sm-2',
+                ],
+            ],
+        ]);
+
+        $this->add([
             'type' => 'Csrf',
             'name' => 'csrf_step3',
             'options' => [
