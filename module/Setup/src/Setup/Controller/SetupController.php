@@ -13,6 +13,7 @@ use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer as Renderer;
+use Setup\Model\DatabaseChecks;
 
 class SetupController extends AbstractActionController
 {
@@ -69,6 +70,15 @@ class SetupController extends AbstractActionController
                 $action['action'] = 'step' . $lastStep;
             }
             $this->redirect()->toRoute('setup', $action);
+        } else {
+            $dbCheck = new DatabaseChecks(
+                ($this->configHelp()->db) ? $this->configHelp()->db->toArray() : [],
+                $this->translator
+            );
+            
+            if (!$dbCheck->canConnect()) {
+                return $this->redirect()->toRoute('setup', ['action' => 'step2']);
+            }
         }
     }
 
@@ -92,7 +102,7 @@ class SetupController extends AbstractActionController
             $request->isPost() &&
             ($postData = $request->getPost()->toArray())) {
 
-            $dbCheck = new \Setup\Model\DatabaseChecks($postData, $this->translator);
+            $dbCheck = new DatabaseChecks($postData, $this->translator);
             $type = ($dbCheck->canConnect()) ? 'success' : 'danger';
             $message = $dbCheck->getLastMessage();
         } else {
@@ -136,13 +146,13 @@ class SetupController extends AbstractActionController
         if ($request->isPost()) {
             $formStep1->setInputFilter($setupLanguage->getInputFilter());
             $formStep1->setData($request->getPost());
-             if ($formStep1->isValid() &&
-                 array_key_exists($setupLanguage->SetupLanguage, $this->getAvailableLanguages())) {
-                 $this->container->currentLanguage = $setupLanguage->SetupLanguage;
+            if ($formStep1->isValid() &&
+                array_key_exists($setupLanguage->SetupLanguage, $this->getAvailableLanguages())) {
+                $this->container->currentLanguage = $setupLanguage->SetupLanguage;
 
-                 $this->setLastStep(2);
-                 return $this->redirect()->toRoute('setup', ['action' => 'step2']);
-             }
+                $this->setLastStep(2);
+                return $this->redirect()->toRoute('setup', ['action' => 'step2']);
+            }
         }
 
         return new ViewModel([
