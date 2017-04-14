@@ -23,6 +23,7 @@ class SetupController extends AbstractActionController
     protected $availableLanguages;
     protected $listenerOptions;
     protected $renderer;
+    protected $databaseCheck;
     protected $lastStep;
 
     protected function getSetupConfig()
@@ -40,6 +41,18 @@ class SetupController extends AbstractActionController
             $this->availableLanguages = $this->getSetupConfig()->available_languages->toArray();
         }
         return $this->availableLanguages;
+    }
+    
+    protected function getDatabaseCheck()
+    {
+        if (is_null($this->databaseCheck)) {
+            $this->databaseCheck = new DatabaseChecks(
+                ($this->configHelp()->db) ? $this->configHelp()->db->toArray() : [],
+                $this->translator,
+                $this->getSetupConfig()
+            );
+        }
+        return $this->databaseCheck;
     }
 
     protected function setCurrentLanguage()
@@ -71,10 +84,7 @@ class SetupController extends AbstractActionController
             }
             $this->redirect()->toRoute('setup', $action);
         } else {
-            $dbCheck = new DatabaseChecks(
-                ($this->configHelp()->db) ? $this->configHelp()->db->toArray() : [],
-                $this->translator
-            );
+            $dbCheck = $this->getDatabaseCheck();
             
             if (!$dbCheck->canConnect()) {
                 return $this->redirect()->toRoute('setup', ['action' => 'step2']);
@@ -216,7 +226,12 @@ class SetupController extends AbstractActionController
         $this->setCurrentLanguage();
         $this->checkSetupStep(3);
 
-        $databaseSchema = new \Setup\Model\DatabaseSchema();
+        $dbCheck = $this->getDatabaseCheck();
+        $isInstalled = $dbCheck->isInstalled();
+
+        $databaseSchema = new \Setup\Model\DatabaseSchema([
+            'output' => $dbCheck->getLastMessage(),
+        ]);
 
         $formStep3 = new \Setup\Form\Step3Form();
         $formStep3->bind($databaseSchema);
@@ -225,8 +240,8 @@ class SetupController extends AbstractActionController
         if ($request->isPost()) {
             // TODO: Initiating the db schema installation.
         } else {
-            $nextButton = $formStep3->get('next');
-            $nextButton->setAttribute('class', $nextButton->getAttribute('class') . ' disabled');
+            $button = ($isInstalled) ? $formStep3->get('install_schema') : $formStep3->get('next');
+            $button->setAttribute('class', $button->getAttribute('class') . ' disabled');
         }
 
     	return new ViewModel([

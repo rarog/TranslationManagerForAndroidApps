@@ -13,13 +13,15 @@ class DatabaseChecks
 {
 	protected $dbAdapter;
 	protected $translator;
+	protected $setupConfig;
 	protected $connection;
 	protected $lastMessage;
 
-	public function __construct(array $dbConfigArray, Translator $translator)
+	public function __construct(array $dbConfigArray, Translator $translator, $setupConfig = null)
     {
         $this->dbAdapter = new \Zend\Db\Adapter\Adapter($dbConfigArray);
         $this->translator = $translator;
+        $this->setupConfig = $setupConfig;
     }
 
     public function canConnect()
@@ -41,5 +43,21 @@ class DatabaseChecks
     public function getLastMessage()
     {
         return $this->lastMessage;
+    }
+
+    public function isInstalled() {
+        $sql = new \Zend\Db\Sql\Sql($this->dbAdapter);
+        $select = $sql->select($this->setupConfig->get('db_schema_version_table'))
+                      ->where(['version' => 1]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        try {
+            $results = $statement->execute();
+            // TODO: Implement the result check.
+            $this->lastMessage = 'UNDEFINED';
+            return false;
+        } catch (\Exception $e) {
+            $this->lastMessage = $this->translator->translate('Database schema seems to not be installed yet.');
+            return false;
+        }
     }
 }
