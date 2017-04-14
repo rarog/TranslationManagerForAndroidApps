@@ -14,8 +14,8 @@ class DatabaseChecks
 	protected $dbAdapter;
 	protected $translator;
 	protected $setupConfig;
-	protected $connection;
 	protected $lastMessage;
+	protected $sql;
 
 	public function __construct(array $dbConfigArray, Translator $translator, $setupConfig = null)
     {
@@ -28,12 +28,12 @@ class DatabaseChecks
     {
         try {
             $this->dbAdapter->getDriver()->checkEnvironment();
-            $this->connection = $this->dbAdapter->getDriver()->getConnection();
-            if (!$this->connection->isConnected()) {
-                $this->connection->connect();
+            $connection = $this->dbAdapter->getDriver()->getConnection();
+            if (!$connection->isConnected()) {
+                $connection->connect();
             }
-            $this->lastMessage = ($this->connection->isConnected()) ? $this->translator->translate('Database connection successfully established.') : $this->translator->translate('Could not establish database connection.');
-            return $this->connection->isConnected();
+            $this->lastMessage = ($connection->isConnected()) ? $this->translator->translate('Database connection successfully established.') : $this->translator->translate('Could not establish database connection.');
+            return $connection->isConnected();
         } catch (\Exception $e) {
             $this->lastMessage = $e->getMessage();
             return false;
@@ -45,11 +45,19 @@ class DatabaseChecks
         return $this->lastMessage;
     }
 
+    protected function getSql()
+    {
+        if (is_null($this->sql)) {
+            $this->sql = new \Zend\Db\Sql\Sql($this->dbAdapter);;
+        }
+        return $this->sql;
+    }
+
     public function isInstalled() {
-        $sql = new \Zend\Db\Sql\Sql($this->dbAdapter);
-        $select = $sql->select($this->setupConfig->get('db_schema_version_table'))
-                      ->where(['version' => 1]);
-        $statement = $sql->prepareStatementForSqlObject($select);
+        $select = $this->getSql()
+                       ->select($this->setupConfig->get('db_schema_version_table'))
+                       ->where(['version' => 1]);
+        $statement = $this->getSql()->prepareStatementForSqlObject($select);
         try {
             $results = $statement->execute();
             // TODO: Implement the result check.
