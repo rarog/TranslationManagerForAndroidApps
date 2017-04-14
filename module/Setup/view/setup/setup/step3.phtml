@@ -1,6 +1,12 @@
 <?php
     $formStep3 = $this->formStep3;
     $formStep3->setAttribute('action', $this->url('setup', ['action' => 'step3']));
+
+    $this->inlineScript()->appendScript('
+$("#back").on("click", function () {
+    var url = "' . $this->url('setup', ['action' => 'step2']) . '";
+    $(location).attr("href", url);
+})');
 ?>
 <div class="row">
     <div class="col-lg-12">

@@ -3,6 +3,10 @@
     $formStep3->setAttribute('action', $this->url('setup', ['action' => 'step2']));
 
     $this->inlineScript()->appendScript('
+$("#back").on("click", function () {
+    var url = "' . $this->url('setup') . '";
+    $(location).attr("href", url);
+});
 $("#testConnection").on("click", function () {
     var url = "' . $this->url('setup', ['action' => 'databaseconnectiontest']) . '";
     var post = $("#formStep2").serialize();

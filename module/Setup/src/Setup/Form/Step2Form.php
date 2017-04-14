@@ -131,6 +131,7 @@ class Step2Form extends Form
             'name' => 'back',
             'type' => 'Button',
             'attributes' => [
+                'id'    => 'back',
                 'type'  => 'button',
                 'value' => _('Back'),
             ],
