@@ -56,9 +56,11 @@ $settings = [
      * Database schema version table
      *
      * If this table is renamed, the schema files in the application path should be modified accordingly.
-     * The table contains 2 columns:
+     * The table contains 3 columns:
      * 1) version - an incremented version as integer number where MAX(version) = current version in the db.
-     * 2) timestamp - unixtime value in UTC, when the db version was installed.
+     * 2) setupid - 32 char long identifier, so multiple installations won't conflict and can be
+     *    distinquished
+     * 3) timestamp - unixtime value in UTC, when the db version was installed.
      */
     'db_schema_version_table' => 'database_schema_version',
 
@@ -68,6 +70,13 @@ $settings = [
      * Version, that is written into the table in db_schema_version_table, when schema is installed.
      */
     'db_schema_init_version' => 1,
+
+    /**
+     * Setup idendifier
+     *
+     * Put your own installation id in the configuration.
+     */
+    'setup_id' => '',
 
     /**
      * User table name
