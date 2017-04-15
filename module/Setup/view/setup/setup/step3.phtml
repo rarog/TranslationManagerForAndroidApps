@@ -6,6 +6,23 @@
 $("#back").on("click", function () {
     var url = "' . $this->url('setup', ['action' => 'step2']) . '";
     $(location).attr("href", url);
+});
+$("#installSchema").on("click", function () {
+    var url = "' . $this->url('setup', ['action' => 'databaseschemainstallation']) . '";
+    try {
+        $.post(url, function(data) {
+            if (data.html) {
+                $("#output").html(data.html);
+            } else {
+                $("#output").html(data);
+            }
+        }, "json").fail(function() {
+                $("#output").html("' . $this->escapeHtml($this->translate('An error occured during AJAX request.')) . '");
+            }
+        );
+    } catch(ex) {
+        $("#output").html(ex.message);
+    }
 })');
 ?>
 <div class="row">

@@ -42,7 +42,7 @@ class SetupController extends AbstractActionController
         }
         return $this->availableLanguages;
     }
-    
+
     protected function getDatabaseCheck()
     {
         if (is_null($this->databaseCheck)) {
@@ -64,19 +64,19 @@ class SetupController extends AbstractActionController
                  ->setFallbackLocale(\Locale::getPrimaryLanguage($this->container->currentLanguage));
         }
     }
-    
+
     protected function getLastStep() {
         return (int) $this->container->lastStep;
     }
-    
+
     protected function setLastStep(int $lastStep) {
         $this->container->lastStep = $lastStep;
     }
-    
+
     protected function checkSetupStep(int $currentStep)
     {
         // TODO: Check if starting setup is allowed at all.
-        $lastStep = $this->getLastStep();//echo $lastStep.$currentStep;exit;
+        $lastStep = $this->getLastStep();
         if ($currentStep > $lastStep) {
             $action = [];
             if ($lastStep > 1) {
@@ -85,11 +85,34 @@ class SetupController extends AbstractActionController
             $this->redirect()->toRoute('setup', $action);
         } else {
             $dbCheck = $this->getDatabaseCheck();
-            
+
             if (!$dbCheck->canConnect()) {
                 return $this->redirect()->toRoute('setup', ['action' => 'step2']);
             }
         }
+    }
+
+    /**
+     * Adds Bootstrap disabled class to a form element
+     *
+     * @param \Zend\Form\Element $element
+     */
+    protected function disableFormElement(\Zend\Form\Element $element)
+    {
+        $element->setAttribute('class', $element->getAttribute('class') . ' disabled');
+    }
+
+    /**
+     * Generates error 403 and returns view model with disabled layout
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    protected function throw403()
+    {
+        $this->getResponse()->setStatusCode(403);
+        $viewModel = new ViewModel();
+        $viewModel->setTerminal(true);
+        return $viewModel;
     }
 
     public function __construct(Translator $translator, ListenerOptions $listenerOptions, Renderer $renderer)
@@ -105,35 +128,59 @@ class SetupController extends AbstractActionController
      */
     public function databaseconnectiontestAction()
     {
-        $this->setCurrentLanguage();
-
         $request = $this->getRequest();
-        if ($request->isXmlHttpRequest() &&
-            $request->isPost() &&
-            ($postData = $request->getPost()->toArray())) {
+        if ($request->isXmlHttpRequest()) {
+            $this->setCurrentLanguage();
 
-            $dbCheck = new DatabaseChecks($postData, $this->translator);
-            $type = ($dbCheck->canConnect()) ? 'success' : 'danger';
-            $message = $dbCheck->getLastMessage();
+            if ($request->isPost() &&
+                ($postData = $request->getPost()->toArray())) {
+                $dbCheck = new DatabaseChecks($postData, $this->translator);
+                $type = ($dbCheck->canConnect()) ? 'success' : 'danger';
+                $message = $dbCheck->getLastMessage();
+            } else {
+                $type = 'danger';
+                $message = $this->translator->translate('<strong>Error:</strong> Invalid POST data was provided.');
+            }
+
+            $viewModel = new ViewModel([
+                'type' => $type,
+                'message' => $message,
+            ]);
+            $viewModel->setTemplate('partial/alert.phtml')
+                      ->setTerminal(true);
+            $htmlOutput = $this->renderer->render($viewModel);
+
+            $jsonModel = new JsonModel([
+                'html' => $htmlOutput,
+            ]);
+            $jsonModel->setTerminal(true);
+
+            return $jsonModel;
         } else {
-            $type = 'danger';
-            $message = $this->translator->translate('<strong>Error:</strong> Invalid POST data was provided.');
+            return $this->throw403();
         }
+    }
 
-        $viewModel = new ViewModel([
-            'type' => $type,
-            'message' => $message,
-        ]);
-        $viewModel->setTemplate('partial/alert.phtml')
-                  ->setTerminal(true);
-        $htmlOutput = $this->renderer->render($viewModel);
+    /**
+     * Action for database connection test call via JSON
+     */
+    public function databaseschemainstallationAction()
+    {
+        if ($this->getRequest()->isXmlHttpRequest()) {
+            $dbCheck = $this->getDatabaseCheck();
+            $dbCheck->installSchema();
+            $dbCheck->isInstalled();
 
-        $jsonModel = new JsonModel([
-            'html' => $htmlOutput,
-        ]);
-        $jsonModel->setTerminal(true);
+            $jsonModel = new JsonModel([
+                'status' => $dbCheck->getLastStatus(),
+                'html' => $dbCheck->getLastMessage(),
+            ]);
+            $jsonModel->setTerminal(true);
 
-        return $jsonModel;
+            return $jsonModel;
+        } else {
+            return $this->throw403();
+        }
     }
 
     /**
@@ -238,10 +285,17 @@ class SetupController extends AbstractActionController
 
         $request  = $this->getRequest();
         if ($request->isPost()) {
-            // TODO: Initiating the db schema installation.
-        } else {
-            $button = ($isInstalled) ? $formStep3->get('install_schema') : $formStep3->get('next');
-            $button->setAttribute('class', $button->getAttribute('class') . ' disabled');
+            // TODO: Redirect to step 4
+            $formStep3->setData(['output' => 'Step 4 is not implemented yet.']);
+        }
+
+        // Disable buttons if needed.
+        if (!$dbCheck->isInstalled()) {
+            $this->disableFormElement($formStep3->get('next'));
+        }
+        // This code works properly only, because isInstalled() was called above.
+        if ($dbCheck->getLastStatus() != $dbCheck::DBNOTINSTALELDORTABLENOTPRESENT) {
+            $this->disableFormElement($formStep3->get('install_schema'));
         }
 
     	return new ViewModel([
