@@ -21,10 +21,11 @@ class DatabaseChecks
 	protected $lastMessage;
 	protected $sql;
 
-	const DBNOTINSTALELDORTABLENOTPRESENT = 0;
-	const TABLEEXISTSBUTISEMPTY = 1;
-	const TABLEEXISTSBUTHASWRONGSTRUCTURE = 2;
-	const TABLEEXISTSBUTHASWRONGSETUPID = 3;
+	const NODBCONNECTION = 0;
+	const DBNOTINSTALELDORTABLENOTPRESENT = 1;
+	const TABLEEXISTSBUTISEMPTY = 2;
+	const TABLEEXISTSBUTHASWRONGSTRUCTURE = 3;
+	const TABLEEXISTSBUTHASWRONGSETUPID = 4;
 	const DBSCHEMASEEMSTOBEINSTALLED = 10;
 
 	public function __construct(array $dbConfigArray, Translator $translator, $setupConfig = null)
@@ -82,24 +83,50 @@ class DatabaseChecks
         return $this->sql;
     }
 
+    /**
+     * Installation function. It starts only, if the check says, that the installation hasn't run yet.
+     * 1) It creates the version table.
+     * 2) It runs the the custom application schema script.
+     * 3) It inserts the version information.
+     * If it runs into problems in step 2, this can be recognised as a kind of inbeetween state.
+     */
     public function installSchema()
     {
         if (!$this->isInstalled() &&
             ($this->lastStatus = self::DBNOTINSTALELDORTABLENOTPRESENT)) {
             $table = new Ddl\CreateTable($this->setupConfig->get('db_schema_version_table'));
             $table->addColumn(new Column\Integer('version'))
-                  ->addColumn(new Column\Varchar('setupid', 32))
-                  ->addColumn(new Column\Integer('timestamp'))
-                  ->addConstraint(new Constraint\PrimaryKey('version'));
+                ->addColumn(new Column\Varchar('setupid', 32))
+                ->addColumn(new Column\Integer('timestamp'))
+                ->addConstraint(new Constraint\PrimaryKey('version'));
             $sqlString = $this->getSql()->buildSqlString($table, $this->dbAdapter);
             $this->dbAdapter->query($sqlString, $this->dbAdapter::QUERY_MODE_EXECUTE);
 
             // TODO: Implement installation of the application database schema
+
+            $insert = $this->getSql()->insert($this->setupConfig->get('db_schema_version_table'));
+            $insert->columns(['version', 'setupid', 'timestamp'])
+                ->values([
+                    'version' => 1,
+                    'setupid' => $this->setupConfig->get('setup_id'),
+                    'timestamp' => time(),
+                ]);
+            $sqlString = $this->getSql()->buildSqlString($insert, $this->dbAdapter);
+            $this->dbAdapter->query($sqlString, $this->dbAdapter::QUERY_MODE_EXECUTE);
+            if ($this->setupConfig->get('db_schema_init_version') > 1 ){
+                $insert->values([
+                    'version' => $this->setupConfig->get('db_schema_init_version'),
+                ], $insert::VALUES_MERGE);
+                $sqlString = $this->getSql()->buildSqlString($insert, $this->dbAdapter);
+                $this->dbAdapter->query($sqlString, $this->dbAdapter::QUERY_MODE_EXECUTE);
+            }
         }
     }
 
     public function isInstalled() {
         if (!$this->canConnect()) {
+            $this->lastStatus = self::NODBCONNECTION;
+            $this->lastMessage = 'NODBCONNECTION';
             return false;
         }
 
