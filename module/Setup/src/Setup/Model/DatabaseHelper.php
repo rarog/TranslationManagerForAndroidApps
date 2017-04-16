@@ -12,7 +12,7 @@ use Zend\Db\Sql\Ddl\Column;
 use Zend\Db\Sql\Ddl\Constraint;
 use Zend\Mvc\I18n\Translator;
 
-class DatabaseChecks
+class DatabaseHelper
 {
     protected $dbConfig;
 	protected $dbAdapter;

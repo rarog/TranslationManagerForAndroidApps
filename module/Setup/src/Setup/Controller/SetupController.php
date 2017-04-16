@@ -13,7 +13,7 @@ use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer as Renderer;
-use Setup\Model\DatabaseChecks;
+use Setup\Model\DatabaseHelper;
 
 class SetupController extends AbstractActionController
 {
@@ -46,7 +46,7 @@ class SetupController extends AbstractActionController
     protected function getDatabaseCheck()
     {
         if (is_null($this->databaseCheck)) {
-            $this->databaseCheck = new DatabaseChecks(
+            $this->databaseCheck = new DatabaseHelper(
                 ($this->configHelp()->db) ? $this->configHelp()->db->toArray() : [],
                 $this->translator,
                 $this->getSetupConfig()
@@ -134,7 +134,7 @@ class SetupController extends AbstractActionController
 
             if ($request->isPost() &&
                 ($postData = $request->getPost()->toArray())) {
-                $dbCheck = new DatabaseChecks($postData, $this->translator);
+                $dbCheck = new DatabaseHelper($postData, $this->translator);
                 $type = ($dbCheck->canConnect()) ? 'success' : 'danger';
                 $message = $dbCheck->getLastMessage();
             } else {
