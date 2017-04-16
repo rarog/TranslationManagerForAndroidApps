@@ -37,6 +37,7 @@ class DatabaseChecks
 
     /**
      * Helper function to test, if database connection can be established with provided credentials
+     *
      * @return boolean  Database connection status
      */
     public function canConnect()
@@ -75,12 +76,38 @@ class DatabaseChecks
         return $this->lastMessage;
     }
 
+    /**
+     * Gets SQL object from adapter.
+     *
+     * @return \Zend\Db\Sql\Sql  SQL object
+     */
     protected function getSql()
     {
         if (is_null($this->sql)) {
             $this->sql = new \Zend\Db\Sql\Sql($this->dbAdapter);
         }
         return $this->sql;
+    }
+
+    /**
+     * Executes a prepared SQL statement in the configured database.
+     *
+     * @param Zend\Db\Sql\SqlInterface|string $sql
+     */
+    protected function executeSqlStatement($sql)
+    {
+        if ($sql instanceof \Zend\Db\Sql\SqlInterface) {
+            $sqlString = $this->getSql()->buildSqlString($sql, $this->dbAdapter);
+        } else if (is_string($sql)) {
+            $sqlString = trim($sql);
+        } else {
+            throw new \Exception(sprintf(
+                'Function executeSqlStatement was called with unsupport parameter of type "%s".',
+                (is_object($sql)) ? get_class($sql) : gettype($sql)
+            ));
+        }
+
+        $this->dbAdapter->query($sqlString, $this->dbAdapter::QUERY_MODE_EXECUTE);
     }
 
     /**
@@ -99,8 +126,7 @@ class DatabaseChecks
                 ->addColumn(new Column\Varchar('setupid', 32))
                 ->addColumn(new Column\Integer('timestamp'))
                 ->addConstraint(new Constraint\PrimaryKey('version'));
-            $sqlString = $this->getSql()->buildSqlString($table, $this->dbAdapter);
-            $this->dbAdapter->query($sqlString, $this->dbAdapter::QUERY_MODE_EXECUTE);
+            $this->executeSqlStatement($table);
 
             // TODO: Implement installation of the application database schema
 
@@ -111,18 +137,21 @@ class DatabaseChecks
                     'setupid' => $this->setupConfig->get('setup_id'),
                     'timestamp' => time(),
                 ]);
-            $sqlString = $this->getSql()->buildSqlString($insert, $this->dbAdapter);
-            $this->dbAdapter->query($sqlString, $this->dbAdapter::QUERY_MODE_EXECUTE);
-            if ($this->setupConfig->get('db_schema_init_version') > 1 ){
+            $this->executeSqlStatement($insert);
+            if ($this->setupConfig->get('db_schema_init_version') > 1){
                 $insert->values([
                     'version' => $this->setupConfig->get('db_schema_init_version'),
                 ], $insert::VALUES_MERGE);
-                $sqlString = $this->getSql()->buildSqlString($insert, $this->dbAdapter);
-                $this->dbAdapter->query($sqlString, $this->dbAdapter::QUERY_MODE_EXECUTE);
+                $this->executeSqlStatement($insert);
             }
         }
     }
 
+    /**
+     * Checks the installation status of the schema.
+     *
+     * @return boolean  Installation status
+     */
     public function isInstalled() {
         if (!$this->canConnect()) {
             $this->lastStatus = self::NODBCONNECTION;
@@ -131,8 +160,8 @@ class DatabaseChecks
         }
 
         $select = $this->getSql()
-                       ->select($this->setupConfig->get('db_schema_version_table'))
-                       ->where(['version' => 1]);
+            ->select($this->setupConfig->get('db_schema_version_table'))
+            ->where(['version' => 1]);
         $statement = $this->getSql()->prepareStatementForSqlObject($select);
         try {
             $resultSet = $statement->execute();
