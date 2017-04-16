@@ -39,16 +39,16 @@
         },
         {
             "name": "neilime/zf2-twb-bundle",
-            "version": "3.1.0",
+            "version": "3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/neilime/zf2-twb-bundle.git",
-                "reference": "61b484b6a42e3cb43de17da8d609890718ddc5cf"
+                "reference": "a39af8025e4bb4b7aefa4a9132c0cb2605776056"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/neilime/zf2-twb-bundle/zipball/61b484b6a42e3cb43de17da8d609890718ddc5cf",
-                "reference": "61b484b6a42e3cb43de17da8d609890718ddc5cf",
+                "url": "https://api.github.com/repos/neilime/zf2-twb-bundle/zipball/a39af8025e4bb4b7aefa4a9132c0cb2605776056",
+                "reference": "a39af8025e4bb4b7aefa4a9132c0cb2605776056",
                 "shasum": ""
             },
             "require": {
@@ -103,7 +103,7 @@
                 "twitter bootstrap",
                 "zend framework 2"
             ],
-            "time": "2017-02-17T17:07:13+00:00"
+            "time": "2017-04-14T14:51:27+00:00"
         },
         {
             "name": "paragonie/random_compat",
