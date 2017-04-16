@@ -14,6 +14,7 @@ use Zend\Mvc\I18n\Translator;
 
 class DatabaseChecks
 {
+    protected $dbConfig;
 	protected $dbAdapter;
 	protected $translator;
 	protected $setupConfig;
@@ -30,6 +31,7 @@ class DatabaseChecks
 
 	public function __construct(array $dbConfigArray, Translator $translator, $setupConfig = null)
     {
+	    $this->dbConfig = $dbConfigArray;
         $this->dbAdapter = new \Zend\Db\Adapter\Adapter($dbConfigArray);
         $this->translator = $translator;
         $this->setupConfig = $setupConfig;
@@ -90,9 +92,24 @@ class DatabaseChecks
     }
 
     /**
+     * Assemblies path of the database schema installation file. Works only with *nix file separators correctly.
+     *
+     * @return string  Path of the expected schema installation file.
+     */
+    protected function getSchemaInstallationFilepath()
+    {
+        $filename = '.' . $this->setupConfig->get('db_schema_path');
+        if (substr($filename, -1) != '/') {
+            $filename .= '/';
+        }
+        $filename .= sprintf('schema.%s.sql', $this->setupConfig->get('db_schema_naming')[$this->dbConfig['driver']]);
+        return $filename;
+    }
+
+    /**
      * Executes a prepared SQL statement in the configured database.
      *
-     * @param Zend\Db\Sql\SqlInterface|string $sql
+     * @param Zend\Db\Sql\SqlInterface|string  $sql
      */
     protected function executeSqlStatement($sql)
     {
@@ -121,6 +138,7 @@ class DatabaseChecks
     {
         if (!$this->isInstalled() &&
             ($this->lastStatus = self::DBNOTINSTALELDORTABLENOTPRESENT)) {
+            // Creating version table.
             $table = new Ddl\CreateTable($this->setupConfig->get('db_schema_version_table'));
             $table->addColumn(new Column\Integer('version'))
                 ->addColumn(new Column\Varchar('setupid', 32))
@@ -128,8 +146,14 @@ class DatabaseChecks
                 ->addConstraint(new Constraint\PrimaryKey('version'));
             $this->executeSqlStatement($table);
 
-            // TODO: Implement installation of the application database schema
+            // Installing the custom application database schema script.
+            $schemaFile = $this->getSchemaInstallationFilepath();
+            if (file_exists($schemaFile)) {
+                $schema = file_get_contents($schemaFile);
+                $this->executeSqlStatement($schema);
+            }
 
+            // Inserting version information.
             $insert = $this->getSql()->insert($this->setupConfig->get('db_schema_version_table'));
             $insert->columns(['version', 'setupid', 'timestamp'])
                 ->values([
