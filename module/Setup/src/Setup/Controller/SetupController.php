@@ -171,9 +171,21 @@ class SetupController extends AbstractActionController
             $dbCheck->installSchema();
             $dbCheck->isInstalled();
 
+            $nextEnabled = true;
+            $installSchemaEnabled = true;
+            // Disable buttons if needed.
+            if (!$dbCheck->isInstalled()) {
+                $nextEnabled = false;
+            }
+            // This code works properly only, because isInstalled() was called above.
+            if ($dbCheck->getLastStatus() != $dbCheck::DBNOTINSTALELDORTABLENOTPRESENT) {
+                $installSchemaEnabled = false;
+            }
+
             $jsonModel = new JsonModel([
-                'status' => $dbCheck->getLastStatus(),
                 'html' => $dbCheck->getLastMessage(),
+                'nextEnabled' => $nextEnabled,
+                'installSchemaEnabled' => $installSchemaEnabled,
             ]);
             $jsonModel->setTerminal(true);
 

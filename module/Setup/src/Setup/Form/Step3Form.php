@@ -71,6 +71,7 @@ class Step3Form extends Form
             'name' => 'next',
             'type'  => 'Button',
             'attributes' => [
+                'id'    => 'next',
                 'type'  => 'submit',
                 'value' => _('Next'),
                 'class' => 'btn-primary',

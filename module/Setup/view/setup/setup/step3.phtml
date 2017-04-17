@@ -16,6 +16,20 @@ $("#installSchema").on("click", function () {
             } else {
                 $("#output").html(data);
             }
+            if (typeof data.nextEnabled !== "undefined") {
+                if (data.nextEnabled) {
+                    $("#next").removeClass("disabled");
+                } else {
+                    $("#next").addClass("disabled");
+                }
+            }
+            if (typeof data.installSchemaEnabled !== "undefined") {
+                if (data.installSchemaEnabled) {
+                    $("#installSchema").removeClass("disabled");
+                } else {
+                    $("#installSchema").addClass("disabled");
+                }
+            }
         }, "json").fail(function() {
                 $("#output").html("' . $this->escapeHtml($this->translate('An error occured during AJAX request.')) . '");
             }
