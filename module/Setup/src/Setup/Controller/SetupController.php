@@ -178,7 +178,7 @@ class SetupController extends AbstractActionController
                 $nextEnabled = false;
             }
             // This code works properly only, because isInstalled() was called above.
-            if ($dbCheck->getLastStatus() != $dbCheck::DBNOTINSTALELDORTABLENOTPRESENT) {
+            if ($dbCheck->getLastStatus() != $dbCheck::DBNOTINSTALLEDORTABLENOTPRESENT) {
                 $installSchemaEnabled = false;
             }
 
@@ -306,7 +306,7 @@ class SetupController extends AbstractActionController
             $this->disableFormElement($formStep3->get('next'));
         }
         // This code works properly only, because isInstalled() was called above.
-        if ($dbCheck->getLastStatus() != $dbCheck::DBNOTINSTALELDORTABLENOTPRESENT) {
+        if ($dbCheck->getLastStatus() != $dbCheck::DBNOTINSTALLEDORTABLENOTPRESENT) {
             $this->disableFormElement($formStep3->get('install_schema'));
         }
 
