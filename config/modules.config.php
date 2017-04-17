@@ -11,6 +11,8 @@
  * This should be an array of module namespaces used in the application.
  */
 return [
+    'Zend\Mvc\Plugin\FlashMessenger',
+    'Zend\Mvc\Plugin\Prg',
     'Zend\Serializer',
     'Zend\InputFilter',
     'Zend\Filter',
@@ -26,6 +28,7 @@ return [
     'Zend\Validator',
     'ConfigHelper',
     'TwbBundle',
+    'ZfcUser',
     'Setup',
     'Application',
 ];
