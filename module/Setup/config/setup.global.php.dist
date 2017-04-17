@@ -33,10 +33,10 @@ $settings = [
     /**
      * Database schema path
      *
-     * Minimal schemas needed for this module are in /data/schema of this module and should be copied
+     * Minimal schemas needed for this module are in data/schema of this module and should be copied
      * to the application path defined in this configuration key.
      */
-    'db_schema_path' => '/data/schema',
+    'db_schema_path' => 'data/schema',
 
     /**
      * Database schema naming

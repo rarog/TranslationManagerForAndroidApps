@@ -40,7 +40,7 @@ class DatabaseHelper
     /**
      * Helper function to test, if database connection can be established with provided credentials
      *
-     * @return boolean  Database connection status
+     * @return boolean
      */
     public function canConnect()
     {
@@ -61,7 +61,7 @@ class DatabaseHelper
     /**
      * Helper function to return last status.
      *
-     * @return int  Status class constant
+     * @return int
      */
     public function getLastStatus()
     {
@@ -71,7 +71,7 @@ class DatabaseHelper
     /**
      * Helper function to return last message.
      *
-     * @return string  Last message
+     * @return string
      */
     public function getLastMessage()
     {
@@ -81,7 +81,7 @@ class DatabaseHelper
     /**
      * Gets SQL object from adapter.
      *
-     * @return \Zend\Db\Sql\Sql  SQL object
+     * @return \Zend\Db\Sql\Sql
      */
     protected function getSql()
     {
@@ -94,15 +94,15 @@ class DatabaseHelper
     /**
      * Assemblies path of the database schema installation file. Works only with *nix file separators correctly.
      *
-     * @return string  Path of the expected schema installation file.
+     * @return string
      */
     protected function getSchemaInstallationFilepath()
     {
-        $filename = '.' . $this->setupConfig->get('db_schema_path');
-        if (substr($filename, -1) != '/') {
-            $filename .= '/';
-        }
-        $filename .= sprintf('schema.%s.sql', $this->setupConfig->get('db_schema_naming')[$this->dbConfig['driver']]);
+        $filename = $this->normalizePath($this->setupConfig->get('db_schema_path'));
+        $filename .= sprintf(
+            '/schema.%s.sql',
+            $this->setupConfig->get('db_schema_naming')[$this->dbConfig['driver']]
+        );
         return $filename;
     }
 
@@ -137,7 +137,7 @@ class DatabaseHelper
     public function installSchema()
     {
         if (!$this->isInstalled() &&
-            ($this->lastStatus = self::DBNOTINSTALELDORTABLENOTPRESENT)) {
+            ($this->lastStatus = self::DBNOTINSTALLEDORTABLENOTPRESENT)) {
             // Creating version table.
             $table = new Ddl\CreateTable($this->setupConfig->get('db_schema_version_table'));
             $table->addColumn(new Column\Integer('version'))
@@ -174,7 +174,7 @@ class DatabaseHelper
     /**
      * Checks the installation status of the schema.
      *
-     * @return boolean  Installation status
+     * @return boolean
      */
     public function isInstalled() {
         if (!$this->canConnect()) {
@@ -208,9 +208,22 @@ class DatabaseHelper
                 return true;
             }
         } catch (\Exception $e) {
-            $this->lastStatus = self::DBNOTINSTALELDORTABLENOTPRESENT;
+            $this->lastStatus = self::DBNOTINSTALLEDORTABLENOTPRESENT;
             $this->lastMessage = $this->translator->translate('Database schema seems to not be installed yet.');
             return false;
         }
+    }
+
+    /**
+     * Normalize a path for insertion in the stack
+     *
+     * @param  string $path
+     * @return string
+     */
+    protected function normalizePath($path)
+    {
+        $path = rtrim($path, '/');
+        $path = rtrim($path, '\\');
+        return $path;
     }
 }

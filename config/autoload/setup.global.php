@@ -18,7 +18,7 @@ $settings = [
         'de_DE' => 'German (Germany)/Deutsch (Deutschland)',
         'en_US' => 'English (USA)',
     ],
-    
+
     /**
      * Supported databases
     *
@@ -29,15 +29,15 @@ $settings = [
         'Pdo_Mysql'  => 'MySQL/MariaDB',
         'Pdo_Sqlite' => 'SQLite',
     ],
-    
+
     /**
      * Database schema path
     *
-    * Minimal schemas needed for this module are in /data/schema of this module and should be copied
+    * Minimal schemas needed for this module are in data/schema of this module and should be copied
     * to the application path defined in this configuration key.
     */
-    'db_schema_path' => '/data/schema',
-    
+    'db_schema_path' => 'data/schema',
+
     /**
      * Database schema naming
     *
@@ -51,7 +51,7 @@ $settings = [
         'Pdo_Mysql'  => 'mysql',
         'Pdo_Sqlite' => 'sqlite',
     ],
-    
+
     /**
      * Database schema version table
      *
@@ -63,7 +63,7 @@ $settings = [
      * 3) timestamp - unixtime value in UTC, when the db version was installed.
     */
     'db_schema_version_table' => 'database_schema_version',
-    
+
     /**
      * Database schema init version
     *
