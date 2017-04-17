@@ -1,0 +1,17 @@
+<?= $this->form()->openTag($form) ?>
+    <dl class="zend_form">
+        <?php foreach ($form as $element): ?>
+        <div class="form-group">
+            <?php if ($hasLabel = ($element->getLabel() != null && !$element instanceof Zend\Form\Element\Button)): ?>
+                <?php $element->setOptions(['label_attributes' => ['class' => 'col-sm-2 control-label']]); echo $this->formLabel($element) ?>
+            <?php endif ?>
+            <div class="<?php if (!$hasLabel): ?>col-sm-offset-2 <?php endif ?>col-sm-10">
+                <?= $this->formElement($element) . $this->formElementErrors($element) ?>
+            </div>
+        </div>
+        <?php endforeach ?>
+    </dl>
+<?php if ($this->redirect): ?>
+    <input type="hidden" name="redirect" value="<?= $this->redirect ?>">
+<?php endif ?>
+<?= $this->form()->closeTag() ?>

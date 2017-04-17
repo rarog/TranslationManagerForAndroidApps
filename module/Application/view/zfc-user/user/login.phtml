@@ -1,0 +1,17 @@
+<div class="page-header">
+    <h1><?= $this->translate('Sign In'); ?></h1>
+</div>
+
+<?php
+$form = $this->loginForm;
+$form->prepare();
+$form->setAttribute('action', $this->url('zfcuser/login'));
+$form->setAttribute('method', 'post');
+$form->setAttribute('autocomplete', 'off');
+?>
+
+<?= $this->partial('_form.phtml', ['form' => $form, 'redirect' => $this->redirect]); ?>
+
+<?php if ($this->enableRegistration) : ?>
+<?= $this->translate('Not registered?'); ?> <a href="<?= $this->url('zfcuser/register') . ($this->redirect ? '?redirect='.$this->escapeUrl($this->redirect) : '') ?>"><?php echo $this->translate('Sign up!'); ?></a>
+<?php endif; ?>
