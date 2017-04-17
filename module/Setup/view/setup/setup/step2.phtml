@@ -1,6 +1,6 @@
 <?php
-    $formStep3 = $this->formStep2;
-    $formStep3->setAttribute('action', $this->url('setup', ['action' => 'step2']));
+    $formStep2 = $this->formStep2;
+    $formStep2->setAttribute('action', $this->url('setup', ['action' => 'step2']));
 
     $this->inlineScript()->appendScript('
 $("#back").on("click", function () {
@@ -42,6 +42,6 @@ $("#testConnection").on("click", function () {
     <div class="col-lg-9">
         <h3><?= $this->escapeHtml($this->translate('Database setup')) ?></h3>
         <div id="step2StatusCheck"></div>
-        <div><?= $this->form($formStep3, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZONTAL); ?></div>
+        <div><?= $this->form($formStep2, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZONTAL); ?></div>
     </div>
 </div>
