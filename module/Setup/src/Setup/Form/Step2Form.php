@@ -13,14 +13,14 @@ class Step2Form extends Form
         $this->setHydrator(new \Zend\Hydrator\ClassMethods());
 
         $this->add([
-            'name' => 'driver',
-            'type' => 'Select',
+            'name'       => 'driver',
+            'type'       => 'Select',
             'attributes' => [
                 'id' => 'driver',
             ],
-            'options' => [
-                'column-size' => 'sm-10',
-                'label' => _('Database driver'),
+            'options'    => [
+                'column-size'      => 'sm-10',
+                'label'            => _('Database driver'),
                 'label_attributes' => [
                     'class' => 'col-sm-2',
                 ],
@@ -28,14 +28,14 @@ class Step2Form extends Form
         ]);
 
         $this->add([
-            'name' => 'database',
-            'type' => 'Text',
+            'name'       => 'database',
+            'type'       => 'Text',
             'attributes' => [
                 'id' => 'database',
             ],
-            'options' => [
-                'column-size' => 'sm-10',
-                'label' => _('Database name'),
+            'options'    => [
+                'column-size'      => 'sm-10',
+                'label'            => _('Database name'),
                 'label_attributes' => [
                     'class' => 'col-sm-2',
                 ],
@@ -43,14 +43,14 @@ class Step2Form extends Form
         ]);
 
         $this->add([
-            'name' => 'username',
-            'type' => 'Text',
+            'name'       => 'username',
+            'type'       => 'Text',
             'attributes' => [
                 'id' => 'username',
             ],
             'options' => [
-                'column-size' => 'sm-10',
-                'label' => _('Username'),
+                'column-size'      => 'sm-10',
+                'label'            => _('Username'),
                 'label_attributes' => [
                     'class' => 'col-sm-2',
                 ],
@@ -58,14 +58,14 @@ class Step2Form extends Form
         ]);
 
         $this->add([
-            'name' => 'password',
-            'type' => 'Text',
+            'name'       => 'password',
+            'type'       => 'Text',
             'attributes' => [
                 'id' => 'password',
             ],
-            'options' => [
-                'column-size' => 'sm-10',
-                'label' => _('Password'),
+            'options'    => [
+                'column-size'      => 'sm-10',
+                'label'            => _('Password'),
                 'label_attributes' => [
                     'class' => 'col-sm-2',
                 ],
@@ -73,14 +73,14 @@ class Step2Form extends Form
         ]);
 
         $this->add([
-            'name' => 'hostname',
-            'type' => 'Text',
+            'name'       => 'hostname',
+            'type'       => 'Text',
             'attributes' => [
                 'id' => 'hostname',
             ],
-            'options' => [
-                'column-size' => 'sm-10',
-                'label' => _('Hostname'),
+            'options'    => [
+                'column-size'      => 'sm-10',
+                'label'            => _('Hostname'),
                 'label_attributes' => [
                     'class' => 'col-sm-2',
                 ],
@@ -88,14 +88,14 @@ class Step2Form extends Form
         ]);
 
         $this->add([
-            'name' => 'port',
-            'type' => 'Number',
+            'name'       => 'port',
+            'type'       => 'Number',
             'attributes' => [
                 'id' => 'port',
             ],
-            'options' => [
-                'column-size' => 'sm-10',
-                'label' => _('Port'),
+            'options'    => [
+                'column-size'      => 'sm-10',
+                'label'            => _('Port'),
                 'label_attributes' => [
                     'class' => 'col-sm-2',
                 ],
@@ -103,14 +103,14 @@ class Step2Form extends Form
         ]);
 
         $this->add([
-            'name' => 'charset',
-            'type' => 'Text',
+            'name'       => 'charset',
+            'type'       => 'Text',
             'attributes' => [
                 'id' => 'charset',
             ],
-            'options' => [
-                'column-size' => 'sm-10',
-                'label' => _('Charset'),
+            'options'    => [
+                'column-size'      => 'sm-10',
+                'label'            => _('Charset'),
                 'label_attributes' => [
                     'class' => 'col-sm-2',
                 ],
@@ -118,8 +118,8 @@ class Step2Form extends Form
         ]);
 
         $this->add([
-            'type' => 'Csrf',
-            'name' => 'csrf_step2',
+            'type'    => 'Csrf',
+            'name'    => 'csrf_step2',
             'options' => [
                 'csrf_options' => [
                     'timeout' => null,
@@ -128,42 +128,42 @@ class Step2Form extends Form
         ]);
 
         $this->add([
-            'name' => 'back',
-            'type' => 'Button',
+            'name'       => 'back',
+            'type'       => 'Button',
             'attributes' => [
                 'id'    => 'back',
                 'type'  => 'button',
                 'value' => _('Back'),
             ],
-            'options' => [
-                'column-size' => 'sm-10 col-sm-offset-2',
+            'options'    => [
+                'column-size'  => 'sm-10 col-sm-offset-2',
                 'button-group' => 'group-1',
             ],
         ]);
 
         $this->add([
-            'name' => 'test_connection',
-            'type'  => 'Button',
+            'name'       => 'test_connection',
+            'type'       => 'Button',
             'attributes' => [
                 'id'    => 'testConnection',
                 'type'  => 'button',
                 'value' => _('Test connection'),
                 'class' => 'btn-info',
             ],
-            'options' => [
+            'options'    => [
                 'button-group' => 'group-1',
             ],
         ]);
 
         $this->add([
-            'name' => 'next',
-            'type'  => 'Button',
+            'name'       => 'next',
+            'type'       => 'Button',
             'attributes' => [
                 'type'  => 'submit',
                 'value' => _('Next'),
                 'class' => 'btn-primary',
             ],
-            'options' => [
+            'options'    => [
                 'button-group' => 'group-1',
             ],
         ]);

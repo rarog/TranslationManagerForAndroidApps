@@ -13,14 +13,14 @@ class Step1Form extends Form
         $this->setHydrator(new \Zend\Hydrator\ClassMethods());
 
         $this->add([
-            'name' => 'setup_language',
-            'type' => 'Select',
+            'name'       => 'setup_language',
+            'type'       => 'Select',
             'attributes' => [
                 'id' => 'setup_language',
             ],
-            'options' => [
-                'column-size' => 'sm-10',
-                'label' => _('Setup language'),
+            'options'    => [
+                'column-size'      => 'sm-10',
+                'label'            => _('Setup language'),
                 'label_attributes' => [
                     'class' => 'col-sm-2',
                 ],
@@ -28,8 +28,8 @@ class Step1Form extends Form
         ]);
 
         $this->add([
-            'type' => 'Csrf',
-            'name' => 'csrf_step1',
+            'type'    => 'Csrf',
+            'name'    => 'csrf_step1',
             'options' => [
                 'csrf_options' => [
                     'timeout' => null,
@@ -38,28 +38,28 @@ class Step1Form extends Form
         ]);
 
         $this->add([
-            'name' => 'back',
-            'type' => 'Button',
+            'name'       => 'back',
+            'type'       => 'Button',
             'attributes' => [
                 'type'  => 'button',
                 'value' => _('Back'),
                 'class' => 'disabled',
             ],
-            'options' => [
-                'column-size' => 'sm-10 col-sm-offset-2',
+            'options'    => [
+                'column-size'  => 'sm-10 col-sm-offset-2',
                 'button-group' => 'group-1',
             ],
         ]);
 
         $this->add([
-            'name' => 'next',
-            'type'  => 'Button',
+            'name'       => 'next',
+            'type'       => 'Button',
             'attributes' => [
                 'type'  => 'submit',
                 'value' => _('Next'),
                 'class' => 'btn-primary',
             ],
-            'options' => [
+            'options'    => [
                 'button-group' => 'group-1',
             ],
         ]);
