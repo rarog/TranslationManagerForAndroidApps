@@ -33,7 +33,7 @@ class Database implements InputFilterAwareInterface
     {
         $method = 'set' . $name;
         if (('mapper' == $name) || !method_exists($this, $method)) {
-            throw new \Exception('Invalid Step1 property');
+            throw new \Exception('Invalid Database property');
         }
         $this->$method($value);
     }
@@ -42,17 +42,17 @@ class Database implements InputFilterAwareInterface
     {
         $method = 'get' . $name;
         if (('mapper' == $name) || !method_exists($this, $method)) {
-            throw new \Exception('Invalid Step1 property');
+            throw new \Exception('Invalid Database property');
         }
         return $this->$method();
     }
-    
+
     public function setDriver($driver)
     {
     	$this->driver = (is_null($driver)) ? null : (string) $driver;
     	return $this;
     }
-    
+
     public function getDriver()
     {
     	return $this->driver;
@@ -68,57 +68,57 @@ class Database implements InputFilterAwareInterface
     {
         return $this->database;
     }
-    
+
     public function setUsername($username)
     {
         $this->username = (is_null($username)) ? null : (string) $username;
         return $this;
     }
-    
+
     public function getUsername()
     {
         return $this->username;
     }
-    
+
     public function setPassword($password)
     {
         $this->password = (is_null($password)) ? null : (string) $password;
         return $this;
     }
-    
+
     public function getPassword()
     {
         return $this->password;
     }
-    
+
     public function setHostname($hostname)
     {
         $this->hostname = (is_null($hostname)) ? null : (string) $hostname;
         return $this;
     }
-    
+
     public function getHostname()
     {
         return $this->hostname;
     }
-    
+
     public function setPort($port)
     {
         $this->port = (is_null($port)) ? null : (int) $port;
         return $this;
     }
-    
+
     public function getPort()
     {
         return $this->port;
     }
-    
+
     public function setCharset($charset)
     {
         $this->charset = (is_null($charset)) ? null : (string) $charset;
         return $this;
     }
-    
+
     public function getCharset()
     {
         return $this->charset;
@@ -175,7 +175,7 @@ class Database implements InputFilterAwareInterface
                     ],
                 ],
             ]);
-            
+
             $inputFilter->add([
                 'name'     => 'username',
                 'required' => false,
@@ -184,7 +184,7 @@ class Database implements InputFilterAwareInterface
                     ['name' => 'StringTrim'],
                 ],
             ]);
-            
+
             $inputFilter->add([
                 'name'     => 'password',
                 'required' => false,
@@ -193,7 +193,7 @@ class Database implements InputFilterAwareInterface
                     ['name' => 'StringTrim'],
                 ],
             ]);
-            
+
             $inputFilter->add([
                 'name'     => 'hostname',
                 'required' => false,
@@ -202,12 +202,12 @@ class Database implements InputFilterAwareInterface
                     ['name' => 'StringTrim'],
                 ],
             ]);
-            
+
             $inputFilter->add([
                 'name'     => 'port',
                 'required' => false,
             ]);
-            
+
             $inputFilter->add([
                 'name'     => 'charset',
                 'required' => false,

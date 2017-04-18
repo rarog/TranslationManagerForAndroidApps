@@ -27,7 +27,7 @@ class SetupLanguage implements InputFilterAwareInterface
     {
         $method = 'set' . $name;
         if (('mapper' == $name) || !method_exists($this, $method)) {
-            throw new \Exception('Invalid Step1 property');
+            throw new \Exception('Invalid SetupLanguage property');
         }
         $this->$method($value);
     }
@@ -36,7 +36,7 @@ class SetupLanguage implements InputFilterAwareInterface
     {
         $method = 'get' . $name;
         if (('mapper' == $name) || !method_exists($this, $method)) {
-            throw new \Exception('Invalid Step1 property');
+            throw new \Exception('Invalid SetupLanguage property');
         }
         return $this->$method();
     }
