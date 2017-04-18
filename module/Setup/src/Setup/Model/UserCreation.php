@@ -14,7 +14,11 @@ use ZfcUser\Options\RegistrationOptionsInterface;
 
 class UserCreation implements InputFilterAwareInterface
 {
+    /**
+     * @var RegistrationOptionsInterface
+     */
     protected $options;
+
 	protected $inputFilter;
 	protected $username;
 	protected $email;
@@ -112,6 +116,9 @@ class UserCreation implements InputFilterAwareInterface
     	$this->setPasswordVerify((!empty($data['passwordVerify'])) ? $data['passwordVerify'] : null);
     }
 
+    /**
+     * @return array
+     */
     public function getArrayCopy()
     {
     	return array(
@@ -176,8 +183,8 @@ class UserCreation implements InputFilterAwareInterface
                 ],
             ]);
 
-            if ($this->getOptions()->getEnableDisplayName()) {
-                $this->add([
+            if ($this->options->getEnableDisplayName()) {
+                $inputFilter->add([
                     'name'       => 'display_name',
                     'required'   => true,
                     'filters'    => [
