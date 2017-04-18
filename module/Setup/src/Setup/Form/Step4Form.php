@@ -68,7 +68,7 @@ class Step4Form extends Form
         ]);
 
         $this->add([
-            'name'       => 'password2',
+            'name'       => 'passwordVerify',
             'type'       => 'Password',
             'attributes' => [
                 'id' => 'password2',

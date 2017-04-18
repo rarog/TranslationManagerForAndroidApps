@@ -223,7 +223,7 @@ class UserCreation implements InputFilterAwareInterface
             ]);
 
             $inputFilter->add([
-                'name'       => 'password2',
+                'name'       => 'passwordVerify',
                 'required'   => true,
                 'filters'    => [
                     ['name' => 'StripTags'],

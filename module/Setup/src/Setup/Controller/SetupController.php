@@ -350,6 +350,7 @@ class SetupController extends AbstractActionController
             $formStep4->setInputFilter($userCreation->getInputFilter());
             $formStep4->setData($request->getPost());
             if ($formStep4->isValid()) {
+                $service->register($userCreation->getArrayCopy());
             }
             // TODO: Redirect to step 5
         }
