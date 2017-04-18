@@ -7,13 +7,15 @@
 
 namespace Setup\Controller;
 
+use Setup\Model\DatabaseHelper;
 use Zend\ModuleManager\Listener\ListenerOptions;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer as Renderer;
-use Setup\Model\DatabaseHelper;
+use ZfcUser\Options\RegistrationOptionsInterface as ZURegOptions;
+use ZfcUser\Factory\Service\UserFactory as ZUUserFactory;
 
 class SetupController extends AbstractActionController
 {
@@ -23,6 +25,8 @@ class SetupController extends AbstractActionController
     protected $availableLanguages;
     protected $listenerOptions;
     protected $renderer;
+    protected $zuUserService;
+    protected $zuModuleOptions;
     protected $databaseCheck;
     protected $lastStep;
 
@@ -115,12 +119,14 @@ class SetupController extends AbstractActionController
         return $viewModel;
     }
 
-    public function __construct(Translator $translator, ListenerOptions $listenerOptions, Renderer $renderer)
+    public function __construct(Translator $translator, ListenerOptions $listenerOptions, Renderer $renderer, ZUUserFactory $zuUserService, ZURegOptions $zuModuleOptions)
     {
         $this->translator = $translator;
         $this->container = new \Zend\Session\Container('setup');
         $this->listenerOptions = $listenerOptions;
         $this->renderer = $renderer;
+        $this->zuUserService = $zuUserService;
+        $this->zuModuleOptions = $zuModuleOptions;
     }
 
     /**
@@ -286,7 +292,7 @@ class SetupController extends AbstractActionController
         $this->checkSetupStep(3);
 
         $dbCheck = $this->getDatabaseCheck();
-        $isInstalled = $dbCheck->isInstalled();
+        $dbCheck->isInstalled();
 
         $databaseSchema = new \Setup\Model\DatabaseSchema([
             'output' => $dbCheck->getLastMessage(),
@@ -297,8 +303,8 @@ class SetupController extends AbstractActionController
 
         $request  = $this->getRequest();
         if ($request->isPost()) {
-            // TODO: Redirect to step 4
-            $formStep3->setData(['output' => 'Step 4 is not implemented yet.']);
+             $this->setLastStep(4);
+             return $this->redirect()->toRoute('setup', ['action' => 'step4']);
         }
 
         // Disable buttons if needed.
@@ -312,6 +318,39 @@ class SetupController extends AbstractActionController
 
     	return new ViewModel([
             'formStep3' => $formStep3,
+    	]);
+    }
+
+    /**
+     * Action for step 4 - setup of the database schema
+     */
+    public function step4Action()
+    {
+        $this->setCurrentLanguage();
+        $this->checkSetupStep(4);
+
+        $dbCheck = $this->getDatabaseCheck();
+
+        $request = $this->getRequest();
+        $service = $this->zuUserService;
+
+        $userCreation = new \Setup\Model\UserCreation([]);
+
+        $formStep4 = new \Setup\Form\Step4Form();
+        if (!$this->zuModuleOptions->getEnableUsername()) {
+            $formStep4->remove('username');
+        }
+        if (!$this->zuModuleOptions->getEnableDisplayName()) {
+            $formStep4->remove('display_name');
+        }
+        $formStep4->bind($userCreation);
+
+        if ($request->isPost()) {
+            // TODO: Redirect to step 5
+        }
+
+    	return new ViewModel([
+            'formStep4' => $formStep4,
     	]);
     }
 }

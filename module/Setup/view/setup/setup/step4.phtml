@@ -1,0 +1,61 @@
+<?php
+    $formStep4 = $this->formStep4;
+    $formStep4->setAttribute('action', $this->url('setup', ['action' => 'step4']));
+
+    $this->inlineScript()->appendScript('
+$("#back").on("click", function () {
+    var url = "' . $this->url('setup', ['action' => 'step3']) . '";
+    $(location).attr("href", url);
+});
+$("#createUser").on("click", function () {
+    var url = "' . $this->url('setup', ['action' => 'createuser']) . '";
+    try {
+        $.post(url, function(data) {
+            if (data.html) {
+                $("#output").html(data.html);
+            } else {
+                $("#output").html(data);
+            }
+            if (typeof data.nextEnabled !== "undefined") {
+                if (data.nextEnabled) {
+                    $("#next").removeClass("disabled");
+                } else {
+                    $("#next").addClass("disabled");
+                }
+            }
+            if (typeof data.createUserEnabled !== "undefined") {
+                if (data.createUserEnabled) {
+                    $("#createUser").removeClass("disabled");
+                } else {
+                    $("#createUser").addClass("disabled");
+                }
+            }
+        }, "json").fail(function() {
+                $("#step4StatusCheck").prepend("' . $this->escapeHtml($this->translate('An error occured during AJAX request.')) . '");
+            }
+        );
+    } catch(ex) {
+        $("#step4StatusCheck").prepend("<div>" + ex.message + "</div>");
+    }
+})');
+?>
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header"><?= $this->escapeHtml($this->translate('Setup')) ?>: <?= $this->escapeHtml(sprintf($this->translate('Step %d'), 4)) ?> &ndash; <?= $this->escapeHtml($this->translate('User creation'))?></h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-3">
+        <ul class="nav nav-pills nav-stacked">
+            <li role="presentation"><a id="step1" href="<?= $this->url('setup') ?>"><?= $this->escapeHtml(sprintf($this->translate('Step %d'), 1)) ?> &ndash; <?= $this->escapeHtml($this->translate('Language'))?></a></li>
+            <li role="presentation"><a id="step2" href="<?= $this->url('setup', ['action' => 'step2']) ?>"><?= $this->escapeHtml(sprintf($this->translate('Step %d'), 2)) ?> &ndash; <?= $this->escapeHtml($this->translate('Database'))?></a></li>
+            <li role="presentation"><a id="step3" href="#"><?= $this->escapeHtml(sprintf($this->translate('Step %d'), 3)) ?> &ndash; <?= $this->escapeHtml($this->translate('Database schema'))?></a></li>
+            <li role="presentation" class="active"><a id="step4" href="#"><?= $this->escapeHtml(sprintf($this->translate('Step %d'), 4)) ?> &ndash; <?= $this->escapeHtml($this->translate('User creation'))?></a></li>
+        </ul>
+    </div>
+    <div class="col-lg-9">
+        <h3><?= $this->escapeHtml($this->translate('User Creation')) ?></h3>
+        <div id="step4StatusCheck"></div>
+        <div><?= $this->form($formStep4, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZONTAL); ?></div>
+    </div>
+</div>

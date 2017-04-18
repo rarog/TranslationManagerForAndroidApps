@@ -12,8 +12,10 @@ return array(
     'Setup\Form\Step1Form'                    => __DIR__ . '/src/Setup/Form/Step1Form.php',
     'Setup\Form\Step2Form'                    => __DIR__ . '/src/Setup/Form/Step2Form.php',
     'Setup\Form\Step3Form'                    => __DIR__ . '/src/Setup/Form/Step3Form.php',
+    'Setup\Form\Step4Form'                    => __DIR__ . '/src/Setup/Form/Step4Form.php',
     'Setup\Model\Database'                    => __DIR__ . '/src/Setup/Model/Database.php',
     'Setup\Model\DatabaseHelper'              => __DIR__ . '/src/Setup/Model/DatabaseHelper.php',
     'Setup\Model\DatabaseSchema'              => __DIR__ . '/src/Setup/Model/DatabaseSchema.php',
     'Setup\Model\SetupLanguage'               => __DIR__ . '/src/Setup/Model/SetupLanguage.php',
+    'Setup\Model\UserCreation'                => __DIR__ . '/src/Setup/Model/UserCreation.php',
 );
