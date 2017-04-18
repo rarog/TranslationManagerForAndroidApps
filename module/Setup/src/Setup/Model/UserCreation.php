@@ -10,16 +10,21 @@ namespace Setup\Model;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
+use ZfcUser\Options\RegistrationOptionsInterface;
 
 class UserCreation implements InputFilterAwareInterface
 {
+    protected $options;
 	protected $inputFilter;
 	protected $username;
+	protected $email;
+	protected $displayName;
 	protected $password;
 	protected $passwordVerify;
 
-    public function __construct(array $data = null)
+	public function __construct(RegistrationOptionsInterface $options, array $data = null)
     {
+	    $this->options = $options;
         if (is_array($data)) {
             $this->exchangeArray($data);
         }
@@ -54,6 +59,28 @@ class UserCreation implements InputFilterAwareInterface
         return $this->username;
     }
 
+    public function setEmail($email)
+    {
+        $this->email= (is_null($email)) ? null : (string) $email;
+        return $this;
+    }
+
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function setDisplayName($displayName)
+    {
+        $this->displayName= (is_null($displayName)) ? null : (string) $displayName;
+        return $this;
+    }
+
+    public function getDisplayName()
+    {
+        return $this->displayName;
+    }
+
     public function setPassword($password)
     {
         $this->password = (is_null($password)) ? null : (string) $password;
@@ -78,7 +105,9 @@ class UserCreation implements InputFilterAwareInterface
 
     public function exchangeArray($data)
     {
-    	$this->setUsername((!empty($data['username'])) ? $data['username'] : null);
+        $this->setUsername((!empty($data['username'])) ? $data['username'] : null);
+        $this->setEmail((!empty($data['email'])) ? $data['email'] : null);
+        $this->setDisplayName((!empty($data['display_name'])) ? $data['display_name'] : null);
     	$this->setPassword((!empty($data['password'])) ? $data['password'] : null);
     	$this->setPasswordVerify((!empty($data['passwordVerify'])) ? $data['passwordVerify'] : null);
     }
@@ -87,6 +116,8 @@ class UserCreation implements InputFilterAwareInterface
     {
     	return array(
     	    'username'       => $this->Username,
+    	    'email'          => $this->Email,
+    	    'display_name'   => $this->DisplayName,
     	    'password'       => $this->Password,
     	    'passwordVerify' => $this->PasswordVerify,
         );
@@ -102,10 +133,31 @@ class UserCreation implements InputFilterAwareInterface
         if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
 
+            if ($this->options->getEnableUsername()) {
+                $inputFilter->add([
+                    'name'       => 'username',
+                    'required'   => true,
+                    'filters'    => [
+                        ['name' => 'StripTags'],
+                        ['name' => 'StringTrim'],
+                    ],
+                    'validators' => [
+                        [
+                            'name'    => 'StringLength',
+                            'options' => [
+                                'encoding' => 'UTF-8',
+                                'min'      => 3,
+                                'max'      => 255,
+                            ],
+                        ],
+                    ],
+                ]);
+            }
+
             $inputFilter->add([
-                'name'     => 'username',
-                'required' => true,
-                'filters'  => [
+                'name'       => 'email',
+                'required'   => true,
+                'filters'    => [
                     ['name' => 'StripTags'],
                     ['name' => 'StringTrim'],
                 ],
@@ -114,12 +166,36 @@ class UserCreation implements InputFilterAwareInterface
                         'name'    => 'StringLength',
                         'options' => [
                             'encoding' => 'UTF-8',
-                            'min'      => 3,
-                            'max' => 255,
+                            'min'      => 1,
+                            'max'      => 255,
                         ],
+                    ],
+                    [
+                        'name' => 'EmailAddress'
                     ],
                 ],
             ]);
+
+            if ($this->getOptions()->getEnableDisplayName()) {
+                $this->add([
+                    'name'       => 'display_name',
+                    'required'   => true,
+                    'filters'    => [
+                        ['name' => 'StripTags'],
+                        ['name' => 'StringTrim'],
+                    ],
+                    'validators' => [
+                        [
+                            'name'    => 'StringLength',
+                            'options' => [
+                                'encoding' => 'UTF-8',
+                                'min'      => 3,
+                                'max'      => 50,
+                            ],
+                        ],
+                    ],
+                ]);
+            }
 
             $inputFilter->add([
                 'name'       => 'password',

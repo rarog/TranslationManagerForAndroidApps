@@ -64,8 +64,8 @@ class SetupController extends AbstractActionController
         if (!is_null($this->container->currentLanguage) &&
             array_key_exists($this->container->currentLanguage, $this->getAvailableLanguages())) {
             $this->translator
-                 ->setLocale($this->container->currentLanguage)
-                 ->setFallbackLocale(\Locale::getPrimaryLanguage($this->container->currentLanguage));
+                ->setLocale($this->container->currentLanguage)
+                ->setFallbackLocale(\Locale::getPrimaryLanguage($this->container->currentLanguage));
         }
     }
 
@@ -153,7 +153,7 @@ class SetupController extends AbstractActionController
                 'message' => $message,
             ]);
             $viewModel->setTemplate('partial/alert.phtml')
-                      ->setTerminal(true);
+                ->setTerminal(true);
             $htmlOutput = $this->renderer->render($viewModel);
 
             $jsonModel = new JsonModel([
@@ -217,7 +217,7 @@ class SetupController extends AbstractActionController
         $formStep1->get('setup_language')->setValueOptions($this->getAvailableLanguages());
         $formStep1->bind($setupLanguage);
 
-        $request  = $this->getRequest();
+        $request = $this->getRequest();
         if ($request->isPost()) {
             $formStep1->setInputFilter($setupLanguage->getInputFilter());
             $formStep1->setData($request->getPost());
@@ -251,31 +251,31 @@ class SetupController extends AbstractActionController
         $formStep2->get('driver')->setValueOptions($this->getSetupConfig()->drivers->toArray());
         $formStep2->bind($database);
 
-        $request  = $this->getRequest();
+        $request = $this->getRequest();
         if ($request->isPost()) {
             $formStep2->setInputFilter($database->getInputFilter());
             $formStep2->setData($request->getPost());
-             if ($formStep2->isValid()) {
-                 // Reading current local.php config file
-                 $localPhpSettings = include('config/autoload/local.php');
-                 if (!is_array($localPhpSettings)) {
-                     $localPhpSettings = [];
-                 }
+            if ($formStep2->isValid()) {
+                // Reading current local.php config file
+                $localPhpSettings = include('config/autoload/local.php');
+                if (!is_array($localPhpSettings)) {
+                    $localPhpSettings = [];
+                }
 
-                 // Replacing old db config with new
-                 $localPhpSettings['db'] = $database->getArrayCopy();
-                 $configWriter = new \Zend\Config\Writer\PhpArray();
-                 $configWriter->setUseBracketArraySyntax(true)
-                              ->toFile('config/autoload/local.php', new \Zend\Config\Config($localPhpSettings, false));
+                // Replacing old db config with new
+                $localPhpSettings['db'] = $database->getArrayCopy();
+                $configWriter = new \Zend\Config\Writer\PhpArray();
+                $configWriter->setUseBracketArraySyntax(true)
+                    ->toFile('config/autoload/local.php', new \Zend\Config\Config($localPhpSettings, false));
 
-                 // Clearing config cache if enabled
-                 if ($this->listenerOptions->getConfigCacheEnabled()) {
-                     unlink($this->listenerOptions->getConfigCacheFile());
-                 }
+                // Clearing config cache if enabled
+                if ($this->listenerOptions->getConfigCacheEnabled()) {
+                    unlink($this->listenerOptions->getConfigCacheFile());
+                }
 
-                 $this->setLastStep(3);
-                 return $this->redirect()->toRoute('setup', ['action' => 'step3']);
-             }
+                $this->setLastStep(3);
+                return $this->redirect()->toRoute('setup', ['action' => 'step3']);
+            }
         }
 
     	return new ViewModel([
@@ -301,7 +301,7 @@ class SetupController extends AbstractActionController
         $formStep3 = new \Setup\Form\Step3Form();
         $formStep3->bind($databaseSchema);
 
-        $request  = $this->getRequest();
+        $request = $this->getRequest();
         if ($request->isPost()) {
              $this->setLastStep(4);
              return $this->redirect()->toRoute('setup', ['action' => 'step4']);
@@ -331,10 +331,9 @@ class SetupController extends AbstractActionController
 
         $dbCheck = $this->getDatabaseCheck();
 
-        $request = $this->getRequest();
         $service = $this->zuUserService;
 
-        $userCreation = new \Setup\Model\UserCreation([]);
+        $userCreation = new \Setup\Model\UserCreation($this->zuModuleOptions);
 
         $formStep4 = new \Setup\Form\Step4Form();
         if (!$this->zuModuleOptions->getEnableUsername()) {
@@ -343,9 +342,15 @@ class SetupController extends AbstractActionController
         if (!$this->zuModuleOptions->getEnableDisplayName()) {
             $formStep4->remove('display_name');
         }
+        $formStep4->setHydrator(new \Zend\Hydrator\ClassMethods);
         $formStep4->bind($userCreation);
 
+        $request = $this->getRequest();
         if ($request->isPost()) {
+            $formStep4->setInputFilter($userCreation->getInputFilter());
+            $formStep4->setData($request->getPost());
+            if ($formStep4->isValid()) {
+            }
             // TODO: Redirect to step 5
         }
 
