@@ -13,7 +13,7 @@ use Zend\ServiceManager\Factory\InvokableFactory;
 return [
     'controllers' => [
         'factories' => [
-            Controller\SetupController::class => Controller\SetupControllerFactory::class,
+            Controller\SetupController::class => Controller\Factory\SetupControllerFactory::class,
         ],
     ],
     'router' => [
