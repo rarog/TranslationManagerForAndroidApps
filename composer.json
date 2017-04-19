@@ -1,70 +1,65 @@
 {
-    "name": "rarog/translation-manager-for-android-apps",
-    "description": "Translation Manager for Android Apps",
-    "type": "project",
-    "license": "GPL-3.0+",
-    "keywords": [
-        "translation",
-        "manager",
-        "android",
-        "apps"
-    ],
-    "homepage": "https://github.com/rarog/TranslationManagerForAndroidApps",
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "require": {
-        "php": "^5.6 || ^7.0",
-        "zendframework/zend-component-installer": "^1.0 || ^0.7 || ^1.0.0-dev@dev",
-        "zendframework/zend-mvc": "^3.0.1",
-        "zfcampus/zf-development-mode": "^3.0",
-        "zendframework/zend-cache": "^2.7.1",
-        "zendframework/zend-db": "^2.8.1",
-        "zendframework/zend-mvc-form": "^1.0",
-        "zendframework/zend-json": "^3.0",
-        "zendframework/zend-log": "^2.9",
-        "zendframework/zend-mvc-i18n": "^1.0",
-        "zendframework/zend-session": "^2.7.1",
-        "zendframework/zend-serializer": "^2.8",
-        "zendframework/zend-hydrator": "^2.2",
-        "zendframework/zend-math": "^3.0",
-        "neilime/zf2-twb-bundle": "^3.1",
-        "tasmaniski/zend-config-helper": "^2.0",
-        "zendframework/zend-i18n-resources": "^2.5",
-        "zf-commons/zfc-user": "2.x-dev"
-    },
-    "autoload": {
-        "psr-4": {
-            "Application\\": "module/Application/src/",
-            "Setup\\": "module/Setup/src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "ApplicationTest\\": "module/Application/test/"
-        }
-    },
-    "extra": [],
-    "scripts": {
-        "cs-check": "phpcs",
-        "cs-fix": "phpcbf",
-        "development-disable": "zf-development-mode disable",
-        "development-enable": "zf-development-mode enable",
-        "development-status": "zf-development-mode status",
-        "post-create-project-cmd": [
-            "@development-enable"
-        ],
-        "serve": "php -S 0.0.0.0:8080 -t public public/index.php",
-        "test": "phpunit"
-    },
-    "authors": [
-        {
-            "name": "Andrej Sinicyn",
-            "role": "Developer"
-        },
-        {
-            "name": "Ætoms",
-            "homepage": "https://commons.wikimedia.org/wiki/User:%C3%86toms",
-            "role": "Creator of the icon"
-        }
-    ]
+	"name" : "rarog/translation-manager-for-android-apps",
+	"description" : "Translation Manager for Android Apps",
+	"type" : "project",
+	"license" : "GPL-3.0+",
+	"keywords" : [
+		"translation",
+		"manager",
+		"android",
+		"apps"
+	],
+	"homepage" : "https://github.com/rarog/TranslationManagerForAndroidApps",
+	"minimum-stability" : "dev",
+	"prefer-stable" : true,
+	"require" : {
+		"php" : "^5.6 || ^7.0",
+		"zendframework/zend-component-installer" : "^1.0 || ^0.7 || ^1.0.0-dev@dev",
+		"zendframework/zend-mvc" : "^3.0.1",
+		"zfcampus/zf-development-mode" : "^3.0",
+		"zendframework/zend-cache" : "^2.7.1",
+		"zendframework/zend-db" : "^2.8.1",
+		"zendframework/zend-mvc-form" : "^1.0",
+		"zendframework/zend-json" : "^3.0",
+		"zendframework/zend-log" : "^2.9",
+		"zendframework/zend-mvc-i18n" : "^1.0",
+		"zendframework/zend-session" : "^2.7.1",
+		"zendframework/zend-serializer" : "^2.8",
+		"zendframework/zend-hydrator" : "^2.2",
+		"zendframework/zend-math" : "^3.0",
+		"zendframework/zend-i18n-resources" : "^2.5",
+		"neilime/zf2-twb-bundle" : "^3.1",
+		"tasmaniski/zend-config-helper" : "^2.0",
+		"zf-commons/zfc-user" : "2.x-dev#43518844028cb0e02aec7ceadb199390e123615c"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"Application\\" : "module/Application/src/",
+			"Setup\\" : "module/Setup/src/"
+		}
+	},
+	"autoload-dev" : {
+		"psr-4" : {
+			"ApplicationTest\\" : "module/Application/test/"
+		}
+	},
+	"scripts" : {
+		"cs-check" : "phpcs",
+		"cs-fix" : "phpcbf",
+		"development-disable" : "zf-development-mode disable",
+		"development-enable" : "zf-development-mode enable",
+		"development-status" : "zf-development-mode status",
+		"post-create-project-cmd" : "@development-enable",
+		"serve" : "php -S 0.0.0.0:8080 -t public public/index.php",
+		"test" : "phpunit"
+	},
+	"authors" : [{
+			"name" : "Andrej Sinicyn",
+			"role" : "Developer"
+		}, {
+			"name" : "Ætoms",
+			"homepage" : "https://commons.wikimedia.org/wiki/User:%C3%86toms",
+			"role" : "Creator of the icon"
+		}
+	]
 }
