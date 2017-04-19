@@ -77,26 +77,6 @@ $settings = [
      * Put your own installation id in the configuration.
      */
     'setup_id' => 'cfe5de0b8a34a639690a5e95a5626ad3',
-
-    /**
-     * User table name
-     */
-    'user_table_name' => 'user',
-
-    /**
-     * User table id column name
-     */
-    'user_table_id_column_name' => 'user_id',
-
-    /**
-     * User table username column name
-     */
-    'user_table_username_column_name' => 'username',
-
-    /**
-     * User table password column name
-     */
-    'user_table_password_column_name' => 'password',
 ];
 
 /**
