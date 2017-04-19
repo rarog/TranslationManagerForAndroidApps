@@ -30,7 +30,8 @@
 		"zendframework/zend-i18n-resources" : "^2.5",
 		"neilime/zf2-twb-bundle" : "^3.1",
 		"tasmaniski/zend-config-helper" : "^2.0",
-		"zf-commons/zfc-user" : "2.x-dev#43518844028cb0e02aec7ceadb199390e123615c"
+		"zf-commons/zfc-user" : "2.x-dev#43518844028cb0e02aec7ceadb199390e123615c",
+		"zf-commons/zfc-rbac": "^2.6"
 	},
 	"autoload" : {
 		"psr-4" : {
