@@ -49,7 +49,7 @@ $("#createUser").on("click", function () {
         <ul class="nav nav-pills nav-stacked">
             <li role="presentation"><a id="step1" href="<?= $this->url('setup') ?>"><?= $this->escapeHtml(sprintf($this->translate('Step %d'), 1)) ?> &ndash; <?= $this->escapeHtml($this->translate('Language'))?></a></li>
             <li role="presentation"><a id="step2" href="<?= $this->url('setup', ['action' => 'step2']) ?>"><?= $this->escapeHtml(sprintf($this->translate('Step %d'), 2)) ?> &ndash; <?= $this->escapeHtml($this->translate('Database'))?></a></li>
-            <li role="presentation"><a id="step3" href="#"><?= $this->escapeHtml(sprintf($this->translate('Step %d'), 3)) ?> &ndash; <?= $this->escapeHtml($this->translate('Database schema'))?></a></li>
+            <li role="presentation"><a id="step3" href="<?= $this->url('setup', ['action' => 'step3']) ?>"><?= $this->escapeHtml(sprintf($this->translate('Step %d'), 3)) ?> &ndash; <?= $this->escapeHtml($this->translate('Database schema'))?></a></li>
             <li role="presentation" class="active"><a id="step4" href="#"><?= $this->escapeHtml(sprintf($this->translate('Step %d'), 4)) ?> &ndash; <?= $this->escapeHtml($this->translate('User creation'))?></a></li>
         </ul>
     </div>
