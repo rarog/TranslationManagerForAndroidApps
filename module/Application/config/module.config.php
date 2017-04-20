@@ -12,6 +12,14 @@ use Zend\Router\Http\Segment;
 use Zend\ServiceManager\Factory\InvokableFactory;
 
 return [
+    'controllers' => [
+        'factories' => [
+            Controller\IndexController::class => InvokableFactory::class,
+        ],
+    ],
+    'listeners' => [
+        'SetupListener',
+    ],
     'router' => [
         'routes' => [
             'home' => [
@@ -36,16 +44,14 @@ return [
             ],
         ],
     ],
-    'controllers' => [
-        'factories' => [
-            Controller\IndexController::class => InvokableFactory::class,
-        ],
-    ],
     'service_manager' => [
         'delegators' => [
             \Zend\Mvc\I18n\Translator::class => [
                 Delegator\TranslatorDelegator::class,
             ],
+        ],
+        'invokables' => [
+            'SetupListener' => Listener\SetupListener::class,
         ],
     ],
     'translator' => [
