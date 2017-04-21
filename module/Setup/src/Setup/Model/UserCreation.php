@@ -10,7 +10,7 @@ namespace Setup\Model;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
-use ZfcUser\Options\RegistrationOptionsInterface;
+use ZfcUser\Options\ModuleOptions as ZUModuleOptions;
 
 class UserCreation implements InputFilterAwareInterface
 {
@@ -26,7 +26,7 @@ class UserCreation implements InputFilterAwareInterface
 	protected $password;
 	protected $passwordVerify;
 
-	public function __construct(RegistrationOptionsInterface $options, array $data = null)
+	public function __construct(ZUModuleOptions $options, array $data = null)
     {
 	    $this->options = $options;
         if (is_array($data)) {

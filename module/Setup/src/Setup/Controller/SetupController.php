@@ -14,7 +14,7 @@ use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer as Renderer;
-use ZfcUser\Options\RegistrationOptionsInterface as ZURegOptions;
+use ZfcUser\Options\ModuleOptions as ZUModuleOptions;
 use ZfcUser\Service\User as ZUUser;
 
 class SetupController extends AbstractActionController
@@ -119,7 +119,7 @@ class SetupController extends AbstractActionController
         return $viewModel;
     }
 
-    public function __construct(Translator $translator, ListenerOptions $listenerOptions, Renderer $renderer, ZUUser $zuUserService, ZURegOptions $zuModuleOptions)
+    public function __construct(Translator $translator, ListenerOptions $listenerOptions, Renderer $renderer, ZUUser $zuUserService, ZUModuleOptions $zuModuleOptions)
     {
         $this->translator = $translator;
         $this->container = new \Zend\Session\Container('setup');
