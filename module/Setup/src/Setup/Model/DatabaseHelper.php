@@ -150,6 +150,7 @@ class DatabaseHelper
                 } else {
                     $this->lastMessage = $this->translator->translate('No user exists yet, please create one.');
                 }
+                return $exists;
             } catch (\Exception $e) {
                 $this->lastStatus = self::SOMETHINGISWRONGWITHWITHUSERTABLE;
                 $this->lastMessage = sprintf(
