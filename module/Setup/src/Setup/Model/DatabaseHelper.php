@@ -11,6 +11,7 @@ use Zend\Db\Sql\Ddl;
 use Zend\Db\Sql\Ddl\Column;
 use Zend\Db\Sql\Ddl\Constraint;
 use Zend\Mvc\I18n\Translator;
+use ZfcUser\Options\ModuleOptions as ZUModuleOptions;
 
 class DatabaseHelper
 {
@@ -28,6 +29,9 @@ class DatabaseHelper
 	const TABLEEXISTSBUTHASWRONGSTRUCTURE = 3;
 	const TABLEEXISTSBUTHASWRONGSETUPID = 4;
 	const DBSCHEMASEEMSTOBEINSTALLED = 10;
+
+	const SOMETHINGISWRONGWITHWITHUSERTABLE = 20;
+	const USERTABLESEEMSTOBEOK = 21;
 
 	public function __construct(array $dbConfigArray, Translator $translator, $setupConfig = null)
     {
@@ -125,6 +129,38 @@ class DatabaseHelper
         }
 
         $this->dbAdapter->query($sqlString, $this->dbAdapter::QUERY_MODE_EXECUTE);
+    }
+
+    public function hasUsers(ZUModuleOptions $zuModuleOptions)
+    {
+        if ($this->isInstalled()) {
+            $select = $this->getSql()
+                ->select($zuModuleOptions->getTableName())
+                ->columns(array('count' => new \Zend\Db\Sql\Expression('count(*)')));
+            $statement = $this->getSql()->prepareStatementForSqlObject($select);
+
+            try {
+                $resultSet = $statement->execute();
+                $result = $resultSet->current();
+
+                $exists = ($result['count'] > 0);
+                $this->lastStatus = self::USERTABLESEEMSTOBEOK;
+                if ($exists) {
+                    $this->lastMessage = $this->translator->translate('A user already exists in the database, proceed with next step.');
+                } else {
+                    $this->lastMessage = $this->translator->translate('No user exists yet, please create one.');
+                }
+            } catch (\Exception $e) {
+                $this->lastStatus = self::SOMETHINGISWRONGWITHWITHUSERTABLE;
+                $this->lastMessage = sprintf(
+                        $this->translator->translate('Something is wrong with the user table, can\'t proceed. Error message: %s'),
+                        $e->getMessage()
+                        );
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     /**
