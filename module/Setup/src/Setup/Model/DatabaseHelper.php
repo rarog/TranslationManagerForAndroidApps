@@ -33,10 +33,9 @@ class DatabaseHelper
 	const SOMETHINGISWRONGWITHWITHUSERTABLE = 20;
 	const USERTABLESEEMSTOBEOK = 21;
 
-	public function __construct(array $dbConfigArray, Translator $translator, $setupConfig = null)
+	public function __construct(array $dbConfig, Translator $translator, $setupConfig = null)
     {
-	    $this->dbConfig = $dbConfigArray;
-        $this->dbAdapter = new \Zend\Db\Adapter\Adapter($dbConfigArray);
+        $this->setDbConfigArray($dbConfig);
         $this->translator = $translator;
         $this->setupConfig = $setupConfig;
     }
@@ -262,5 +261,15 @@ class DatabaseHelper
         $path = rtrim($path, '/');
         $path = rtrim($path, '\\');
         return $path;
+    }
+
+    /**
+     * Sets database config array and creates an adapter with it
+     *
+     * @param array $dbConfig
+     */
+    public function setDbConfigArray(array $dbConfig) {
+        $this->dbConfig = $dbConfig;
+        $this->dbAdapter = new \Zend\Db\Adapter\Adapter($dbConfig);
     }
 }
