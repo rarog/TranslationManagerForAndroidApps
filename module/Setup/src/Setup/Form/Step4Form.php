@@ -111,7 +111,7 @@ class Step4Form extends Form
             'type'       => 'Button',
             'attributes' => [
                 'id'    => 'createUser',
-                'type'  => 'button',
+                'type'  => 'submit',
                 'value' => _('Create user'),
                 'class' => 'btn-info',
             ],

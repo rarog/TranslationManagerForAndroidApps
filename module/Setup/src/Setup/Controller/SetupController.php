@@ -27,7 +27,7 @@ class SetupController extends AbstractActionController
     protected $renderer;
     protected $zuUserService;
     protected $zuModuleOptions;
-    protected $databaseCheck;
+    protected $databaseHelper;
     protected $lastStep;
 
     protected function getSetupConfig()
@@ -47,16 +47,16 @@ class SetupController extends AbstractActionController
         return $this->availableLanguages;
     }
 
-    protected function getDatabaseCheck()
+    protected function getDatabaseHelper()
     {
-        if (is_null($this->databaseCheck)) {
-            $this->databaseCheck = new DatabaseHelper(
+        if (is_null($this->databaseHelper)) {
+            $this->databaseHelper = new DatabaseHelper(
                 ($this->configHelp()->db) ? $this->configHelp()->db->toArray() : [],
                 $this->translator,
                 $this->getSetupConfig()
             );
         }
-        return $this->databaseCheck;
+        return $this->databaseHelper;
     }
 
     protected function setCurrentLanguage()
@@ -88,7 +88,7 @@ class SetupController extends AbstractActionController
             }
             $this->redirect()->toRoute('setup', $action);
         } else {
-            $dbCheck = $this->getDatabaseCheck();
+            $dbCheck = $this->getDatabaseHelper();
 
             if (!$dbCheck->canConnect()) {
                 return $this->redirect()->toRoute('setup', ['action' => 'step2']);
@@ -103,7 +103,9 @@ class SetupController extends AbstractActionController
      */
     protected function disableFormElement(\Zend\Form\Element $element)
     {
-        $element->setAttribute('class', $element->getAttribute('class') . ' disabled');
+        if ($element) {
+            $element->setAttribute('disabled', 'disabled');
+        }
     }
 
     /**
@@ -173,7 +175,7 @@ class SetupController extends AbstractActionController
     public function databaseschemainstallationAction()
     {
         if ($this->getRequest()->isXmlHttpRequest()) {
-            $dbCheck = $this->getDatabaseCheck();
+            $dbCheck = $this->getDatabaseHelper();
             $dbCheck->installSchema();
             $dbCheck->isInstalled();
 
@@ -291,11 +293,11 @@ class SetupController extends AbstractActionController
         $this->setCurrentLanguage();
         $this->checkSetupStep(3);
 
-        $dbCheck = $this->getDatabaseCheck();
-        $dbCheck->isInstalled();
+        $dbHelper = $this->getDatabaseHelper();
+        $dbHelper->isInstalled();
 
         $databaseSchema = new \Setup\Model\DatabaseSchema([
-            'output' => $dbCheck->getLastMessage(),
+            'output' => $dbHelper->getLastMessage(),
         ]);
 
         $formStep3 = new \Setup\Form\Step3Form();
@@ -308,11 +310,11 @@ class SetupController extends AbstractActionController
         }
 
         // Disable buttons if needed.
-        if (!$dbCheck->isInstalled()) {
+        if (!$dbHelper->isInstalled()) {
             $this->disableFormElement($formStep3->get('next'));
         }
         // This code works properly only, because isInstalled() was called above.
-        if ($dbCheck->getLastStatus() != $dbCheck::DBNOTINSTALLEDORTABLENOTPRESENT) {
+        if ($dbHelper->getLastStatus() != $dbHelper::DBNOTINSTALLEDORTABLENOTPRESENT) {
             $this->disableFormElement($formStep3->get('install_schema'));
         }
 
@@ -329,7 +331,8 @@ class SetupController extends AbstractActionController
         $this->setCurrentLanguage();
         $this->checkSetupStep(4);
 
-        $dbCheck = $this->getDatabaseCheck();
+        $userExists = $this->getDatabaseHelper()
+            ->hasUsers($this->zuModuleOptions);
 
         $service = $this->zuUserService;
 
@@ -347,12 +350,26 @@ class SetupController extends AbstractActionController
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $formStep4->setInputFilter($userCreation->getInputFilter());
-            $formStep4->setData($request->getPost());
-            if ($formStep4->isValid() && ($zuUser = $service->register($userCreation->getArrayCopy()))) {
-                $this->getEventManager()->trigger('userCreated', null, ['user' => $zuUser]);
+            if ($userExists) {
+                return $this->redirect()->toRoute('application', ['action' => 'index']);
+            } else {
+                $formStep4->setInputFilter($userCreation->getInputFilter());
+                $formStep4->setData($request->getPost());
+                if ($formStep4->isValid() && ($zuUser = $service->register($userCreation->getArrayCopy()))) {
+                    $this->getEventManager()->trigger('userCreated', null, ['user' => $zuUser]);
+                    $userExists = true;
+                }
             }
-            // TODO: Redirect to step 5
+        }
+
+        $formElement = $userExists ? 'create_user' : 'next';
+        $this->disableFormElement($formStep4->get($formElement));
+        if ($userExists) {
+            $this->disableFormElement($formStep4->get('username'));
+            $this->disableFormElement($formStep4->get('email'));
+            $this->disableFormElement($formStep4->get('display_name'));
+            $this->disableFormElement($formStep4->get('password'));
+            $this->disableFormElement($formStep4->get('passwordVerify'));
         }
 
     	return new ViewModel([
