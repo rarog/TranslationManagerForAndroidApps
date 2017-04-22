@@ -196,8 +196,9 @@ class SetupController extends AbstractActionController
             }
 
             $viewModel = new ViewModel([
-                'type' => $type,
-                'message' => $message,
+                'type'     => $type,
+                'message'  => $message,
+                'canClose' => true,
             ]);
             $viewModel->setTemplate('partial/alert.phtml')
                 ->setTerminal(true);
@@ -235,8 +236,8 @@ class SetupController extends AbstractActionController
             }
 
             $jsonModel = new JsonModel([
-                'html' => $dbHelper->getLastMessage(),
-                'nextEnabled' => $nextEnabled,
+                'html'                 => $dbHelper->getLastMessage(),
+                'nextEnabled'          => $nextEnabled,
                 'installSchemaEnabled' => $installSchemaEnabled,
             ]);
             $jsonModel->setTerminal(true);
@@ -377,6 +378,13 @@ class SetupController extends AbstractActionController
 
         $userExists = $this->getDatabaseHelper()
             ->isSetupComplete();
+        if ($userExists) {
+            $type = 'success';
+            $message = $this->translator->translate('A user is already in the database. This step will be skipped.');
+        } else {
+            $type = 'info';
+            $message = $this->translator->translate('Please create your user.');
+        }
 
         $service = $this->zuUserService;
 
@@ -402,6 +410,12 @@ class SetupController extends AbstractActionController
                 if ($formStep4->isValid() && ($zuUser = $service->register($userCreation->getArrayCopy()))) {
                     $this->getEventManager()->trigger('userCreated', null, ['user' => $zuUser]);
                     $userExists = true;
+
+                    $type = 'success';
+                    $message = $this->translator->translate('The user has been sucessfully created.');
+                } else {
+                    $type = 'danger';
+                    $message = $this->translator->translate('The user couldn\'t be created. Please check the entries.');
                 }
             }
         }
@@ -416,7 +430,17 @@ class SetupController extends AbstractActionController
             $this->disableFormElement($formStep4->get('passwordVerify'));
         }
 
+        $viewModel = new ViewModel([
+            'type'     => $type,
+            'message'  => $message,
+            'canClose' => false,
+        ]);
+        $viewModel->setTemplate('partial/alert.phtml')
+            ->setTerminal(true);
+        $infoArea = $this->renderer->render($viewModel);
+
     	return new ViewModel([
+    	    'infoArea'  => $infoArea,
             'formStep4' => $formStep4,
     	]);
     }

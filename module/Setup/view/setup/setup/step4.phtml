@@ -24,7 +24,7 @@ $("#back").on("click", function () {
     </div>
     <div class="col-lg-9">
         <h3><?= $this->escapeHtml($this->translate('User Creation')) ?></h3>
-        <div id="step4StatusCheck"></div>
+        <div id="step4StatusCheck"><?= $this->infoArea ?></div>
         <div><?= $this->form($formStep4, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZONTAL); ?></div>
     </div>
 </div>
