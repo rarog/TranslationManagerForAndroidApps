@@ -20,6 +20,7 @@ class DatabaseHelper
 	protected $dbAdapter;
 	protected $translator;
 	protected $setupConfig;
+	protected $zuModuleOptions;
 	protected $lastStatus;
 	protected $lastMessage;
 	protected $sql;
@@ -41,11 +42,12 @@ class DatabaseHelper
 	 * @param Translator $translator
 	 * @param Config $setupConfig
 	 */
-	public function __construct(array $dbConfig, Translator $translator, Config $setupConfig)
+	public function __construct(array $dbConfig, Translator $translator, Config $setupConfig, ZUModuleOptions $zuModuleOptions)
     {
         $this->setDbConfigArray($dbConfig);
         $this->translator = $translator;
         $this->setupConfig = $setupConfig;
+        $this->zuModuleOptions = $zuModuleOptions;
     }
 
     /**
@@ -138,39 +140,6 @@ class DatabaseHelper
         $this->dbAdapter->query($sqlString, $this->dbAdapter::QUERY_MODE_EXECUTE);
     }
 
-    public function hasUsers(ZUModuleOptions $zuModuleOptions)
-    {
-        if ($this->isInstalled()) {
-            $select = $this->getSql()
-                ->select($zuModuleOptions->getTableName())
-                ->columns(array('count' => new \Zend\Db\Sql\Expression('count(*)')));
-            $statement = $this->getSql()->prepareStatementForSqlObject($select);
-
-            try {
-                $resultSet = $statement->execute();
-                $result = $resultSet->current();
-
-                $exists = ($result['count'] > 0);
-                $this->lastStatus = self::USERTABLESEEMSTOBEOK;
-                if ($exists) {
-                    $this->lastMessage = $this->translator->translate('A user already exists in the database, proceed with next step.');
-                } else {
-                    $this->lastMessage = $this->translator->translate('No user exists yet, please create one.');
-                }
-                return $exists;
-            } catch (\Exception $e) {
-                $this->lastStatus = self::SOMETHINGISWRONGWITHWITHUSERTABLE;
-                $this->lastMessage = sprintf(
-                        $this->translator->translate('Something is wrong with the user table, can\'t proceed. Error message: %s'),
-                        $e->getMessage()
-                        );
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-
     /**
      * Installation function. It starts only, if the check says, that the installation hasn't run yet.
      * 1) It creates the version table.
@@ -180,7 +149,7 @@ class DatabaseHelper
      */
     public function installSchema()
     {
-        if (!$this->isInstalled() &&
+        if (!$this->isSchemaInstalled() &&
             ($this->lastStatus = self::DBNOTINSTALLEDORTABLENOTPRESENT)) {
             // Creating version table.
             $table = new Ddl\CreateTable($this->setupConfig->get('db_schema_version_table'));
@@ -220,7 +189,7 @@ class DatabaseHelper
      *
      * @return boolean
      */
-    public function isInstalled() {
+    public function isSchemaInstalled() {
         if (!$this->canConnect()) {
             $this->lastStatus = self::NODBCONNECTION;
             $this->lastMessage = 'NODBCONNECTION';
@@ -254,6 +223,44 @@ class DatabaseHelper
         } catch (\Exception $e) {
             $this->lastStatus = self::DBNOTINSTALLEDORTABLENOTPRESENT;
             $this->lastMessage = $this->translator->translate('Database schema seems to not be installed yet.');
+            return false;
+        }
+    }
+
+    /**
+     * Checks, if setup is complete, which requires at least one user to exist in the database
+     *
+     * @return boolean
+     */
+    public function isSetupComplete()
+    {
+        if ($this->isSchemaInstalled()) {
+            $select = $this->getSql()
+            ->select($this->zuModuleOptions->getTableName())
+            ->columns(array('count' => new \Zend\Db\Sql\Expression('count(*)')));
+            $statement = $this->getSql()->prepareStatementForSqlObject($select);
+
+            try {
+                $resultSet = $statement->execute();
+                $result = $resultSet->current();
+
+                $exists = ($result['count'] > 0);
+                $this->lastStatus = self::USERTABLESEEMSTOBEOK;
+                if ($exists) {
+                    $this->lastMessage = $this->translator->translate('A user already exists in the database, proceed with next step.');
+                } else {
+                    $this->lastMessage = $this->translator->translate('No user exists yet, please create one.');
+                }
+                return $exists;
+            } catch (\Exception $e) {
+                $this->lastStatus = self::SOMETHINGISWRONGWITHWITHUSERTABLE;
+                $this->lastMessage = sprintf(
+                        $this->translator->translate('Something is wrong with the user table, can\'t proceed. Error message: %s'),
+                        $e->getMessage()
+                        );
+                return false;
+            }
+        } else {
             return false;
         }
     }

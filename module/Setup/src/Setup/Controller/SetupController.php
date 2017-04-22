@@ -68,7 +68,8 @@ class SetupController extends AbstractActionController
             $this->databaseHelper = new DatabaseHelper(
                 ($this->configHelp()->db) ? $this->configHelp()->db->toArray() : [],
                 $this->translator,
-                $this->getSetupConfig()
+                $this->getSetupConfig(),
+                $this->zuModuleOptions
             );
         }
         return $this->databaseHelper;
@@ -122,9 +123,9 @@ class SetupController extends AbstractActionController
             }
             $this->redirect()->toRoute('setup', $action);
         } else {
-            $dbCheck = $this->getDatabaseHelper();
+            $dbHelper = $this->getDatabaseHelper();
 
-            if (!$dbCheck->canConnect()) {
+            if (!$dbHelper->canConnect()) {
                 return $this->redirect()->toRoute('setup', ['action' => 'step2']);
             }
         }
@@ -219,23 +220,22 @@ class SetupController extends AbstractActionController
     public function databaseschemainstallationAction()
     {
         if ($this->getRequest()->isXmlHttpRequest()) {
-            $dbCheck = $this->getDatabaseHelper();
-            $dbCheck->installSchema();
-            $dbCheck->isInstalled();
+            $dbHelper = $this->getDatabaseHelper();
+            $dbHelper->installSchema();
 
             $nextEnabled = true;
             $installSchemaEnabled = true;
             // Disable buttons if needed.
-            if (!$dbCheck->isInstalled()) {
+            if (!$dbHelper->isSchemaInstalled()) {
                 $nextEnabled = false;
             }
-            // This code works properly only, because isInstalled() was called above.
-            if ($dbCheck->getLastStatus() != $dbCheck::DBNOTINSTALLEDORTABLENOTPRESENT) {
+            // This code works properly only, because isSchemaInstalled() was called above.
+            if ($dbHelper->getLastStatus() != $dbHelper::DBNOTINSTALLEDORTABLENOTPRESENT) {
                 $installSchemaEnabled = false;
             }
 
             $jsonModel = new JsonModel([
-                'html' => $dbCheck->getLastMessage(),
+                'html' => $dbHelper->getLastMessage(),
                 'nextEnabled' => $nextEnabled,
                 'installSchemaEnabled' => $installSchemaEnabled,
             ]);
@@ -338,7 +338,7 @@ class SetupController extends AbstractActionController
         $this->checkSetupStep(3);
 
         $dbHelper = $this->getDatabaseHelper();
-        $dbHelper->isInstalled();
+        $dbHelper->isSchemaInstalled();
 
         $databaseSchema = new \Setup\Model\DatabaseSchema([
             'output' => $dbHelper->getLastMessage(),
@@ -354,10 +354,10 @@ class SetupController extends AbstractActionController
         }
 
         // Disable buttons if needed.
-        if (!$dbHelper->isInstalled()) {
+        if (!$dbHelper->isSchemaInstalled()) {
             $this->disableFormElement($formStep3->get('next'));
         }
-        // This code works properly only, because isInstalled() was called above.
+        // This code works properly only, because isSchemaInstalled() was called above.
         if ($dbHelper->getLastStatus() != $dbHelper::DBNOTINSTALLEDORTABLENOTPRESENT) {
             $this->disableFormElement($formStep3->get('install_schema'));
         }
@@ -376,7 +376,7 @@ class SetupController extends AbstractActionController
         $this->checkSetupStep(4);
 
         $userExists = $this->getDatabaseHelper()
-            ->hasUsers($this->zuModuleOptions);
+            ->isSetupComplete();
 
         $service = $this->zuUserService;
 
