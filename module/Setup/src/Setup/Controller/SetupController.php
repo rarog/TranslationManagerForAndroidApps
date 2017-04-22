@@ -30,6 +30,11 @@ class SetupController extends AbstractActionController
     protected $databaseHelper;
     protected $lastStep;
 
+    /**
+     * Returns config of Setup module
+     *
+     * @return \Zend\Config\Config
+     */
     protected function getSetupConfig()
     {
         if (is_null($this->setupConfig)) {
@@ -39,6 +44,11 @@ class SetupController extends AbstractActionController
     }
 
 
+    /**
+     * Returns array with languages availabe during setup
+     *
+     * @return array
+     */
     protected function getAvailableLanguages()
     {
         if (is_null($this->availableLanguages)) {
@@ -47,6 +57,11 @@ class SetupController extends AbstractActionController
         return $this->availableLanguages;
     }
 
+    /**
+     * Gets an instance of DatabaseHelper
+     *
+     * @return \Setup\Model\DatabaseHelper
+     */
     protected function getDatabaseHelper()
     {
         if (is_null($this->databaseHelper)) {
@@ -59,6 +74,9 @@ class SetupController extends AbstractActionController
         return $this->databaseHelper;
     }
 
+    /**
+     * Sets the translator lange to the current internal variable content
+     */
     protected function setCurrentLanguage()
     {
         if (!is_null($this->container->currentLanguage) &&
@@ -69,14 +87,30 @@ class SetupController extends AbstractActionController
         }
     }
 
+    /**
+     * Get the current value of last step variable
+     *
+     * @return int
+     */
     protected function getLastStep() {
         return (int) $this->container->lastStep;
     }
 
+    /**
+     * Sets the current value of last step variable
+     *
+     * @param int $lastStep
+     */
     protected function setLastStep(int $lastStep) {
         $this->container->lastStep = $lastStep;
     }
 
+    /**
+     * Checks, if the the call to the controller is allowed
+     *
+     * @param int $currentStep
+     * @return \Zend\Http\Response
+     */
     protected function checkSetupStep(int $currentStep)
     {
         // TODO: Check if starting setup is allowed at all.
@@ -121,6 +155,15 @@ class SetupController extends AbstractActionController
         return $viewModel;
     }
 
+    /**
+     * Constructor
+     *
+     * @param Translator $translator
+     * @param ListenerOptions $listenerOptions
+     * @param Renderer $renderer
+     * @param ZUUser $zuUserService
+     * @param ZUModuleOptions $zuModuleOptions
+     */
     public function __construct(Translator $translator, ListenerOptions $listenerOptions, Renderer $renderer, ZUUser $zuUserService, ZUModuleOptions $zuModuleOptions)
     {
         $this->translator = $translator;
@@ -142,9 +185,10 @@ class SetupController extends AbstractActionController
 
             if ($request->isPost() &&
                 ($postData = $request->getPost()->toArray())) {
-                $dbCheck = new DatabaseHelper($postData, $this->translator);
-                $type = ($dbCheck->canConnect()) ? 'success' : 'danger';
-                $message = $dbCheck->getLastMessage();
+                $dbHelper = $this->getDatabaseHelper();
+                $dbHelper->setDbConfigArray($postData);
+                $type = ($dbHelper->canConnect()) ? 'success' : 'danger';
+                $message = $dbHelper->getLastMessage();
             } else {
                 $type = 'danger';
                 $message = $this->translator->translate('<strong>Error:</strong> Invalid POST data was provided.');

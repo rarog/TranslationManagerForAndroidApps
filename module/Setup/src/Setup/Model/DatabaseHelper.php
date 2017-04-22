@@ -7,6 +7,7 @@
 
 namespace Setup\Model;
 
+use Zend\Config\Config;
 use Zend\Db\Sql\Ddl;
 use Zend\Db\Sql\Ddl\Column;
 use Zend\Db\Sql\Ddl\Constraint;
@@ -33,7 +34,14 @@ class DatabaseHelper
 	const SOMETHINGISWRONGWITHWITHUSERTABLE = 20;
 	const USERTABLESEEMSTOBEOK = 21;
 
-	public function __construct(array $dbConfig, Translator $translator, $setupConfig = null)
+	/**
+	 * Constructor
+	 *
+	 * @param array $dbConfig
+	 * @param Translator $translator
+	 * @param Config $setupConfig
+	 */
+	public function __construct(array $dbConfig, Translator $translator, Config $setupConfig)
     {
         $this->setDbConfigArray($dbConfig);
         $this->translator = $translator;
