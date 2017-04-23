@@ -213,7 +213,7 @@ class DatabaseHelper
                 return false;
             } else if ($result['setupid'] != (string) $this->setupConfig->get('setup_id')) {
                 $this->lastStatus = self::TABLEEXISTSBUTHASWRONGSETUPID;
-                $this->lastMessage = $this->translator->translate('The database version exists but contains wrong setup id. This means, that another app is installed in this database.');
+                $this->lastMessage = $this->translator->translate('The database version exists but contains wrong setup id. This means, that another application is installed in this database.');
                 return false;
             } else {
                 $this->lastStatus = self::DBSCHEMASEEMSTOBEINSTALLED;
@@ -255,7 +255,7 @@ class DatabaseHelper
             } catch (\Exception $e) {
                 $this->lastStatus = self::SOMETHINGISWRONGWITHWITHUSERTABLE;
                 $this->lastMessage = sprintf(
-                        $this->translator->translate('Something is wrong with the user table, can\'t proceed. Error message: %s'),
+                        $this->translator->translate('Something is wrong with the user table, setup can\'t proceed. Error message: %s'),
                         $e->getMessage()
                         );
                 return false;

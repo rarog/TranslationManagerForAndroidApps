@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TranslationManagerForAndroidApps\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-11 19:07+0200\n"
-"PO-Revision-Date: 2017-04-11 19:07+0200\n"
+"POT-Creation-Date: 2017-04-23 11:36+0200\n"
+"PO-Revision-Date: 2017-04-23 11:36+0200\n"
 "Last-Translator: rarog <rarogit@gmail.com>\n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -16,19 +16,37 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: src/Setup/Controller/SetupController.php:78
+#: src/Setup/Controller/SetupController.php:195
 msgid "<strong>Error:</strong> Invalid POST data was provided."
+msgstr ""
+
+#: src/Setup/Controller/SetupController.php:383
+msgid "A user is already in the database. This step will be skipped."
+msgstr ""
+
+#: src/Setup/Controller/SetupController.php:386
+msgid "Please create your user."
+msgstr ""
+
+#: src/Setup/Controller/SetupController.php:415
+msgid "The user has been sucessfully created."
+msgstr ""
+
+#: src/Setup/Controller/SetupController.php:418
+msgid "The user couldn't be created. Please check the entries."
 msgstr ""
 
 #: src/Setup/Form/Step1Form.php:23
 msgid "Setup language"
 msgstr ""
 
-#: src/Setup/Form/Step1Form.php:45 src/Setup/Form/Step2Form.php:135
+#: src/Setup/Form/Step1Form.php:45 src/Setup/Form/Step2Form.php:136
+#: src/Setup/Form/Step3Form.php:48 src/Setup/Form/Step4Form.php:101
 msgid "Back"
 msgstr ""
 
-#: src/Setup/Form/Step1Form.php:59 src/Setup/Form/Step2Form.php:162
+#: src/Setup/Form/Step1Form.php:59 src/Setup/Form/Step2Form.php:163
+#: src/Setup/Form/Step3Form.php:76 src/Setup/Form/Step4Form.php:128
 msgid "Next"
 msgstr ""
 
@@ -40,11 +58,11 @@ msgstr ""
 msgid "Database name"
 msgstr ""
 
-#: src/Setup/Form/Step2Form.php:53
+#: src/Setup/Form/Step2Form.php:53 src/Setup/Form/Step4Form.php:23
 msgid "Username"
 msgstr ""
 
-#: src/Setup/Form/Step2Form.php:68
+#: src/Setup/Form/Step2Form.php:68 src/Setup/Form/Step4Form.php:63
 msgid "Password"
 msgstr ""
 
@@ -60,47 +78,143 @@ msgstr ""
 msgid "Charset"
 msgstr ""
 
-#: src/Setup/Form/Step2Form.php:149
+#: src/Setup/Form/Step2Form.php:150
 msgid "Test connection"
 msgstr ""
 
-#: src/Setup/Model/DatabaseChecks.php:33
+#: src/Setup/Form/Step3Form.php:25
+msgid "Installation output"
+msgstr ""
+
+#: src/Setup/Form/Step3Form.php:62
+msgid "Install schema"
+msgstr ""
+
+#: src/Setup/Form/Step4Form.php:35
+msgid "Email"
+msgstr ""
+
+#: src/Setup/Form/Step4Form.php:47
+msgid "Display name"
+msgstr ""
+
+#: src/Setup/Form/Step4Form.php:78
+msgid "Repeat Password"
+msgstr ""
+
+#: src/Setup/Form/Step4Form.php:115
+msgid "Create user"
+msgstr ""
+
+#: src/Setup/Model/DatabaseHelper.php:66
 msgid "Database connection successfully established."
 msgstr ""
 
-#: src/Setup/Model/DatabaseChecks.php:33
+#: src/Setup/Model/DatabaseHelper.php:66
 msgid "Could not establish database connection."
 msgstr ""
 
-#: view/setup/setup/index.phtml:7 view/setup/setup/step2.phtml:27
+#: src/Setup/Model/DatabaseHelper.php:195
+msgid "Database connection can't be established."
+msgstr ""
+
+#: src/Setup/Model/DatabaseHelper.php:208
+msgid "The database version table exists but is empty."
+msgstr ""
+
+#: src/Setup/Model/DatabaseHelper.php:212
+msgid "The database version table exists but has wrong structure."
+msgstr ""
+
+#: src/Setup/Model/DatabaseHelper.php:216
+msgid ""
+"The database version exists but contains wrong setup id. This means, that "
+"another application is installed in this database."
+msgstr ""
+
+#: src/Setup/Model/DatabaseHelper.php:220
+msgid ""
+"Database schema seems to be installed correctly. Proceed with the next step."
+msgstr ""
+
+#: src/Setup/Model/DatabaseHelper.php:225
+msgid "Database schema seems to not be installed yet."
+msgstr ""
+
+#: src/Setup/Model/DatabaseHelper.php:250
+msgid "A user already exists in the database. Proceed with next step."
+msgstr ""
+
+#: src/Setup/Model/DatabaseHelper.php:252
+msgid "No user exists yet, please create one."
+msgstr ""
+
+#: src/Setup/Model/DatabaseHelper.php:258
+#, php-format
+msgid ""
+"Something is wrong with the user table, setup can't proceed. Error message: "
+"%s"
+msgstr ""
+
+#: view/setup/setup/index.phtml:7 view/setup/setup/step2.phtml:31
+#: view/setup/setup/step3.phtml:44 view/setup/setup/step4.phtml:13
 msgid "Setup"
 msgstr ""
 
 #: view/setup/setup/index.phtml:7 view/setup/setup/index.phtml:13
-#: view/setup/setup/index.phtml:14 view/setup/setup/step2.phtml:27
-#: view/setup/setup/step2.phtml:33 view/setup/setup/step2.phtml:34
+#: view/setup/setup/index.phtml:14 view/setup/setup/index.phtml:15
+#: view/setup/setup/index.phtml:16 view/setup/setup/step2.phtml:31
+#: view/setup/setup/step2.phtml:37 view/setup/setup/step2.phtml:38
+#: view/setup/setup/step2.phtml:39 view/setup/setup/step2.phtml:40
+#: view/setup/setup/step3.phtml:44 view/setup/setup/step3.phtml:50
+#: view/setup/setup/step3.phtml:51 view/setup/setup/step3.phtml:52
+#: view/setup/setup/step3.phtml:53 view/setup/setup/step4.phtml:13
+#: view/setup/setup/step4.phtml:19 view/setup/setup/step4.phtml:20
+#: view/setup/setup/step4.phtml:21 view/setup/setup/step4.phtml:22
 #, php-format
 msgid "Step %d"
 msgstr ""
 
 #: view/setup/setup/index.phtml:7 view/setup/setup/index.phtml:13
-#: view/setup/setup/step2.phtml:33
+#: view/setup/setup/step2.phtml:37 view/setup/setup/step3.phtml:50
+#: view/setup/setup/step4.phtml:19
 msgid "Language"
 msgstr ""
 
-#: view/setup/setup/index.phtml:14 view/setup/setup/step2.phtml:27
-#: view/setup/setup/step2.phtml:34
+#: view/setup/setup/index.phtml:14 view/setup/setup/step2.phtml:31
+#: view/setup/setup/step2.phtml:38 view/setup/setup/step3.phtml:51
+#: view/setup/setup/step4.phtml:20
 msgid "Database"
 msgstr ""
 
-#: view/setup/setup/index.phtml:18
+#: view/setup/setup/index.phtml:15 view/setup/setup/step2.phtml:39
+#: view/setup/setup/step3.phtml:44 view/setup/setup/step3.phtml:52
+#: view/setup/setup/step4.phtml:21
+msgid "Database schema"
+msgstr ""
+
+#: view/setup/setup/index.phtml:16 view/setup/setup/step2.phtml:40
+#: view/setup/setup/step3.phtml:53 view/setup/setup/step4.phtml:13
+#: view/setup/setup/step4.phtml:22
+msgid "User creation"
+msgstr ""
+
+#: view/setup/setup/index.phtml:20
 msgid "Welcome to the setup routine."
 msgstr ""
 
-#: view/setup/setup/step2.phtml:17
+#: view/setup/setup/step2.phtml:21 view/setup/setup/step3.phtml:34
 msgid "An error occured during AJAX request."
 msgstr ""
 
-#: view/setup/setup/step2.phtml:38
+#: view/setup/setup/step2.phtml:44
 msgid "Database setup"
+msgstr ""
+
+#: view/setup/setup/step3.phtml:57
+msgid "Database schema installation"
+msgstr ""
+
+#: view/setup/setup/step4.phtml:26
+msgid "User Creation"
 msgstr ""
