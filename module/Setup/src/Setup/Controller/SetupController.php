@@ -16,7 +16,6 @@ use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer as Renderer;
 use ZfcUser\Options\ModuleOptions as ZUModuleOptions;
 use ZfcUser\Service\User as ZUUser;
-use Zend\Config\Writer\PhpArray as ZCWPhpArray;
 
 class SetupController extends AbstractActionController
 {
@@ -29,6 +28,7 @@ class SetupController extends AbstractActionController
     protected $zuUserService;
     protected $zuModuleOptions;
     protected $databaseHelper;
+    protected $configWriter;
     protected $lastStep;
 
     /**
@@ -74,6 +74,20 @@ class SetupController extends AbstractActionController
             );
         }
         return $this->databaseHelper;
+    }
+
+    /**
+     * Gets an instance of PhpArray config writer
+     *
+     * @return \Zend\Config\Writer\PhpArray
+     */
+    protected function getConfigWriter()
+    {
+        if (is_null($this->configWriter)) {
+            $this->configWriter= new \Zend\Config\Writer\PhpArray();
+            $this->configWriter->setUseBracketArraySyntax(true);
+        }
+        return $this->configWriter;
     }
 
     /**
@@ -312,8 +326,7 @@ class SetupController extends AbstractActionController
 
                 // Replacing old db config with new
                 $localPhpSettings['db'] = $database->getArrayCopy();
-                $configWriter = new ZCWPhpArray();
-                $configWriter->setUseBracketArraySyntax(true)
+                $this->getConfigWriter()
                     ->toFile('config/autoload/local.php', new \Zend\Config\Config($localPhpSettings, false));
 
                 // Clearing config cache if enabled
