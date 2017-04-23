@@ -158,6 +158,20 @@ class SetupController extends AbstractActionController
         }
     }
 
+    protected function replaceDbConfigInFile(string $file, array $configArray)
+    {
+        // Reading current content of config file
+        $config = include($file);
+        if (!is_array($config)) {
+            $config = [];
+        }
+
+        // Replacing old db config with new
+        $config['db'] = $configArray;
+        $this->getConfigWriter()
+            ->toFile($file, new \Zend\Config\Config($config, false));
+    }
+
     /**
      * Generates error 403 and returns view model with disabled layout
      *
@@ -318,20 +332,15 @@ class SetupController extends AbstractActionController
             $formStep2->setInputFilter($database->getInputFilter());
             $formStep2->setData($request->getPost());
             if ($formStep2->isValid()) {
-                // Reading current local.php config file
-                $localPhpSettings = include('config/autoload/local.php');
-                if (!is_array($localPhpSettings)) {
-                    $localPhpSettings = [];
-                }
+                $dbConfig = $database->getArrayCopy();
 
-                // Replacing old db config with new
-                $localPhpSettings['db'] = $database->getArrayCopy();
-                $this->getConfigWriter()
-                    ->toFile('config/autoload/local.php', new \Zend\Config\Config($localPhpSettings, false));
+                // Replacing content of local.php config file
+                $this->replaceDbConfigInFile('config/autoload/local.php', $dbConfig);
 
-                // Clearing config cache if enabled
-                if ($this->listenerOptions->getConfigCacheEnabled()) {
-                    unlink($this->listenerOptions->getConfigCacheFile());
+                // Replacing content of config cache if enabled
+                if ($this->listenerOptions->getConfigCacheEnabled() &&
+                    file_exists($this->listenerOptions->getConfigCacheFile())) {
+                    $this->replaceDbConfigInFile($this->listenerOptions->getConfigCacheFile(), $dbConfig);
                 }
 
                 $this->setLastStep(3);
