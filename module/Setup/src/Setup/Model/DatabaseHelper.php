@@ -192,7 +192,7 @@ class DatabaseHelper
     public function isSchemaInstalled() {
         if (!$this->canConnect()) {
             $this->lastStatus = self::NODBCONNECTION;
-            $this->lastMessage = 'NODBCONNECTION';
+            $this->lastMessage = $this->translator->translate('Database connection can\'t be established.');
             return false;
         }
 
@@ -205,19 +205,19 @@ class DatabaseHelper
             $result = $resultSet->current();
             if (empty($result)) {
                 $this->lastStatus = self::TABLEEXISTSBUTISEMPTY;
-                $this->lastMessage = 'TABLEEXISTSBUTISEMPTY';
+                $this->lastMessage = $this->translator->translate('The database version table exists but is empty.');
                 return false;
             } else if (!array_key_exists('setupid', $result)) {
                 $this->lastStatus = self::TABLEEXISTSBUTHASWRONGSTRUCTURE;
-                $this->lastMessage = 'TABLEEXISTSBUTHASWRONGSTRUCTURE';
+                $this->lastMessage = $this->translator->translate('The database version table exists but has wrong structure.');
                 return false;
             } else if ($result['setupid'] != (string) $this->setupConfig->get('setup_id')) {
                 $this->lastStatus = self::TABLEEXISTSBUTHASWRONGSETUPID;
-                $this->lastMessage = 'TABLEEXISTSBUTHASWRONGSETUPID';
+                $this->lastMessage = $this->translator->translate('The database version exists but contains wrong setup id. This means, that another app is installed in this database.');
                 return false;
             } else {
                 $this->lastStatus = self::DBSCHEMASEEMSTOBEINSTALLED;
-                $this->lastMessage = 'DBSCHEMASEEMSTOBEINSTALLED';
+                $this->lastMessage = $this->translator->translate('Database schema seems to be installed correctly. Proceed with the next step.');
                 return true;
             }
         } catch (\Exception $e) {
@@ -247,7 +247,7 @@ class DatabaseHelper
                 $exists = ($result['count'] > 0);
                 $this->lastStatus = self::USERTABLESEEMSTOBEOK;
                 if ($exists) {
-                    $this->lastMessage = $this->translator->translate('A user already exists in the database, proceed with next step.');
+                    $this->lastMessage = $this->translator->translate('A user already exists in the database. Proceed with next step.');
                 } else {
                     $this->lastMessage = $this->translator->translate('No user exists yet, please create one.');
                 }
