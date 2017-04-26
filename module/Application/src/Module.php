@@ -7,6 +7,11 @@
 
 namespace Application;
 
+use Zend\Session\Config\SessionConfig;
+use Zend\Session\Container;
+use Zend\Session\SessionManager;
+use Zend\Session\Validator;
+
 class Module
 {
     const VERSION = '0.1-dev';
@@ -15,7 +20,7 @@ class Module
     {
         $session = $e->getApplication()
                      ->getServiceManager()
-                     ->get('Zend\Session\SessionManager');
+                     ->get(SessionManager::class);
 
         try {
             $session->start();
@@ -24,7 +29,7 @@ class Module
             $session->start();
         }
 
-        $container = new \Zend\Session\Container('initialized');
+        $container = new Container('initialized');
         if (!isset($container->init)) {
             $serviceManager = $e->getApplication()
                                 ->getServiceManager();
@@ -46,10 +51,10 @@ class Module
 
                 foreach ($sessionConfig['validators'] as $validator) {
                     switch ($validator) {
-                        case 'Zend\Session\Validator\HttpUserAgent':
+                        case Validator\HttpUserAgent::class:
                             $validator = new $validator($container->httpUserAgent);
                             break;
-                        case 'Zend\Session\Validator\RemoteAddr':
+                        case Validator\RemoteAddr::class:
                             $validator  = new $validator($container->remoteAddr);
                             break;
                         default:
@@ -91,6 +96,60 @@ class Module
     public function getConfig()
     {
         return include __DIR__ . '/../config/module.config.php';
+    }
+    
+    public function getServiceConfig()
+    {
+        return [
+            'factories' => [
+                SessionManager::class => function ($container) {
+                    $config = $container->get('config');
+                    if (! isset($config['session'])) {
+                        $sessionManager = new SessionManager();
+                        Container::setDefaultManager($sessionManager);
+                        return $sessionManager;
+                    }
+                    
+                    $session = $config['session'];
+                    
+                    $sessionConfig = null;
+                    if (isset($session['config'])) {
+                        $class = isset($session['config']['class'])
+                        ?  $session['config']['class']
+                        : SessionConfig::class;
+                        
+                        $options = isset($session['config']['options'])
+                        ?  $session['config']['options']
+                        : [];
+                        
+                        $sessionConfig = new $class();
+                        $sessionConfig->setOptions($options);
+                    }
+                    
+                    $sessionStorage = null;
+                    if (isset($session['storage'])) {
+                        $class = $session['storage'];
+                        $sessionStorage = new $class();
+                    }
+                    
+                    $sessionSaveHandler = null;
+                    if (isset($session['save_handler'])) {
+                        // class should be fetched from service manager
+                        // since it will require constructor arguments
+                        $sessionSaveHandler = $container->get($session['save_handler']);
+                    }
+                    
+                    $sessionManager = new SessionManager(
+                            $sessionConfig,
+                            $sessionStorage,
+                            $sessionSaveHandler
+                            );
+                    
+                    Container::setDefaultManager($sessionManager);
+                    return $sessionManager;
+                },
+            ],
+        ];
     }
 
     public function onBootstrap(\Zend\Mvc\MvcEvent $e)

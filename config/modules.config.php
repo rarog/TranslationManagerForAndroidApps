@@ -29,8 +29,8 @@ return [
     'ConfigHelper',
     'TwbBundle',
     'ZfcUser',
-    'ZfcRbac',
-    'UserRbac',
     'Setup',
     'Application',
+    'ZfcRbac',
+    'UserRbac',
 ];

@@ -16,6 +16,8 @@
  * file.
  */
 
+use Zend\Session;
+
 return [
     'caches' => [
         'Cache\Persistent' => [
@@ -30,19 +32,20 @@ return [
             ],
         ],
     ],
-    'session_config' => [
-        'name' => 'tmfaa:session',
-        'gc_maxlifetime' => 900,
-        'remember_me_seconds' => 900,
-    ],
-    'session_manager' => [
+    'session' => [
+        'config' => [
+            'class' => Session\Config\SessionConfig::class,
+            'options' => [
+                'name' => 'tmfaa:session',
+                'gc_maxlifetime' => 900,
+                'remember_me_seconds' => 900,
+            ],
+        ],
+        'storage' => Session\Storage\SessionArrayStorage::class,
         'validators' => [
-            \Zend\Session\Validator\RemoteAddr::class,
-            \Zend\Session\Validator\HttpUserAgent::class,
-        ]
-    ],
-    'session_storage' => [
-        'type' => \Zend\Session\Storage\SessionArrayStorage::class
+            Session\Validator\RemoteAddr::class,
+            Session\Validator\HttpUserAgent::class,
+        ],
     ],
     'settings' => [
         'translator_cache' => 'Cache\Persistent',
