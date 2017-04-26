@@ -31,7 +31,8 @@
 		"neilime/zf2-twb-bundle" : "^3.1",
 		"tasmaniski/zend-config-helper" : "^2.0",
 		"zf-commons/zfc-user" : "2.x-dev#43518844028cb0e02aec7ceadb199390e123615c",
-		"zf-commons/zfc-rbac": "^2.6"
+		"zf-commons/zfc-rbac" : "^2.6",
+		"rarog/user-rbac" : "dev-master#f3ace97dbb08cdb45c1df7a1940d24075291a602"
 	},
 	"autoload" : {
 		"psr-4" : {
@@ -56,7 +57,8 @@
 	},
 	"authors" : [{
 			"name" : "Andrej Sinicyn",
-			"role" : "Developer"
+			"role" : "Developer",
+			"email" : "rarogit@gmail.com"
 		}, {
 			"name" : "Ætoms",
 			"homepage" : "https://commons.wikimedia.org/wiki/User:%C3%86toms",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "4fbba6841ae8f4a5b7912fcccf3688b4",
+    "content-hash": "789ba5835196e85eaa6b3c20e1c8dc14",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -250,6 +250,53 @@
             "time": "2016-10-10T12:19:37+00:00"
         },
         {
+            "name": "rarog/user-rbac",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rarog/UserRbac.git",
+                "reference": "f3ace97dbb08cdb45c1df7a1940d24075291a602"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rarog/UserRbac/zipball/f3ace97dbb08cdb45c1df7a1940d24075291a602",
+                "reference": "f3ace97dbb08cdb45c1df7a1940d24075291a602",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6 || ^7.0",
+                "zf-commons/zfc-rbac": "^2.6",
+                "zf-commons/zfc-user": "2.x-dev#43518844028cb0e02aec7ceadb199390e123615c"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "UserRbac\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "ojhaujjwal",
+                    "email": "bring2uo@gmail.com"
+                }
+            ],
+            "description": "A Zend Framework 2 module to easily integrate ZfcUser and ZfcRbac",
+            "homepage": "https://github.com/rarog/UserRbac",
+            "keywords": [
+                "ZendFramework",
+                "module",
+                "zf2"
+            ],
+            "time": "2017-04-26 06:05:03"
+        },
+        {
             "name": "tasmaniski/zend-config-helper",
             "version": "v2.0.0",
             "source": {
@@ -480,16 +527,16 @@
         },
         {
             "name": "zendframework/zend-component-installer",
-            "version": "0.7.1",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-component-installer.git",
-                "reference": "700a22e4791daa1110be06f2fb055dc678d2b7ff"
+                "reference": "0ca44807dbcf356b75a869c61b533f917ccbc5ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-component-installer/zipball/700a22e4791daa1110be06f2fb055dc678d2b7ff",
-                "reference": "700a22e4791daa1110be06f2fb055dc678d2b7ff",
+                "url": "https://api.github.com/repos/zendframework/zend-component-installer/zipball/0ca44807dbcf356b75a869c61b533f917ccbc5ae",
+                "reference": "0ca44807dbcf356b75a869c61b533f917ccbc5ae",
                 "shasum": ""
             },
             "require": {
@@ -520,7 +567,7 @@
                 "BSD-3-Clause"
             ],
             "description": "Composer plugin for automating component registration in zend-mvc and Expressive applications",
-            "time": "2017-04-11T19:16:05+00:00"
+            "time": "2017-04-25T16:43:54+00:00"
         },
         {
             "name": "zendframework/zend-config",
@@ -2502,7 +2549,8 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "zendframework/zend-component-installer": 20,
-        "zf-commons/zfc-user": 20
+        "zf-commons/zfc-user": 20,
+        "rarog/user-rbac": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

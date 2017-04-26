@@ -97,5 +97,9 @@ class Module
     {
         $this->bootstrapSession($e);
         $this->bootstrapTranslator($e);
+        $serviceManager = $e->getApplication()
+        ->getServiceManager();
+        $listener = $serviceManager->get(\ZfcRbac\View\Strategy\RedirectStrategy::class);
+        $listener->attach($e->getApplication()->getEventManager());
     }
 }
