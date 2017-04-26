@@ -45,13 +45,13 @@ return [
         ],
     ],
     'service_manager' => [
-        'aliases' => [
-            //'Zend\Authentication\AuthenticationService' => 'zfcuser_auth_service',
-        ],
         'delegators' => [
             \Zend\Mvc\I18n\Translator::class => [
                 Delegator\TranslatorDelegator::class,
             ],
+        ],
+        'factories' => [
+            //'ZfcRbac\View\Strategy\RedirectStrategy' => 'ZfcRbac\Factory\RedirectStrategyFactory',
         ],
         'invokables' => [
             'SetupListener' => Listener\SetupListener::class,

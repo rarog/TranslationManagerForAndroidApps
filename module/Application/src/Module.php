@@ -16,11 +16,27 @@ class Module
 {
     const VERSION = '0.1-dev';
 
+    /**
+     * Sets up the redirection strategy
+     *
+     * @param \Zend\Mvc\MvcEvent $e
+     */
+    public function bootstrapRedirectionStrategy(\Zend\Mvc\MvcEvent $e)
+    {
+        $serviceManager = $e->getApplication()->getServiceManager();
+        $listener = $serviceManager->get(\ZfcRbac\View\Strategy\RedirectStrategy::class);
+        $listener->attach($e->getApplication()->getEventManager());
+    }
+
+    /**
+     * Sets up the session
+     *
+     * @param \Zend\Mvc\MvcEvent $e
+     */
     public function bootstrapSession(\Zend\Mvc\MvcEvent $e)
     {
-        $session = $e->getApplication()
-                     ->getServiceManager()
-                     ->get(SessionManager::class);
+        $serviceManager = $e->getApplication()->getServiceManager();
+        $session = $serviceManager->get(SessionManager::class);
 
         try {
             $session->start();
@@ -31,8 +47,6 @@ class Module
 
         $container = new Container('initialized');
         if (!isset($container->init)) {
-            $serviceManager = $e->getApplication()
-                                ->getServiceManager();
             $request = $serviceManager->get('Request');
 
             $session->regenerateId(true);
@@ -67,10 +81,14 @@ class Module
         }
     }
 
+    /**
+     * Sets up the translator
+     *
+     * @param \Zend\Mvc\MvcEvent $e
+     */
     public function bootstrapTranslator(\Zend\Mvc\MvcEvent $e)
     {
-        $serviceManager = $e->getApplication()
-                            ->getServiceManager();
+        $serviceManager = $e->getApplication()->getServiceManager();
 
         $translatorCache = null;
         $config = $serviceManager->get('Config');
@@ -93,58 +111,68 @@ class Module
         \Zend\Validator\AbstractValidator::setDefaultTranslator($translator);
     }
 
+    /**
+     * Returns the module config
+     *
+     * @return array
+     */
     public function getConfig()
     {
         return include __DIR__ . '/../config/module.config.php';
     }
-    
+
+    /**
+     * Returns the service config
+     *
+     * @return array
+     */
     public function getServiceConfig()
     {
         return [
             'factories' => [
                 SessionManager::class => function ($container) {
                     $config = $container->get('config');
-                    if (! isset($config['session'])) {
+                    if (!isset($config['session'])) {
                         $sessionManager = new SessionManager();
                         Container::setDefaultManager($sessionManager);
                         return $sessionManager;
                     }
-                    
+
                     $session = $config['session'];
-                    
+
                     $sessionConfig = null;
                     if (isset($session['config'])) {
                         $class = isset($session['config']['class'])
                         ?  $session['config']['class']
                         : SessionConfig::class;
-                        
+
                         $options = isset($session['config']['options'])
                         ?  $session['config']['options']
                         : [];
-                        
+
                         $sessionConfig = new $class();
                         $sessionConfig->setOptions($options);
                     }
-                    
+
                     $sessionStorage = null;
                     if (isset($session['storage'])) {
                         $class = $session['storage'];
                         $sessionStorage = new $class();
                     }
-                    
+
                     $sessionSaveHandler = null;
                     if (isset($session['save_handler'])) {
                         // class should be fetched from service manager
                         // since it will require constructor arguments
                         $sessionSaveHandler = $container->get($session['save_handler']);
                     }
-                    
+
                     $sessionManager = new SessionManager(
-                            $sessionConfig,
-                            $sessionStorage,
-                            $sessionSaveHandler
-                            );
-                    
+                        $sessionConfig,
+                        $sessionStorage,
+                        $sessionSaveHandler
+                    );
+
                     Container::setDefaultManager($sessionManager);
                     return $sessionManager;
                 },
@@ -152,13 +180,15 @@ class Module
         ];
     }
 
+    /**
+     * Bootstrap event
+     *
+     * @param \Zend\Mvc\MvcEvent $e
+     */
     public function onBootstrap(\Zend\Mvc\MvcEvent $e)
     {
         $this->bootstrapSession($e);
         $this->bootstrapTranslator($e);
-        $serviceManager = $e->getApplication()
-        ->getServiceManager();
-        $listener = $serviceManager->get(\ZfcRbac\View\Strategy\RedirectStrategy::class);
-        $listener->attach($e->getApplication()->getEventManager());
+        $this->bootstrapRedirectionStrategy($e);
     }
 }

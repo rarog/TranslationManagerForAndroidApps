@@ -37,19 +37,31 @@ return [
             'class' => Session\Config\SessionConfig::class,
             'options' => [
                 'name' => 'tmfaa:session',
-                'gc_maxlifetime' => 900,
-                'remember_me_seconds' => 900,
             ],
         ],
-        'storage' => Session\Storage\SessionArrayStorage::class,
+        'storage'    => Session\Storage\SessionArrayStorage::class,
         'validators' => [
             Session\Validator\RemoteAddr::class,
             Session\Validator\HttpUserAgent::class,
         ],
     ],
+    'session_config' => [
+        'gc_maxlifetime'      => 900,
+        'name'                => 'tmfaa:session',
+        'remember_me_seconds' => 900,
+    ],
+    'session_manager' => [
+        'validators' => [
+            Session\Validator\RemoteAddr::class,
+            Session\Validator\HttpUserAgent::class,
+        ]
+    ],
+    'session_storage' => [
+        'type' => Session\Storage\SessionArrayStorage::class,
+    ],
     'settings' => [
         'translator_cache' => 'Cache\Persistent',
-        'session_cache' => 'Cache\Persistent',
+        'session_cache'    => 'Cache\Persistent',
         'supported_languages' => [
             'de_DE' => 'German (Germany)/Deutsch (Deutschland)',
             'en_US' => 'English (USA)',
