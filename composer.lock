@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "789ba5835196e85eaa6b3c20e1c8dc14",
+    "content-hash": "cab54fabdbd31a6dc84c80e4edc9a4c8",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -251,16 +251,16 @@
         },
         {
             "name": "rarog/user-rbac",
-            "version": "dev-master",
+            "version": "v1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rarog/UserRbac.git",
-                "reference": "f3ace97dbb08cdb45c1df7a1940d24075291a602"
+                "reference": "696993bb62eca5d195000d28051c157defe47f3f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rarog/UserRbac/zipball/f3ace97dbb08cdb45c1df7a1940d24075291a602",
-                "reference": "f3ace97dbb08cdb45c1df7a1940d24075291a602",
+                "url": "https://api.github.com/repos/rarog/UserRbac/zipball/696993bb62eca5d195000d28051c157defe47f3f",
+                "reference": "696993bb62eca5d195000d28051c157defe47f3f",
                 "shasum": ""
             },
             "require": {
@@ -285,16 +285,21 @@
                 {
                     "name": "ojhaujjwal",
                     "email": "bring2uo@gmail.com"
+                },
+                {
+                    "name": "Andrej Sinicyn",
+                    "email": "rarog@gmail.com"
                 }
             ],
-            "description": "A Zend Framework 2 module to easily integrate ZfcUser and ZfcRbac",
+            "description": "A Zend Framework module to easily integrate ZfcUser and ZfcRbac",
             "homepage": "https://github.com/rarog/UserRbac",
             "keywords": [
                 "ZendFramework",
                 "module",
-                "zf2"
+                "zf2",
+                "zf3"
             ],
-            "time": "2017-04-26 06:05:03"
+            "time": "2017-04-27T05:42:32+00:00"
         },
         {
             "name": "tasmaniski/zend-config-helper",
@@ -893,27 +898,27 @@
         },
         {
             "name": "zendframework/zend-form",
-            "version": "2.10.0",
+            "version": "2.10.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-form.git",
-                "reference": "ca2b2f9e1bdc5511d06967d755cbb793708a2d7b"
+                "reference": "1ca3ab771abd533d440646ec1cc082fccad976a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-form/zipball/ca2b2f9e1bdc5511d06967d755cbb793708a2d7b",
-                "reference": "ca2b2f9e1bdc5511d06967d755cbb793708a2d7b",
+                "url": "https://api.github.com/repos/zendframework/zend-form/zipball/1ca3ab771abd533d440646ec1cc082fccad976a1",
+                "reference": "1ca3ab771abd533d440646ec1cc082fccad976a1",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.5 || ^7.0",
+                "php": "^7.0 || ^5.6",
                 "zendframework/zend-hydrator": "^1.1 || ^2.1",
                 "zendframework/zend-inputfilter": "^2.6",
                 "zendframework/zend-stdlib": "^2.7 || ^3.0"
             },
             "require-dev": {
                 "doctrine/annotations": "~1.0",
-                "phpunit/phpunit": "^4.8",
+                "phpunit/phpunit": "^6.0.8 || ^5.7.15",
                 "zendframework/zend-cache": "^2.6.1",
                 "zendframework/zend-captcha": "^2.7.1",
                 "zendframework/zend-code": "^2.6 || ^3.0",
@@ -966,7 +971,7 @@
                 "form",
                 "zf2"
             ],
-            "time": "2017-02-23T16:03:25+00:00"
+            "time": "2017-04-26T21:27:43+00:00"
         },
         {
             "name": "zendframework/zend-http",
@@ -2549,8 +2554,7 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "zendframework/zend-component-installer": 20,
-        "zf-commons/zfc-user": 20,
-        "rarog/user-rbac": 20
+        "zf-commons/zfc-user": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
