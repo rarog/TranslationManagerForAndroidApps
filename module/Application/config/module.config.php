@@ -51,10 +51,7 @@ return [
             ],
         ],
         'factories' => [
-            //'ZfcRbac\View\Strategy\RedirectStrategy' => 'ZfcRbac\Factory\RedirectStrategyFactory',
-        ],
-        'invokables' => [
-            'SetupListener' => Listener\SetupListener::class,
+            'SetupListener' => Factory\Listener\SetupListenerFactory::class,
         ],
     ],
     'translator' => [

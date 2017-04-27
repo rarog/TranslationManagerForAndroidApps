@@ -13,6 +13,13 @@ use Zend\EventManager\ListenerAggregateInterface;
 
 class SetupListener implements ListenerAggregateInterface
 {
+    protected $userRoleLinkerMapper;
+
+    public function __construct(\UserRbac\Mapper\UserRoleLinkerMapper $userRoleLinkerMapper)
+    {
+        $this->userRoleLinkerMapper = $userRoleLinkerMapper;
+    }
+
     public function attach(EventManagerInterface $events, $priority = 1)
     {
         $events->getSharedManager()->attach('Setup\Controller\SetupController', 'userCreated', function ($e) {
@@ -29,7 +36,8 @@ class SetupListener implements ListenerAggregateInterface
     {
         $user = $event->getParam('user', null);
         if ($user instanceof \ZfcUser\Entity\UserInterface) {
-            // TODO: React to user creation during setup and do something with it.
+            $userLinker = new \UserRbac\Entity\UserRoleLinker($user, 'admin');
+            $this->userRoleLinkerMapper->insert($userLinker);
         }
     }
 }
