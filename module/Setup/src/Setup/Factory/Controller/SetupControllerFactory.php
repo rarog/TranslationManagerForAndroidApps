@@ -5,7 +5,7 @@
  * @license   https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License version 3 or later
  */
 
-namespace Setup\Controller\Factory;
+namespace Setup\Factory\Controller;
 
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
