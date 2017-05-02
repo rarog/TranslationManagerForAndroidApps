@@ -4,7 +4,7 @@ $this->headTitle($title);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
 <p>
-    <a class="btn btn-default" href="<?= $this->url('project', ['action' => 'add']) ?>"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span><?= $this->translate('Add new project') ?></a>
+    <a class="btn btn-success" href="<?= $this->url('project', ['action' => 'add']) ?>"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Add new project')) ?></a>
 </p>
 
 <table class="table table-striped">
@@ -18,8 +18,8 @@ $this->headTitle($title);
         <td><?= $this->escapeHtml($project->name) ?></td>
         <td><?= $this->escapeHtml($project->gitProject) ?></td>
         <td>
-            <a href="<?= $this->url('project', ['action' => 'edit', 'id' => $project->id]) ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"><?= $this->translate('Edit') ?></a>
-            <a href="<?= $this->url('project', ['action' => 'delete', 'id' => $project->id]) ?>"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"><?= $this->translate('Delete') ?></a>
+            <a class="btn btn-info" href="<?= $this->url('project', ['action' => 'edit', 'id' => $project->id]) ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Edit')) ?></a>
+            <a class="btn btn-danger" href="<?= $this->url('project', ['action' => 'delete', 'id' => $project->id]) ?>"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Delete')) ?></a>
         </td>
     </tr>
 <?php endforeach; ?>
