@@ -39,6 +39,7 @@ return [
                 'zfcuser/register' => ['guest'],
                 'zfcuser*'         => ['user'],
                 'setup*'           => ['guest'],
+                'project*'         => ['admin'],
             ]
         ],
 

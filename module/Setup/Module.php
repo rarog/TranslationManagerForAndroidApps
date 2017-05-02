@@ -12,6 +12,10 @@ use Zend\ModuleManager\Feature\ConfigProviderInterface;
 
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 {
+    /**
+     * {@inheritDoc}
+     * @see \Zend\ModuleManager\Feature\AutoloaderProviderInterface::getAutoloaderConfig()
+     */
     public function getAutoloaderConfig()
     {
         return array(
@@ -26,6 +30,10 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
         );
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \Zend\ModuleManager\Feature\ConfigProviderInterface::getConfig()
+     */
     public function getConfig()
     {
         return include __DIR__ . '/config/module.config.php';

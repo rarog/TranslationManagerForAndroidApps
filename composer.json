@@ -37,7 +37,8 @@
 	"autoload" : {
 		"psr-4" : {
 			"Application\\" : "module/Application/src/",
-			"Setup\\" : "module/Setup/src/"
+			"Setup\\" : "module/Setup/src/",
+            "Translations\\" : "module/Translations/src/"
 		}
 	},
 	"autoload-dev" : {

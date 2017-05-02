@@ -30,6 +30,7 @@ return [
     'TwbBundle',
     'ZfcUser',
     'Setup',
+    'Translations',
     'Application',
     'ZfcRbac',
     'UserRbac',
