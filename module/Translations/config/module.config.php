@@ -10,6 +10,11 @@ namespace Translations;
 use Zend\Router\Http\Segment;
 
 return [
+    'controllers' => [
+        'factories' => [
+            Controller\ProjectController::class => Factory\Controller\ProjectControllerFactory::class,
+        ],
+    ],
     'router' => [
         'routes' => [
             'project' => [

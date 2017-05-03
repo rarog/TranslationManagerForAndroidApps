@@ -24,24 +24,6 @@ class Module implements ConfigProviderInterface
     }
 
     /**
-     * Returns controller config
-     *
-     * @return array
-     */
-    public function getControllerConfig()
-    {
-        return [
-            'factories' => [
-                Controller\ProjectController::class => function($container) {
-                    return new Controller\ProjectController(
-                        $container->get(Model\ProjectTable::class)
-                    );
-                },
-            ],
-        ];
-    }
-
-    /**
      * Returns service config
      *
      * @return array
