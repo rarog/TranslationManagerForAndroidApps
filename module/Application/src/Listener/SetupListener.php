@@ -7,6 +7,7 @@
 
 namespace Application\Listener;
 
+use UserRbac\Mapper\UserRoleLinkerMapper;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
@@ -15,11 +16,20 @@ class SetupListener implements ListenerAggregateInterface
 {
     protected $userRoleLinkerMapper;
 
-    public function __construct(\UserRbac\Mapper\UserRoleLinkerMapper $userRoleLinkerMapper)
+    /**
+     * Constructor
+     *
+     * @param UserRoleLinkerMapper $userRoleLinkerMapper
+     */
+    public function __construct(UserRoleLinkerMapper $userRoleLinkerMapper)
     {
         $this->userRoleLinkerMapper = $userRoleLinkerMapper;
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \Zend\EventManager\ListenerAggregateInterface::attach()
+     */
     public function attach(EventManagerInterface $events, $priority = 1)
     {
         $events->getSharedManager()->attach('Setup\Controller\SetupController', 'userCreated', function ($e) {
@@ -27,11 +37,20 @@ class SetupListener implements ListenerAggregateInterface
         }, $priority);
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \Zend\EventManager\ListenerAggregateInterface::detach()
+     */
     public function detach(EventManagerInterface $events)
     {
         // Not sure, if anything needs to be done here.
     }
 
+    /**
+     * Handler for userCreated event
+     *
+     * @param EventInterface $event
+     */
     protected function onUserCreated(EventInterface $event)
     {
         $user = $event->getParam('user', null);

@@ -7,6 +7,7 @@
 
 namespace Application;
 
+use Zend\Mvc\MvcEvent;
 use Zend\Session\Config\SessionConfig;
 use Zend\Session\Container;
 use Zend\Session\SessionManager;
@@ -19,9 +20,9 @@ class Module
     /**
      * Sets up the redirection strategy
      *
-     * @param \Zend\Mvc\MvcEvent $e
+     * @param MvcEvent $e
      */
-    public function bootstrapRedirectionStrategy(\Zend\Mvc\MvcEvent $e)
+    public function bootstrapRedirectionStrategy(MvcEvent $e)
     {
         $serviceManager = $e->getApplication()->getServiceManager();
         $listener = $serviceManager->get(\ZfcRbac\View\Strategy\RedirectStrategy::class);
@@ -31,9 +32,9 @@ class Module
     /**
      * Sets up the session
      *
-     * @param \Zend\Mvc\MvcEvent $e
+     * @param MvcEvent $e
      */
-    public function bootstrapSession(\Zend\Mvc\MvcEvent $e)
+    public function bootstrapSession(MvcEvent $e)
     {
         $serviceManager = $e->getApplication()->getServiceManager();
         $session = $serviceManager->get(SessionManager::class);
@@ -84,9 +85,9 @@ class Module
     /**
      * Sets up the translator
      *
-     * @param \Zend\Mvc\MvcEvent $e
+     * @param MvcEvent $e
      */
-    public function bootstrapTranslator(\Zend\Mvc\MvcEvent $e)
+    public function bootstrapTranslator(MvcEvent $e)
     {
         $serviceManager = $e->getApplication()->getServiceManager();
 
@@ -183,9 +184,9 @@ class Module
     /**
      * Bootstrap event
      *
-     * @param \Zend\Mvc\MvcEvent $e
+     * @param MvcEvent $e
      */
-    public function onBootstrap(\Zend\Mvc\MvcEvent $e)
+    public function onBootstrap(MvcEvent $e)
     {
         $this->bootstrapSession($e);
         $this->bootstrapTranslator($e);
