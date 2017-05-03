@@ -16,10 +16,12 @@ $this->headTitle($title);
 <?php foreach ($projects as $project) : ?>
     <tr>
         <td><?= $this->escapeHtml($project->name) ?></td>
-        <td><?= $this->escapeHtml($project->gitProject) ?></td>
+        <td><?= $this->escapeHtml($project->gitRepository) ?></td>
         <td>
-            <a class="btn btn-info" href="<?= $this->url('project', ['action' => 'edit', 'id' => $project->id]) ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Edit')) ?></a>
-            <a class="btn btn-danger" href="<?= $this->url('project', ['action' => 'delete', 'id' => $project->id]) ?>"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Delete')) ?></a>
+            <div class="btn-group">
+                <a class="btn btn-info" href="<?= $this->url('project', ['action' => 'edit', 'id' => $project->id]) ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Edit')) ?></a>
+                <a class="btn btn-danger" href="<?= $this->url('project', ['action' => 'delete', 'id' => $project->id]) ?>"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Delete')) ?></a>
+            </div>
         </td>
     </tr>
 <?php endforeach; ?>
