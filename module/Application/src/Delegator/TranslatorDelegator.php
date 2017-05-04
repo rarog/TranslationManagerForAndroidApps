@@ -14,6 +14,10 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 
 class TranslatorDelegator implements DelegatorFactoryInterface
 {
+	/**
+	 * {@inheritDoc}
+	 * @see \Zend\ServiceManager\Factory\DelegatorFactoryInterface::__invoke()
+	 */
 	public function __invoke(ContainerInterface $container, $name, callable $callback, array $options = null) {
         $translator = $callback();
 
@@ -31,6 +35,10 @@ class TranslatorDelegator implements DelegatorFactoryInterface
         return $translator;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see \Zend\ServiceManager\DelegatorFactoryInterface::createDelegatorWithName()
+	 */
 	public function createDelegatorWithName(ServiceLocatorInterface $container, $name, $requestedName, $callback) {
         return $this($container, $requestedName, $callback);
 	}

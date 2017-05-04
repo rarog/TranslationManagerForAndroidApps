@@ -81,7 +81,9 @@ return [
                     'permissions' => [],
                 ],
                 'user'      => [
-                    'permissions' => [],
+                    'permissions' => [
+                        'userBase',
+                    ],
                 ],
             ]
         ],

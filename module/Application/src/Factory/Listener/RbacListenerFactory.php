@@ -10,7 +10,7 @@ namespace Application\Factory\Listener;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
-class SetupListenerFactory implements FactoryInterface
+class RbacListenerFactory implements FactoryInterface
 {
     /**
      * {@inheritDoc}
@@ -18,6 +18,6 @@ class SetupListenerFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new \Application\Listener\SetupListener($container->get('UserRbac\UserRoleLinkerMapper'));
+        return new \Application\Listener\RbacListener($container->get('ZfcRbac\Service\AuthorizationService'));
     }
 }

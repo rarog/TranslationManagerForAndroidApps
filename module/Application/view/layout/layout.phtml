@@ -35,11 +35,11 @@
                     </a>
                 </div>
                 <div class="collapse navbar-collapse">
-<?php if($this->zfcUserIdentity()): ?>
-                    <ul class="nav navbar-nav">
-                        <li class="active"><a href="<?= $this->url('home') ?>"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Home')) ?></a></li>
-                    </ul>
-<?php endif; ?>
+<?php
+if ($this->zfcUserIdentity()) {
+    echo $this->multilevelNavigationMenu('navigation', 'partial/menu-dropdown.phtml');
+}
+?>
                 </div>
             </div>
         </nav>

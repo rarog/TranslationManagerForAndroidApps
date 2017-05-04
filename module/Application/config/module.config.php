@@ -20,6 +20,40 @@ return [
     'listeners' => [
         'SetupListener',
     ],
+    'navigation' => [
+        'default' => [
+            [
+                'label'      => _('Home'),
+                'route'      => 'home',
+                'icon'       => 'glyphicon glyphicon-home',
+                'permission' => 'userBase',
+            ],
+            [
+                'label'      => '',
+                'route'      => '#',
+                'icon'       => 'glyphicon glyphicon-question-sign',
+                'permission' => 'userBase',
+                'pages' => [
+                    [
+                        'label'      => _('My user'),
+                        'route'      => 'zfcuser',
+                        'icon'       => 'glyphicon glyphicon-user',
+                        'permission' => 'userBase',
+                    ],
+                    [
+                        'route'     => '#',
+                        'separator' => true,
+                    ],
+                    [
+                        'label'      => _('Sign out'),
+                        'route'      => 'zfcuser/logout',
+                        'icon'       => 'glyphicon glyphicon-off',
+                        'permission' => 'userBase',
+                    ],
+                ],
+            ],
+        ],
+    ],
     'router' => [
         'routes' => [
             'home' => [
@@ -51,6 +85,8 @@ return [
             ],
         ],
         'factories' => [
+            'navigation' => \Zend\Navigation\Service\DefaultNavigationFactory::class,
+            'RbacListener'  => Factory\Listener\RbacListenerFactory::class,
             'SetupListener' => Factory\Listener\SetupListenerFactory::class,
         ],
     ],
@@ -62,6 +98,11 @@ return [
                 'base_dir' => __DIR__ . '/../language',
                 'pattern'  => '%s.mo',
             ],
+        ],
+    ],
+    'view_helpers' => [
+        'invokables'=> [
+            'multilevelNavigationMenu' => View\Helper\MultilevelNavigationMenu::class,
         ],
     ],
     'view_manager' => [
