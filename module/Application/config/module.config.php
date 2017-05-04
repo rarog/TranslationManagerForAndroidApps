@@ -20,6 +20,16 @@ return [
     'listeners' => [
         'SetupListener',
     ],
+    'navigation' => [
+        'default' => [
+            [
+                'label' => _('Home'),
+                'route' => 'home',
+                'permission' => 'userBase',
+                'icon'  => 'glyphicon glyphicon-home',
+            ],
+        ],
+    ],
     'router' => [
         'routes' => [
             'home' => [
@@ -51,6 +61,8 @@ return [
             ],
         ],
         'factories' => [
+            'navigation' => \Zend\Navigation\Service\DefaultNavigationFactory::class,
+            'RbacListener'  => Factory\Listener\RbacListenerFactory::class,
             'SetupListener' => Factory\Listener\SetupListenerFactory::class,
         ],
     ],
@@ -62,6 +74,11 @@ return [
                 'base_dir' => __DIR__ . '/../language',
                 'pattern'  => '%s.mo',
             ],
+        ],
+    ],
+    'view_helpers' => [
+        'invokables'=> [
+            'multilevelNavigationMenu' => View\Helper\MultilevelNavigationMenu::class,
         ],
     ],
     'view_manager' => [

@@ -32,7 +32,8 @@
 		"tasmaniski/zend-config-helper" : "^2.0",
 		"zf-commons/zfc-user" : "2.x-dev#43518844028cb0e02aec7ceadb199390e123615c",
 		"zf-commons/zfc-rbac" : "^2.6",
-		"rarog/user-rbac" : "^1.0"
+		"rarog/user-rbac" : "^1.0",
+		"zendframework/zend-navigation": "^2.8"
 	},
 	"autoload" : {
 		"psr-4" : {

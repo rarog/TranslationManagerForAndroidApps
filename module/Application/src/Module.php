@@ -18,11 +18,25 @@ class Module
     const VERSION = '0.1-dev';
 
     /**
+     * Sets up listeners, that shouldn't be initialised via config.
+     *
+     * @param MvcEvent $e
+     */
+    private function bootstrapLateListeners(MvcEvent $e)
+    {
+        $application  = $e->getApplication();
+        $eventManager = $application->getEventManager();
+        $serviceManager = $application->getServiceManager();
+        $rbacListener = $serviceManager->get('RbacListener');
+        $rbacListener->attach($eventManager);
+    }
+
+    /**
      * Sets up the redirection strategy
      *
      * @param MvcEvent $e
      */
-    public function bootstrapRedirectionStrategy(MvcEvent $e)
+    private function bootstrapRedirectionStrategy(MvcEvent $e)
     {
         $serviceManager = $e->getApplication()->getServiceManager();
         $listener = $serviceManager->get(\ZfcRbac\View\Strategy\RedirectStrategy::class);
@@ -34,7 +48,7 @@ class Module
      *
      * @param MvcEvent $e
      */
-    public function bootstrapSession(MvcEvent $e)
+    private function bootstrapSession(MvcEvent $e)
     {
         $serviceManager = $e->getApplication()->getServiceManager();
         $session = $serviceManager->get(SessionManager::class);
@@ -87,7 +101,7 @@ class Module
      *
      * @param MvcEvent $e
      */
-    public function bootstrapTranslator(MvcEvent $e)
+    private function bootstrapTranslator(MvcEvent $e)
     {
         $serviceManager = $e->getApplication()->getServiceManager();
 
@@ -191,5 +205,6 @@ class Module
         $this->bootstrapSession($e);
         $this->bootstrapTranslator($e);
         $this->bootstrapRedirectionStrategy($e);
+        $this->bootstrapLateListeners($e);
     }
 }
