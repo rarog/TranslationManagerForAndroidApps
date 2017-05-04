@@ -15,19 +15,19 @@ $("#installSchema").on("click", function () {
                 $("#output").html(data.html);
             } else {
                 $("#output").html(data);
-            }
+            }debugger;
             if (typeof data.nextEnabled !== "undefined") {
                 if (data.nextEnabled) {
-                    $("#next").removeClass("disabled");
+                    $("#next").removeAttr("disabled");
                 } else {
-                    $("#next").addClass("disabled");
+                    $("#next").attr("disabled", "disabled");
                 }
             }
             if (typeof data.installSchemaEnabled !== "undefined") {
                 if (data.installSchemaEnabled) {
-                    $("#installSchema").removeClass("disabled");
+                    $("#installSchema").removeAttr("disabled");
                 } else {
-                    $("#installSchema").addClass("disabled");
+                    $("#installSchema").attr("disabled", "disabled");
                 }
             }
         }, "json").fail(function() {
