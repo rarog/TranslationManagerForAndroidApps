@@ -85,9 +85,10 @@ return [
             ],
         ],
         'factories' => [
-            'navigation' => \Zend\Navigation\Service\DefaultNavigationFactory::class,
-            'RbacListener'  => Factory\Listener\RbacListenerFactory::class,
-            'SetupListener' => Factory\Listener\SetupListenerFactory::class,
+            'navigation'                 => \Zend\Navigation\Service\DefaultNavigationFactory::class,
+            'RbacListener'               => Factory\Listener\RbacListenerFactory::class,
+            'SetupListener'              => Factory\Listener\SetupListenerFactory::class,
+            'SetupAwareRedirectStrategy' => Factory\View\Strategy\SetupAwareRedirectStrategyFactory::class,
         ],
     ],
     'translator' => [

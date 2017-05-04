@@ -39,7 +39,7 @@ class Module
     private function bootstrapRedirectionStrategy(MvcEvent $e)
     {
         $serviceManager = $e->getApplication()->getServiceManager();
-        $listener = $serviceManager->get(\ZfcRbac\View\Strategy\RedirectStrategy::class);
+        $listener = $serviceManager->get('SetupAwareRedirectStrategy');
         $listener->attach($e->getApplication()->getEventManager());
     }
 
