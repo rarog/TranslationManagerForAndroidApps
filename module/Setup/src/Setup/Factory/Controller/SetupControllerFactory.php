@@ -21,7 +21,8 @@ class SetupControllerFactory implements FactoryInterface
             new \Zend\ModuleManager\Listener\ListenerOptions($configuration['module_listener_options']),
             $container->get('ViewRenderer'),
             $container->get('zfcuser_user_service'),
-            $container->get('zfcuser_module_options')
+            $container->get('zfcuser_module_options'),
+            $container->get('Setup\Model\DatabaseHelper')
         );
     }
 }

@@ -33,6 +33,11 @@ return [
             ],
         ],
     ],
+    'service_manager' => [
+        'factories' => [
+            'Setup\Model\DatabaseHelper' => Factory\Model\DatabaseHelperFactory::class,
+        ],
+    ],
     'translator' => [
         'translation_file_patterns' => [
             [

@@ -19,24 +19,24 @@ use ZfcUser\Service\User as ZUUser;
 
 class SetupController extends AbstractActionController
 {
-    protected $translator;
-    protected $container;
-    protected $setupConfig;
-    protected $availableLanguages;
-    protected $listenerOptions;
-    protected $renderer;
-    protected $zuUserService;
-    protected $zuModuleOptions;
-    protected $databaseHelper;
-    protected $configWriter;
-    protected $lastStep;
+    private $translator;
+    private $container;
+    private $setupConfig;
+    private $availableLanguages;
+    private $listenerOptions;
+    private $renderer;
+    private $zuUserService;
+    private $zuModuleOptions;
+    private $databaseHelper;
+    private $configWriter;
+    private $lastStep;
 
     /**
      * Returns config of Setup module
      *
      * @return \Zend\Config\Config
      */
-    protected function getSetupConfig()
+    private function getSetupConfig()
     {
         if (is_null($this->setupConfig)) {
             $this->setupConfig = $this->configHelp('setup');
@@ -50,7 +50,7 @@ class SetupController extends AbstractActionController
      *
      * @return array
      */
-    protected function getAvailableLanguages()
+    private function getAvailableLanguages()
     {
         if (is_null($this->availableLanguages)) {
             $this->availableLanguages = $this->getSetupConfig()->available_languages->toArray();
@@ -59,29 +59,11 @@ class SetupController extends AbstractActionController
     }
 
     /**
-     * Gets an instance of DatabaseHelper
-     *
-     * @return \Setup\Model\DatabaseHelper
-     */
-    protected function getDatabaseHelper()
-    {
-        if (is_null($this->databaseHelper)) {
-            $this->databaseHelper = new DatabaseHelper(
-                ($this->configHelp()->db) ? $this->configHelp()->db->toArray() : [],
-                $this->translator,
-                $this->getSetupConfig(),
-                $this->zuModuleOptions
-            );
-        }
-        return $this->databaseHelper;
-    }
-
-    /**
      * Gets an instance of PhpArray config writer
      *
      * @return \Zend\Config\Writer\PhpArray
      */
-    protected function getConfigWriter()
+    private function getConfigWriter()
     {
         if (is_null($this->configWriter)) {
             $this->configWriter= new \Zend\Config\Writer\PhpArray();
@@ -93,7 +75,7 @@ class SetupController extends AbstractActionController
     /**
      * Sets the translator lange to the current internal variable content
      */
-    protected function setCurrentLanguage()
+    private function setCurrentLanguage()
     {
         if (!is_null($this->container->currentLanguage) &&
             array_key_exists($this->container->currentLanguage, $this->getAvailableLanguages())) {
@@ -108,7 +90,7 @@ class SetupController extends AbstractActionController
      *
      * @return int
      */
-    protected function getLastStep() {
+    private function getLastStep() {
         return (int) $this->container->lastStep;
     }
 
@@ -117,7 +99,7 @@ class SetupController extends AbstractActionController
      *
      * @param int $lastStep
      */
-    protected function setLastStep(int $lastStep) {
+    private function setLastStep(int $lastStep) {
         $this->container->lastStep = $lastStep;
     }
 
@@ -127,7 +109,7 @@ class SetupController extends AbstractActionController
      * @param int $currentStep
      * @return \Zend\Http\Response
      */
-    protected function checkSetupStep(int $currentStep)
+    private function checkSetupStep(int $currentStep)
     {
         // TODO: Check if starting setup is allowed at all.
         $lastStep = $this->getLastStep();
@@ -138,7 +120,7 @@ class SetupController extends AbstractActionController
             }
             $this->redirect()->toRoute('setup', $action);
         } else {
-            $dbHelper = $this->getDatabaseHelper();
+            $dbHelper = $this->databaseHelper;
 
             if (!$dbHelper->canConnect()) {
                 return $this->redirect()->toRoute('setup', ['action' => 'step2']);
@@ -151,14 +133,14 @@ class SetupController extends AbstractActionController
      *
      * @param \Zend\Form\Element $element
      */
-    protected function disableFormElement(\Zend\Form\Element $element)
+    private function disableFormElement(\Zend\Form\Element $element)
     {
         if ($element) {
             $element->setAttribute('disabled', 'disabled');
         }
     }
 
-    protected function replaceDbConfigInFile(string $file, array $configArray)
+    private function replaceDbConfigInFile(string $file, array $configArray)
     {
         // Reading current content of config file
         $config = include($file);
@@ -177,7 +159,7 @@ class SetupController extends AbstractActionController
      *
      * @return \Zend\View\Model\ViewModel
      */
-    protected function throw403()
+    private function throw403()
     {
         $this->getResponse()->setStatusCode(403);
         $viewModel = new ViewModel();
@@ -193,8 +175,9 @@ class SetupController extends AbstractActionController
      * @param Renderer $renderer
      * @param ZUUser $zuUserService
      * @param ZUModuleOptions $zuModuleOptions
+     * @param DatabaseHelper $databaseHelper
      */
-    public function __construct(Translator $translator, ListenerOptions $listenerOptions, Renderer $renderer, ZUUser $zuUserService, ZUModuleOptions $zuModuleOptions)
+    public function __construct(Translator $translator, ListenerOptions $listenerOptions, Renderer $renderer, ZUUser $zuUserService, ZUModuleOptions $zuModuleOptions, DatabaseHelper $databaseHelper)
     {
         $this->translator = $translator;
         $this->container = new \Zend\Session\Container('setup');
@@ -202,6 +185,7 @@ class SetupController extends AbstractActionController
         $this->renderer = $renderer;
         $this->zuUserService = $zuUserService;
         $this->zuModuleOptions = $zuModuleOptions;
+        $this->databaseHelper = $databaseHelper;
     }
 
     /**
@@ -215,7 +199,7 @@ class SetupController extends AbstractActionController
 
             if ($request->isPost() &&
                 ($postData = $request->getPost()->toArray())) {
-                $dbHelper = $this->getDatabaseHelper();
+                $dbHelper = $this->databaseHelper;
                 $dbHelper->setDbConfigArray($postData);
                 $type = ($dbHelper->canConnect()) ? 'success' : 'danger';
                 $message = $dbHelper->getLastMessage();
@@ -250,7 +234,7 @@ class SetupController extends AbstractActionController
     public function databaseschemainstallationAction()
     {
         if ($this->getRequest()->isXmlHttpRequest()) {
-            $dbHelper = $this->getDatabaseHelper();
+            $dbHelper = $this->databaseHelper;
             $dbHelper->installSchema();
 
             $nextEnabled = true;
@@ -361,7 +345,7 @@ class SetupController extends AbstractActionController
         $this->setCurrentLanguage();
         $this->checkSetupStep(3);
 
-        $dbHelper = $this->getDatabaseHelper();
+        $dbHelper = $this->databaseHelper;
         $dbHelper->isSchemaInstalled();
 
         $databaseSchema = new \Setup\Model\DatabaseSchema([
@@ -399,7 +383,7 @@ class SetupController extends AbstractActionController
         $this->setCurrentLanguage();
         $this->checkSetupStep(4);
 
-        $userExists = $this->getDatabaseHelper()
+        $userExists = $this->databaseHelper
             ->isSetupComplete();
         if ($userExists) {
             $type = 'success';

@@ -16,14 +16,14 @@ use ZfcUser\Options\ModuleOptions as ZUModuleOptions;
 
 class DatabaseHelper
 {
-    protected $dbConfig;
-	protected $dbAdapter;
-	protected $translator;
-	protected $setupConfig;
-	protected $zuModuleOptions;
-	protected $lastStatus;
-	protected $lastMessage;
-	protected $sql;
+    private $dbConfig;
+    private $dbAdapter;
+    private $translator;
+    private $setupConfig;
+    private $zuModuleOptions;
+    private $lastStatus;
+	private $lastMessage;
+	private $sql;
 
 	const NODBCONNECTION = 0;
 	const DBNOTINSTALLEDORTABLENOTPRESENT = 1;
@@ -35,18 +35,21 @@ class DatabaseHelper
 	const SOMETHINGISWRONGWITHWITHUSERTABLE = 20;
 	const USERTABLESEEMSTOBEOK = 21;
 
+
 	/**
 	 * Constructor
 	 *
-	 * @param array $dbConfig
+	 * @param Config $config
 	 * @param Translator $translator
-	 * @param Config $setupConfig
+	 * @param ZUModuleOptions $zuModuleOptions
 	 */
-	public function __construct(array $dbConfig, Translator $translator, Config $setupConfig, ZUModuleOptions $zuModuleOptions)
+	public function __construct(Config $config, Translator $translator, ZUModuleOptions $zuModuleOptions)
     {
-        $this->setDbConfigArray($dbConfig);
+        $dbConfig = $config->db;
+
+        $this->setDbConfigArray(($dbConfig) ? $dbConfig->toArray() : []);
         $this->translator = $translator;
-        $this->setupConfig = $setupConfig;
+        $this->setupConfig = $config->setup;
         $this->zuModuleOptions = $zuModuleOptions;
     }
 
@@ -96,7 +99,7 @@ class DatabaseHelper
      *
      * @return \Zend\Db\Sql\Sql
      */
-    protected function getSql()
+    private function getSql()
     {
         if (is_null($this->sql)) {
             $this->sql = new \Zend\Db\Sql\Sql($this->dbAdapter);
@@ -109,7 +112,7 @@ class DatabaseHelper
      *
      * @return string
      */
-    protected function getSchemaInstallationFilepath()
+    private function getSchemaInstallationFilepath()
     {
         $filename = $this->normalizePath($this->setupConfig->get('db_schema_path'));
         $filename .= sprintf(
@@ -124,7 +127,7 @@ class DatabaseHelper
      *
      * @param Zend\Db\Sql\SqlInterface|string  $sql
      */
-    protected function executeSqlStatement($sql)
+    private function executeSqlStatement($sql)
     {
         if ($sql instanceof \Zend\Db\Sql\SqlInterface) {
             $sqlString = $this->getSql()->buildSqlString($sql, $this->dbAdapter);
@@ -271,7 +274,7 @@ class DatabaseHelper
      * @param  string $path
      * @return string
      */
-    protected function normalizePath($path)
+    private function normalizePath($path)
     {
         $path = rtrim($path, '/');
         $path = rtrim($path, '\\');
