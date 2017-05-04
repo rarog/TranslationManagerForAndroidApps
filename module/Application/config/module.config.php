@@ -23,10 +23,34 @@ return [
     'navigation' => [
         'default' => [
             [
-                'label' => _('Home'),
-                'route' => 'home',
+                'label'      => _('Home'),
+                'route'      => 'home',
+                'icon'       => 'glyphicon glyphicon-home',
                 'permission' => 'userBase',
-                'icon'  => 'glyphicon glyphicon-home',
+            ],
+            [
+                'label'      => '',
+                'route'      => '#',
+                'icon'       => 'glyphicon glyphicon-question-sign',
+                'permission' => 'userBase',
+                'pages' => [
+                    [
+                        'label'      => _('My user'),
+                        'route'      => 'zfcuser',
+                        'icon'       => 'glyphicon glyphicon-user',
+                        'permission' => 'userBase',
+                    ],
+                    [
+                        'route'     => '#',
+                        'separator' => true,
+                    ],
+                    [
+                        'label'      => _('Sign out'),
+                        'route'      => 'zfcuser/logout',
+                        'icon'       => 'glyphicon glyphicon-off',
+                        'permission' => 'userBase',
+                    ],
+                ],
             ],
         ],
     ],
