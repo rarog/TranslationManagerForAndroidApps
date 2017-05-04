@@ -1,9 +1,9 @@
 <?php
-    $type = (in_array($this->type, ['success', 'info', 'warning', 'danger'])) ? $this->type : 'info';
+    $type = (in_array($type, ['success', 'info', 'warning', 'danger'])) ? $type : 'info';
 ?>
             <div class="alert alert-<?= $type ?> alert-dismissable">
 <?php if ($this->canClose): ?>
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 <?php endif; ?>
-                <?= $this->message ?>
+                <?= $message ?>
             </div>
