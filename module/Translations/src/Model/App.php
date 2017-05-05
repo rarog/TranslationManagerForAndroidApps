@@ -14,9 +14,10 @@ use Zend\Filter\ToInt;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
+use Zend\Stdlib\ArraySerializableInterface;
 use Zend\Validator\StringLength;
 
-class App implements InputFilterAwareInterface
+class App implements ArraySerializableInterface, InputFilterAwareInterface
 {
     /**
      * @var int
@@ -43,6 +44,10 @@ class App implements InputFilterAwareInterface
      */
     private $inputFilter;
 
+    /**
+     * {@inheritDoc}
+     * @see \Zend\InputFilter\InputFilterAwareInterface::getInputFilter()
+     */
     public function getInputFilter()
     {
         if ($this->inputFilter) {
@@ -117,6 +122,10 @@ class App implements InputFilterAwareInterface
         return $this->inputFilter;
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \Zend\InputFilter\InputFilterAwareInterface::setInputFilter()
+     */
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
         throw new DomainException(sprintf(
@@ -125,11 +134,29 @@ class App implements InputFilterAwareInterface
         ));
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \Zend\Stdlib\ArraySerializableInterface::exchangeArray()
+     */
     public function exchangeArray(array $data)
     {
         $this->id              = !empty($data['id']) ? $data['id'] : null;
         $this->name            = !empty($data['name']) ? $data['name'] : null;
         $this->gitRepository   = !empty($data['git_repository']) ? $data['git_repository'] : null;
         $this->pathToResFolder = !empty($data['path_to_res_folder']) ? $data['path_to_res_folder'] : null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \Zend\Stdlib\ArraySerializableInterface::getArrayCopy()
+     */
+    public function getArrayCopy()
+    {
+        return [
+            'id'                 => $this->id,
+            'name'               => $this->name,
+            'git_repository'     => $this->gitRepository,
+            'path_to_res_folder' => $this->pathToResFolder,
+        ];
     }
 }
