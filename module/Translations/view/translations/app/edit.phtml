@@ -1,0 +1,12 @@
+<?php
+$title = $this->translate('Edit app');
+$this->headTitle($title);
+?>
+<h1><?= $this->escapeHtml($title) ?></h1>
+<?php
+$form->setAttribute('action', $this->url('app', [
+    'action' => 'edit',
+    'id'     => $id,
+]));
+echo $this->form($form, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZONTAL);
+?>

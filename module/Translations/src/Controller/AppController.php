@@ -31,7 +31,7 @@ class AppController extends AbstractActionController
     }
 
     /**
-     * Project add action
+     * App add action
      *
      * @return \Zend\View\Model\ViewModel
      */
@@ -59,7 +59,7 @@ class AppController extends AbstractActionController
     }
 
     /**
-     * Project delete action
+     * App delete action
      *
      * @return \Zend\View\Model\ViewModel
      */
@@ -69,18 +69,53 @@ class AppController extends AbstractActionController
     }
 
     /**
-     * Project edit action
+     * App edit action
      *
      * @return \Zend\View\Model\ViewModel
      */
     public function editAction()
     {
-        return new ViewModel();
+
+        $id = (int) $this->params()->fromRoute('id', 0);
+
+        if (0 === $id) {
+            return $this->redirect()->toRoute('app', ['action' => 'add']);
+        }
+
+        try {
+            $app = $this->table->getApp($id);
+        } catch (\Exception $e) {
+            return $this->redirect()->toRoute('app', ['action' => 'index']);
+        }
+
+        $form = new AppForm();
+        $form->bind($app);
+
+        $request = $this->getRequest();
+        $viewData = [
+            'id'   => $id,
+            'form' => $form
+        ];
+
+        if (!$request->isPost()) {
+            return $viewData;
+        }
+
+        $form->setInputFilter($app->getInputFilter());
+        $form->setData($request->getPost());
+
+        if (!$form->isValid()) {
+            return $viewData;
+        }
+
+        $this->table->saveApp($app);
+
+        return $this->redirect()->toRoute('app', ['action' => 'index']);
     }
 
 
     /**
-     * Project overview action
+     * App overview action
      *
      * @return \Zend\View\Model\ViewModel
      */
