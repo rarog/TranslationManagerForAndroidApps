@@ -13,16 +13,16 @@ class AppForm extends Form
 {
     public function __construct($name = null)
     {
-        // We will ignore the name provided to the constructor
+        // Ignore the name provided to the constructor.
         parent::__construct('app');
 
         $this->setAttribute('method', 'post');
 
+        // Creating the form elements.
         $this->add([
             'name' => 'id',
             'type' => 'hidden',
         ]);
-
         $this->add([
             'attributes' => [
                 'id' => 'name',
@@ -38,7 +38,6 @@ class AppForm extends Form
             ],
             'type'       => 'text',
         ]);
-
         $this->add([
             'attributes' => [
                 'id' => 'git_repository',
@@ -70,7 +69,6 @@ class AppForm extends Form
             ],
             'type'       => 'text',
         ]);
-
         $this->add(array(
             'type' => 'Csrf',
             'name' => 'csrf_app',
@@ -80,7 +78,6 @@ class AppForm extends Form
                 )
             )
         ));
-
         $this->add([
             'attributes' => [
                 'value' => _('Save'),
