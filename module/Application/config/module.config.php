@@ -117,6 +117,7 @@ return [
     ],
     'view_helpers' => [
         'invokables'=> [
+            'dataTablesInitHelper'     => View\Helper\DataTablesInitHelper::class,
             'multilevelNavigationMenu' => View\Helper\MultilevelNavigationMenu::class,
         ],
     ],

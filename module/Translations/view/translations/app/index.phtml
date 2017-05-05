@@ -1,30 +1,35 @@
 <?php
 $title = $this->translate('Apps');
 $this->headTitle($title);
+$this->dataTablesInitHelper(['table' => '#apps']);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
 <p>
     <a class="btn btn-default" href="<?= $this->url('app', ['action' => 'add']) ?>"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Add new app')) ?></a>
 </p>
 
-<table class="table table-bordered table-striped">
-<tr>
-    <th><?= $this->escapeHtml($this->translate('Name')) ?></th>
-    <th><?= $this->escapeHtml($this->translate('Git repository')) ?></th>
-    <th><?= $this->escapeHtml($this->translate('Path to res folder')) ?></th>
-    <th>&nbsp;</th>
-</tr>
+<table class="table table-bordered table-striped" id="apps">
+    <thead>
+        <tr>
+            <th><?= $this->escapeHtml($this->translate('Name')) ?></th>
+            <th><?= $this->escapeHtml($this->translate('Git repository')) ?></th>
+            <th><?= $this->escapeHtml($this->translate('Path to res folder')) ?></th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
 <?php foreach ($apps as $app) : ?>
-    <tr>
-        <td><?= $this->escapeHtml($app->name) ?></td>
-        <td><?= $this->escapeHtml($app->gitRepository) ?></td>
-        <td><?= $this->escapeHtml($app->pathToResFolder) ?></td>
-        <td>
-            <div class="btn-group">
-                <a class="btn btn-default" href="<?= $this->url('app', ['action' => 'edit', 'id' => $app->id]) ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Edit')) ?></a>
-                <a class="btn btn-danger" href="<?= $this->url('app', ['action' => 'delete', 'id' => $app->id]) ?>"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Delete')) ?></a>
-            </div>
-        </td>
-    </tr>
+        <tr>
+            <td><?= $this->escapeHtml($app->name) ?></td>
+            <td><?= $this->escapeHtml($app->gitRepository) ?></td>
+            <td><?= $this->escapeHtml($app->pathToResFolder) ?></td>
+            <td>
+                <div class="btn-group">
+                    <a class="btn btn-default" href="<?= $this->url('app', ['action' => 'edit', 'id' => $app->id]) ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Edit')) ?></a>
+                    <a class="btn btn-danger" href="<?= $this->url('app', ['action' => 'delete', 'id' => $app->id]) ?>"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Delete')) ?></a>
+                </div>
+            </td>
+        </tr>
 <?php endforeach; ?>
+    </tbody>
 </table>

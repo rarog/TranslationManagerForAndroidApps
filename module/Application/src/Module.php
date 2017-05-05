@@ -120,6 +120,7 @@ class Module
         }
 
         $translator = $serviceManager->get('MvcTranslator');
+        $translator->setFallbackLocale(\Locale::getPrimaryLanguage($translator->getLocale()));
         if (!is_null($translatorCache)) {
             $translator->setCache($translatorCache);
         }
