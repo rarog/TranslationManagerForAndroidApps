@@ -32,15 +32,15 @@ class Module implements ConfigProviderInterface
     {
         return [
             'factories' => [
-                Model\ProjectTable::class => function($container) {
-                    $tableGateway = $container->get(Model\ProjectTableGateway::class);
-                    return new Model\ProjectTable($tableGateway);
+                Model\AppTable::class => function($container) {
+                    $tableGateway = $container->get(Model\AppTableGateway::class);
+                    return new Model\AppTable($tableGateway);
                 },
-                Model\ProjectTableGateway::class => function ($container) {
+                Model\AppTableGateway::class => function ($container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
                     $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new Model\Project());
-                    return new TableGateway('project', $dbAdapter, null, $resultSetPrototype);
+                    $resultSetPrototype->setArrayObjectPrototype(new Model\App());
+                    return new TableGateway('app', $dbAdapter, null, $resultSetPrototype);
                 },
             ],
         ];

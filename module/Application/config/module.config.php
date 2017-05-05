@@ -29,6 +29,20 @@ return [
                 'permission' => 'userBase',
             ],
             [
+                'label'      => _('Translations'),
+                'route'      => '#',
+                'icon'       => 'glyphicon glyphicon-dashboard',
+                'permission' => 'userBase',
+                'pages' => [
+                    [
+                        'label'      => _('Apps'),
+                        'route'      => 'app',
+                        'icon'       => 'glyphicon glyphicon-phone',
+                        'permission' => 'app',
+                    ],
+                ],
+            ],
+            [
                 'label'      => '',
                 'route'      => '#',
                 'icon'       => 'glyphicon glyphicon-question-sign',

@@ -10,7 +10,7 @@ namespace Translations\Model;
 use RuntimeException;
 use Zend\Db\TableGateway\TableGatewayInterface;
 
-class ProjectTable
+class AppTable
 {
     private $tableGateway;
 
@@ -24,7 +24,7 @@ class ProjectTable
         return $this->tableGateway->select();
     }
 
-    public function getProject($id)
+    public function getApp($id)
     {
         $id = (int) $id;
         $rowset = $this->tableGateway->select(['id' => $id]);
@@ -39,31 +39,32 @@ class ProjectTable
         return $row;
     }
 
-    public function saveProject(Album $project)
+    public function saveProject(App $app)
     {
         $data = [
-            'artist' => $project->artist,
-            'title'  => $project->title,
+            'name'               => $app->name,
+            'git_repository'     => $app->gitRepository,
+            'path_to_res_folder' => $app->pathToResFolder,
         ];
 
-        $id = (int) $project->id;
+        $id = (int) $app->id;
 
         if ($id === 0) {
             $this->tableGateway->insert($data);
             return;
         }
 
-        if (! $this->getProject($id)) {
+        if (! $this->getApp($id)) {
             throw new RuntimeException(sprintf(
-                    'Cannot update album with identifier %d; does not exist',
-                    $id
-                    ));
+                'Cannot update app with identifier %d; does not exist',
+                $id
+            ));
         }
 
         $this->tableGateway->update($data, ['id' => $id]);
     }
 
-    public function deleteProject($id)
+    public function deleteApp($id)
     {
         $this->tableGateway->delete(['id' => (int) $id]);
     }

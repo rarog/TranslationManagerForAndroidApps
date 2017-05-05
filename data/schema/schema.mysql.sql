@@ -15,7 +15,7 @@ CREATE TABLE `user_role_linker` (
     CONSTRAINT `user_role_linker_fk1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `project` (
+CREATE TABLE `app` (
     `id`                 INT(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `name`               VARCHAR(255) DEFAULT NULL,
     `git_repository`     VARCHAR(4096) DEFAULT NULL,

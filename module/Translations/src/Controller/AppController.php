@@ -7,20 +7,20 @@
 
 namespace Translations\Controller;
 
-use Translations\Model\ProjectTable;
+use Translations\Model\AppTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
-class ProjectController extends AbstractActionController
+class AppController extends AbstractActionController
 {
     private $table;
 
     /**
      * Constructor
      *
-     * @param ProjectTable $table
+     * @param AppTable $table
      */
-    public function __construct(ProjectTable $table)
+    public function __construct(AppTable $table)
     {
         $this->table = $table;
     }
@@ -64,7 +64,7 @@ class ProjectController extends AbstractActionController
     public function indexAction()
     {
         return new ViewModel([
-            'projects' => $this->table->fetchAll(),
+            'apps' => $this->table->fetchAll(),
         ]);
     }
 }

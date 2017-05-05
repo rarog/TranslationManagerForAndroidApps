@@ -39,7 +39,7 @@ return [
                 'zfcuser/register' => ['guest'],
                 'zfcuser*'         => ['user'],
                 'setup*'           => ['guest'],
-                'project*'         => ['admin'],
+                'app*'             => ['admin'],
             ]
         ],
 
@@ -74,7 +74,9 @@ return [
             'ZfcRbac\Role\InMemoryRoleProvider' => [
                 'admin'     => [
                     'children'    => ['superuser'],
-                    'permissions' => [],
+                    'permissions' => [
+                        'app',
+                    ],
                 ],
                 'superuser' => [
                     'children'    => ['user'],

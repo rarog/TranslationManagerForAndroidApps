@@ -7,7 +7,7 @@
 
 namespace Translations\Model;
 
-class Project
+class App
 {
     public $id;
     public $name;
