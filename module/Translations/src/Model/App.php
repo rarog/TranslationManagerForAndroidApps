@@ -46,6 +46,18 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
 
     /**
      * {@inheritDoc}
+     * @see \Zend\InputFilter\InputFilterAwareInterface::setInputFilter()
+     */
+    public function setInputFilter(InputFilterInterface $inputFilter)
+    {
+        throw new DomainException(sprintf(
+                '%s does not allow injection of an alternate input filter',
+                __CLASS__
+                ));
+    }
+
+    /**
+     * {@inheritDoc}
      * @see \Zend\InputFilter\InputFilterAwareInterface::getInputFilter()
      */
     public function getInputFilter()
@@ -120,18 +132,6 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
 
         $this->inputFilter = $inputFilter;
         return $this->inputFilter;
-    }
-
-    /**
-     * {@inheritDoc}
-     * @see \Zend\InputFilter\InputFilterAwareInterface::setInputFilter()
-     */
-    public function setInputFilter(InputFilterInterface $inputFilter)
-    {
-        throw new DomainException(sprintf(
-            '%s does not allow injection of an alternate input filter',
-            __CLASS__
-        ));
     }
 
     /**
