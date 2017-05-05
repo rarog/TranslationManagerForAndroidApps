@@ -8,6 +8,7 @@
 namespace Translations\Controller;
 
 use Translations\Form\AppForm;
+use Translations\Form\DeleteHelperForm;
 use Translations\Model\App;
 use Translations\Model\AppTable;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -55,7 +56,7 @@ class AppController extends AbstractActionController
 
         $app->exchangeArray($form->getData());
         $this->table->saveApp($app);
-        return $this->redirect()->toRoute('app');
+        return $this->redirect()->toRoute('app', ['action' => 'index']);
     }
 
     /**
@@ -65,7 +66,40 @@ class AppController extends AbstractActionController
      */
     public function deleteAction()
     {
-        return new ViewModel();
+        $id = (int) $this->params()->fromRoute('id', 0);
+        try {
+            $app = $this->table->getApp($id);
+        } catch (\Exception $e) {
+            return $this->redirect()->toRoute('app', ['action' => 'index']);
+        }
+
+        $form = new DeleteHelperForm();
+        $form->bind($app);
+
+        $request = $this->getRequest();
+        $viewData = [
+            'id'   => $id,
+            'name' => $app->name,
+            'form' => $form,
+        ];
+
+        if (!$request->isPost()) {
+            return $viewData;
+        }
+
+        $form->setInputFilter($app->getInputFilter());
+        $form->setData($request->getPost());
+
+        if (!$form->isValid()) {
+            return $viewData;
+        }
+
+        if ($request->getPost('del', 'false') === 'true') {
+            $id = (int) $request->getPost('id');
+            $this->table->deleteApp($id);
+        }
+
+        return $this->redirect()->toRoute('app', ['action' => 'index']);
     }
 
     /**
@@ -94,7 +128,7 @@ class AppController extends AbstractActionController
         $request = $this->getRequest();
         $viewData = [
             'id'   => $id,
-            'form' => $form
+            'form' => $form,
         ];
 
         if (!$request->isPost()) {
