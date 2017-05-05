@@ -67,4 +67,7 @@ return [
             'en_US' => 'English (USA)',
         ],
     ],
+    'tmfaa' => [
+        'app_dir' => __DIR__ . '/../../data/apps/',
+    ],
 ];
