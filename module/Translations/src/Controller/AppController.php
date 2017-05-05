@@ -7,6 +7,7 @@
 
 namespace Translations\Controller;
 
+use Translations\Form\AppForm;
 use Translations\Model\AppTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -32,7 +33,25 @@ class AppController extends AbstractActionController
      */
     public function addAction()
     {
-        return new ViewModel();
+        $form = new AppForm();
+
+        $request = $this->getRequest();
+
+        if (!$request->isPost()) {
+            return ['form' => $form];
+        }
+
+        $app = new App();
+        $form->setInputFilter($app->getInputFilter());
+        $form->setData($request->getPost());
+
+        if (!$form->isValid()) {
+            return ['form' => $form];
+        }
+
+        $app->exchangeArray($form->getData());
+        $this->table->saveApp($app);
+        return $this->redirect()->toRoute('app');
     }
 
     /**
