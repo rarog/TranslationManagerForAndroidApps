@@ -39,7 +39,7 @@ class AppTable
         return $row;
     }
 
-    public function saveProject(App $app)
+    public function saveApp(App $app)
     {
         $data = [
             'name'               => $app->name,

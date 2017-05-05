@@ -8,12 +8,16 @@
 namespace Translations\Controller;
 
 use Translations\Form\AppForm;
+use Translations\Model\App;
 use Translations\Model\AppTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 class AppController extends AbstractActionController
 {
+    /**
+     * @var AppTable
+     */
     private $table;
 
     /**

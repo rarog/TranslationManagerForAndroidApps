@@ -23,33 +23,60 @@ class AppForm extends Form
             'type' => 'hidden',
         ]);
         $this->add([
-            'name'    => 'name',
-            'type'    => 'text',
-            'options' => [
-                'label' => _('Name'),
+            'attributes' => [
+                'id' => 'name',
+                'maxlength' => 255,
             ],
+            'name'       => 'name',
+            'options'    => [
+                'column-size'      => 'sm-9',
+                'label'            => _('Name'),
+                'label_attributes' => [
+                    'class' => 'col-sm-3',
+                ],
+            ],
+            'type'       => 'text',
         ]);
         $this->add([
-            'name'    => 'git_repository',
-            'type'    => 'text',
-            'options' => [
-                'label' => _('Git repository'),
+            'attributes' => [
+                'id' => 'git_repository',
+                'maxlength' => 4096,
             ],
+            'name'       => 'git_repository',
+            'options'    => [
+                'column-size'      => 'sm-9',
+                'label'            => _('Git repository'),
+                'label_attributes' => [
+                    'class' => 'col-sm-3',
+                ],
+            ],
+            'type'       => 'text',
         ]);
         $this->add([
-            'name'    => 'path_to_res_folder',
-            'type'    => 'text',
-            'options' => [
-                'label' => _('Path to "res" folder'),
+            'attributes' => [
+                'id' => 'path_to_res_folder',
+                'maxlength' => 4096,
             ],
+            'name'       => 'path_to_res_folder',
+            'options'    => [
+                'column-size'      => 'sm-9',
+                'label'            => _('Path to "res" folder'),
+                'label_attributes' => [
+                    'class' => 'col-sm-3',
+                ],
+            ],
+            'type'       => 'text',
         ]);
         $this->add([
-            'name' => 'submit',
-            'type' => 'submit',
             'attributes' => [
                 'value' => _('Save'),
                 'id'    => 'submit',
             ],
+            'name'       => 'submit',
+            'options'    => [
+                'column-size' => 'sm-9 col-sm-offset-3',
+            ],
+            'type'       => 'submit',
         ]);
     }
 }

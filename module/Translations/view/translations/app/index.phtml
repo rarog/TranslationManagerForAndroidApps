@@ -4,10 +4,10 @@ $this->headTitle($title);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
 <p>
-    <a class="btn btn-success" href="<?= $this->url('app', ['action' => 'add']) ?>"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Add new app')) ?></a>
+    <a class="btn btn-default" href="<?= $this->url('app', ['action' => 'add']) ?>"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Add new app')) ?></a>
 </p>
 
-<table class="table table-striped">
+<table class="table table-bordered table-striped">
 <tr>
     <th><?= $this->escapeHtml($this->translate('Name')) ?></th>
     <th><?= $this->escapeHtml($this->translate('Git repository')) ?></th>
@@ -21,7 +21,7 @@ $this->headTitle($title);
         <td><?= $this->escapeHtml($app->pathToResFolder) ?></td>
         <td>
             <div class="btn-group">
-                <a class="btn btn-info" href="<?= $this->url('app', ['action' => 'edit', 'id' => $app->id]) ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Edit')) ?></a>
+                <a class="btn btn-default" href="<?= $this->url('app', ['action' => 'edit', 'id' => $app->id]) ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Edit')) ?></a>
                 <a class="btn btn-danger" href="<?= $this->url('app', ['action' => 'delete', 'id' => $app->id]) ?>"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Delete')) ?></a>
             </div>
         </td>
