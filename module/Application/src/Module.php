@@ -15,7 +15,7 @@ use Zend\Session\Validator;
 
 class Module
 {
-    const VERSION = '0.1-dev';
+    const VERSION = '0.2-dev';
 
     /**
      * Sets up listeners, that shouldn't be initialised via config.
