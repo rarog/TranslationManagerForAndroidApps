@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TranslationManagerForAndroidApps\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-04 15:20+0200\n"
-"PO-Revision-Date: 2017-05-04 15:20+0200\n"
+"POT-Creation-Date: 2017-05-06 09:34+0200\n"
+"PO-Revision-Date: 2017-05-06 09:34+0200\n"
 "Last-Translator: rarog <rarogit@gmail.com>\n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -20,12 +20,24 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
+#: config/module.config.php:32
+msgid "Translations"
+msgstr ""
+
 #: config/module.config.php:38
+msgid "Apps"
+msgstr ""
+
+#: config/module.config.php:52
 msgid "My user"
 msgstr ""
 
-#: config/module.config.php:48 view/zfc-user/user/index.phtml:7
+#: config/module.config.php:62 view/zfc-user/user/index.phtml:7
 msgid "Sign out"
+msgstr ""
+
+#: src/View/Helper/DataTablesInitHelper.php:46
+msgid "All"
 msgstr ""
 
 #: view/zfc-user/user/index.phtml:2
