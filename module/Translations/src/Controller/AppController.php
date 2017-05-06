@@ -7,10 +7,12 @@
 
 namespace Translations\Controller;
 
+use RuntimeException;
 use Translations\Form\AppForm;
 use Translations\Form\DeleteHelperForm;
 use Translations\Model\App;
 use Translations\Model\AppTable;
+use Translations\Model\FileHelper;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -31,9 +33,21 @@ class AppController extends AbstractActionController
         $this->table = $table;
     }
 
+    private function getAppDir($id)
+    {
+        if (($path = realpath($this->configHelp('tmfaa')->app_dir)) === false) {
+            throw new RuntimeException(sprintf(
+                'Configured path app directory "%s" does not exist',
+                $this->configHelp('tmfaa')->app_dir
+            ));
+        }
+        return FileHelper::concatenatePath($path, (string) $id);
+    }
+
     /**
      * App add action
      *
+     * @throws RuntimeException
      * @return \Zend\View\Model\ViewModel
      */
     public function addAction()
@@ -55,7 +69,16 @@ class AppController extends AbstractActionController
         }
 
         $app->exchangeArray($form->getData());
-        $this->table->saveApp($app);
+        $app = $this->table->saveApp($app);;
+
+        $path = $this->getAppDir($app->id);echo $path;
+        if (!mkdir($path, 0775)) {
+            throw new RuntimeException(sprintf(
+                'Could not create path "%s"',
+                $path
+            ));
+        }
+
         return $this->redirect()->toRoute('app', ['action' => 'index']);
     }
 
@@ -97,6 +120,7 @@ class AppController extends AbstractActionController
         if ($request->getPost('del', 'false') === 'true') {
             $id = (int) $request->getPost('id');
             $this->table->deleteApp($id);
+            FileHelper::rmdirRecursive($this->getAppDir($id));
         }
 
         return $this->redirect()->toRoute('app', ['action' => 'index']);

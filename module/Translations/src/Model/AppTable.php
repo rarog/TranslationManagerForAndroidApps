@@ -8,22 +8,40 @@
 namespace Translations\Model;
 
 use RuntimeException;
-use Zend\Db\TableGateway\TableGatewayInterface;
+use Zend\Db\TableGateway\TableGateway;
 
 class AppTable
 {
+    /**
+     * @var TableGateway
+     */
     private $tableGateway;
 
-    public function __construct(TableGatewayInterface $tableGateway)
+    /**
+     * Constructor
+     *
+     * @param TableGateway $tableGateway
+     */
+    public function __construct(TableGateway $tableGateway)
     {
         $this->tableGateway = $tableGateway;
     }
 
+    /**
+     * Gets all entries
+     *
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
     public function fetchAll()
     {
         return $this->tableGateway->select();
     }
 
+    /**
+     * @param  int $id
+     * @throws RuntimeException
+     * @return \Translations\Model\App
+     */
     public function getApp($id)
     {
         $id = (int) $id;
@@ -39,6 +57,13 @@ class AppTable
         return $row;
     }
 
+    /**
+     * App save function
+     *
+     * @param  App $app
+     * @throws RuntimeException
+     * @return \Translations\Model\App
+     */
     public function saveApp(App $app)
     {
         $data = [
@@ -51,10 +76,11 @@ class AppTable
 
         if ($id === 0) {
             $this->tableGateway->insert($data);
-            return;
+            $app->id = $this->tableGateway->getLastInsertValue();
+            return $app;
         }
 
-        if (! $this->getApp($id)) {
+        if (!$this->getApp($id)) {
             throw new RuntimeException(sprintf(
                 'Cannot update app with identifier %d; does not exist',
                 $id
@@ -62,8 +88,14 @@ class AppTable
         }
 
         $this->tableGateway->update($data, ['id' => $id]);
+        return $app;
     }
 
+    /**
+     * App delete function
+     *
+     * @param int $id
+     */
     public function deleteApp($id)
     {
         $this->tableGateway->delete(['id' => (int) $id]);
