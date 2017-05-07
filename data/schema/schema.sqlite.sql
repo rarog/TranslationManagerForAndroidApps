@@ -16,6 +16,11 @@ CREATE TABLE user_role_linker
     FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE team (
+    id                 INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name               VARCHAR(255) DEFAULT NULL
+);
+
 CREATE TABLE app (
     id                 INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     name               VARCHAR(255) DEFAULT NULL,

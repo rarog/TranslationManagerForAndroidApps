@@ -38,7 +38,7 @@ return [
                         'label'      => _('Teams'),
                         'route'      => 'home',
                         'icon'       => 'fa fa-users',
-                        'permission' => 'app',
+                        'permission' => 'team',
                     ],
                     [
                         'label'      => _('Apps'),

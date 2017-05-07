@@ -39,7 +39,10 @@ return [
                 'zfcuser/register' => ['guest'],
                 'zfcuser*'         => ['user'],
                 'setup*'           => ['guest'],
-                'app*'             => ['admin'],
+                'team/add'         => ['admin'],
+                'team/delete'      => ['admin'],
+                'team*'            => ['teamadmin'],
+                'app*'             => ['teamadmin'],
             ]
         ],
 
@@ -73,9 +76,18 @@ return [
         'role_provider' => [
             'ZfcRbac\Role\InMemoryRoleProvider' => [
                 'admin'     => [
+                    'children'    => ['teamadmin'],
+                    'permissions' => [
+                        'team.add',
+                        'team.delete',
+                        'app',
+                    ],
+                ],
+                'teamadmin' => [
                     'children'    => ['superuser'],
                     'permissions' => [
-                        'app',
+                        'team',
+                        'team.edit',
                     ],
                 ],
                 'superuser' => [
