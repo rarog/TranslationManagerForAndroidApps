@@ -32,17 +32,49 @@ return [
          *      ]
          */
         'guards' => [
-            'ZfcRbac\Guard\RouteGuard' => [
-                'home'             => ['user'],
-                'application*'     => ['user'],
-                'zfcuser/login'    => ['guest'],
-                'zfcuser/register' => ['guest'],
-                'zfcuser*'         => ['user'],
-                'setup*'           => ['guest'],
-                'team/add'         => ['admin'],
-                'team/delete'      => ['admin'],
-                'team*'            => ['teamadmin'],
-                'app*'             => ['teamadmin'],
+            'ZfcRbac\Guard\RoutePermissionsGuard' =>[
+                'home'             => [
+                    'permissions' => ['userBase'],
+                ],
+                'application*'     => [
+                    'permissions' => ['userBase'],
+                ],
+                'zfcuser/login'    => [
+                    'permissions' => ['guest'],
+                ],
+                'zfcuser/register' => [
+                    'permissions' => ['guest'],
+                ],
+                'zfcuser*'         => [
+                    'permissions' => ['userBase'],
+                ],
+                'setup*' => [
+                    'permissions' => ['guest'],
+                ],
+                'team/add'         => [
+                    'permissions' => ['team.add'],
+                ],
+                'team/edit'        => [
+                    'permissions' => ['team.edit'],
+                ],
+                'team/delete'      => [
+                    'permissions' => ['team.delete'],
+                ],
+                'team*'   => [
+                    'permissions' => ['team.view'],
+                ],
+                'app/add'   => [
+                    'permissions' => ['app.add'],
+                ],
+                'app/edit'   => [
+                    'permissions' => ['app.edit'],
+                ],
+                'app/delete'   => [
+                    'permissions' => ['app.delete'],
+                ],
+                'app*'   => [
+                    'permissions' => ['app.view'],
+                ],
             ]
         ],
 
@@ -100,6 +132,11 @@ return [
                 'user'      => [
                     'permissions' => [
                         'userBase',
+                    ],
+                ],
+                'guest'     => [
+                    'permissions' => [
+                        'guest',
                     ],
                 ],
             ]
