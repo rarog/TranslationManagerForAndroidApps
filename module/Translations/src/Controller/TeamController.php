@@ -8,51 +8,40 @@
 namespace Translations\Controller;
 
 use RuntimeException;
-use Translations\Form\AppForm;
+use Translations\Form\TeamForm;
 use Translations\Form\DeleteHelperForm;
-use Translations\Model\App;
-use Translations\Model\AppTable;
+use Translations\Model\Team;
+use Translations\Model\TeamTable;
 use Translations\Model\FileHelper;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
-class AppController extends AbstractActionController
+class TeamController extends AbstractActionController
 {
     /**
-     * @var AppTable
+     * @var TeamTable
      */
     private $table;
 
     /**
      * Constructor
      *
-     * @param AppTable $table
+     * @param TeamTable $table
      */
-    public function __construct(AppTable $table)
+    public function __construct(TeamTable $table)
     {
         $this->table = $table;
     }
 
-    private function getAppDir($id)
-    {
-        if (($path = realpath($this->configHelp('tmfaa')->app_dir)) === false) {
-            throw new RuntimeException(sprintf(
-                'Configured path app directory "%s" does not exist',
-                $this->configHelp('tmfaa')->app_dir
-            ));
-        }
-        return FileHelper::concatenatePath($path, (string) $id);
-    }
-
     /**
-     * App add action
+     * Team add action
      *
      * @throws RuntimeException
      * @return \Zend\View\Model\ViewModel
      */
     public function addAction()
     {
-        $form = new AppForm();
+        $form = new TeamForm();
 
         $request = $this->getRequest();
 
@@ -60,30 +49,22 @@ class AppController extends AbstractActionController
             return ['form' => $form];
         }
 
-        $app = new App();
-        $form->setInputFilter($app->getInputFilter());
+        $team = new Team();
+        $form->setInputFilter($team->getInputFilter());
         $form->setData($request->getPost());
 
         if (!$form->isValid()) {
             return ['form' => $form];
         }
 
-        $app->exchangeArray($form->getData());
-        $app = $this->table->saveApp($app);
+        $team->exchangeArray($form->getData());
+        $team = $this->table->saveTeam($team);
 
-        $path = $this->getAppDir($app->id);echo $path;
-        if (!mkdir($path, 0775)) {
-            throw new RuntimeException(sprintf(
-                'Could not create path "%s"',
-                $path
-            ));
-        }
-
-        return $this->redirect()->toRoute('app', ['action' => 'index']);
+        return $this->redirect()->toRoute('team', ['action' => 'index']);
     }
 
     /**
-     * App delete action
+     * Team delete action
      *
      * @return \Zend\View\Model\ViewModel
      */
@@ -91,18 +72,18 @@ class AppController extends AbstractActionController
     {
         $id = (int) $this->params()->fromRoute('id', 0);
         try {
-            $app = $this->table->getApp($id);
+            $team = $this->table->getTeam($id);
         } catch (\Exception $e) {
-            return $this->redirect()->toRoute('app', ['action' => 'index']);
+            return $this->redirect()->toRoute('team', ['action' => 'index']);
         }
 
         $form = new DeleteHelperForm();
-        $form->bind($app);
+        $form->bind($team);
 
         $request = $this->getRequest();
         $viewData = [
             'id'   => $id,
-            'name' => $app->name,
+            'name' => $team->name,
             'form' => $form,
         ];
 
@@ -110,7 +91,7 @@ class AppController extends AbstractActionController
             return $viewData;
         }
 
-        $form->setInputFilter($app->getInputFilter());
+        $form->setInputFilter($team->getInputFilter());
         $form->setData($request->getPost());
 
         if (!$form->isValid()) {
@@ -119,15 +100,14 @@ class AppController extends AbstractActionController
 
         if ($request->getPost('del', 'false') === 'true') {
             $id = (int) $request->getPost('id');
-            $this->table->deleteApp($id);
-            FileHelper::rmdirRecursive($this->getAppDir($id));
+            $this->table->deleteTeam($id);
         }
 
-        return $this->redirect()->toRoute('app', ['action' => 'index']);
+        return $this->redirect()->toRoute('team', ['action' => 'index']);
     }
 
     /**
-     * App edit action
+     * Team edit action
      *
      * @return \Zend\View\Model\ViewModel
      */
@@ -137,17 +117,17 @@ class AppController extends AbstractActionController
         $id = (int) $this->params()->fromRoute('id', 0);
 
         if (0 === $id) {
-            return $this->redirect()->toRoute('app', ['action' => 'add']);
+            return $this->redirect()->toRoute('team', ['action' => 'add']);
         }
 
         try {
-            $app = $this->table->getApp($id);
+            $team = $this->table->getTeam($id);
         } catch (\Exception $e) {
-            return $this->redirect()->toRoute('app', ['action' => 'index']);
+            return $this->redirect()->toRoute('team', ['action' => 'index']);
         }
 
-        $form = new AppForm();
-        $form->bind($app);
+        $form = new TeamForm();
+        $form->bind($team);
 
         $request = $this->getRequest();
         $viewData = [
@@ -159,28 +139,28 @@ class AppController extends AbstractActionController
             return $viewData;
         }
 
-        $form->setInputFilter($app->getInputFilter());
+        $form->setInputFilter($team->getInputFilter());
         $form->setData($request->getPost());
 
         if (!$form->isValid()) {
             return $viewData;
         }
 
-        $this->table->saveApp($app);
+        $this->table->saveTeam($team);
 
-        return $this->redirect()->toRoute('app', ['action' => 'index']);
+        return $this->redirect()->toRoute('team', ['action' => 'index']);
     }
 
 
     /**
-     * App overview action
+     * Team overview action
      *
      * @return \Zend\View\Model\ViewModel
      */
     public function indexAction()
     {
         return new ViewModel([
-            'apps' => $this->table->fetchAll(),
+            'teams' => $this->table->fetchAll(),
         ]);
     }
 }

@@ -1,0 +1,36 @@
+<?php
+$title = $this->translate('Teams');
+$this->headTitle($title);
+$this->dataTablesInitHelper(['table' => '#teams']);
+?>
+<h1><?= $this->escapeHtml($title) ?></h1>
+<?php if ($this->isGranted('team.add')) : ?>
+<p>
+    <a class="btn btn-default" href="<?= $this->url('team', ['action' => 'add']) ?>"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Add new team')) ?></a>
+</p>
+<?php endif; ?>
+<table class="table table-bordered table-striped" id="teams">
+    <thead>
+        <tr>
+            <th><?= $this->escapeHtml($this->translate('Name')) ?></th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+<?php foreach ($teams as $team) : ?>
+        <tr>
+            <td><?= $this->escapeHtml($team->name) ?></td>
+            <td>
+                <div class="btn-group">
+<?php if ($this->isGranted('team.edit')) : ?>
+                    <a class="btn btn-default" href="<?= $this->url('team', ['action' => 'edit', 'id' => $team->id]) ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Edit')) ?></a>
+<?php endif; ?>
+<?php if ($this->isGranted('team.delete')) : ?>
+                    <a class="btn btn-danger" href="<?= $this->url('team', ['action' => 'delete', 'id' => $team->id]) ?>"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Delete')) ?></a>
+<?php endif; ?>
+                </div>
+            </td>
+        </tr>
+<?php endforeach; ?>
+    </tbody>
+</table>

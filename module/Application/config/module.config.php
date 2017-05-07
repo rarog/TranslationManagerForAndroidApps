@@ -36,7 +36,7 @@ return [
                 'pages' => [
                     [
                         'label'      => _('Teams'),
-                        'route'      => 'home',
+                        'route'      => 'team',
                         'icon'       => 'fa fa-users',
                         'permission' => 'team.view',
                     ],

@@ -12,21 +12,36 @@ use Zend\Router\Http\Segment;
 return [
     'controllers' => [
         'factories' => [
-            Controller\AppController::class => Factory\Controller\AppControllerFactory::class,
+            Controller\AppController::class  => Factory\Controller\AppControllerFactory::class,
+            Controller\TeamController::class => Factory\Controller\TeamControllerFactory::class,
         ],
     ],
     'router' => [
         'routes' => [
-            'app' => [
+            'app'  => [
                 'type'    => Segment::class,
                 'options' => [
-                    'route' => '/app[/:action[/:id]]',
+                    'route'       => '/app[/:action[/:id]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id'     => '[0-9]+',
                     ],
-                    'defaults' => [
+                    'defaults'    => [
                         'controller' => Controller\AppController::class,
+                        'action'     => 'index',
+                    ],
+                ],
+            ],
+            'team' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'       => '/team[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ],
+                    'defaults'    => [
+                        'controller' => Controller\TeamController::class,
                         'action'     => 'index',
                     ],
                 ],

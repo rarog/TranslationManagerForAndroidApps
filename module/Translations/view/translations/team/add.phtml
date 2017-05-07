@@ -1,0 +1,9 @@
+<?php
+$title = $this->translate('Add new team');
+$this->headTitle($title);
+?>
+<h1><?= $this->escapeHtml($title) ?></h1>
+<?php
+$form->setAttribute('action', $this->url('team', ['action' => 'add']));
+echo $this->form($form, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZONTAL);
+?>
