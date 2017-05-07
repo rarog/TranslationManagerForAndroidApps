@@ -17,13 +17,15 @@ CREATE TABLE user_role_linker
 );
 
 CREATE TABLE team (
-    id                 INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    name               VARCHAR(255) DEFAULT NULL
+    id   INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(255) DEFAULT NULL
 );
 
 CREATE TABLE app (
     id                 INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    team_id            INTEGER NOT NULL,
     name               VARCHAR(255) DEFAULT NULL,
     git_repository     VARCHAR(4096) DEFAULT NULL,
-    path_to_res_folder VARCHAR(4096) DEFAULT NULL
+    path_to_res_folder VARCHAR(4096) DEFAULT NULL,
+    FOREIGN KEY(team_id) REFERENCES team(id) ON DELETE CASCADE ON UPDATE CASCADE
 );

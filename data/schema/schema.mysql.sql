@@ -1,5 +1,5 @@
 CREATE TABLE `user` (
-    `user_id`      INT(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `user_id`      INT(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `username`     VARCHAR(255) DEFAULT NULL UNIQUE,
     `email`        VARCHAR(255) DEFAULT NULL UNIQUE,
     `display_name` VARCHAR(50) DEFAULT NULL,
@@ -8,7 +8,7 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `user_role_linker` (
-    `user_id` INT(10) UNSIGNED NOT NULL,
+    `user_id` INT(11) UNSIGNED NOT NULL,
     `role_id` VARCHAR(45) NOT NULL,
     PRIMARY KEY (`user_id`,`role_id`),
     KEY `user_role_linker_fk1_idx` (`user_id`),
@@ -16,13 +16,15 @@ CREATE TABLE `user_role_linker` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `team` (
-    `id`                 INT(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `name`               VARCHAR(255) DEFAULT NULL
+    `id`   INT(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `name` VARCHAR(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `app` (
-    `id`                 INT(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `id`                 INT(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `team_id`            INT(11) UNSIGNED NOT NULL,
     `name`               VARCHAR(255) DEFAULT NULL,
     `git_repository`     VARCHAR(4096) DEFAULT NULL,
-    `path_to_res_folder` VARCHAR(4096) DEFAULT NULL
+    `path_to_res_folder` VARCHAR(4096) DEFAULT NULL,
+    CONSTRAINT `app_fk1` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
