@@ -9,7 +9,7 @@ namespace Translations\Form;
 
 use Zend\Form\Form;
 
-class AppForm extends Form
+class TeamForm extends Form
 {
     public function __construct($name = null)
     {
@@ -38,39 +38,9 @@ class AppForm extends Form
             ],
             'type'       => 'text',
         ]);
-        $this->add([
-            'attributes' => [
-                'id' => 'git_repository',
-                'maxlength' => 4096,
-            ],
-            'name'       => 'git_repository',
-            'options'    => [
-                'column-size'      => 'sm-9',
-                'label'            => _('Git repository'),
-                'label_attributes' => [
-                    'class' => 'col-sm-3',
-                ],
-            ],
-            'type'       => 'text',
-        ]);
-        $this->add([
-            'attributes' => [
-                'id' => 'path_to_res_folder',
-                'maxlength' => 4096,
-            ],
-            'name'       => 'path_to_res_folder',
-            'options'    => [
-                'column-size'      => 'sm-9',
-                'label'            => _('Path to "res" folder'),
-                'label_attributes' => [
-                    'class' => 'col-sm-3',
-                ],
-            ],
-            'type'       => 'text',
-        ]);
         $this->add(array(
             'type' => 'Csrf',
-            'name' => 'csrf_app',
+            'name' => 'csrf_team',
             'options' => array(
                 'csrf_options' => array(
                     'timeout' => null,

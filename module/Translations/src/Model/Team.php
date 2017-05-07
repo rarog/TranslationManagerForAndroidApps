@@ -17,7 +17,7 @@ use Zend\InputFilter\InputFilterInterface;
 use Zend\Stdlib\ArraySerializableInterface;
 use Zend\Validator\StringLength;
 
-class App implements ArraySerializableInterface, InputFilterAwareInterface
+class Team implements ArraySerializableInterface, InputFilterAwareInterface
 {
     /**
      * @var int
@@ -28,16 +28,6 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
      * @var string
      */
     public $name;
-
-    /**
-     * @var string
-     */
-    public $gitRepository;
-
-    /**
-     * @var string
-     */
-    public $pathToResFolder;
 
     /**
      * @var InputFilter
@@ -93,42 +83,6 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
                 ],
             ],
         ]);
-        $inputFilter->add([
-            'name'       => 'git_repository',
-            'required'   => false,
-            'filters'    => [
-                ['name' => StripTags::class],
-                ['name' => StringTrim::class],
-            ],
-            'validators' => [
-                [
-                    'name'    => StringLength::class,
-                    'options' => [
-                        'encoding' => 'UTF-8',
-                        'min'      => 0,
-                        'max'      => 4096,
-                    ],
-                ],
-            ],
-        ]);
-        $inputFilter->add([
-            'name'       => 'path_to_res_folder',
-            'required'   => false,
-            'filters'    => [
-                ['name' => StripTags::class],
-                ['name' => StringTrim::class],
-            ],
-            'validators' => [
-                [
-                    'name'    => StringLength::class,
-                    'options' => [
-                        'encoding' => 'UTF-8',
-                        'min'      => 0,
-                        'max'      => 4096,
-                    ],
-                ],
-            ],
-        ]);
 
         $this->inputFilter = $inputFilter;
         return $this->inputFilter;
@@ -140,10 +94,8 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
      */
     public function exchangeArray(array $data)
     {
-        $this->id              = !empty($data['id']) ? $data['id'] : null;
-        $this->name            = !empty($data['name']) ? $data['name'] : null;
-        $this->gitRepository   = !empty($data['git_repository']) ? $data['git_repository'] : null;
-        $this->pathToResFolder = !empty($data['path_to_res_folder']) ? $data['path_to_res_folder'] : null;
+        $this->id   = !empty($data['id']) ? $data['id'] : null;
+        $this->name = !empty($data['name']) ? $data['name'] : null;
     }
 
     /**
@@ -153,10 +105,8 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
     public function getArrayCopy()
     {
         return [
-            'id'                 => $this->id,
-            'name'               => $this->name,
-            'git_repository'     => $this->gitRepository,
-            'path_to_res_folder' => $this->pathToResFolder,
+            'id'   => $this->id,
+            'name' => $this->name,
         ];
     }
 }

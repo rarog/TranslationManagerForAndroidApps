@@ -10,7 +10,7 @@ namespace Translations\Model;
 use RuntimeException;
 use Zend\Db\TableGateway\TableGateway;
 
-class AppTable
+class TeamTable
 {
     /**
      * @var TableGateway
@@ -42,7 +42,7 @@ class AppTable
      *
      * @param  int $id
      * @throws RuntimeException
-     * @return \Translations\Model\App
+     * @return \Translations\Model\Team
      */
     public function getApp($id)
     {
@@ -60,45 +60,43 @@ class AppTable
     }
 
     /**
-     * App save function
+     * Team save function
      *
-     * @param  App $app
+     * @param  Team $team
      * @throws RuntimeException
-     * @return \Translations\Model\App
+     * @return \Translations\Model\Team
      */
-    public function saveApp(App $app)
+    public function saveTeam(Team $team)
     {
         $data = [
-            'name'               => $app->name,
-            'git_repository'     => $app->gitRepository,
-            'path_to_res_folder' => $app->pathToResFolder,
+            'name' => $team->name,
         ];
 
-        $id = (int) $app->id;
+        $id = (int) $team->id;
 
         if ($id === 0) {
             $this->tableGateway->insert($data);
-            $app->id = $this->tableGateway->getLastInsertValue();
-            return $app;
+            $team->id = $this->tableGateway->getLastInsertValue();
+            return $team;
         }
 
         if (!$this->getApp($id)) {
             throw new RuntimeException(sprintf(
-                'Cannot update app with identifier %d; does not exist',
+                'Cannot update team with identifier %d; does not exist',
                 $id
             ));
         }
 
         $this->tableGateway->update($data, ['id' => $id]);
-        return $app;
+        return $team;
     }
 
     /**
-     * App delete function
+     * Team delete function
      *
      * @param int $id
      */
-    public function deleteApp($id)
+    public function deleteTeam($id)
     {
         $this->tableGateway->delete(['id' => (int) $id]);
     }
