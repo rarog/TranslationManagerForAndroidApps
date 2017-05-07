@@ -35,6 +35,12 @@ return [
                 'permission' => 'userBase',
                 'pages' => [
                     [
+                        'label'      => _('Teams'),
+                        'route'      => 'home',
+                        'icon'       => 'fa fa-users',
+                        'permission' => 'app',
+                    ],
+                    [
                         'label'      => _('Apps'),
                         'route'      => 'app',
                         'icon'       => 'glyphicon glyphicon-phone',
