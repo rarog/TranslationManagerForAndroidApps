@@ -80,13 +80,16 @@ return [
                     'permissions' => [
                         'team.add',
                         'team.delete',
-                        'app',
                     ],
                 ],
                 'teamadmin' => [
                     'children'    => ['superuser'],
                     'permissions' => [
-                        'team',
+                        'app.add',
+                        'app.delete',
+                        'app.edit',
+                        'app.view',
+                        'team.view',
                         'team.edit',
                     ],
                 ],
