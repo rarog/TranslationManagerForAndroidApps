@@ -8,11 +8,10 @@
 namespace Translations\Controller;
 
 use RuntimeException;
-use Translations\Form\TeamForm;
 use Translations\Form\DeleteHelperForm;
+use Translations\Form\TeamForm;
 use Translations\Model\Team;
 use Translations\Model\TeamTable;
-use Translations\Model\FileHelper;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
