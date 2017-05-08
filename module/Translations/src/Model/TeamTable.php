@@ -80,7 +80,7 @@ class TeamTable
             return $team;
         }
 
-        if (!$this->getApp($id)) {
+        if (!$this->getTeam($id)) {
             throw new RuntimeException(sprintf(
                 'Cannot update team with identifier %d; does not exist',
                 $id
