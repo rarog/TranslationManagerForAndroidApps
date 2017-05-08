@@ -96,7 +96,7 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
             ],
             'validators' => [
                 [
-                    'name' => StringLength::class,
+                    'name'    => StringLength::class,
                     'options' => [
                         'encoding' => 'UTF-8',
                         'min' => 1,
