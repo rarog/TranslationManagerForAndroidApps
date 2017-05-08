@@ -45,6 +45,18 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
     private $inputFilter;
 
     /**
+     * Constructor
+     *
+     * @param array $data
+     */
+    public function __construct(array $data = null)
+    {
+        if ($data) {
+            $this->exchangeArray($data);
+        }
+    }
+
+    /**
      * {@inheritDoc}
      * @see \Zend\InputFilter\InputFilterAwareInterface::setInputFilter()
      */
