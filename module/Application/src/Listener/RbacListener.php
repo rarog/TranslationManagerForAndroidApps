@@ -63,7 +63,7 @@ class RbacListener implements ListenerAggregateInterface
      * @param  EventInterface $event
      * @return bool|void
      */
-    public function onIsAllowed(EventInterface $event)
+    private function onIsAllowed(EventInterface $event)
     {
         $page = $event->getParam('page');
 
