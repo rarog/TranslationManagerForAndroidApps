@@ -70,7 +70,7 @@ class SetupListener implements ListenerAggregateInterface
      *
      * @param EventInterface $event
      */
-    protected function onUserCreated(EventInterface $event)
+    private function onUserCreated(EventInterface $event)
     {
         $user = $event->getParam('user', null);
         if ($user instanceof \ZfcUser\Entity\UserInterface) {
