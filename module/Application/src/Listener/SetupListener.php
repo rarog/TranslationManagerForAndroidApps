@@ -7,6 +7,7 @@
 
 namespace Application\Listener;
 
+use Translations\Model\TeamTable;
 use UserRbac\Mapper\UserRoleLinkerMapper;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\EventManagerInterface;
@@ -14,16 +15,31 @@ use Zend\EventManager\ListenerAggregateInterface;
 
 class SetupListener implements ListenerAggregateInterface
 {
-    protected $userRoleLinkerMapper;
+    /**
+     * @var UserRoleLinkerMapper
+     */
+    private $userRoleLinkerMapper;
+
+    /**
+     * @var TeamTable
+     */
+    private $teamTable;
+
+    /**
+     * @var callable
+     */
+    private $event;
 
     /**
      * Constructor
      *
      * @param UserRoleLinkerMapper $userRoleLinkerMapper
+     * @param TeamTable $teamTable
      */
-    public function __construct(UserRoleLinkerMapper $userRoleLinkerMapper)
+    public function __construct(UserRoleLinkerMapper $userRoleLinkerMapper, TeamTable $teamTable)
     {
         $this->userRoleLinkerMapper = $userRoleLinkerMapper;
+        $this->teamTable = $teamTable;
     }
 
     /**
@@ -32,9 +48,11 @@ class SetupListener implements ListenerAggregateInterface
      */
     public function attach(EventManagerInterface $events, $priority = 1)
     {
-        $events->getSharedManager()->attach('Setup\Controller\SetupController', 'userCreated', function ($e) {
-            $this->onUserCreated($e);
-        }, $priority);
+        $this->event = function ($e) {
+            return $this->onUserCreated($e);
+        };
+        $events->getSharedManager()
+            ->attach('Setup\Controller\SetupController', 'userCreated', $this->event, $priority);
     }
 
     /**
@@ -43,7 +61,8 @@ class SetupListener implements ListenerAggregateInterface
      */
     public function detach(EventManagerInterface $events)
     {
-        // Not sure, if anything needs to be done here.
+        $events->getSharedManager()->detach($this->event);
+        unset($this->event);
     }
 
     /**
@@ -55,8 +74,15 @@ class SetupListener implements ListenerAggregateInterface
     {
         $user = $event->getParam('user', null);
         if ($user instanceof \ZfcUser\Entity\UserInterface) {
+            // Giving the new user the admin role.
             $userLinker = new \UserRbac\Entity\UserRoleLinker($user, 'admin');
             $this->userRoleLinkerMapper->insert($userLinker);
+
+            // Creating the first team.
+            $team = new \Translations\Model\Team([
+                'team' => 'Default team', // Don't translate here, just create English name.
+            ]);
+            $team = $this->teamTable->saveTeam($team);
         }
     }
 }
