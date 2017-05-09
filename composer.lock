@@ -2355,21 +2355,21 @@
         },
         {
             "name": "zf-commons/zfc-rbac",
-            "version": "v2.6.2",
+            "version": "v2.6.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ZF-Commons/zfc-rbac.git",
-                "reference": "48df720a3670dbc36d57bf98f8e1827206431656"
+                "reference": "dd1857a88474e2a77996b1fb858f927510762819"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ZF-Commons/zfc-rbac/zipball/48df720a3670dbc36d57bf98f8e1827206431656",
-                "reference": "48df720a3670dbc36d57bf98f8e1827206431656",
+                "url": "https://api.github.com/repos/ZF-Commons/zfc-rbac/zipball/dd1857a88474e2a77996b1fb858f927510762819",
+                "reference": "dd1857a88474e2a77996b1fb858f927510762819",
                 "shasum": ""
             },
             "require": {
                 "php": "~5.6 || ~7.0",
-                "zendframework/zend-config": "~2.2",
+                "zendframework/zend-config": "~2.2 || ^3.1",
                 "zendframework/zend-eventmanager": "^2.6.3 || ^3.0",
                 "zendframework/zend-mvc": "~2.7 || ^3.0",
                 "zendframework/zend-servicemanager": "^2.7.5 || ^3.0.3",
@@ -2434,7 +2434,7 @@
                 "rbac",
                 "zf2"
             ],
-            "time": "2016-10-26T14:05:28+00:00"
+            "time": "2017-05-07T08:45:27+00:00"
         },
         {
             "name": "zf-commons/zfc-user",
