@@ -10,7 +10,7 @@ namespace Translations\Model;
 use RuntimeException;
 use Zend\Db\TableGateway\TableGateway;
 
-class UserSettingTable
+class UserSettingsTable
 {
     /**
      * @var TableGateway
@@ -47,7 +47,7 @@ class UserSettingTable
     public function getUserSettings($id)
     {
         $id = (int) $id;
-        $rowset = $this->tableGateway->select(['id' => $id]);
+        $rowset = $this->tableGateway->select(['user_id' => $id]);
         $row = $rowset->current();
         if (!$row) {
             throw new RuntimeException(sprintf(

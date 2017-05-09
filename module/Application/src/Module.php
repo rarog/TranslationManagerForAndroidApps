@@ -56,6 +56,7 @@ class Module
     private function bootstrapSession(MvcEvent $e)
     {
         $serviceManager = $e->getApplication()->getServiceManager();
+        $sharedManager = $e->getApplication()->getEventManager()->getSharedManager();
         $session = $serviceManager->get(SessionManager::class);
 
         try {
@@ -127,7 +128,7 @@ class Module
         $translator = $serviceManager->get('MvcTranslator');
 
         if ($this->userSettings) {
-            //$translator->setLocale($userSettings->locale);
+            $translator->setLocale($this->userSettings->locale);
         }
 
         $translator->setFallbackLocale(\Locale::getPrimaryLanguage($translator->getLocale()));
@@ -154,7 +155,7 @@ class Module
                 return;
             }
 
-            $userSettingsTable = $serviceManager->get(\Translations\Model\UserSettingTable::class);
+            $userSettingsTable = $serviceManager->get(\Translations\Model\UserSettingsTable::class);
             try {
                 $userSettings = $userSettingsTable->getUserSettings($auth->getIdentity()->getId());
             } catch (\RuntimeException $e) {
