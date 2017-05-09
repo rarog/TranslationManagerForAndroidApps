@@ -28,7 +28,7 @@
 		"zendframework/zend-hydrator" : "^2.2",
 		"zendframework/zend-math" : "^3.0",
 		"zendframework/zend-i18n-resources" : "^2.5",
-		"zendframework/zend-navigation": "^2.8",
+		"zendframework/zend-navigation" : "^2.8",
 		"neilime/zf2-twb-bundle" : "^3.1",
 		"tasmaniski/zend-config-helper" : "^2.0",
 		"zf-commons/zfc-user" : "2.x-dev#43518844028cb0e02aec7ceadb199390e123615c",
@@ -67,7 +67,8 @@
 			"role" : "Creator of the icon"
 		}
 	],
-	"require-dev": {
-		"zendframework/zend-test": "^3.1"
+	"require-dev" : {
+		"zendframework/zend-test" : "^3.1",
+		"phpunit/phpunit" : "^4.0 || ^5.0"
 	}
 }
