@@ -8,6 +8,7 @@
 namespace Application\Listener;
 
 use Translations\Model\TeamTable;
+use Translations\Model\UserSettingsTable;
 use UserRbac\Mapper\UserRoleLinkerMapper;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\EventManagerInterface;
@@ -26,6 +27,11 @@ class SetupListener implements ListenerAggregateInterface
     private $teamTable;
 
     /**
+     * @var UserSettingsTable
+     */
+    private $userSettingsTable;
+
+    /**
      * @var callable
      */
     private $event;
@@ -36,10 +42,11 @@ class SetupListener implements ListenerAggregateInterface
      * @param UserRoleLinkerMapper $userRoleLinkerMapper
      * @param TeamTable $teamTable
      */
-    public function __construct(UserRoleLinkerMapper $userRoleLinkerMapper, TeamTable $teamTable)
+    public function __construct(UserRoleLinkerMapper $userRoleLinkerMapper, TeamTable $teamTable, UserSettingsTable $userSettingsTable)
     {
         $this->userRoleLinkerMapper = $userRoleLinkerMapper;
         $this->teamTable = $teamTable;
+        $this->userSettingsTable = $userSettingsTable;
     }
 
     /**
@@ -80,9 +87,18 @@ class SetupListener implements ListenerAggregateInterface
 
             // Creating the first team.
             $team = new \Translations\Model\Team([
-                'team' => 'Default team', // Don't translate here, just create English name.
+                'name' => 'Default team', // Don't translate here, just create English name.
             ]);
             $team = $this->teamTable->saveTeam($team);
+
+            // Give the new user the current setup locale and newly created team.
+            $setupContainer = new \Zend\Session\Container('setup');
+            $userSettings = new \Translations\Model\UserSettings([
+                'user_id' => $user->getId(),
+                'locale'  => $setupContainer->currentLanguage,
+                'team_id' => $team->id,
+            ]);
+            $this->userSettingsTable->saveUserSettings($userSettings);
         }
     }
 }

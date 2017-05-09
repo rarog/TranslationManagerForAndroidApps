@@ -20,7 +20,8 @@ class SetupListenerFactory implements FactoryInterface
     {
         return new \Application\Listener\SetupListener(
             $container->get('UserRbac\UserRoleLinkerMapper'),
-            $container->get(\Translations\Model\TeamTable::class)
+            $container->get(\Translations\Model\TeamTable::class),
+            $container->get(\Translations\Model\UserSettingsTable::class)
         );
     }
 }
