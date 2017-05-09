@@ -32,20 +32,14 @@ class Module
         $application  = $e->getApplication();
         $eventManager = $application->getEventManager();
         $serviceManager = $application->getServiceManager();
+
+        // Sets up the redirection strategy
+        $setupAwareRedirectStrategy = $serviceManager->get('SetupAwareRedirectStrategy');
+        $setupAwareRedirectStrategy->attach($eventManager);
+
+        // Sets up the RBAC listener
         $rbacListener = $serviceManager->get('RbacListener');
         $rbacListener->attach($eventManager);
-    }
-
-    /**
-     * Sets up the redirection strategy
-     *
-     * @param MvcEvent $e
-     */
-    private function bootstrapRedirectionStrategy(MvcEvent $e)
-    {
-        $serviceManager = $e->getApplication()->getServiceManager();
-        $listener = $serviceManager->get('SetupAwareRedirectStrategy');
-        $listener->attach($e->getApplication()->getEventManager());
     }
 
     /**
@@ -247,7 +241,6 @@ class Module
         $this->bootstrapSession($e);
         $this->bootstrapUserSettings($e);
         $this->bootstrapTranslator($e);
-        $this->bootstrapRedirectionStrategy($e);
         $this->bootstrapLateListeners($e);
     }
 }
