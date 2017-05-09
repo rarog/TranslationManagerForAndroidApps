@@ -73,16 +73,18 @@ class UserSettingsTable
             'team_id' => $userSettings->teamId,
         ];
 
-        $id = (int) $userSettings->id;
+        $userId = (int) $userSettings->userId;
 
-        if ($id === 0) {
+        if ($userId === 0) {
             throw new RuntimeException('Cannot handle user settings with invalid id');
         }
 
-        if ($this->getUserSettings($id)) {
-            unset($data['id']);
-            $this->tableGateway->update($data, ['id' => $id]);
-        } else {
+        try {
+            if ($this->getUserSettings($userId)) {
+                $this->tableGateway->update($data, ['user_id' => $userId]);
+            }
+        } catch (RuntimeException $e) {
+            $data['user_id'] = $userId;
             $this->tableGateway->insert($data);
         }
 
