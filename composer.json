@@ -66,5 +66,8 @@
 			"homepage" : "https://commons.wikimedia.org/wiki/User:%C3%86toms",
 			"role" : "Creator of the icon"
 		}
-	]
+	],
+	"require-dev": {
+		"zendframework/zend-test": "^3.1"
+	}
 }
