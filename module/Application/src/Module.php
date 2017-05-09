@@ -60,6 +60,14 @@ class Module
             $session->start();
         }
 
+        // Clearing user data after login.
+        // Attaching directly to the according event without dedicated listener.
+        $adapterChain = $serviceManager->get('ZfcUser\Authentication\Adapter\AdapterChain');
+        $adapterChain->getEventManager()->attach('authenticate.success', function($e) {
+            $container = new Container();
+            $container->getManager()->getStorage()->clear('userSettings');
+        });
+
         $container = new Container('initialized');
         if (!isset($container->init)) {
             $request = $serviceManager->get('Request');
