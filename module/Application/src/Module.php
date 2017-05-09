@@ -18,6 +18,11 @@ class Module
     const VERSION = '0.2-dev';
 
     /**
+     * @var Container
+     */
+    private $userSettings;
+
+    /**
      * Sets up listeners, that shouldn't be initialised via config.
      *
      * @param MvcEvent $e
@@ -120,11 +125,46 @@ class Module
         }
 
         $translator = $serviceManager->get('MvcTranslator');
+
+        if ($this->userSettings) {
+            //$translator->setLocale($userSettings->locale);
+        }
+
         $translator->setFallbackLocale(\Locale::getPrimaryLanguage($translator->getLocale()));
         if (!is_null($translatorCache)) {
             $translator->setCache($translatorCache);
         }
         \Zend\Validator\AbstractValidator::setDefaultTranslator($translator);
+    }
+
+    /**
+     * Sets up cached user settings
+     *
+     * @param MvcEvent $e
+     */
+    private function bootstrapUserSettings(MvcEvent $e)
+    {
+        $serviceManager = $e->getApplication()->getServiceManager();
+        $auth = $serviceManager->get('zfcuser_auth_service');
+
+        if ($auth->hasIdentity()) {
+            $this->userSettings = new Container('userSettings');
+
+            if (isset($this->userSettings->init)) {
+                return;
+            }
+
+            $userSettingsTable = $serviceManager->get(\Translations\Model\UserSettingTable::class);
+            try {
+                $userSettings = $userSettingsTable->getUserSettings($auth->getIdentity()->getId());
+            } catch (\RuntimeException $e) {
+                $this->userSettings = null;
+                return;
+            }
+
+            $this->userSettings->exchangeArray($userSettings->getArrayCopy());
+            $this->userSettings->init = 1;
+        }
     }
 
     /**
@@ -204,6 +244,7 @@ class Module
     public function onBootstrap(MvcEvent $e)
     {
         $this->bootstrapSession($e);
+        $this->bootstrapUserSettings($e);
         $this->bootstrapTranslator($e);
         $this->bootstrapRedirectionStrategy($e);
         $this->bootstrapLateListeners($e);

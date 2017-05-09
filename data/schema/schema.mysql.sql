@@ -20,6 +20,14 @@ CREATE TABLE `team` (
     `name` VARCHAR(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `user_settings` (
+    `user_id` INT(11) UNSIGNED NOT NULL PRIMARY KEY,
+    `locale`  VARCHAR(5) NOT NULL,
+    `team_id` INT(11) UNSIGNED NULL,
+    CONSTRAINT `user_settings_fk1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `user_settings_fk2` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `app` (
     `id`                 INT(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `team_id`            INT(11) UNSIGNED NOT NULL,

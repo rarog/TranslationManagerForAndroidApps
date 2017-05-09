@@ -32,7 +32,7 @@ class Module implements ConfigProviderInterface
     {
         return [
             'factories' => [
-                Model\AppTable::class => function($container) {
+                Model\AppTable::class => function ($container) {
                     $tableGateway = $container->get(Model\AppTableGateway::class);
                     return new Model\AppTable($tableGateway);
                 },
@@ -42,7 +42,7 @@ class Module implements ConfigProviderInterface
                     $resultSetPrototype->setArrayObjectPrototype(new Model\App());
                     return new TableGateway('app', $dbAdapter, null, $resultSetPrototype);
                 },
-                Model\TeamTable::class => function($container) {
+                Model\TeamTable::class => function ($container) {
                     $tableGateway = $container->get(Model\TeamTableGateway::class);
                     return new Model\TeamTable($tableGateway);
                 },
@@ -51,6 +51,16 @@ class Module implements ConfigProviderInterface
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\Team());
                     return new TableGateway('team', $dbAdapter, null, $resultSetPrototype);
+                },
+                Model\UserSettingsTable::class => function ($container) {
+                    $tableGateway = $container->get(Model\UserSettingsTableGateway::class);
+                    return new Model\UserSettingsTable($tableGateway);
+                },
+                Model\UserSettingsTableGateway::class => function ($container) {
+                    $dbAdapter = $container->get(AdapterInterface::class);
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Model\UserSettings());
+                    return new UserSettingsTableGateway('user_settings', $dbAdapter, null, $resultSetPrototype);
                 },
             ],
         ];
