@@ -25,6 +25,11 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
     public $id;
 
     /**
+     * @var int
+     */
+    public $teamId;
+
+    /**
      * @var string
      */
     public $name;
@@ -82,6 +87,13 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
 
         $inputFilter->add([
             'name'     => 'id',
+            'required' => true,
+            'filters'  => [
+                ['name' => ToInt::class],
+            ],
+        ]);
+        $inputFilter->add([
+            'name'     => 'team_id',
             'required' => true,
             'filters'  => [
                 ['name' => ToInt::class],
@@ -153,6 +165,7 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
     public function exchangeArray(array $data)
     {
         $this->id              = !empty($data['id']) ? $data['id'] : null;
+        $this->teamId          = !empty($data['team_id']) ? $data['team_id'] : null;
         $this->name            = !empty($data['name']) ? $data['name'] : null;
         $this->gitRepository   = !empty($data['git_repository']) ? $data['git_repository'] : null;
         $this->pathToResFolder = !empty($data['path_to_res_folder']) ? $data['path_to_res_folder'] : null;
@@ -166,6 +179,7 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
     {
         return [
             'id'                 => $this->id,
+            'team_id'            => $this->teamId,
             'name'               => $this->name,
             'git_repository'     => $this->gitRepository,
             'path_to_res_folder' => $this->pathToResFolder,

@@ -69,6 +69,7 @@ class AppTable
     public function saveApp(App $app)
     {
         $data = [
+            'team_id'            => $app->teamId,
             'name'               => $app->name,
             'git_repository'     => $app->gitRepository,
             'path_to_res_folder' => $app->pathToResFolder,

@@ -25,6 +25,21 @@ class AppForm extends Form
         ]);
         $this->add([
             'attributes' => [
+                'id' => 'team_id',
+            ],
+            'name'       => 'team_id',
+            'options'    => [
+                'column-size'      => 'sm-9',
+                'help-block'       => _('It\'s strongly advised not to change this value in existing apps.'),
+                'label'            => _('Team'),
+                'label_attributes' => [
+                    'class' => 'col-sm-3',
+                ],
+            ],
+            'type'       => 'select',
+        ]);
+        $this->add([
+            'attributes' => [
                 'id' => 'name',
                 'maxlength' => 255,
             ],
