@@ -14,6 +14,7 @@ use Translations\Model\App;
 use Translations\Model\AppTable;
 use Translations\Model\FileHelper;
 use Translations\Model\TeamTable;
+use Translations\Model\UserSettingsTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -30,6 +31,11 @@ class AppController extends AbstractActionController
     private $teamTable;
 
     /**
+     * @var UserSettingsTable
+     */
+    private $userSettingsTable;
+
+    /**
      * @var array
      */
     private $allTeamsAsArray;
@@ -39,10 +45,11 @@ class AppController extends AbstractActionController
      *
      * @param AppTable $appTable
      */
-    public function __construct(AppTable $appTable, TeamTable $teamTable)
+    public function __construct(AppTable $appTable, TeamTable $teamTable, UserSettingsTable $userSettingsTable)
     {
         $this->appTable = $appTable;
         $this->teamTable = $teamTable;
+        $this->userSettingsTable = $userSettingsTable;
     }
 
     private function getAllTeamsAsArray()
@@ -76,7 +83,12 @@ class AppController extends AbstractActionController
     public function addAction()
     {
         $form = new AppForm();
-        $form->get('team_id')->setValueOptions($this->getAllTeamsAsArray());
+        $teamField = $form->get('team_id')->setValueOptions($this->getAllTeamsAsArray());
+
+        if ($this->zfcUserAuthentication()->hasIdentity() &&
+            ($userSettings = $this->userSettingsTable->getUserSettings($this->zfcUserAuthentication()->getIdentity()->getId()))) {
+            $teamField->setValue($userSettings->userId);
+        }
 
         $request = $this->getRequest();
 

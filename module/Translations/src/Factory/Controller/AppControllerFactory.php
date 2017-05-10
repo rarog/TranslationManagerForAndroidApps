@@ -16,7 +16,8 @@ class AppControllerFactory implements FactoryInterface
     {
         return new \Translations\Controller\AppController(
             $container->get(\Translations\Model\AppTable::class),
-            $container->get(\Translations\Model\TeamTable::class)
+            $container->get(\Translations\Model\TeamTable::class),
+            $container->get(\Translations\Model\UserSettingsTable::class)
         );
     }
 }
