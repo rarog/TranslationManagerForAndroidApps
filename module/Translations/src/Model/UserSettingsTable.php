@@ -30,11 +30,12 @@ class UserSettingsTable
     /**
      * Gets all entries
      *
+     * @param \Zend\Db\Sql\Where|\Closure|string|array $where
      * @return \Zend\Db\ResultSet\ResultSet
      */
-    public function fetchAll()
+    public function fetchAll($where = null)
     {
-        return $this->tableGateway->select();
+        return $this->tableGateway->select($where);
     }
 
     /**
