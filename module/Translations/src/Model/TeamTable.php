@@ -44,7 +44,7 @@ class TeamTable
      * @throws RuntimeException
      * @return \Translations\Model\Team
      */
-    public function getApp($id)
+    public function getTeam($id)
     {
         $id = (int) $id;
         $rowset = $this->tableGateway->select(['id' => $id]);
