@@ -42,7 +42,8 @@ class TeamTable
                     $select->where($where);
                 }
                 $select->order(['name ASC']);
-            });
+            }
+        );
     }
 
     /**

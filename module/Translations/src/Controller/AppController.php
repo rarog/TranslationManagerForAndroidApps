@@ -13,6 +13,7 @@ use Translations\Form\DeleteHelperForm;
 use Translations\Model\App;
 use Translations\Model\AppTable;
 use Translations\Model\FileHelper;
+use Translations\Model\TeamTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -21,16 +22,38 @@ class AppController extends AbstractActionController
     /**
      * @var AppTable
      */
-    private $table;
+    private $appTable;
+
+    /**
+     * @var TeamTable
+     */
+    private $teamTable;
+
+    /**
+     * @var array
+     */
+    private $allTeamsAsArray;
 
     /**
      * Constructor
      *
-     * @param AppTable $table
+     * @param AppTable $appTable
      */
-    public function __construct(AppTable $table)
+    public function __construct(AppTable $appTable, TeamTable $teamTable)
     {
-        $this->table = $table;
+        $this->appTable = $appTable;
+        $this->teamTable = $teamTable;
+    }
+
+    private function getAllTeamsAsArray()
+    {
+        if (!$this->allTeamsAsArray) {
+            $this->allTeamsAsArray = [];
+            foreach ($this->teamTable->fetchAll() as $team) {
+                $this->allTeamsAsArray[$team->id] = $team->name;
+            }
+        }
+        return $this->allTeamsAsArray;
     }
 
     private function getAppDir($id)
@@ -53,6 +76,7 @@ class AppController extends AbstractActionController
     public function addAction()
     {
         $form = new AppForm();
+        $form->get('team_id')->setValueOptions($this->getAllTeamsAsArray());
 
         $request = $this->getRequest();
 
@@ -69,7 +93,7 @@ class AppController extends AbstractActionController
         }
 
         $app->exchangeArray($form->getData());
-        $app = $this->table->saveApp($app);
+        $app = $this->appTable->saveApp($app);
 
         $path = $this->getAppDir($app->id);echo $path;
         if (!mkdir($path, 0775)) {
@@ -91,7 +115,7 @@ class AppController extends AbstractActionController
     {
         $id = (int) $this->params()->fromRoute('id', 0);
         try {
-            $app = $this->table->getApp($id);
+            $app = $this->appTable->getApp($id);
         } catch (\Exception $e) {
             return $this->redirect()->toRoute('app', ['action' => 'index']);
         }
@@ -119,7 +143,7 @@ class AppController extends AbstractActionController
 
         if ($request->getPost('del', 'false') === 'true') {
             $id = (int) $request->getPost('id');
-            $this->table->deleteApp($id);
+            $this->appTable->deleteApp($id);
             FileHelper::rmdirRecursive($this->getAppDir($id));
         }
 
@@ -141,12 +165,13 @@ class AppController extends AbstractActionController
         }
 
         try {
-            $app = $this->table->getApp($id);
+            $app = $this->appTable->getApp($id);
         } catch (\Exception $e) {
             return $this->redirect()->toRoute('app', ['action' => 'index']);
         }
 
         $form = new AppForm();
+        $form->get('team_id')->setValueOptions($this->getAllTeamsAsArray());
         $form->bind($app);
 
         $request = $this->getRequest();
@@ -166,7 +191,7 @@ class AppController extends AbstractActionController
             return $viewData;
         }
 
-        $this->table->saveApp($app);
+        $this->appTable->saveApp($app);
 
         return $this->redirect()->toRoute('app', ['action' => 'index']);
     }
@@ -180,7 +205,7 @@ class AppController extends AbstractActionController
     public function indexAction()
     {
         return new ViewModel([
-            'apps' => $this->table->fetchAll(),
+            'apps' => $this->appTable->fetchAll(),
         ]);
     }
 }
