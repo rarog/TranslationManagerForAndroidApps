@@ -5,7 +5,7 @@
  * @license   https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License version 3 or later
  */
 
-namespace Translations\Model;
+namespace Translations\Model\Helper;
 
 class FileHelper
 {

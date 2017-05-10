@@ -12,7 +12,7 @@ use Translations\Form\AppForm;
 use Translations\Form\DeleteHelperForm;
 use Translations\Model\App;
 use Translations\Model\AppTable;
-use Translations\Model\FileHelper;
+use Translations\Model\Helper\FileHelper;
 use Translations\Model\TeamTable;
 use Translations\Model\UserSettingsTable;
 use Zend\Mvc\Controller\AbstractActionController;
