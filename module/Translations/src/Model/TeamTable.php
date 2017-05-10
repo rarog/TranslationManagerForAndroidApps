@@ -8,6 +8,7 @@
 namespace Translations\Model;
 
 use RuntimeException;
+use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\TableGateway;
 
 class TeamTable
@@ -35,7 +36,13 @@ class TeamTable
      */
     public function fetchAll($where = null)
     {
-        return $this->tableGateway->select($where);
+        return $this->tableGateway->select(
+            function (Select $select) use ($where){
+                if ($where) {
+                    $select->where($where);
+                }
+                $select->order(['name ASC']);
+            });
     }
 
     /**
