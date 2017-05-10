@@ -216,8 +216,9 @@ class AppController extends AbstractActionController
      */
     public function indexAction()
     {
-        return new ViewModel([
-            'apps' => $this->appTable->fetchAll(),
-        ]);
+        return [
+            'apps'  => $this->appTable->fetchAll(),
+            'teams' => $this->getAllTeamsAsArray(),
+        ];
     }
 }
