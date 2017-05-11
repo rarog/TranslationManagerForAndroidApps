@@ -73,7 +73,7 @@ class TeamMemberTable
      * @throws RuntimeException
      * @return \Translations\Model\TeamMember
      */
-    public function saveUserSettings(TeamMember $teamMember)
+    public function saveTeamMember(TeamMember $teamMember)
     {
         $data = [
             'user_id' => $teamMember->userId,
@@ -84,7 +84,7 @@ class TeamMemberTable
         $teamId = (int) $teamMember->teamId;
 
         if (($userId === 0) || ($teamId === 0)) {
-            throw new RuntimeException('Cannot handle user settings with invalid ids');
+            throw new RuntimeException('Cannot handle team member with invalid ids');
         }
 
         try {
@@ -104,7 +104,7 @@ class TeamMemberTable
      * @param int $userId
      * @param int $teamId
      */
-    public function deleteUserSettings($userId, $teamId)
+    public function deleteTeamMember($userId, $teamId)
     {
         $this->tableGateway->delete([
             'user_id' => (int) $userId,
