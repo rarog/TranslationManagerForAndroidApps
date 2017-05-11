@@ -2,6 +2,7 @@
 $title = $this->translate('Apps');
 $this->headTitle($title);
 $this->dataTablesInitHelper(['table' => '#apps']);
+$printTeams = count($teams) > 1;
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
 <?php if ($this->isGranted('app.add')) : ?>
@@ -12,7 +13,7 @@ $this->dataTablesInitHelper(['table' => '#apps']);
 <table class="table table-bordered table-striped" id="apps">
     <thead>
         <tr>
-<?php if (count($teams) > 1) : ?>
+<?php if ($printTeams) : ?>
             <th><?= $this->escapeHtml($this->translate('Team')) ?></th>
 <?php endif; ?>
             <th><?= $this->escapeHtml($this->translate('Name')) ?></th>
@@ -24,7 +25,7 @@ $this->dataTablesInitHelper(['table' => '#apps']);
     <tbody>
 <?php foreach ($apps as $app) : ?>
         <tr>
-<?php if (count($teams) > 1) : ?>
+<?php if ($printTeams) : ?>
             <td><?= $this->escapeHtml((array_key_exists($app->teamId, $teams) ? $teams[$app->teamId] : $app->teamId)) ?></td>
 <?php endif; ?>
             <td><?= $this->escapeHtml($app->name) ?></td>
