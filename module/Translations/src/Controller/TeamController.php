@@ -158,8 +158,8 @@ class TeamController extends AbstractActionController
      */
     public function indexAction()
     {
-        return new ViewModel([
+        return [
             'teams' => $this->table->fetchAll(),
-        ]);
+        ];
     }
 }
