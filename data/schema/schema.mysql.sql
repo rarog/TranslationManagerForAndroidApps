@@ -28,6 +28,16 @@ CREATE TABLE `user_settings` (
     CONSTRAINT `user_settings_fk2` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `team_member` (
+    `user_id` INT(11) UNSIGNED NOT NULL,
+    `team_id` INT(11) UNSIGNED NOT NULL,
+    PRIMARY KEY (`user_id`,`team_id`),
+    KEY `team_member_fk1_idx` (`user_id`),
+    KEY `team_member_fk2_idx` (`team_id`),
+    CONSTRAINT `team_member_fk1_idx` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `team_member_fk2_idx` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `app` (
     `id`                 INT(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `team_id`            INT(11) UNSIGNED DEFAULT NULL,

@@ -29,6 +29,14 @@ CREATE TABLE user_settings (
     FOREIGN KEY (team_id) REFERENCES team(id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
+CREATE TABLE team_member (
+    user_id INTEGER NOT NULL,
+    team_id INTEGER NOT NULL,
+    PRIMARY KEY (user_id,team_id),
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (team_id) REFERENCES team(id) ON DELETE SET NULL ON UPDATE CASCADE
+);
+
 CREATE TABLE app (
     id                 INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     team_id            INTEGER DEFAULT NULL,
