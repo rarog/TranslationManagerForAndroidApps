@@ -22,7 +22,7 @@ CREATE TABLE `team` (
 
 CREATE TABLE `user_settings` (
     `user_id` INT(11) UNSIGNED NOT NULL PRIMARY KEY,
-    `locale`  VARCHAR(5) NOT NULL,
+    `locale`  VARCHAR(20) NOT NULL, -- Currently known max length is 11 char.
     `team_id` INT(11) UNSIGNED DEFAULT NULL,
     CONSTRAINT `user_settings_fk1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `user_settings_fk2` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE SET NULL ON UPDATE CASCADE

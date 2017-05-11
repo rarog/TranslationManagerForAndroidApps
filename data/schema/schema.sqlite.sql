@@ -23,7 +23,7 @@ CREATE TABLE team (
 
 CREATE TABLE user_settings (
     user_id INTEGER NOT NULL PRIMARY KEY,
-    locale  VARCHAR(5) NOT NULL,
+    locale  VARCHAR(20) NOT NULL, -- Currently known max length is 11 char.
     team_id INTEGER DEFAULT NULL,
     FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (team_id) REFERENCES team(id) ON DELETE SET NULL ON UPDATE CASCADE
