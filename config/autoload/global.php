@@ -18,6 +18,16 @@
 
 use Zend\Session;
 
+// Little helper function to generate list of locales.
+function getLocaleNamesInLocale($inLocale)
+{
+    $locales = [];
+    foreach (ResourceBundle::getLocales('') as $locale) {
+        $locales[$locale] = Locale::getDisplayName($locale, $inLocale);
+    }
+    return $locales;
+};
+
 return [
     'caches' => [
         'Cache\Persistent' => [
@@ -65,6 +75,10 @@ return [
         'supported_languages' => [
             'de_DE' => 'German (Germany)/Deutsch (Deutschland)',
             'en_US' => 'English (USA)',
+        ],
+        'locale_names' => [
+            'de_DE' => getLocaleNamesInLocale('de_DE'),
+            'en_US' => getLocaleNamesInLocale('en_US'),
         ],
     ],
     'tmfaa' => [
