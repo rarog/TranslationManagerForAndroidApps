@@ -63,6 +63,15 @@ return [
                 'team*'   => [
                     'permissions' => ['team.view'],
                 ],
+                'teammember/add'         => [
+                    'permissions' => ['teammember.add'],
+                ],
+                'teammember/delete'      => [
+                    'permissions' => ['teammember.delete'],
+                ],
+                'teammember*'   => [
+                    'permissions' => ['teammember.view'],
+                ],
                 'app/add'   => [
                     'permissions' => ['app.add'],
                 ],
@@ -121,8 +130,11 @@ return [
                         'app.delete',
                         'app.edit',
                         'app.view',
-                        'team.view',
                         'team.edit',
+                        'team.view',
+                        'teammember.add',
+                        'teammember.delete',
+                        'teammember.view',
                     ],
                 ],
                 'superuser' => [
