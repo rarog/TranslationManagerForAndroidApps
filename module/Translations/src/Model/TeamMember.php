@@ -31,6 +31,30 @@ class TeamMember implements ArraySerializableInterface, InputFilterAwareInterfac
     public $teamId;
 
     /**
+     * @var string
+     * Joined field
+     */
+    public $username;
+
+    /**
+     * @var string
+     * Joined field
+     */
+    public $email;
+
+    /**
+     * @var string
+     * Joined field
+     */
+    public $displayName;
+
+    /**
+     * @var string
+     * Joined field
+     */
+    public $teamName;
+
+    /**
      * @var InputFilter
      */
     private $inputFilter;
@@ -80,7 +104,7 @@ class TeamMember implements ArraySerializableInterface, InputFilterAwareInterfac
         ]);
         $inputFilter->add([
             'name'     => 'team_id',
-            'required' => false,
+            'required' => true,
             'filters'  => [
                 ['name' => ToInt::class],
             ],
@@ -96,8 +120,12 @@ class TeamMember implements ArraySerializableInterface, InputFilterAwareInterfac
      */
     public function exchangeArray(array $data)
     {
-        $this->userId = !empty($data['user_id']) ? $data['user_id'] : null;
-        $this->teamId = !empty($data['team_id']) ? $data['team_id'] : null;
+        $this->userId      = !empty($data['user_id']) ? $data['user_id'] : null;
+        $this->teamId      = !empty($data['team_id']) ? $data['team_id'] : null;
+        $this->username    = !empty($data['username']) ? $data['username'] : null;
+        $this->email       = !empty($data['email']) ? $data['email'] : null;
+        $this->displayName = !empty($data['display_name']) ? $data['display_name'] : null;
+        $this->teamName    = !empty($data['team_name']) ? $data['team_name'] : null;
     }
 
     /**
@@ -107,8 +135,12 @@ class TeamMember implements ArraySerializableInterface, InputFilterAwareInterfac
     public function getArrayCopy()
     {
         return [
-            'user_id' => $this->userId,
-            'team_id' => $this->teamId,
+            'user_id'      => $this->userId,
+            'team_id'      => $this->teamId,
+            'username'     => $this->username,
+            'email'        => $this->email,
+            'display_name' => $this->displayName,
+            'team_name'    => $this->teamName,
         ];
     }
 }

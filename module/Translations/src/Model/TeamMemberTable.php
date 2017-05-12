@@ -8,6 +8,7 @@
 namespace Translations\Model;
 
 use RuntimeException;
+use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\TableGateway;
 
 class TeamMemberTable
@@ -35,7 +36,16 @@ class TeamMemberTable
      */
     public function fetchAll($where = null)
     {
-        return $this->tableGateway->select($where);
+        return $this->tableGateway->select(
+            function (Select $select) use ($where){
+                $select->join('user', 'user.user_id = team_member.user_id', ['username', 'email', 'display_name'], $select::JOIN_LEFT)
+                    ->join('team', 'team.id = team_member.team_id', ['team_name' => 'name'], $select::JOIN_LEFT);
+                if ($where) {
+                    $select->where($where);
+                }
+                $select->order(['team.name ASC', 'username ASC']);
+            }
+        );
     }
 
     /**
@@ -50,7 +60,7 @@ class TeamMemberTable
     {
         $userId = (int) $userId;
         $teamId = (int) $teamId;
-        $rowset = $this->tableGateway->select([
+        $rowset = $this->fetchAll([
             'user_id' => $userId,
             'team_id' => $teamId,
         ]);

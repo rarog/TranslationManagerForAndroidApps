@@ -9,8 +9,8 @@ namespace Translations\Controller;
 
 use RuntimeException;
 use Translations\Form\DeleteHelperForm;
-use Translations\Form\TeamForm;
-use Translations\Model\Team;
+use Translations\Model\TeamMember;
+use Translations\Model\TeamMemberTable;
 use Translations\Model\TeamTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -18,18 +18,24 @@ use Zend\View\Model\ViewModel;
 class TeamMemberController extends AbstractActionController
 {
     /**
+     * @var TeamMemberTable
+     */
+    private $teamMemberTable;
+
+    /**
      * @var TeamTable
      */
-    private $table;
+    private $teamTable;
 
     /**
      * Constructor
      *
-     * @param TeamTable $table
+     * @param TeamTable $teamMemberTable
      */
-    public function __construct(TeamTable $table)
+    public function __construct(TeamMemberTable $teamMemberTable, TeamTable $teamTable)
     {
-        $this->table = $table;
+        $this->teamMemberTable = $teamMemberTable;
+        $this->teamTable = $teamTable;
     }
 
     /**
@@ -49,6 +55,41 @@ class TeamMemberController extends AbstractActionController
      */
     public function deleteAction()
     {
+        $teamId = (int) $this->params()->fromRoute('teamId', 0);
+        $userId = (int) $this->params()->fromRoute('userId', 0);
+        try {
+            $teamMember = $this->teamMemberTable->getTeamMember($userId, $teamId);
+        } catch (\Exception $e) {
+            return $this->redirect()->toRoute('team', ['action' => 'index']);
+        }
+
+        $form = new DeleteHelperForm();
+        $form->bind($teamMember);
+
+        $request = $this->getRequest();
+        $viewData = [
+            'id'   => $id,
+            'name' => $teamMember->name,
+            'form' => $form,
+        ];
+
+        if (!$request->isPost()) {
+            return $viewData;
+        }
+
+        $form->setInputFilter($teamMember->getInputFilter());
+        $form->setData($request->getPost());
+
+        if (!$form->isValid()) {
+            return $viewData;
+        }
+
+        if ($request->getPost('del', 'false') === 'true') {
+            $id = (int) $request->getPost('id');
+            $this->table->deleteTeam($id);
+        }
+
+        return $this->redirect()->toRoute('team', ['action' => 'index']);
     }
 
     /**
@@ -58,8 +99,16 @@ class TeamMemberController extends AbstractActionController
      */
     public function indexAction()
     {
+        $teamId = (int) $this->params()->fromRoute('teamId', 0);
+        try {
+            $team = $this->teamTable->getTeam($teamId);
+        } catch (\Exception $e) {
+            return $this->redirect()->toRoute('team', ['action' => 'index']);
+        }
+
         return [
-            'teamMembers' => $this->table->fetchAll(),
+            'team'        => $team,
+            'teamMembers' => $this->teamMemberTable->fetchAll(),
         ];
     }
 }

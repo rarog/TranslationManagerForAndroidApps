@@ -10,12 +10,13 @@ namespace Translations\Factory\Controller;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
-class TeamControllerFactory implements FactoryInterface
+class TeamMemberControllerFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         return new \Translations\Controller\TeamMemberController(
-            $container->get(\Translations\Model\TeamMemberTable::class)
+            $container->get(\Translations\Model\TeamMemberTable::class),
+            $container->get(\Translations\Model\TeamTable::class)
         );
     }
 }

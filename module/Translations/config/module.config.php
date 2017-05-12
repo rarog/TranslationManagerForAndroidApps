@@ -47,14 +47,14 @@ return [
                     ],
                 ],
             ],
-            'team' => [
+            'teammember' => [
                 'type'    => Segment::class,
                 'options' => [
-                    'route'       => '/teammember[/:action[/:id]]/:teamId',
+                    'route'       => '/teammember/:teamId[/:action[/:userId]]',
                     'constraints' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'     => '[0-9]+',
                         'teamId' => '[0-9]+',
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'userId' => '[0-9]+',
                     ],
                     'defaults'    => [
                         'controller' => Controller\TeamMemberController::class,
