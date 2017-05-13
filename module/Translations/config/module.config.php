@@ -50,7 +50,7 @@ return [
             'teammember' => [
                 'type'    => Segment::class,
                 'options' => [
-                    'route'       => '/teammember/:teamId[/:action[/:userId]]',
+                    'route'       => '/teammember/team/:teamId[/:action[/:userId]]',
                     'constraints' => [
                         'teamId' => '[0-9]+',
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
