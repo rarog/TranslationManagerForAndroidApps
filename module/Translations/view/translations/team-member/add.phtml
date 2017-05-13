@@ -1,0 +1,37 @@
+<?php
+$title = sprintf($this->translate('Add members to team "%s"'), $team->name);
+$this->headTitle($title);
+?>
+<h1><?= $this->escapeHtml($title) ?></h1>
+<?php if ($this->isGranted('teammember.view')) : ?>
+<p>
+    <a class="btn btn-default" href="<?= $this->url('teammember', ['teamId' => $team->id, 'action' => 'index']) ?>"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Back')) ?></a>
+</p>
+<?php endif; ?>
+<?php if ($this->isGranted('teammember.add')) : ?>
+<?php $this->dataTablesInitHelper(['table' => '#usersNotInTeam']); ?>
+<table class="table table-bordered table-striped" id="usersNotInTeam">
+    <thead>
+        <tr>
+            <th><?= $this->escapeHtml($this->translate('Username')) ?></th>
+            <th><?= $this->escapeHtml($this->translate('Email')) ?></th>
+            <th><?= $this->escapeHtml($this->translate('Display name')) ?></th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+<?php foreach ($usersNotInTeam as $user) : ?>
+        <tr>
+            <td><?= $this->escapeHtml($user->username) ?></td>
+            <td><?= $this->escapeHtml($user->email) ?></td>
+            <td><?= $this->escapeHtml($user->displayName) ?></td>
+            <td>
+                <div class="btn-group">
+                    <a class="btn btn-default" href="<?= $this->url('teammember', ['teamId' => $team->id, 'action' => 'add', 'userId' => $user->userId]) ?>"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Add')) ?></a>
+                </div>
+            </td>
+        </tr>
+<?php endforeach; ?>
+    </tbody>
+</table>
+<?php endif; ?>

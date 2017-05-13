@@ -62,6 +62,17 @@ class Module implements ConfigProviderInterface
                     $resultSetPrototype->setArrayObjectPrototype(new Model\TeamMember());
                     return new TableGateway('team_member', $dbAdapter, null, $resultSetPrototype);
                 },
+                Model\UserTable::class => function ($container) {
+                    $tableGateway = $container->get(Model\UserTableGateway::class);
+                    $userMapper = $container->get('zfcuser_user_mapper');
+                    return new Model\UserTable($tableGateway, $userMapper);
+                },
+                Model\UserTableGateway::class => function ($container) {
+                    $dbAdapter = $container->get(AdapterInterface::class);
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Model\User);
+                    return new TableGateway('user', $dbAdapter, null, $resultSetPrototype);
+                },
                 Model\UserSettingsTable::class => function ($container) {
                     $tableGateway = $container->get(Model\UserSettingsTableGateway::class);
                     return new Model\UserSettingsTable($tableGateway);

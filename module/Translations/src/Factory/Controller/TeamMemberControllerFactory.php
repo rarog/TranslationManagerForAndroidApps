@@ -16,7 +16,8 @@ class TeamMemberControllerFactory implements FactoryInterface
     {
         return new \Translations\Controller\TeamMemberController(
             $container->get(\Translations\Model\TeamMemberTable::class),
-            $container->get(\Translations\Model\TeamTable::class)
+            $container->get(\Translations\Model\TeamTable::class),
+            $container->get(\Translations\Model\UserTable::class)
         );
     }
 }

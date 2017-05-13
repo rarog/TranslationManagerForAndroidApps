@@ -12,6 +12,7 @@ use Translations\Form\DeleteHelperForm;
 use Translations\Model\TeamMember;
 use Translations\Model\TeamMemberTable;
 use Translations\Model\TeamTable;
+use Translations\Model\UserTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -28,14 +29,20 @@ class TeamMemberController extends AbstractActionController
     private $teamTable;
 
     /**
+     * @var UserTable
+     */
+    private $userTable;
+
+    /**
      * Constructor
      *
      * @param TeamTable $teamMemberTable
      */
-    public function __construct(TeamMemberTable $teamMemberTable, TeamTable $teamTable)
+    public function __construct(TeamMemberTable $teamMemberTable, TeamTable $teamTable, UserTable $userTable)
     {
         $this->teamMemberTable = $teamMemberTable;
         $this->teamTable = $teamTable;
+        $this->userTable = $userTable;
     }
 
     /**
@@ -46,6 +53,17 @@ class TeamMemberController extends AbstractActionController
      */
     public function addAction()
     {
+        $teamId = (int) $this->params()->fromRoute('teamId', 0);
+        try {
+            $team = $this->teamTable->getTeam($teamId);
+        } catch (\Exception $e) {
+            return $this->redirect()->toRoute('team', ['action' => 'index']);
+        }
+
+        return [
+            'team'           => $team,
+            'usersNotInTeam' => $this->userTable->fetchAllNotInTeam($teamId),
+        ];
     }
 
     /**
