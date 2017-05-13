@@ -61,8 +61,8 @@ class TeamMemberTable
         $userId = (int) $userId;
         $teamId = (int) $teamId;
         $rowset = $this->fetchAll([
-            'user_id' => $userId,
-            'team_id' => $teamId,
+            'team_member.user_id' => $userId,
+            'team_member.team_id' => $teamId,
         ]);
         $row = $rowset->current();
         if (!$row) {
