@@ -19,14 +19,6 @@ class DeleteHelperForm extends Form
         $this->setAttribute('method', 'post');
 
         // Creating the form elements.
-        $this->add([
-            'name' => 'id',
-            'type' => 'hidden',
-        ]);
-        $this->add([
-            'name' => 'name',
-            'type' => 'hidden',
-        ]);
         $this->add(array(
             'type' => 'Csrf',
             'name' => 'csrf_delete_helper',

@@ -77,7 +77,13 @@ class TeamController extends AbstractActionController
         }
 
         $form = new DeleteHelperForm();
-        $form->bind($team);
+        $form->add([
+            'name' => 'id',
+            'type' => 'hidden',
+        ])->add([
+            'name' => 'name',
+            'type' => 'hidden',
+        ])->bind($team);
 
         $request = $this->getRequest();
         $viewData = [

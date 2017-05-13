@@ -133,7 +133,16 @@ class AppController extends AbstractActionController
         }
 
         $form = new DeleteHelperForm();
-        $form->bind($app);
+        $form->add([
+            'name' => 'id',
+            'type' => 'hidden',
+        ])->add([
+            'name' => 'team_id',
+            'type' => 'hidden',
+        ])->add([
+            'name' => 'name',
+            'type' => 'hidden',
+        ])->bind($app);
 
         $request = $this->getRequest();
         $viewData = [
