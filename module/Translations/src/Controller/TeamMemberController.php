@@ -60,17 +60,25 @@ class TeamMemberController extends AbstractActionController
         try {
             $teamMember = $this->teamMemberTable->getTeamMember($userId, $teamId);
         } catch (\Exception $e) {
-            return $this->redirect()->toRoute('team', ['action' => 'index']);
+            return $this->redirect()->toRoute('teammember', [
+                'teamId' => $teamId,
+                'action' => 'index',
+            ]);
         }
 
         $form = new DeleteHelperForm();
-        $form->bind($teamMember);
+        $form->add([
+            'name' => 'team_id',
+            'type' => 'hidden',
+        ])->add([
+            'name' => 'user_id',
+            'type' => 'hidden',
+        ])->bind($teamMember);
 
         $request = $this->getRequest();
         $viewData = [
-            'id'   => $id,
-            'name' => $teamMember->name,
             'form' => $form,
+            'teamMember' => $teamMember,
         ];
 
         if (!$request->isPost()) {
@@ -85,11 +93,14 @@ class TeamMemberController extends AbstractActionController
         }
 
         if ($request->getPost('del', 'false') === 'true') {
-            $id = (int) $request->getPost('id');
-            $this->table->deleteTeam($id);
+            $teamId = (int) $request->getPost('team_id');
+            $userId = (int) $request->getPost('user_id');
+            $this->teamMemberTable->deleteTeamMember($userId, $teamId);
         }
-
-        return $this->redirect()->toRoute('team', ['action' => 'index']);
+        return $this->redirect()->toRoute('teammember', [
+            'team'   => $teamId,
+            'action' => 'index',
+        ]);
     }
 
     /**
