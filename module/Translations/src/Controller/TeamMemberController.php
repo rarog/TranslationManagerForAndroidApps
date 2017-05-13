@@ -49,11 +49,11 @@ class TeamMemberController extends AbstractActionController
     }
 
     /**
-     * Team member delete action
+     * Team member remove action
      *
      * @return \Zend\View\Model\ViewModel
      */
-    public function deleteAction()
+    public function removeAction()
     {
         $teamId = (int) $this->params()->fromRoute('teamId', 0);
         $userId = (int) $this->params()->fromRoute('userId', 0);

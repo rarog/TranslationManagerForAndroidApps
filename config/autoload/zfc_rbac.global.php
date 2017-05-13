@@ -66,8 +66,8 @@ return [
                 'teammember/add'         => [
                     'permissions' => ['teammember.add'],
                 ],
-                'teammember/delete'      => [
-                    'permissions' => ['teammember.delete'],
+                'teammember/remove'      => [
+                    'permissions' => ['teammember.remove'],
                 ],
                 'teammember*'   => [
                     'permissions' => ['teammember.view'],
@@ -133,7 +133,7 @@ return [
                         'team.edit',
                         'team.view',
                         'teammember.add',
-                        'teammember.delete',
+                        'teammember.remove',
                         'teammember.view',
                     ],
                 ],
