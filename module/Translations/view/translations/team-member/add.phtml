@@ -14,6 +14,7 @@ $form->setAttribute('action', $this->url('teammember', [
 <?php endif; ?>
 <?php if ($this->isGranted('teammember.add')) : ?>
 <?php $this->dataTablesInitHelper(['table' => '#usersNotInTeam']); ?>
+<div><?= $this->message ?></div>
 <table class="table table-bordered table-striped" id="usersNotInTeam">
     <thead>
         <tr>

@@ -15,7 +15,9 @@ use Translations\Model\TeamMemberTable;
 use Translations\Model\TeamTable;
 use Translations\Model\UserTable;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\ViewModel;
+use Zend\View\Renderer\PhpRenderer as Renderer;
 
 class TeamMemberController extends AbstractActionController
 {
@@ -37,13 +39,19 @@ class TeamMemberController extends AbstractActionController
     /**
      * Constructor
      *
-     * @param TeamTable $teamMemberTable
+     * @param TeamMemberTable $teamMemberTable
+     * @param TeamTable $teamTable
+     * @param UserTable $userTable
+     * @param Translator $translator
+     * @param Renderer $renderer
      */
-    public function __construct(TeamMemberTable $teamMemberTable, TeamTable $teamTable, UserTable $userTable)
+    public function __construct(TeamMemberTable $teamMemberTable, TeamTable $teamTable, UserTable $userTable, Translator $translator, Renderer $renderer)
     {
         $this->teamMemberTable = $teamMemberTable;
         $this->teamTable = $teamTable;
         $this->userTable = $userTable;
+        $this->translator = $translator;
+        $this->renderer = $renderer;
     }
 
     /**
@@ -64,6 +72,7 @@ class TeamMemberController extends AbstractActionController
         $form = new TeamMemberForm();
 
         $request = $this->getRequest();
+        $message = '';
 
         if ($request->isPost()) {
             $teamMember = new TeamMember();
@@ -73,11 +82,26 @@ class TeamMemberController extends AbstractActionController
             if ($form->isValid()) {
                 $teamMember->exchangeArray($form->getData());
                 $teamMember = $this->teamMemberTable->saveTeamMember($teamMember);
+
+                $message = sprintf(
+                    $this->translator->translate('User with email "%s" was added to team "%s".'),
+                    $teamMember->email,
+                    $teamMember->teamName);
+
+                $viewModel = new ViewModel([
+                    'type'     => 'success',
+                    'message'  => $message,
+                    'canClose' => true,
+                ]);
+                $viewModel->setTemplate('partial/alert.phtml')
+                    ->setTerminal(true);
+                $message = $this->renderer->render($viewModel);
             }
         }
 
         return [
             'form'           => $form,
+            'message'        => $message,
             'team'           => $team,
             'usersNotInTeam' => $this->userTable->fetchAllNotInTeam($teamId),
         ];
