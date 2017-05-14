@@ -7,6 +7,7 @@ A project to help managing [translation ressources](https://developer.android.co
 * First skeleton version with possibility to log in and create managed apps
 
 ### v0.2
+* Support for separate teams
 * Support management of translation files and languages
 
 ### v0.3
