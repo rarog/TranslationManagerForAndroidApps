@@ -98,14 +98,14 @@ class TeamMemberTable
         }
 
         try {
-            if ($this->getTeamMember($userId, $teamId)) {
+            if (($teamMember = $this->getTeamMember($userId, $teamId))) {
                 return $teamMember;
             }
         } catch (RuntimeException $e) {
             $this->tableGateway->insert($data);
+            $teamMember = $this->getTeamMember($userId, $teamId);
+            return $teamMember;
         }
-
-        return $teamMember;
     }
 
     /**
