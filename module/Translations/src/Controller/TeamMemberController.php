@@ -9,6 +9,7 @@ namespace Translations\Controller;
 
 use RuntimeException;
 use Translations\Form\DeleteHelperForm;
+use Translations\Form\TeamMemberForm;
 use Translations\Model\TeamMember;
 use Translations\Model\TeamMemberTable;
 use Translations\Model\TeamTable;
@@ -60,7 +61,10 @@ class TeamMemberController extends AbstractActionController
             return $this->redirect()->toRoute('team', ['action' => 'index']);
         }
 
+        $form = new TeamMemberForm();
+
         return [
+            'form'           => $form,
             'team'           => $team,
             'usersNotInTeam' => $this->userTable->fetchAllNotInTeam($teamId),
         ];

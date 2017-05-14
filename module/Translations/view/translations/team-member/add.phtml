@@ -1,6 +1,11 @@
 <?php
 $title = sprintf($this->translate('Add members to team "%s"'), $team->name);
 $this->headTitle($title);
+$form->setAttribute('action', $this->url('teammember', [
+    'teamId' => $team->id,
+    'action' => 'add',
+]));
+echo $this->form($form, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_INLINE);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
 <?php if ($this->isGranted('teammember.view')) : ?>
@@ -26,9 +31,14 @@ $this->headTitle($title);
             <td><?= $this->escapeHtml($user->email) ?></td>
             <td><?= $this->escapeHtml($user->displayName) ?></td>
             <td>
-                <div class="btn-group">
-                    <a class="btn btn-default" href="<?= $this->url('teammember', ['teamId' => $team->id, 'action' => 'add', 'userId' => $user->userId]) ?>"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Add')) ?></a>
-                </div>
+<?php
+$teamMember = new \Translations\Model\TeamMember([
+    'user_id' => $user->userId,
+    'team_id' => $team->id,
+]);
+$form->bind($teamMember);
+echo $this->form($form, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_INLINE);
+?>
             </td>
         </tr>
 <?php endforeach; ?>
