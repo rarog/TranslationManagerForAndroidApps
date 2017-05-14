@@ -133,7 +133,7 @@ class TeamMemberController extends AbstractActionController
             $this->teamMemberTable->deleteTeamMember($userId, $teamId);
         }
         return $this->redirect()->toRoute('teammember', [
-            'team'   => $teamId,
+            'teamId' => $teamId,
             'action' => 'index',
         ]);
     }
