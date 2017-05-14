@@ -8,6 +8,8 @@
 namespace Translations\Model;
 
 use RuntimeException;
+use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\TableGateway;
 
 class AppTable
@@ -35,7 +37,19 @@ class AppTable
      */
     public function fetchAll($where = null)
     {
-        return $this->tableGateway->select($where);
+        return $this->tableGateway->select(
+            function (Select $select) use ($where) {
+                $columns = ['id', 'team_id', 'name', 'git_repository', 'path_to_res_folder'];
+
+                $select->columns($columns)
+                    ->join('app_resource', 'app_resource.app_id = app.id', ['resource_count' => new Expression('count(app_resource.app_id)')], $select::JOIN_LEFT)
+                    ->group($columns);
+
+                if ($where) {
+                    $select->where($where);
+                }
+            }
+        );
     }
 
     /**

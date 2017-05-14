@@ -45,6 +45,12 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
     public $pathToResFolder;
 
     /**
+     * @var int
+     * Joined field
+     */
+    public $resourceCount;
+
+    /**
      * @var InputFilter
      */
     private $inputFilter;
@@ -169,6 +175,7 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
         $this->name            = !empty($data['name']) ? $data['name'] : null;
         $this->gitRepository   = !empty($data['git_repository']) ? $data['git_repository'] : null;
         $this->pathToResFolder = !empty($data['path_to_res_folder']) ? $data['path_to_res_folder'] : null;
+        $this->resourceCount   = !empty($data['resource_count']) ? $data['resource_count'] : null;
     }
 
     /**
@@ -183,6 +190,7 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
             'name'               => $this->name,
             'git_repository'     => $this->gitRepository,
             'path_to_res_folder' => $this->pathToResFolder,
+            'resource_count'     => $this->resourceCount,
         ];
     }
 }
