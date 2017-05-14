@@ -5,7 +5,6 @@ $form->setAttribute('action', $this->url('teammember', [
     'teamId' => $team->id,
     'action' => 'add',
 ]));
-echo $this->form($form, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_INLINE);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
 <?php if ($this->isGranted('teammember.view')) : ?>
