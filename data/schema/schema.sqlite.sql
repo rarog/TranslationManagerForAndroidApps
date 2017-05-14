@@ -45,3 +45,13 @@ CREATE TABLE app (
     path_to_res_folder VARCHAR(4096) DEFAULT NULL,
     FOREIGN KEY(team_id) REFERENCES team(id) ON DELETE SET NULL ON UPDATE CASCADE
 );
+
+CREATE TABLE app_resource (
+    id          INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    app_id      INTEGER NOT NULL,
+    name        VARCHAR(255) NOT NULL,
+    locale      VARCHAR(20) NOT NULL,
+    description VARCHAR(255) DEFAULT NULL,
+    UNIQUE (app_id,name),
+    FOREIGN KEY (app_id) REFERENCES app(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
