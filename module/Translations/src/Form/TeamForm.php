@@ -14,7 +14,7 @@ class TeamForm extends Form
     public function __construct($name = null)
     {
         // Ignore the name provided to the constructor.
-        parent::__construct('app');
+        parent::__construct('team');
 
         $this->setAttribute('method', 'post');
 
