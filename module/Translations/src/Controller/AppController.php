@@ -52,6 +52,11 @@ class AppController extends AbstractActionController
         $this->userSettingsTable = $userSettingsTable;
     }
 
+    /**
+     * Helper to return all teams as key => val array
+     *
+     * @return array
+     */
     private function getAllTeamsAsArray()
     {
         if (!$this->allTeamsAsArray) {
@@ -63,6 +68,13 @@ class AppController extends AbstractActionController
         return $this->allTeamsAsArray;
     }
 
+    /**
+     * Helper for getting path to app directory
+     *
+     * @param int $id
+     * @throws RuntimeException
+     * @return string
+     */
     private function getAppDir($id)
     {
         if (($path = realpath($this->configHelp('tmfaa')->app_dir)) === false) {
@@ -217,7 +229,6 @@ class AppController extends AbstractActionController
         return $this->redirect()->toRoute('app', ['action' => 'index']);
     }
 
-
     /**
      * App overview action
      *
@@ -229,5 +240,14 @@ class AppController extends AbstractActionController
             'apps'  => $this->appTable->fetchAll(),
             'teams' => $this->getAllTeamsAsArray(),
         ];
+    }
+
+    /**
+     * App resources action
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function resourcesAction()
+    {
     }
 }

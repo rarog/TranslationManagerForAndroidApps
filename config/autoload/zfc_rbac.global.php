@@ -81,6 +81,9 @@ return [
                 'app/delete'   => [
                     'permissions' => ['app.delete'],
                 ],
+                'app/resources'   => [
+                    'permissions' => ['appresources.view'],
+                ],
                 'app*'   => [
                     'permissions' => ['app.view'],
                 ],
@@ -130,6 +133,7 @@ return [
                         'app.delete',
                         'app.edit',
                         'app.view',
+                        'appresources.view',
                         'team.edit',
                         'team.view',
                         'teammember.add',
