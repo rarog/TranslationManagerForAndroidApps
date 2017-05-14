@@ -63,6 +63,8 @@ class TeamMemberController extends AbstractActionController
 
         $form = new TeamMemberForm();
 
+        $request = $this->getRequest();
+
         if ($request->isPost()) {
             $teamMember = new TeamMember();
             $form->setInputFilter($teamMember->getInputFilter());
