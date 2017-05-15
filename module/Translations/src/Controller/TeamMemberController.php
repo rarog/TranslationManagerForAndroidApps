@@ -10,6 +10,7 @@ namespace Translations\Controller;
 use RuntimeException;
 use Translations\Form\DeleteHelperForm;
 use Translations\Form\TeamMemberForm;
+use Translations\Model\Team;
 use Translations\Model\TeamMember;
 use Translations\Model\TeamMemberTable;
 use Translations\Model\TeamTable;
@@ -47,6 +48,25 @@ class TeamMemberController extends AbstractActionController
     private $renderer;
 
     /**
+     * Checks if current user has permission to work on this team
+     *
+     * @param Team $team
+     * @return void|\Zend\Http\Response
+     */
+    private function checkPermission(Team $team)
+    {
+        if ($this->isGranted('team.viewAll')) {
+            return;
+        }
+
+        try {
+            $this->teamMemberTable->getTeamMember($this->zfcUserAuthentication()->getIdentity()->getId(), $team->id);
+        } catch (\Exception $e) {
+            return $this->redirect()->toRoute('team', ['action' => 'index']);
+        }
+    }
+
+    /**
      * Constructor
      *
      * @param TeamMemberTable $teamMemberTable
@@ -78,6 +98,7 @@ class TeamMemberController extends AbstractActionController
         } catch (\Exception $e) {
             return $this->redirect()->toRoute('team', ['action' => 'index']);
         }
+        $this->checkPermission($team);
 
         $form = new TeamMemberForm();
 
@@ -125,6 +146,13 @@ class TeamMemberController extends AbstractActionController
     public function removeAction()
     {
         $teamId = (int) $this->params()->fromRoute('teamId', 0);
+        try {
+            $team = $this->teamTable->getTeam($teamId);
+        } catch (\Exception $e) {
+            return $this->redirect()->toRoute('team', ['action' => 'index']);
+        }
+        $this->checkPermission($team);
+
         $userId = (int) $this->params()->fromRoute('userId', 0);
         try {
             $teamMember = $this->teamMemberTable->getTeamMember($userId, $teamId);
@@ -185,6 +213,7 @@ class TeamMemberController extends AbstractActionController
         } catch (\Exception $e) {
             return $this->redirect()->toRoute('team', ['action' => 'index']);
         }
+        $this->checkPermission($team);
 
         return [
             'team'        => $team,
