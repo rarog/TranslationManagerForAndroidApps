@@ -104,6 +104,32 @@ class AppTable
     }
 
     /**
+     * Checks if user has permission for app
+     *
+     * @param int $userId
+     * @param int $appId
+     * @return boolean
+     */
+    public function hasUserPermissionForApp($userId, $appId)
+    {
+        $userId = (int) $userId;
+        $appId = (int) $appId;
+        $rowset = $this->tableGateway->select(
+                function (Select $select) use ($userId, $appId) {
+                    $onTeamMember = new Expression('? = ? AND ? = ?', [
+                        ['team_member.team_id' => Expression::TYPE_IDENTIFIER],
+                        ['app.team_id' => Expression::TYPE_IDENTIFIER],
+                        ['team_member.user_id' => Expression::TYPE_IDENTIFIER],
+                        [$userId  => Expression::TYPE_VALUE]]);
+                    $select->join('team_member', $onTeamMember, [], Select::JOIN_INNER)
+                        ->where(['id' => $appId]);
+                });
+        $row = $rowset->current();
+
+        return !is_null($row);
+    }
+
+    /**
      * App save function
      *
      * @param  App $app
