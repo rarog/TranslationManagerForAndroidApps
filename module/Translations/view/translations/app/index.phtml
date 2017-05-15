@@ -39,7 +39,7 @@ $printTeams = count($teams) > 1;
 <?php if ($this->isGranted('app.delete')) : ?>
                     <a class="btn btn-danger" href="<?= $this->url('app', ['action' => 'delete', 'id' => $app->id]) ?>"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Delete')) ?></a>
 <?php endif; ?>
-<?php if ($this->isGranted('appresources.view')) : ?>
+<?php if ($this->isGranted('appresource.view')) : ?>
                     <a class="btn btn-default" href="<?= $this->url('appresource', ['appId' => $app->id]) ?>"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Resources')) ?>  <span class="badge"><?= (int) $app->resourceCount ?></span></a>
 <?php endif; ?>
                 </div>
