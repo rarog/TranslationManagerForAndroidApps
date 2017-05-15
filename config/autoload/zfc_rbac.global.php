@@ -33,59 +33,68 @@ return [
          */
         'guards' => [
             'ZfcRbac\Guard\RoutePermissionsGuard' =>[
-                'home'             => [
+                'home'               => [
                     'permissions' => ['userBase'],
                 ],
-                'application*'     => [
+                'application*'       => [
                     'permissions' => ['userBase'],
                 ],
-                'zfcuser/login'    => [
+                'zfcuser/login'      => [
                     'permissions' => ['guest'],
                 ],
-                'zfcuser/register' => [
+                'zfcuser/register'   => [
                     'permissions' => ['guest'],
                 ],
-                'zfcuser*'         => [
+                'zfcuser*'           => [
                     'permissions' => ['userBase'],
                 ],
-                'setup*' => [
+                'setup*'             => [
                     'permissions' => ['guest'],
                 ],
-                'team/add'         => [
+                'team/add'           => [
                     'permissions' => ['team.add'],
                 ],
-                'team/edit'        => [
+                'team/edit'          => [
                     'permissions' => ['team.edit'],
                 ],
-                'team/delete'      => [
+                'team/delete'        => [
                     'permissions' => ['team.delete'],
                 ],
-                'team*'   => [
+                'team*'              => [
                     'permissions' => ['team.view'],
                 ],
-                'teammember/add'         => [
+                'teammember/add'     => [
                     'permissions' => ['teammember.add'],
                 ],
-                'teammember/remove'      => [
+                'teammember/remove'  => [
                     'permissions' => ['teammember.remove'],
                 ],
-                'teammember*'   => [
+                'teammember*'        => [
                     'permissions' => ['teammember.view'],
                 ],
-                'app/add'   => [
+                'app/add'            => [
                     'permissions' => ['app.add'],
                 ],
-                'app/edit'   => [
+                'app/edit'           => [
                     'permissions' => ['app.edit'],
                 ],
-                'app/delete'   => [
+                'app/delete'         => [
                     'permissions' => ['app.delete'],
                 ],
-                'app/resources'   => [
-                    'permissions' => ['appresources.view'],
-                ],
-                'app*'   => [
+                'app*'               => [
                     'permissions' => ['app.view'],
+                ],
+                'appresource/add'    => [
+                    'permissions' => ['appresource.add'],
+                ],
+                'appresource/edit'   => [
+                    'permissions' => ['appresource.edit'],
+                ],
+                'appresource/delete' => [
+                    'permissions' => ['appresource.delete'],
+                ],
+                'appresource*'       => [
+                    'permissions' => ['appresource.view'],
                 ],
             ]
         ],
@@ -122,6 +131,7 @@ return [
                 'admin'     => [
                     'children'    => ['teamadmin'],
                     'permissions' => [
+                        'app.viewAll',
                         'team.add',
                         'team.delete',
                         'team.viewAll',
@@ -134,7 +144,10 @@ return [
                         'app.delete',
                         'app.edit',
                         'app.view',
-                        'appresources.view',
+                        'appresource.add',
+                        'appresource.delete',
+                        'appresource.edit',
+                        'appresource.view',
                         'team.edit',
                         'team.view',
                         'teammember.add',
