@@ -222,7 +222,7 @@ class TeamMemberController extends AbstractActionController
 
         return [
             'team'        => $team,
-            'teamMembers' => $this->teamMemberTable->fetchAll(),
+            'teamMembers' => $this->teamMemberTable->fetchAll(['team_id' => $team->id]),
         ];
     }
 }
