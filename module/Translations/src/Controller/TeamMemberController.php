@@ -208,6 +208,11 @@ class TeamMemberController extends AbstractActionController
     public function indexAction()
     {
         $teamId = (int) $this->params()->fromRoute('teamId', 0);
+
+        if (0 === $teamId) {
+            return $this->redirect()->toRoute('team', ['action' => 'index']);
+        }
+
         try {
             $team = $this->teamTable->getTeam($teamId);
         } catch (\Exception $e) {
