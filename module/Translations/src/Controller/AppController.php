@@ -41,18 +41,6 @@ class AppController extends AbstractActionController
     private $allTeamsAsArray;
 
     /**
-     * Constructor
-     *
-     * @param AppTable $appTable
-     */
-    public function __construct(AppTable $appTable, TeamTable $teamTable, UserSettingsTable $userSettingsTable)
-    {
-        $this->appTable = $appTable;
-        $this->teamTable = $teamTable;
-        $this->userSettingsTable = $userSettingsTable;
-    }
-
-    /**
      * Helper to return all teams as key => val array
      *
      * @return array
@@ -86,11 +74,23 @@ class AppController extends AbstractActionController
     {
         if (($path = realpath($this->configHelp('tmfaa')->app_dir)) === false) {
             throw new RuntimeException(sprintf(
-                'Configured path app directory "%s" does not exist',
-                $this->configHelp('tmfaa')->app_dir
-            ));
+                    'Configured path app directory "%s" does not exist',
+                    $this->configHelp('tmfaa')->app_dir
+                    ));
         }
         return FileHelper::concatenatePath($path, (string) $id);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param AppTable $appTable
+     */
+    public function __construct(AppTable $appTable, TeamTable $teamTable, UserSettingsTable $userSettingsTable)
+    {
+        $this->appTable = $appTable;
+        $this->teamTable = $teamTable;
+        $this->userSettingsTable = $userSettingsTable;
     }
 
     /**
