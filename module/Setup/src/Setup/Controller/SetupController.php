@@ -99,8 +99,8 @@ class SetupController extends AbstractActionController
      *
      * @param int $lastStep
      */
-    private function setLastStep(int $lastStep) {
-        $this->container->lastStep = $lastStep;
+    private function setLastStep($lastStep) {
+        $this->container->lastStep = (int) $lastStep;
     }
 
     /**
@@ -109,8 +109,9 @@ class SetupController extends AbstractActionController
      * @param int $currentStep
      * @return \Zend\Http\Response
      */
-    private function checkSetupStep(int $currentStep)
+    private function checkSetupStep($currentStep)
     {
+        $currentStep = (int) $currentStep;
         // TODO: Check if starting setup is allowed at all.
         $lastStep = $this->getLastStep();
         if ($currentStep > $lastStep) {
@@ -140,7 +141,13 @@ class SetupController extends AbstractActionController
         }
     }
 
-    private function replaceDbConfigInFile(string $file, array $configArray)
+    /**
+     * Helper function to replace database config in file
+     *
+     * @param string $file
+     * @param array $configArray
+     */
+    private function replaceDbConfigInFile($file, $configArray)
     {
         // Reading current content of config file
         $config = include($file);
