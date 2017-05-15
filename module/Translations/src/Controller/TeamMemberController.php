@@ -68,10 +68,11 @@ class TeamMemberController extends AbstractActionController
         }
 
         if ($this->isGranted('team.viewAll')) {
-            return;
+            return $team;
         }
 
-        if (!$this->teamTable->hasUserPermissionForTeam(
+        if (!$this->isGranted('team.viewAll') &&
+            !$this->teamTable->hasUserPermissionForTeam(
                 $this->zfcUserAuthentication()->getIdentity()->getId(),
                 $team->id)) {
             return $this->redirect()->toRoute('team', ['action' => 'index']);
