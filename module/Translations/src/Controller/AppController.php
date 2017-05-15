@@ -254,13 +254,4 @@ class AppController extends AbstractActionController
             'teams' => $this->getAllTeamsAsArray(),
         ];
     }
-
-    /**
-     * App resources action
-     *
-     * @return \Zend\View\Model\ViewModel
-     */
-    public function resourcesAction()
-    {
-    }
 }
