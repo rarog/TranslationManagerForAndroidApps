@@ -59,9 +59,9 @@ class TeamMemberController extends AbstractActionController
             return;
         }
 
-        try {
-            $this->teamMemberTable->getTeamMember($this->zfcUserAuthentication()->getIdentity()->getId(), $team->id);
-        } catch (\Exception $e) {
+        if (!$this->teamTable->hasUserPermissionForTeam(
+                $this->zfcUserAuthentication()->getIdentity()->getId(),
+                $team->id)) {
             return $this->redirect()->toRoute('team', ['action' => 'index']);
         }
     }

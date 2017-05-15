@@ -90,6 +90,32 @@ class TeamTable
     }
 
     /**
+     * Checks if user has permission for team
+     *
+     * @param int $userId
+     * @param int $teamId
+     * @return boolean
+     */
+    public function hasUserPermissionForTeam($userId, $teamId)
+    {
+        $userId = (int) $userId;
+        $teamId = (int) $teamId;
+        $rowset = $this->tableGateway->select(
+                function (Select $select) use ($userId, $teamId) {
+                    $onTeamMember = new Expression('? = ? AND ? = ?', [
+                        ['team_member.team_id' => Expression::TYPE_IDENTIFIER],
+                        ['team.id' => Expression::TYPE_IDENTIFIER],
+                        ['team_member.user_id' => Expression::TYPE_IDENTIFIER],
+                        [$userId  => Expression::TYPE_VALUE]]);
+                    $select->join('team_member', $onTeamMember, [], Select::JOIN_INNER)
+                        ->where(['id' => $teamId]);
+                });
+        $row = $rowset->current();
+
+        return !is_null($row);
+    }
+
+    /**
      * Team save function
      *
      * @param  Team $team
