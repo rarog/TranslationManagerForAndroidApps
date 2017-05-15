@@ -37,6 +37,16 @@ class TeamMemberController extends AbstractActionController
     private $userTable;
 
     /**
+     * @var Translator
+     */
+    private $translator;
+
+    /**
+     * @var Renderer
+     */
+    private $renderer;
+
+    /**
      * Constructor
      *
      * @param TeamMemberTable $teamMemberTable
