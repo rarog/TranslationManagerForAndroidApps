@@ -48,13 +48,25 @@ class TeamMemberController extends AbstractActionController
     private $renderer;
 
     /**
-     * Checks if current user has permission to work on this team
+     * Check if current user has permission to the team and return it
      *
-     * @param Team $team
-     * @return void|\Zend\Http\Response
+     * @param int $teamId
+     * @return void|\Zend\Http\Response|\Translations\Model\Team
      */
-    private function checkPermission(Team $team)
+    private function getTeam($teamId)
     {
+        $teamId = (int) $teamId;
+
+        if (0 === $teamId) {
+            return $this->redirect()->toRoute('team', ['action' => 'index']);
+        }
+
+        try {
+            $team = $this->teamTable->getTeam($teamId);
+        } catch (\Exception $e) {
+            return $this->redirect()->toRoute('team', ['action' => 'index']);
+        }
+
         if ($this->isGranted('team.viewAll')) {
             return;
         }
@@ -64,6 +76,8 @@ class TeamMemberController extends AbstractActionController
                 $team->id)) {
             return $this->redirect()->toRoute('team', ['action' => 'index']);
         }
+
+        return $team;
     }
 
     /**
@@ -93,12 +107,7 @@ class TeamMemberController extends AbstractActionController
     public function addAction()
     {
         $teamId = (int) $this->params()->fromRoute('teamId', 0);
-        try {
-            $team = $this->teamTable->getTeam($teamId);
-        } catch (\Exception $e) {
-            return $this->redirect()->toRoute('team', ['action' => 'index']);
-        }
-        $this->checkPermission($team);
+        $team = $this->getTeam($teamId);
 
         $form = new TeamMemberForm();
 
@@ -146,12 +155,7 @@ class TeamMemberController extends AbstractActionController
     public function removeAction()
     {
         $teamId = (int) $this->params()->fromRoute('teamId', 0);
-        try {
-            $team = $this->teamTable->getTeam($teamId);
-        } catch (\Exception $e) {
-            return $this->redirect()->toRoute('team', ['action' => 'index']);
-        }
-        $this->checkPermission($team);
+        $team = $this->getTeam($teamId);
 
         $userId = (int) $this->params()->fromRoute('userId', 0);
         try {
@@ -208,17 +212,7 @@ class TeamMemberController extends AbstractActionController
     public function indexAction()
     {
         $teamId = (int) $this->params()->fromRoute('teamId', 0);
-
-        if (0 === $teamId) {
-            return $this->redirect()->toRoute('team', ['action' => 'index']);
-        }
-
-        try {
-            $team = $this->teamTable->getTeam($teamId);
-        } catch (\Exception $e) {
-            return $this->redirect()->toRoute('team', ['action' => 'index']);
-        }
-        $this->checkPermission($team);
+        $team = $this->getTeam($teamId);
 
         return [
             'team'        => $team,
