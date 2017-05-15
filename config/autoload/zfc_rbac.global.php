@@ -124,6 +124,7 @@ return [
                     'permissions' => [
                         'team.add',
                         'team.delete',
+                        'team.viewAll',
                     ],
                 ],
                 'teamadmin' => [

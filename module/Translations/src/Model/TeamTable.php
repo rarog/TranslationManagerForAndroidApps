@@ -8,6 +8,7 @@
 namespace Translations\Model;
 
 use RuntimeException;
+use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -41,7 +42,27 @@ class TeamTable
                 if ($where) {
                     $select->where($where);
                 }
-                $select->order(['name ASC']);
+            }
+        );
+    }
+
+    /**
+     * Gets all entries allowed to user
+     *
+     * @param int $userId
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
+    public function fetchAllAllowedToUser($userId)
+    {
+        $userId = (int) $userId;
+        return $this->tableGateway->select(
+            function (Select $select) use ($userId) {
+                $onTeamMember = new Expression('? = ? AND ? = ?', [
+                    ['team_member.team_id' => Expression::TYPE_IDENTIFIER],
+                    ['team.id' => Expression::TYPE_IDENTIFIER],
+                    ['team_member.user_id' => Expression::TYPE_IDENTIFIER],
+                    [$userId  => Expression::TYPE_VALUE]]);
+                $select->join('team_member', $onTeamMember, [], Select::JOIN_INNER);
             }
         );
     }

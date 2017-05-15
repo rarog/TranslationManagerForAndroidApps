@@ -61,7 +61,14 @@ class AppController extends AbstractActionController
     {
         if (!$this->allTeamsAsArray) {
             $this->allTeamsAsArray = [];
-            foreach ($this->teamTable->fetchAll() as $team) {
+
+            if ($this->isGranted('team.viewAll')) {
+                $teams = $this->teamTable->fetchAll();
+            } else {
+                $teams = $this->teamTable->fetchAllAllowedToUser($this->zfcUserAuthentication()->getIdentity()->getId());
+            }
+
+            foreach ($teams as $team) {
                 $this->allTeamsAsArray[$team->id] = $team->name;
             }
         }
@@ -236,8 +243,14 @@ class AppController extends AbstractActionController
      */
     public function indexAction()
     {
+        if ($this->isGranted('team.viewAll')) {
+            $apps = $this->appTable->fetchAll();
+        } else {
+            $apps = $this->appTable->fetchAllAllowedToUser($this->zfcUserAuthentication()->getIdentity()->getId());
+        }
+
         return [
-            'apps'  => $this->appTable->fetchAll(),
+            'apps'  => $apps,
             'teams' => $this->getAllTeamsAsArray(),
         ];
     }
