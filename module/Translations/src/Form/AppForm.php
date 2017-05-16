@@ -84,13 +84,13 @@ class AppForm extends Form
             'type'       => 'text',
         ]);
         $this->add([
-            'type' => 'Csrf',
-            'name' => 'csrf_app',
+            'name'    => 'csrf_app',
             'options' => [
                 'csrf_options' => [
                     'timeout' => null,
                 ],
             ],
+            'type'    => 'csrf',
         ]);
         $this->add([
             'attributes' => [

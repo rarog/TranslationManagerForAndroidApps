@@ -39,13 +39,13 @@ class TeamForm extends Form
             'type'       => 'text',
         ]);
         $this->add([
-            'type' => 'Csrf',
-            'name' => 'csrf_team',
+            'name'    => 'csrf_team',
             'options' => [
                 'csrf_options' => [
                     'timeout' => null,
                 ],
             ],
+            'type'    => 'csrf',
         ]);
         $this->add([
             'attributes' => [

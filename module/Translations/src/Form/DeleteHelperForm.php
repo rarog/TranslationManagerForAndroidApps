@@ -20,13 +20,13 @@ class DeleteHelperForm extends Form
 
         // Creating the form elements.
         $this->add([
-            'type' => 'Csrf',
-            'name' => 'csrf_delete_helper',
+            'name'    => 'csrf_delete_helper',
             'options' => [
                 'csrf_options' => [
                     'timeout' => null,
                 ],
             ],
+            'type'    => 'csrf',
         ]);
         $this->add([
             'attributes' => [
