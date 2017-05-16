@@ -42,6 +42,9 @@ class TeamMemberForm extends Form
                 'id'    => 'submit',
             ],
             'name'       => 'submit',
+            'options' => [
+                'glyphicon' => 'plus-sign',
+            ],
             'type'       => 'submit',
         ]);
     }
