@@ -25,7 +25,7 @@ class TeamForm extends Form
         ]);
         $this->add([
             'attributes' => [
-                'id' => 'name',
+                'id'        => 'name',
                 'maxlength' => 255,
             ],
             'name'       => 'name',
@@ -38,15 +38,15 @@ class TeamForm extends Form
             ],
             'type'       => 'text',
         ]);
-        $this->add(array(
+        $this->add([
             'type' => 'Csrf',
             'name' => 'csrf_team',
-            'options' => array(
-                'csrf_options' => array(
+            'options' => [
+                'csrf_options' => [
                     'timeout' => null,
-                )
-            )
-        ));
+                ],
+            ],
+        ]);
         $this->add([
             'attributes' => [
                 'value' => _('Save'),

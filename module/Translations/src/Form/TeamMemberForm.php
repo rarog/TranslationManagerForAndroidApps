@@ -27,15 +27,15 @@ class TeamMemberForm extends Form
             'name' => 'team_id',
             'type' => 'hidden',
         ]);
-        $this->add(array(
+        $this->add([
             'type' => 'Csrf',
             'name' => 'csrf_team_member',
-            'options' => array(
-                'csrf_options' => array(
+            'options' => [
+                'csrf_options' => [
                     'timeout' => null,
-                )
-            )
-        ));
+                ],
+            ],
+        ]);
         $this->add([
             'attributes' => [
                 'value' => _('Add'),

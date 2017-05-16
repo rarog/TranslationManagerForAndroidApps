@@ -19,15 +19,15 @@ class DeleteHelperForm extends Form
         $this->setAttribute('method', 'post');
 
         // Creating the form elements.
-        $this->add(array(
+        $this->add([
             'type' => 'Csrf',
             'name' => 'csrf_delete_helper',
-            'options' => array(
-                'csrf_options' => array(
+            'options' => [
+                'csrf_options' => [
                     'timeout' => null,
-                )
-            )
-        ));
+                ],
+            ],
+        ]);
         $this->add([
             'attributes' => [
                 'class' => 'btn-danger',

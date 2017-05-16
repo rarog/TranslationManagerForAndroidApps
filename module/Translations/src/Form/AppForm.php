@@ -40,7 +40,7 @@ class AppForm extends Form
         ]);
         $this->add([
             'attributes' => [
-                'id' => 'name',
+                'id'        => 'name',
                 'maxlength' => 255,
             ],
             'name'       => 'name',
@@ -55,7 +55,7 @@ class AppForm extends Form
         ]);
         $this->add([
             'attributes' => [
-                'id' => 'git_repository',
+                'id'        => 'git_repository',
                 'maxlength' => 4096,
             ],
             'name'       => 'git_repository',
@@ -70,7 +70,7 @@ class AppForm extends Form
         ]);
         $this->add([
             'attributes' => [
-                'id' => 'path_to_res_folder',
+                'id'        => 'path_to_res_folder',
                 'maxlength' => 4096,
             ],
             'name'       => 'path_to_res_folder',
@@ -83,15 +83,15 @@ class AppForm extends Form
             ],
             'type'       => 'text',
         ]);
-        $this->add(array(
+        $this->add([
             'type' => 'Csrf',
             'name' => 'csrf_app',
-            'options' => array(
-                'csrf_options' => array(
+            'options' => [
+                'csrf_options' => [
                     'timeout' => null,
-                )
-            )
-        ));
+                ],
+            ],
+        ]);
         $this->add([
             'attributes' => [
                 'value' => _('Save'),
