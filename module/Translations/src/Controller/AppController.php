@@ -110,9 +110,12 @@ class AppController extends AbstractActionController
         }
 
         $request = $this->getRequest();
+        $viewData = [
+            'form' => $form,
+        ];
 
         if (!$request->isPost()) {
-            return ['form' => $form];
+            return $viewData;
         }
 
         $app = new App();
@@ -120,7 +123,7 @@ class AppController extends AbstractActionController
         $form->setData($request->getPost());
 
         if (!$form->isValid()) {
-            return ['form' => $form];
+            return $viewData;
         }
 
         $app->exchangeArray($form->getData());
