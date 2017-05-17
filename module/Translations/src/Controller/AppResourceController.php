@@ -8,13 +8,13 @@
 namespace Translations\Controller;
 
 use RuntimeException;
-use Translations\Form\AppForm;
+use Translations\Form\AppResourceForm;
 use Translations\Form\DeleteHelperForm;
 use Translations\Model\App;
+use Translations\Model\AppResource;
 use Translations\Model\AppResourceTable;
 use Translations\Model\AppTable;
 use Translations\Model\Helper\FileHelper;
-use Translations\Model\UserSettingsTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\ViewModel;
@@ -67,6 +67,20 @@ class AppResourceController extends AbstractActionController
     }
 
     /**
+     * Returns array of locale names
+     *
+     * @param string $inLocale
+     * @return array
+     */
+    private function getLocaleNameArray($inLocale)
+    {
+        $inLocale = (string) $inLocale;
+
+        $localeNames = $this->configHelp('settings')->locale_names->toArray();
+        return $localeNames[$inLocale];
+    }
+
+    /**
      * Constructor
      *
      * @param AppTable $appTable
@@ -88,6 +102,48 @@ class AppResourceController extends AbstractActionController
     {
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
+
+        try {
+            $this->appResourceTable->getAppResourceByAppIdAndName(
+                $app->id,
+                'values');
+            $hasDefaultValues = true;
+        } catch (\Exception $e) {
+            $hasDefaultValues = false;
+        }
+
+        $form = new AppResourceForm();
+        $form->get('app_id')->setValue($app->id);
+        if ($hasDefaultValues) {
+            $form->get('locale')->setOption('help-block', '');
+        } else {
+            $form->get('name')->setAttribute('disabled', 'disabled')
+                ->setValue('values');
+        }
+        $form->get('locale')->setValueOptions($this->getLocaleNameArray($this->translator->getLocale()));
+
+        $request = $this->getRequest();
+        $viewData = [
+            'app'  => $app,
+            'form' => $form,
+        ];
+
+        if (!$request->isPost()) {
+            return $viewData;
+        }
+
+        $appResource = new AppResource();
+        $form->setInputFilter($appResource->getInputFilter());
+        $form->setData($request->getPost());
+
+        if (!$form->isValid()) {
+            return $viewData;
+        }
+
+        $appResource->exchangeArray($form->getData());
+        $appResource = $this->appResourceTable->saveAppResource($appResource);
+
+        return $this->redirect()->toRoute('appresource', ['appId' => $app->id, 'action' => 'index']);
     }
 
     /**
@@ -128,12 +184,12 @@ class AppResourceController extends AbstractActionController
             $appResources = $this->appResourceTable->fetchAllAllowedToUser($this->zfcUserAuthentication()->getIdentity()->getId());
         }
 
-        $localeNames = $this->configHelp('settings')->locale_names->toArray();
+        $localeNames = $this->getLocaleNameArray($this->translator->getLocale());
 
         return [
             'app'          => $app,
             'appResources' => $appResources,
-            'localeNames'  => $localeNames[$this->translator->getLocale()],
+            'localeNames'  => $this->getLocaleNameArray($this->translator->getLocale()),
         ];
     }
 }

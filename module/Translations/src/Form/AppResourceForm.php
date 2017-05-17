@@ -24,7 +24,7 @@ class AppResourceForm extends Form
             'type' => 'hidden',
         ]);
         $this->add([
-            'name' => 'appId',
+            'name' => 'app_id',
             'type' => 'hidden',
         ]);
         $this->add([
@@ -40,7 +40,7 @@ class AppResourceForm extends Form
                     'class' => 'col-sm-3',
                 ],
             ],
-            'type'       => 'text',
+            'type'       => 'select',
         ]);
         $this->add([
             'attributes' => [
@@ -49,6 +49,8 @@ class AppResourceForm extends Form
             'name'       => 'locale',
             'options'    => [
                 'column-size'      => 'sm-9',
+                'empty_option'     => _('Please choose a locale'),
+                'help-block'       => _('Default values should be universal like "en" or "en_US"'),
                 'label'            => _('Locale'),
                 'label_attributes' => [
                     'class' => 'col-sm-3',

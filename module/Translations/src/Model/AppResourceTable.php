@@ -41,7 +41,7 @@ class AppResourceTable
     /**
      * Get entry
      *
-     * @param  int $id
+     * @param int $id
      * @throws RuntimeException
      * @return \Translations\Model\AppResource
      */
@@ -53,8 +53,34 @@ class AppResourceTable
         if (!$row) {
             throw new RuntimeException(sprintf(
                 'Could not find row with identifier %d',
-                $id
-            ));
+                $id));
+        }
+
+        return $row;
+    }
+
+    /**
+     * Get entry by name
+     *
+     * @param int $appId
+     * @param string $name
+     * @throws RuntimeException
+     * @return \Translations\Model\AppResource
+     */
+    public function getAppResourceByAppIdAndName($appId, $name)
+    {
+        $appId = (int) $appId;
+        $name = (string) $name;
+        $rowset = $this->tableGateway->select([
+            'app_id' => $appId,
+            'name'   => $name
+        ]);
+        $row = $rowset->current();
+        if (!$row) {
+            throw new RuntimeException(sprintf(
+                'Could not find row with app id %d and name %s',
+                $appId,
+                $name));
         }
 
         return $row;
