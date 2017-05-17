@@ -23,7 +23,7 @@ function getLocaleNamesInLocale($inLocale)
 {
     $locales = [];
     foreach (ResourceBundle::getLocales('') as $locale) {
-        $locales[$locale] = Locale::getDisplayName($locale, $inLocale);
+        $locales[$locale] = $locale . ' - ' . Locale::getDisplayName($locale, $inLocale);
     }
     return $locales;
 };
