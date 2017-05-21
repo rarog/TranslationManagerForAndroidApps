@@ -68,6 +68,25 @@ class AppResourceController extends AbstractActionController
     }
 
     /**
+     * Helper for getting path to app resource directory
+     *
+     * @param App $app
+     * @throws RuntimeException
+     * @return string
+     */
+    private function getAppResPath(App $app)
+    {
+        if (($path = realpath($this->configHelp('tmfaa')->app_dir)) === false) {
+            throw new RuntimeException(sprintf(
+                'Configured path app directory "%s" does not exist',
+                $this->configHelp('tmfaa')->app_dir
+                ));
+        }
+        $path = FileHelper::concatenatePath($path, (string) $app->id);
+        return FileHelper::concatenatePath($path, $app->pathToResFolder);
+    }
+
+    /**
      * Returns array of locale names
      *
      * @param string $inLocale
@@ -113,6 +132,8 @@ class AppResourceController extends AbstractActionController
             $hasDefaultValues = false;
         }
 
+        $path = $this->getAppResPath($app);
+
         $folderSelectButton = new \Zend\Form\Element\Button('name-selection-button',[
             'glyphicon' => 'folder-open',
         ]);
@@ -132,8 +153,9 @@ class AppResourceController extends AbstractActionController
 
         $request = $this->getRequest();
         $viewData = [
-            'app'  => $app,
-            'form' => $form,
+            'app'          => $app,
+            'errorMessage' => '',
+            'form'         => $form,
         ];
 
         if (!$request->isPost()) {
@@ -145,6 +167,17 @@ class AppResourceController extends AbstractActionController
         $form->setData($request->getPost());
 
         if (!$form->isValid()) {
+            return $viewData;
+        }
+
+        $resValuesName = $request->getPost('name');
+        $path = FileHelper::concatenatePath($path, $resValuesName);
+
+        if (!is_dir($path) &&
+            !mkdir($path, 0775)) {
+            $viewData['errorMessage'] = sprintf(
+                $this->translator->translate('The app resource directory "%s" doesn\'t exist and couldn\'t be created.'),
+                $resValuesName);
             return $viewData;
         }
 
