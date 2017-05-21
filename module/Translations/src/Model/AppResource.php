@@ -8,6 +8,7 @@
 namespace Translations\Model;
 
 use DomainException;
+use Translations\Validator\ResValuesName;
 use Zend\Filter\StringTrim;
 use Zend\Filter\StripTags;
 use Zend\Filter\ToInt;
@@ -114,6 +115,9 @@ class AppResource implements ArraySerializableInterface, InputFilterAwareInterfa
                         'min' => 1,
                         'max' => 255,
                     ],
+                ],
+                [
+                    'name' => ResValuesName::class,
                 ],
             ],
         ]);
