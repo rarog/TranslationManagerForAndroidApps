@@ -133,11 +133,29 @@ class AppResourceController extends AbstractActionController
         }
 
         $path = $this->getAppResPath($app);
+        $valuesDirs = [];
+
+        if ($hasDefaultValues) {
+            $existingValueDirs = [];
+            foreach ($this->appResourceTable->fetchAll(['app_id' => $app->id]) as $entry) {
+                $existingValueDirs[] = $entry->name;
+            }
+
+            foreach (scandir($path) as $entry) {
+                if ((substr($entry, 0, 7) === 'values-') &&
+                    !in_array($entry, $existingValueDirs)) {
+                    $valuesDirs[] = $entry;
+                }
+            }
+        }
 
         $folderSelectButton = new \Zend\Form\Element\Button('name-selection-button',[
             'glyphicon' => 'folder-open',
         ]);
-        $folderSelectButton->setAttribute('id', 'name-selection-button');
+        $folderSelectButton->setAttributes([
+            'data-toggle' => 'modal',
+            'data-target' => '#valueNameSelection',
+        ]);
 
         $form = new AppResourceForm();
         $form->get('app_id')->setValue($app->id);
@@ -146,6 +164,9 @@ class AppResourceController extends AbstractActionController
         } else {
             $form->get('name')->setAttribute('readonly', 'readonly')
                 ->setValue('values');
+        }
+
+        if (count($valuesDirs) === 0) {
             $folderSelectButton->setAttribute('disabled', 'disabled');
         }
         $form->get('name')->setOption('add-on-append', $folderSelectButton);
@@ -156,6 +177,7 @@ class AppResourceController extends AbstractActionController
             'app'          => $app,
             'errorMessage' => '',
             'form'         => $form,
+            'valuesDirs'   => $valuesDirs,
         ];
 
         if (!$request->isPost()) {

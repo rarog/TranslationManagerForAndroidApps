@@ -18,3 +18,25 @@ if ($errorMessage != '') {
 $form->setAttribute('action', $this->url('appresource', ['appId' => $app->id, 'action' => 'add']));
 echo $this->form($form, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZONTAL);
 ?>
+<?php if (count($valuesDirs) > 0): ?>
+<div class="modal fade" id="valueNameSelection" tabindex="-1" role="dialog" aria-labelledby="valueNameSelectionLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?= $this->escapeHtmlAttr($this->translate('Close')) ?>"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="valueNameSelectionLabel"><?= $this->escapeHtml($this->translate('Select resource folder')) ?></h4>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group">
+<?php foreach ($valuesDirs as $dir): ?>
+                    <button type="button" class="list-group-item" onclick="$('input[name=name]').val('<?= $this->escapeHtmlAttr($dir) ?>');$('#valueNameSelection').modal('hide')"><?= $dir ?></button>
+<?php endforeach; ?>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                 <button type="button" class="btn btn-default" data-dismiss="modal"><?= $this->escapeHtml($this->translate('Close')) ?></button>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
