@@ -46,6 +46,9 @@ class FileHelper
      */
     public static function normalizePath($path, $trimLeft = false)
     {
+        $path = (string) $path;
+        $trimLeft = (bool) $trimLeft;
+
         $path = rtrim($path, '/');
         $path = rtrim($path, '\\');
 
