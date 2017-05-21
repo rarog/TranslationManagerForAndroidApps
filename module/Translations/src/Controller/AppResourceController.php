@@ -123,7 +123,7 @@ class AppResourceController extends AbstractActionController
         if ($hasDefaultValues) {
             $form->get('locale')->setOption('help-block', '');
         } else {
-            $form->get('name')->setAttribute('disabled', 'disabled')
+            $form->get('name')->setAttribute('readonly', 'readonly')
                 ->setValue('values');
             $folderSelectButton->setAttribute('disabled', 'disabled');
         }
