@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TranslationManagerForAndroidApps\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-06 09:40+0200\n"
-"PO-Revision-Date: 2017-05-06 09:42+0200\n"
+"POT-Creation-Date: 2017-05-21 15:14+0200\n"
+"PO-Revision-Date: 2017-05-21 15:44+0200\n"
 "Last-Translator: rarog <rarogit@gmail.com>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -16,31 +16,110 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: src/Form/AppForm.php:34 view/translations/app/index.phtml:14
+#: language/msgIds.php:6
+msgid ""
+"Resource values folder name must be equal to \"values\" or begin with "
+"\"values-\""
+msgstr ""
+"Ordnername der Ressourcenwerte muss identisch mit \"values\" sein oder mit "
+"\"values-\" beginnen"
+
+# Parameters
+# 1) Email of user
+# 2) Team name
+#: src/Controller/TeamMemberController.php:128
+#, php-format
+msgid "User with email \"%s\" was added to team \"%s\"."
+msgstr "Benutzer mit Email  \"%s\" wurde zum Team  \"%s\" hinzugefügt."
+
+#: src/Form/AppForm.php:33
+msgid "It's strongly advised not to change this value in existing apps."
+msgstr ""
+"Es wird dringend empfohlen , diesen Wert in bereits existierenden Apps nicht "
+"zu ändern."
+
+#: src/Form/AppForm.php:34 view/translations/app/index.phtml:17
+msgid "Team"
+msgstr "Team"
+
+#: src/Form/AppForm.php:49 src/Form/AppResourceForm.php:38
+#: src/Form/TeamForm.php:34 view/translations/app-resource/index.phtml:15
+#: view/translations/app/index.phtml:19 view/translations/team/index.phtml:15
 msgid "Name"
 msgstr "Name"
 
-#: src/Form/AppForm.php:49 view/translations/app/index.phtml:15
+#: src/Form/AppForm.php:64 view/translations/app/index.phtml:20
 msgid "Git repository"
 msgstr "Git-Quelle"
 
-#: src/Form/AppForm.php:65 view/translations/app/index.phtml:16
+#: src/Form/AppForm.php:79 view/translations/app/index.phtml:21
 msgid "Path to \"res\" folder"
 msgstr "Pfad zum \"res\"-Ordner"
 
-#: src/Form/AppForm.php:83
+#: src/Form/AppForm.php:97 src/Form/AppResourceForm.php:87
+#: src/Form/TeamForm.php:52
 msgid "Save"
 msgstr "Speichern"
 
-#: src/Form/DeleteHelperForm.php:50
+#: src/Form/AppResourceForm.php:52
+msgid "Please choose a locale"
+msgstr "Bitte wählen Sie eine Locale"
+
+#: src/Form/AppResourceForm.php:53
+msgid "Default values should be universal like \"en\" or \"en_US\""
+msgstr "Defaultwerte sollten universell wie z.B. \"en\" oder \"en_US\" sein."
+
+#: src/Form/AppResourceForm.php:54
+#: view/translations/app-resource/index.phtml:16
+msgid "Locale"
+msgstr "Locale"
+
+#: src/Form/AppResourceForm.php:69
+#: view/translations/app-resource/index.phtml:17
+msgid "Description"
+msgstr "Beschreibung"
+
+#: src/Form/DeleteHelperForm.php:43
 msgid "Yes"
 msgstr "Ja"
 
-#: src/Form/DeleteHelperForm.php:64
+#: src/Form/DeleteHelperForm.php:58
 msgid "No"
 msgstr "Nein"
 
-#: view/translations/app/add.phtml:2 view/translations/app/index.phtml:8
+#: src/Form/TeamMemberForm.php:41
+msgid "Add"
+msgstr "Hinzufügen"
+
+# Parameters
+# 1) App name
+#: view/translations/app-resource/add.phtml:2
+#, php-format
+msgid "Add new resource to app \"%s\""
+msgstr "Neue Ressource zur App \"%s\" hinzufügen"
+
+# Parameters
+# 1) App name
+#: view/translations/app-resource/index.phtml:2
+#, php-format
+msgid "Resources of app \"%s\""
+msgstr "Ressource der App \"%s\""
+
+#: view/translations/app-resource/index.phtml:9
+msgid "Add new app resource"
+msgstr "Neue App-Ressource hinzufügen"
+
+#: view/translations/app-resource/index.phtml:30
+#: view/translations/app/index.phtml:40 view/translations/team/index.phtml:27
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: view/translations/app-resource/index.phtml:33
+#: view/translations/app/index.phtml:43 view/translations/team/index.phtml:30
+msgid "Delete"
+msgstr "Löschen"
+
+#: view/translations/app/add.phtml:2 view/translations/app/index.phtml:10
 msgid "Add new app"
 msgstr "Neue App hinzufügen"
 
@@ -53,7 +132,7 @@ msgstr "App löschen"
 #: view/translations/app/delete.phtml:6
 #, php-format
 msgid "Are you sure that you want to delete the app \"%s\"?"
-msgstr "Sind Sie sicher, dass sie die App \"%s\" löschen möchen?"
+msgstr "Sind Sie sicher, dass sie die App \"%s\" löschen möchten?"
 
 #: view/translations/app/edit.phtml:2
 msgid "Edit app"
@@ -63,13 +142,96 @@ msgstr "App bearbeiten"
 msgid "Apps"
 msgstr "Apps"
 
-#: view/translations/app/index.phtml:28
-msgid "Edit"
-msgstr "Bearbeiten"
+#: view/translations/app/index.phtml:37
+msgid "Resources"
+msgstr "Ressourcen"
 
-#: view/translations/app/index.phtml:29
-msgid "Delete"
-msgstr "Löschen"
+# Parameters
+# 1) Team name
+#: view/translations/team-member/add.phtml:2
+#, php-format
+msgid "Add members to team \"%s\""
+msgstr "Neue Mitglieder zum Team \"%s\" hinzufügen"
+
+#: view/translations/team-member/add.phtml:12
+msgid "Back"
+msgstr "Zurück"
+
+#: view/translations/team-member/add.phtml:21
+#: view/translations/team-member/index.phtml:15
+msgid "Username"
+msgstr "Benutzername"
+
+#: view/translations/team-member/add.phtml:22
+#: view/translations/team-member/index.phtml:16
+msgid "Email"
+msgstr "E-Mail"
+
+#: view/translations/team-member/add.phtml:23
+#: view/translations/team-member/index.phtml:17
+msgid "Display name"
+msgstr "Anzeigename"
+
+# Parameters
+# 1) Team name
+#: view/translations/team-member/index.phtml:2
+#, php-format
+msgid "Members of team \"%s\""
+msgstr "Mitglieder des Teams \"%s\""
+
+#: view/translations/team-member/index.phtml:9
+msgid "Add new team member"
+msgstr "Neues Teammidglied hinzufügen"
+
+#: view/translations/team-member/index.phtml:30
+msgid "Remove"
+msgstr "Entfernen"
+
+# Parameters
+# 1) User email
+#: view/translations/team-member/remove.phtml:2
+#, php-format
+msgid "Remove team member with email \"%s\""
+msgstr "Teammitglied mit E-Mail \"%s\" entfernen"
+
+# Parameters:
+# 1) User email
+# 2) App name
+#: view/translations/team-member/remove.phtml:6
+#, php-format
+msgid ""
+"Are you sure that you want to remove the team team member with email \"%s\" "
+"from the team \"%s\"?"
+msgstr ""
+"Sind Sie sicher, dass sie das Teammitglied mit E-Mail \"%s\" aus der App \"%s"
+"\" löschen möchten?"
+
+#: view/translations/team/add.phtml:2 view/translations/team/index.phtml:9
+msgid "Add new team"
+msgstr "Neues Team hinzufügen"
+
+#: view/translations/team/delete.phtml:2
+msgid "Delete team"
+msgstr "Team löschen"
+
+# Parameters:
+# 1) Team name
+#: view/translations/team/delete.phtml:6
+#, php-format
+msgid "Are you sure that you want to delete the team \"%s\"?"
+msgstr "Sind Sie sicher, dass sie das Team \"%s\" löschen möchten?"
+
+#: view/translations/team/edit.phtml:2
+msgid "Edit team"
+msgstr "Team bearbeiten"
+
+#: view/translations/team/index.phtml:2
+msgid "Teams"
+msgstr "Teams"
+
+#: view/translations/team/index.phtml:26
+msgid "Members"
+msgstr "Mitglieder"
 
 #~ msgid "Path to res folder"
 #~ msgstr "Pfad zum res-Ordner"
@@ -78,10 +240,13 @@ msgstr "Löschen"
 #~ msgstr "Übersetzungsprojekte"
 
 #~ msgid "<strong>Error:</strong> Invalid POST data was provided."
-#~ msgstr "<strong>Fehler:</strong> Es wurden ungültige POST-Daten übermittelt."
+#~ msgstr ""
+#~ "<strong>Fehler:</strong> Es wurden ungültige POST-Daten übermittelt."
 
 #~ msgid "A user is already in the database. This step will be skipped."
-#~ msgstr "Ein Benutzer existiert bereits in der Datenbank. Dieser Schritt wird übersprungen."
+#~ msgstr ""
+#~ "Ein Benutzer existiert bereits in der Datenbank. Dieser Schritt wird "
+#~ "übersprungen."
 
 #~ msgid "Please create your user."
 #~ msgstr "Bitte erstellen Sie ihren Benutzer"
@@ -90,13 +255,12 @@ msgstr "Löschen"
 #~ msgstr "Der Benutzer wurde erfolgreich erstellt."
 
 #~ msgid "The user couldn't be created. Please check the entries."
-#~ msgstr "Der Benutzer konnte nicht erstellt werden. Bitte überprüfen Sie die Eingaben."
+#~ msgstr ""
+#~ "Der Benutzer konnte nicht erstellt werden. Bitte überprüfen Sie die "
+#~ "Eingaben."
 
 #~ msgid "Setup language"
 #~ msgstr "Setup-Sprache"
-
-#~ msgid "Back"
-#~ msgstr "Zurück"
 
 #~ msgid "Next"
 #~ msgstr "Weiter"
@@ -106,9 +270,6 @@ msgstr "Löschen"
 
 #~ msgid "Database name"
 #~ msgstr "Datenbankname"
-
-#~ msgid "Username"
-#~ msgstr "Benutzername"
 
 #~ msgid "Password"
 #~ msgstr "Passwort"
@@ -131,12 +292,6 @@ msgstr "Löschen"
 #~ msgid "Install schema"
 #~ msgstr "Schema installieren"
 
-#~ msgid "Email"
-#~ msgstr "E-Mail"
-
-#~ msgid "Display name"
-#~ msgstr "Anzeigename"
-
 #~ msgid "Repeat Password"
 #~ msgstr "Passwort wiederholen"
 
@@ -156,25 +311,42 @@ msgstr "Löschen"
 #~ msgstr "Die Datenbankversionstabelle existiert, ist jedoch leer."
 
 #~ msgid "The database version table exists but has wrong structure."
-#~ msgstr "Die Datenbankversionstabelle existiert, hat jedoch die falsche Struktur."
+#~ msgstr ""
+#~ "Die Datenbankversionstabelle existiert, hat jedoch die falsche Struktur."
 
-#~ msgid "The database version exists but contains wrong setup id. This means, that another application is installed in this database."
-#~ msgstr "Die Datenbankversionstabelle existiert, enthält jedoch eine falsche Setup-ID. Das bedeutet, dass eine andere Applikation in dieser Datenbank installiert ist."
+#~ msgid ""
+#~ "The database version exists but contains wrong setup id. This means, that "
+#~ "another application is installed in this database."
+#~ msgstr ""
+#~ "Die Datenbankversionstabelle existiert, enthält jedoch eine falsche Setup-"
+#~ "ID. Das bedeutet, dass eine andere Applikation in dieser Datenbank "
+#~ "installiert ist."
 
-#~ msgid "Database schema seems to be installed correctly. Proceed with the next step."
-#~ msgstr "Das Datenbankschema scheint korrekt installiert zu sein. Bitte fahren Sie mit dem nächsten Schritt fort."
+#~ msgid ""
+#~ "Database schema seems to be installed correctly. Proceed with the next "
+#~ "step."
+#~ msgstr ""
+#~ "Das Datenbankschema scheint korrekt installiert zu sein. Bitte fahren Sie "
+#~ "mit dem nächsten Schritt fort."
 
 #~ msgid "Database schema seems to not be installed yet."
-#~ msgstr "Es sieht so aus, als wäre das Datenbankschema noch nicht installiert."
+#~ msgstr ""
+#~ "Es sieht so aus, als wäre das Datenbankschema noch nicht installiert."
 
 #~ msgid "A user already exists in the database. Proceed with next step."
-#~ msgstr "Ein Benutzer existiert bereits in der Datenbank. Bitte fahren Sie mit dem nächsten Schritt fort."
+#~ msgstr ""
+#~ "Ein Benutzer existiert bereits in der Datenbank. Bitte fahren Sie mit dem "
+#~ "nächsten Schritt fort."
 
 #~ msgid "No user exists yet, please create one."
 #~ msgstr "Es gibt noch keinen Benutzer, bitte erstellen Sie einen."
 
-#~ msgid "Something is wrong with the user table, setup can't proceed. Error message: %s"
-#~ msgstr "Etwas stimmt nicht mit der Benutzertabelle, das Setup kann nicht fortfahren. Fehlermeldung: %s"
+#~ msgid ""
+#~ "Something is wrong with the user table, setup can't proceed. Error "
+#~ "message: %s"
+#~ msgstr ""
+#~ "Etwas stimmt nicht mit der Benutzertabelle, das Setup kann nicht "
+#~ "fortfahren. Fehlermeldung: %s"
 
 #~ msgid "Setup"
 #~ msgstr "Setup"
