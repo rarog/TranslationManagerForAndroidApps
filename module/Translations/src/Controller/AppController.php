@@ -70,7 +70,7 @@ class AppController extends AbstractActionController
      * @throws RuntimeException
      * @return string
      */
-    private function getAppDir($id)
+    private function getAppPath($id)
     {
         if (($path = realpath($this->configHelp('tmfaa')->app_dir)) === false) {
             throw new RuntimeException(sprintf(
@@ -129,7 +129,7 @@ class AppController extends AbstractActionController
         $app->exchangeArray($form->getData());
         $app = $this->appTable->saveApp($app);
 
-        $path =  $this->getAppDir($app->id);
+        $path =  $this->getAppPath($app->id);
         if (!mkdir($path, 0775)) {
             throw new RuntimeException(sprintf(
                 'Could not create path "%s"',
@@ -187,7 +187,7 @@ class AppController extends AbstractActionController
         if ($request->getPost('del', 'false') === 'true') {
             $id = (int) $request->getPost('id');
             $this->appTable->deleteApp($id);
-            FileHelper::rmdirRecursive($this->getAppDir($id));
+            FileHelper::rmdirRecursive($this->getAppPath($id));
         }
 
         return $this->redirect()->toRoute('app', ['action' => 'index']);
