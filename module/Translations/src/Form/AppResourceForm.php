@@ -40,7 +40,7 @@ class AppResourceForm extends Form
                     'class' => 'col-sm-3',
                 ],
             ],
-            'type'       => 'select',
+            'type'       => 'text',
         ]);
         $this->add([
             'attributes' => [

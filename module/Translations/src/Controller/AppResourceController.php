@@ -15,6 +15,7 @@ use Translations\Model\AppResource;
 use Translations\Model\AppResourceTable;
 use Translations\Model\AppTable;
 use Translations\Model\Helper\FileHelper;
+use Zend\Form\Element\Button;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\ViewModel;
@@ -112,6 +113,11 @@ class AppResourceController extends AbstractActionController
             $hasDefaultValues = false;
         }
 
+        $folderSelectButton = new \Zend\Form\Element\Button('name-selection-button',[
+            'glyphicon' => 'folder-open',
+        ]);
+        $folderSelectButton->setAttribute('id', 'name-selection-button');
+
         $form = new AppResourceForm();
         $form->get('app_id')->setValue($app->id);
         if ($hasDefaultValues) {
@@ -119,7 +125,9 @@ class AppResourceController extends AbstractActionController
         } else {
             $form->get('name')->setAttribute('disabled', 'disabled')
                 ->setValue('values');
+            $folderSelectButton->setAttribute('disabled', 'disabled');
         }
+        $form->get('name')->setOption('add-on-append', $folderSelectButton);
         $form->get('locale')->setValueOptions($this->getLocaleNameArray($this->translator->getLocale()));
 
         $request = $this->getRequest();
