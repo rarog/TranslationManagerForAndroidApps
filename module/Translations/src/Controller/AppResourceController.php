@@ -83,7 +83,8 @@ class AppResourceController extends AbstractActionController
                 ));
         }
         $path = FileHelper::concatenatePath($path, (string) $app->id);
-        return FileHelper::concatenatePath($path, $app->pathToResFolder);
+        $path = FileHelper::concatenatePath($path, $app->pathToResFolder);
+        return FileHelper::concatenatePath($path, 'res');
     }
 
     /**
@@ -229,6 +230,66 @@ class AppResourceController extends AbstractActionController
     {
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
+
+        try {
+            $this->appResourceTable->getAppResourceByAppIdAndName(
+                $app->id,
+                'values');
+        } catch (\Exception $e) {
+            return $this->redirect()->toRoute('appresource', [
+                'appId'  => $app->id,
+                'action' => 'add',
+            ]);
+        }
+
+        $id = (int) $this->params()->fromRoute('resourceId', 0);
+
+        if (0 === $id) {
+            return $this->redirect()->toRoute('appresource', [
+                'appId'  => $app->id,
+                'action' => 'add',
+            ]);
+        }
+
+        try {
+            $appResource = $this->appResourceTable->getAppResource($id);
+        } catch (\Exception $e) {
+            return $this->redirect()->toRoute('app', [
+                'appId'  => $app->id,
+                'action' => 'index'
+            ]);
+        }
+
+        $form = new AppResourceForm();
+        $form->get('name')->setAttribute('readonly', 'readonly');
+        $form->get('locale')->setValueOptions($this->getLocaleNameArray($this->translator->getLocale()));
+        $form->bind($appResource);
+
+        $viewData = [
+            'app'  => $app,
+            'id'   => $id,
+            'form' => $form,
+        ];
+
+        $request = $this->getRequest();
+
+        if (!$request->isPost()) {
+            return $viewData;
+        }
+
+        $form->setInputFilter($app->getInputFilter());
+        $form->setData($request->getPost());
+
+        if (!$form->isValid()) {
+            return $viewData;
+        }
+
+        $this->appResourceTable->saveAppResource($appResource);
+
+        return $this->redirect()->toRoute('appresource', [
+            'appId'  => $app->id,
+            'action' => 'index'
+        ]);
     }
 
     /**
