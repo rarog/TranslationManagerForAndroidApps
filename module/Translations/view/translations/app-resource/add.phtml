@@ -15,7 +15,10 @@ if ($errorMessage != '') {
 ?>
 </div>
 <?php
-$form->setAttribute('action', $this->url('appresource', ['appId' => $app->id, 'action' => 'add']));
+$form->setAttribute('action', $this->url('appresource', [
+    'appId'  => $app->id,
+    'action' => 'add',
+]));
 echo $this->form($form, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZONTAL);
 ?>
 <?php if (count($valuesDirs) > 0): ?>
