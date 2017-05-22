@@ -217,11 +217,12 @@ class AppController extends AbstractActionController
         $form->get('team_id')->setValueOptions($this->getAllTeamsAsArray());
         $form->bind($app);
 
-        $request = $this->getRequest();
         $viewData = [
             'id'   => $id,
             'form' => $form,
         ];
+
+        $request = $this->getRequest();
 
         if (!$request->isPost()) {
             return $viewData;
