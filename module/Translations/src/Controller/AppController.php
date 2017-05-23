@@ -171,12 +171,13 @@ class AppController extends AbstractActionController
             'type' => 'hidden',
         ])->bind($app);
 
-        $request = $this->getRequest();
         $viewData = [
             'id'   => $id,
             'name' => $app->name,
             'form' => $form,
         ];
+
+        $request = $this->getRequest();
 
         if (!$request->isPost()) {
             return $viewData;
