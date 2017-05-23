@@ -241,11 +241,7 @@ class AppResourceController extends AbstractActionController
         $app = $this->getApp($appId);
 
         // Prevent editing of resources, if default resource doesn't exist.
-        try {
-            $this->appResourceTable->getAppResourceByAppIdAndName(
-                $app->id,
-                'values');
-        } catch (\Exception $e) {
+        if (!$this->getHasAppDefaultValues($app->id)) {
             return $this->redirect()->toRoute('appresource', [
                 'appId'  => $app->id,
                 'action' => 'add',
