@@ -302,11 +302,7 @@ class AppResourceController extends AbstractActionController
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
 
-        if ($this->isGranted('app.viewAll')) {
-            $appResources = $this->appResourceTable->fetchAll();
-        } else {
-            $appResources = $this->appResourceTable->fetchAllAllowedToUser($this->zfcUserAuthentication()->getIdentity()->getId());
-        }
+        $appResources = $this->appResourceTable->fetchAll();
 
         $localeNames = $this->getLocaleNameArray($this->translator->getLocale());
 
