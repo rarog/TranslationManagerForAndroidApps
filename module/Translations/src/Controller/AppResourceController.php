@@ -88,6 +88,23 @@ class AppResourceController extends AbstractActionController
     }
 
     /**
+     * Check if app has default values
+     *
+     * @param int $appId
+     * @return boolean
+     */
+    private function getHasAppDefaultValues($appId)
+    {
+        $appId = (int) $appId;
+        try {
+            $this->appResourceTable->getAppResourceByAppIdAndName($appId, 'values');
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
      * Returns array of locale names
      *
      * @param string $inLocale
@@ -124,15 +141,7 @@ class AppResourceController extends AbstractActionController
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
 
-        try {
-            $this->appResourceTable->getAppResourceByAppIdAndName(
-                $app->id,
-                'values');
-            $hasDefaultValues = true;
-        } catch (\Exception $e) {
-            $hasDefaultValues = false;
-        }
-
+        $hasDefaultValues = $this->getHasAppDefaultValues($app->id);
         $path = $this->getAppResPath($app);
         $valuesDirs = [];
 
@@ -231,6 +240,7 @@ class AppResourceController extends AbstractActionController
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
 
+        // Prevent editing of resources, if default resource doesn't exist.
         try {
             $this->appResourceTable->getAppResourceByAppIdAndName(
                 $app->id,
