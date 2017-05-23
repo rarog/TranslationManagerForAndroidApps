@@ -228,6 +228,53 @@ class AppResourceController extends AbstractActionController
     {
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
+
+        // Prevent deleting of resources, if default resource doesn't exist.
+        if (!$this->getHasAppDefaultValues($app->id)) {
+            return $this->redirect()->toRoute('appresource', [
+                'appId'  => $app->id,
+                'action' => 'index',
+            ]);
+        }
+
+        $id = (int) $this->params()->fromRoute('resourceId', 0);
+
+        if (0 === $id) {
+            return $this->redirect()->toRoute('appresource', [
+                'appId'  => $app->id,
+                'action' => 'index',
+            ]);
+        }
+
+        try {
+            $appResource = $this->appResourceTable->getAppResource($id);
+        } catch (\Exception $e) {
+            return $this->redirect()->toRoute('app', [
+                'appId'  => $app->id,
+                'action' => 'index'
+            ]);
+        }
+
+        $form = new DeleteHelperForm();
+        $form->add([
+            'name' => 'id',
+            'type' => 'hidden',
+        ])->add([
+            'name' => 'app_id',
+            'type' => 'hidden',
+        ])->add([
+            'name' => 'name',
+            'type' => 'hidden',
+        ])->add([
+            'name' => 'locale',
+            'type' => 'hidden',
+        ])->bind($appResource);
+
+        $viewData = [
+            'appName'     => $app->name,
+            'appResource' => $appResource,
+            'form'        => $form,
+        ];
     }
 
     /**
@@ -244,7 +291,7 @@ class AppResourceController extends AbstractActionController
         if (!$this->getHasAppDefaultValues($app->id)) {
             return $this->redirect()->toRoute('appresource', [
                 'appId'  => $app->id,
-                'action' => 'add',
+                'action' => 'index',
             ]);
         }
 

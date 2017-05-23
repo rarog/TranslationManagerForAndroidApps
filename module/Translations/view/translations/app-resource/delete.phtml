@@ -1,0 +1,14 @@
+<?php
+$title = $this->translate('Delete app resource');
+$this->headTitle($title);
+?>
+<h1><?= $this->escapeHtml($title) ?></h1>
+<p><?= $this->escapeHtml(sprintf($this->translate('Are you sure that you want to delete app resource "%s" from the app "%s"?'), $appResource->name, $appName)) ?></p>
+<?php
+$form->setAttribute('action', $this->url('appresource', [
+    'appId'      => $appResource->appId,
+    'action'     => 'delete',
+    'resourceId' => $appResource->id,
+]));
+echo $this->form($form, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZONTAL);
+?>
