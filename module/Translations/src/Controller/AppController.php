@@ -148,6 +148,11 @@ class AppController extends AbstractActionController
     public function deleteAction()
     {
         $id = (int) $this->params()->fromRoute('id', 0);
+
+        if (0 === $id) {
+            return $this->redirect()->toRoute('app', ['action' => 'index']);
+        }
+
         try {
             $app = $this->appTable->getApp($id);
         } catch (\Exception $e) {
