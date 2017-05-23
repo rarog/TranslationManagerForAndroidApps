@@ -271,7 +271,14 @@ class AppResourceController extends AbstractActionController
         try {
             $appResource = $this->appResourceTable->getAppResource($id);
         } catch (\Exception $e) {
-            return $this->redirect()->toRoute('app', [
+            return $this->redirect()->toRoute('appresource', [
+                'appId'  => $app->id,
+                'action' => 'index'
+            ]);
+        }
+
+        if (($appResource->name = 'values') && ($app->resourceCount > 1)) {
+            return $this->redirect()->toRoute('appresource', [
                 'appId'  => $app->id,
                 'action' => 'index'
             ]);
@@ -297,6 +304,8 @@ class AppResourceController extends AbstractActionController
             'appResource' => $appResource,
             'form'        => $form,
         ];
+
+        return $viewData;
     }
 
     /**
