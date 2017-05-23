@@ -277,7 +277,7 @@ class AppResourceController extends AbstractActionController
             ]);
         }
 
-        if (($appResource->name = 'values') && ($app->resourceCount > 1)) {
+        if (($appResource->name == 'values') && ($app->resourceCount > 1)) {
             return $this->redirect()->toRoute('appresource', [
                 'appId'  => $app->id,
                 'action' => 'index'
