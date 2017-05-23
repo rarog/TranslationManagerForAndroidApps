@@ -277,6 +277,7 @@ class AppResourceController extends AbstractActionController
             ]);
         }
 
+        // Prevent deletion of default resource, if other resources exist.
         if (($appResource->name == 'values') && ($app->resourceCount > 1)) {
             return $this->redirect()->toRoute('appresource', [
                 'appId'  => $app->id,
@@ -305,7 +306,28 @@ class AppResourceController extends AbstractActionController
             'form'        => $form,
         ];
 
-        return $viewData;
+        $request = $this->getRequest();
+
+        if (!$request->isPost()) {
+            return $viewData;
+        }
+
+        $form->setInputFilter($app->getInputFilter());
+        $form->setData($request->getPost());
+
+        if (!$form->isValid()) {
+            return $viewData;
+        }
+
+        if ($request->getPost('del', 'false') === 'true') {
+            $id = (int) $request->getPost('id');
+            $this->appResourceTable->deleteAppResource($id);
+        }
+
+        return $this->redirect()->toRoute('appresource', [
+            'appId'  => $app->id,
+            'action' => 'index'
+        ]);
     }
 
     /**
