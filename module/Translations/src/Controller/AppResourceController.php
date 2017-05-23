@@ -317,9 +317,10 @@ class AppResourceController extends AbstractActionController
         $localeNames = $this->getLocaleNameArray($this->translator->getLocale());
 
         return [
-            'app'          => $app,
-            'appResources' => $appResources,
-            'localeNames'  => $this->getLocaleNameArray($this->translator->getLocale()),
+            'app'              => $app,
+            'appResources'     => $appResources,
+            'hasDefaultValues' => $this->getHasAppDefaultValues($app->id),
+            'localeNames'      => $this->getLocaleNameArray($this->translator->getLocale()),
         ];
     }
 }
