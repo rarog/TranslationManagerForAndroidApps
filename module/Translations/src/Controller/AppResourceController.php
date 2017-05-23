@@ -68,22 +68,31 @@ class AppResourceController extends AbstractActionController
     }
 
     /**
-     * Helper for getting path to app resource directory
+     * Helper for getting absolute path to app resource directory
      *
      * @param App $app
      * @throws RuntimeException
      * @return string
      */
-    private function getAppResPath(App $app)
+    private function getAbsoluteAppResPath(App $app)
     {
         if (($path = realpath($this->configHelp('tmfaa')->app_dir)) === false) {
             throw new RuntimeException(sprintf(
                 'Configured path app directory "%s" does not exist',
-                $this->configHelp('tmfaa')->app_dir
-                ));
+                $this->configHelp('tmfaa')->app_dir));
         }
-        $path = FileHelper::concatenatePath($path, (string) $app->id);
-        $path = FileHelper::concatenatePath($path, $app->pathToResFolder);
+        return FileHelper::concatenatePath($path, $this->getRelativeAppResPath($app));
+    }
+
+    /**
+     * Helper for getting relative path to app resource directory
+     *
+     * @param App $app
+     * @return string
+     */
+    private function getRelativeAppResPath(App $app)
+    {
+        $path = FileHelper::concatenatePath((string) $app->id, $app->pathToResFolder);
         return FileHelper::concatenatePath($path, 'res');
     }
 
@@ -142,8 +151,10 @@ class AppResourceController extends AbstractActionController
         $app = $this->getApp($appId);
 
         $hasDefaultValues = $this->getHasAppDefaultValues($app->id);
-        $path = $this->getAppResPath($app);
+        $path = $this->getAbsoluteAppResPath($app);
         $valuesDirs = [];
+        $errorMessage = '';
+        $invalidResDir = false;
 
         if ($hasDefaultValues) {
             $existingValueDirs = [];
@@ -151,10 +162,18 @@ class AppResourceController extends AbstractActionController
                 $existingValueDirs[] = $entry->name;
             }
 
-            foreach (scandir($path) as $entry) {
-                if ((substr($entry, 0, 7) === 'values-') &&
-                    !in_array($entry, $existingValueDirs)) {
-                    $valuesDirs[] = $entry;
+            if (!is_dir($path) &&
+                !mkdir($path, 0775)) {
+                    $errorMessage = sprintf(
+                        $this->translator->translate('The app resource directory "%s" doesn\'t exist and couldn\'t be created.'),
+                        $this->getRelativeAppResPath($app));
+                    $invalidResDir = true;
+            } else {
+                foreach (scandir($path) as $entry) {
+                    if ((substr($entry, 0, 7) === 'values-') &&
+                        !in_array($entry, $existingValueDirs)) {
+                        $valuesDirs[] = $entry;
+                    }
                 }
             }
         }
@@ -181,16 +200,19 @@ class AppResourceController extends AbstractActionController
         }
         $form->get('name')->setOption('add-on-append', $folderSelectButton);
         $form->get('locale')->setValueOptions($this->getLocaleNameArray($this->translator->getLocale()));
+        if ($invalidResDir) {
+            $form->get('submit')->setAttribute('disabled', 'disabled');
+        }
 
         $request = $this->getRequest();
         $viewData = [
             'app'          => $app,
-            'errorMessage' => '',
+            'errorMessage' => $errorMessage,
             'form'         => $form,
             'valuesDirs'   => $valuesDirs,
         ];
 
-        if (!$request->isPost()) {
+        if (!$request->isPost() || $invalidResDir) {
             return $viewData;
         }
 
