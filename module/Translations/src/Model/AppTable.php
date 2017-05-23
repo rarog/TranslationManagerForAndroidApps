@@ -91,7 +91,7 @@ class AppTable
     public function getApp($id)
     {
         $id = (int) $id;
-        $rowset = $this->tableGateway->select(['id' => $id]);
+        $rowset = $this->fetchAll(['app_resource.id' => $id]);
         $row = $rowset->current();
         if (!$row) {
             throw new RuntimeException(sprintf(
