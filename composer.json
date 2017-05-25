@@ -10,7 +10,7 @@
 		"apps"
 	],
 	"homepage" : "https://github.com/rarog/TranslationManagerForAndroidApps",
-	"minimum-stability" : "dev",
+	"minimum-stability" : "stable",
 	"prefer-stable" : true,
 	"require" : {
 		"php" : "^5.6 || ^7.0",
