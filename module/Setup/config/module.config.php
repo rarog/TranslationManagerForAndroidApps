@@ -8,7 +8,6 @@
 namespace Setup;
 
 use Zend\Router\Http\Segment;
-use Zend\ServiceManager\Factory\InvokableFactory;
 
 return [
     'controllers' => [
@@ -35,7 +34,7 @@ return [
     ],
     'service_manager' => [
         'factories' => [
-            'Setup\Model\DatabaseHelper' => Factory\Model\DatabaseHelperFactory::class,
+            Model\DatabaseHelper::class => Factory\Model\DatabaseHelperFactory::class,
         ],
     ],
     'translator' => [

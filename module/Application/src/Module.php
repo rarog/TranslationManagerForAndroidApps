@@ -7,13 +7,16 @@
 
 namespace Application;
 
-use Zend\Mvc\MvcEvent;
+use Zend\EventManager\EventInterface;
+use Zend\ModuleManager\Feature\BootstrapListenerInterface;
+use Zend\ModuleManager\Feature\ConfigProviderInterface;
+use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\Session\Config\SessionConfig;
 use Zend\Session\Container;
 use Zend\Session\SessionManager;
 use Zend\Session\Validator;
 
-class Module
+class Module implements BootstrapListenerInterface, ConfigProviderInterface, ServiceProviderInterface
 {
     const VERSION = '0.2-dev';
 
@@ -25,9 +28,9 @@ class Module
     /**
      * Sets up listeners, that shouldn't be initialised via config.
      *
-     * @param MvcEvent $e
+     * @param EventInterface $e
      */
-    private function bootstrapLateListeners(MvcEvent $e)
+    private function bootstrapLateListeners(EventInterface $e)
     {
         $application  = $e->getApplication();
         $eventManager = $application->getEventManager();
@@ -45,9 +48,9 @@ class Module
     /**
      * Sets up the session
      *
-     * @param MvcEvent $e
+     * @param EventInterface $e
      */
-    private function bootstrapSession(MvcEvent $e)
+    private function bootstrapSession(EventInterface $e)
     {
         $serviceManager = $e->getApplication()->getServiceManager();
         $sharedManager = $e->getApplication()->getEventManager()->getSharedManager();
@@ -107,9 +110,9 @@ class Module
     /**
      * Sets up the translator
      *
-     * @param MvcEvent $e
+     * @param EventInterface $e
      */
-    private function bootstrapTranslator(MvcEvent $e)
+    private function bootstrapTranslator(EventInterface $e)
     {
         $serviceManager = $e->getApplication()->getServiceManager();
 
@@ -143,9 +146,9 @@ class Module
     /**
      * Sets up cached user settings
      *
-     * @param MvcEvent $e
+     * @param EventInterface $e
      */
-    private function bootstrapUserSettings(MvcEvent $e)
+    private function bootstrapUserSettings(EventInterface $e)
     {
         $serviceManager = $e->getApplication()->getServiceManager();
         $auth = $serviceManager->get('zfcuser_auth_service');
@@ -171,9 +174,8 @@ class Module
     }
 
     /**
-     * Returns the module config
-     *
-     * @return array
+     * {@inheritDoc}
+     * @see \Zend\ModuleManager\Feature\ConfigProviderInterface::getConfig()
      */
     public function getConfig()
     {
@@ -181,9 +183,8 @@ class Module
     }
 
     /**
-     * Returns the service config
-     *
-     * @return array
+     * {@inheritDoc}
+     * @see \Zend\ModuleManager\Feature\ServiceProviderInterface::getServiceConfig()
      */
     public function getServiceConfig()
     {
@@ -240,11 +241,10 @@ class Module
     }
 
     /**
-     * Bootstrap event
-     *
-     * @param MvcEvent $e
+     * {@inheritDoc}
+     * @see \Zend\ModuleManager\Feature\BootstrapListenerInterface::onBootstrap()
      */
-    public function onBootstrap(MvcEvent $e)
+    public function onBootstrap(EventInterface $e)
     {
         $this->bootstrapSession($e);
         $this->bootstrapUserSettings($e);

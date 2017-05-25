@@ -11,8 +11,9 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
+use Zend\ModuleManager\Feature\ServiceProviderInterface;
 
-class Module implements ConfigProviderInterface
+class Module implements ConfigProviderInterface, ServiceProviderInterface
 {
     /**
      * {@inheritDoc}
@@ -24,9 +25,8 @@ class Module implements ConfigProviderInterface
     }
 
     /**
-     * Returns service config
-     *
-     * @return array
+     * {@inheritDoc}
+     * @see \Zend\ModuleManager\Feature\ServiceProviderInterface::getServiceConfig()
      */
     public function getServiceConfig()
     {

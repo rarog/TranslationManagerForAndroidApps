@@ -27,11 +27,11 @@ class SetupAwareRedirectStrategyFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         /** @var \ZfcRbac\Options\ModuleOptions $moduleOptions */
-        $moduleOptions = $container->get('ZfcRbac\Options\ModuleOptions');
+        $moduleOptions = $container->get(\ZfcRbac\Options\ModuleOptions::class);
         /** @var \Zend\Authentication\AuthenticationService $authenticationService */
-        $authenticationService = $container->get('Zend\Authentication\AuthenticationService');
+        $authenticationService = $container->get(\Zend\Authentication\AuthenticationService::class);
         /** @var \Setup\Model\DatabaseHelper $databaseHelper */
-        $databaseHelper = $container->get('Setup\Model\DatabaseHelper');
+        $databaseHelper = $container->get(\Setup\Model\DatabaseHelper::class);
 
         return new SetupAwareRedirectStrategy($moduleOptions->getRedirectStrategy(), $authenticationService, $databaseHelper);
     }
