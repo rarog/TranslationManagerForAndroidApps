@@ -69,9 +69,9 @@ class AppResource implements ArraySerializableInterface, InputFilterAwareInterfa
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
         throw new DomainException(sprintf(
-                '%s does not allow injection of an alternate input filter',
-                __CLASS__
-                ));
+            '%s does not allow injection of an alternate input filter',
+            __CLASS__
+        ));
     }
 
     /**

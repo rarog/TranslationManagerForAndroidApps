@@ -8,15 +8,11 @@
 namespace Translations\Model;
 
 use DomainException;
-use Zend\Filter\StringTrim;
-use Zend\Filter\StripTags;
 use Zend\Filter\ToInt;
-use Zend\Filter\ToNull;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\Stdlib\ArraySerializableInterface;
-use Zend\Validator\StringLength;
 
 class TeamMember implements ArraySerializableInterface, InputFilterAwareInterface
 {
