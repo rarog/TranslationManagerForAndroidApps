@@ -19,10 +19,10 @@ class SetupControllerFactory implements FactoryInterface
         return new \Setup\Controller\SetupController(
             $container->get(\Zend\Mvc\I18n\Translator::class),
             new \Zend\ModuleManager\Listener\ListenerOptions($configuration['module_listener_options']),
-            $container->get('ViewRenderer'),
+            $container->get(\Zend\View\Renderer\PhpRenderer::class),
             $container->get('zfcuser_user_service'),
             $container->get('zfcuser_module_options'),
-            $container->get('Setup\Model\DatabaseHelper')
+            $container->get(\Setup\Model\DatabaseHelper::class)
         );
     }
 }
