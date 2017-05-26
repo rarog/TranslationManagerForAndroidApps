@@ -142,7 +142,7 @@ class AppResourceController extends AbstractActionController
     }
 
     /**
-     * App add action
+     * App resource add action
      *
      * @throws RuntimeException
      * @return \Zend\View\Model\ViewModel
@@ -244,7 +244,7 @@ class AppResourceController extends AbstractActionController
     }
 
     /**
-     * App delete action
+     * App resource delete action
      *
      * @return \Zend\View\Model\ViewModel
      */
@@ -333,7 +333,7 @@ class AppResourceController extends AbstractActionController
     }
 
     /**
-     * App edit action
+     * App resource edit action
      *
      * @return \Zend\View\Model\ViewModel
      */
