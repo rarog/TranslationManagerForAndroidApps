@@ -52,6 +52,16 @@ class Module implements ConfigProviderInterface, ServiceProviderInterface
                     $resultSetPrototype->setArrayObjectPrototype(new Model\AppResource());
                     return new TableGateway('app_resource', $dbAdapter, null, $resultSetPrototype);
                 },
+                Model\AppResourceFileTable::class => function ($container) {
+                    $tableGateway = $container->get(Model\AppResourceFileTableGateway::class);
+                    return new Model\AppResourceFileTable($tableGateway);
+                },
+                Model\AppResourceFileTableGateway::class => function ($container) {
+                    $dbAdapter = $container->get(AdapterInterface::class);
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Model\AppResourceFile());
+                    return new TableGateway('app_resource_file', $dbAdapter, null, $resultSetPrototype);
+                },
                 Model\TeamTable::class => function ($container) {
                     $tableGateway = $container->get(Model\TeamTableGateway::class);
                     return new Model\TeamTable($tableGateway);
