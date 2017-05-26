@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "8d76b5c70957a5fa66e42c8059f17e3d",
+    "content-hash": "f91a2dd51116d25d4269da9a1d588433",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -4097,7 +4097,7 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "stability-flags": {
         "zendframework/zend-component-installer": 20
     },
