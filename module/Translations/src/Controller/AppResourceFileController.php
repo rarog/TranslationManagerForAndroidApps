@@ -71,6 +71,16 @@ class AppResourceFileController extends AbstractActionController
             return $this->redirect()->toRoute('app', ['action' => 'index']);
         }
 
+        // Prevent further action, if default values don't exist.
+        try {
+            $this->appResourceTable->getAppResourceByAppIdAndName($app->id, 'values');
+        } catch (\Exception $e) {
+            return $this->redirect()->toRoute('appresource', [
+                'appId'  => $app->id,
+                'action' => 'index',
+            ]);
+        }
+
         return $app;
     }
 
@@ -104,23 +114,6 @@ class AppResourceFileController extends AbstractActionController
     }
 
     /**
-     * Check if app has default values
-     *
-     * @param int $appId
-     * @return boolean
-     */
-    private function getHasAppDefaultValues($appId)
-    {
-        $appId = (int) $appId;
-        try {
-            $this->appResourceTable->getAppResourceByAppIdAndName($appId, 'values');
-            return true;
-        } catch (\Exception $e) {
-            return false;
-        }
-    }
-
-    /**
      * Constructor
      *
      * @param AppResourceFileTable $appResourceFileTable
@@ -147,30 +140,27 @@ class AppResourceFileController extends AbstractActionController
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
 
-        $hasDefaultValues = $this->getHasAppDefaultValues($app->id);
         $path = $this->getAbsoluteAppResPath($app);
         $valuesDirs = [];
         $errorMessage = '';
         $invalidResDir = false;
 
-        if ($hasDefaultValues) {
-            $existingValueDirs = [];
-            foreach ($this->appResourceTable->fetchAll(['app_id' => $app->id]) as $entry) {
-                $existingValueDirs[] = $entry->name;
-            }
+        $existingValueDirs = [];
+        foreach ($this->appResourceTable->fetchAll(['app_id' => $app->id]) as $entry) {
+            $existingValueDirs[] = $entry->name;
+        }
 
-            if (!is_dir($path) &&
-                !mkdir($path, 0775)) {
-                    $errorMessage = sprintf(
-                        $this->translator->translate('The app resource directory "%s" doesn\'t exist and couldn\'t be created.'),
-                        $this->getRelativeAppResPath($app));
-                    $invalidResDir = true;
-            } else {
-                foreach (scandir($path) as $entry) {
-                    if ((substr($entry, 0, 7) === 'values-') &&
-                        !in_array($entry, $existingValueDirs)) {
-                        $valuesDirs[] = $entry;
-                    }
+        if (!is_dir($path) &&
+            !mkdir($path, 0775)) {
+                $errorMessage = sprintf(
+                    $this->translator->translate('The app resource directory "%s" doesn\'t exist and couldn\'t be created.'),
+                    $this->getRelativeAppResPath($app));
+                $invalidResDir = true;
+        } else {
+            foreach (scandir($path) as $entry) {
+                if ((substr($entry, 0, 7) === 'values-') &&
+                    !in_array($entry, $existingValueDirs)) {
+                    $valuesDirs[] = $entry;
                 }
             }
         }
@@ -185,12 +175,6 @@ class AppResourceFileController extends AbstractActionController
 
         $form = new AppResourceFileForm();
         $form->get('app_id')->setValue($app->id);
-        if ($hasDefaultValues) {
-            $form->get('locale')->setOption('help-block', '');
-        } else {
-            $form->get('name')->setAttribute('readonly', 'readonly')
-                ->setValue('values');
-        }
 
         if (count($valuesDirs) === 0) {
             $folderSelectButton->setAttribute('disabled', 'disabled');
@@ -246,14 +230,6 @@ class AppResourceFileController extends AbstractActionController
     {
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
-
-        // Prevent deleting of resources, if default resource doesn't exist.
-        if (!$this->getHasAppDefaultValues($app->id)) {
-            return $this->redirect()->toRoute('appresource', [
-                'appId'  => $app->id,
-                'action' => 'index',
-            ]);
-        }
 
         $id = (int) $this->params()->fromRoute('resourceId', 0);
 
@@ -336,14 +312,6 @@ class AppResourceFileController extends AbstractActionController
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
 
-        // Prevent editing of resources, if default resource doesn't exist.
-        if (!$this->getHasAppDefaultValues($app->id)) {
-            return $this->redirect()->toRoute('appresource', [
-                'appId'  => $app->id,
-                'action' => 'index',
-            ]);
-        }
-
         $id = (int) $this->params()->fromRoute('resourceId', 0);
 
         if (0 === $id) {
@@ -408,7 +376,6 @@ class AppResourceFileController extends AbstractActionController
         return [
             'app'              => $app,
             'appResources'     => $appResources,
-            'hasDefaultValues' => $this->getHasAppDefaultValues($app->id),
         ];
     }
 }
