@@ -12,15 +12,16 @@ use Zend\Router\Http\Segment;
 return [
     'controllers' => [
         'factories' => [
-            Controller\AppController::class         => Factory\Controller\AppControllerFactory::class,
-            Controller\AppResourceController::class => Factory\Controller\AppResourceControllerFactory::class,
-            Controller\TeamController::class        => Factory\Controller\TeamControllerFactory::class,
-            Controller\TeamMemberController::class  => Factory\Controller\TeamMemberControllerFactory::class,
+            Controller\AppController::class             => Factory\Controller\AppControllerFactory::class,
+            Controller\AppResourceController::class     => Factory\Controller\AppResourceControllerFactory::class,
+            Controller\AppResourceFileController::class => Factory\Controller\AppResourceFileControllerFactory::class,
+            Controller\TeamController::class            => Factory\Controller\TeamControllerFactory::class,
+            Controller\TeamMemberController::class      => Factory\Controller\TeamMemberControllerFactory::class,
         ],
     ],
     'router' => [
         'routes' => [
-            'app'  => [
+            'app'             => [
                 'type'    => Segment::class,
                 'options' => [
                     'route'       => '/app[/:action[/:id]]',
@@ -34,7 +35,7 @@ return [
                     ],
                 ],
             ],
-            'appresource' => [
+            'appresource'     => [
                 'type'    => Segment::class,
                 'options' => [
                     'route'       => '/appresource/app/:appId[/:action[/:resourceId]]',
@@ -49,7 +50,22 @@ return [
                     ],
                 ],
             ],
-            'team' => [
+            'appresourcefile' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'       => '/appresourcefile/app/:appId[/:action[/:resourceFileId]]',
+                    'constraints' => [
+                        'appId'          => '[0-9]+',
+                        'action'         => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'resourceFileId' => '[0-9]+',
+                    ],
+                    'defaults'    => [
+                        'controller' => Controller\AppResourceFileController::class,
+                        'action'     => 'index',
+                    ],
+                ],
+            ],
+            'team'            => [
                 'type'    => Segment::class,
                 'options' => [
                     'route'       => '/team[/:action[/:id]]',
@@ -63,7 +79,7 @@ return [
                     ],
                 ],
             ],
-            'teammember' => [
+            'teammember'      => [
                 'type'    => Segment::class,
                 'options' => [
                     'route'       => '/teammember/team/:teamId[/:action[/:userId]]',
