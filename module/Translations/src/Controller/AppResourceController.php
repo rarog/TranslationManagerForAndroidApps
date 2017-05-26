@@ -130,7 +130,9 @@ class AppResourceController extends AbstractActionController
     /**
      * Constructor
      *
+     * @param AppResourceTable $appResourceTable
      * @param AppTable $appTable
+     * @param Translator $translator
      */
     public function __construct(AppResourceTable $appResourceTable, AppTable $appTable, Translator $translator)
     {

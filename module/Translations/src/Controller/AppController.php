@@ -85,6 +85,8 @@ class AppController extends AbstractActionController
      * Constructor
      *
      * @param AppTable $appTable
+     * @param TeamTable $teamTable
+     * @param UserSettingsTable $userSettingsTable
      */
     public function __construct(AppTable $appTable, TeamTable $teamTable, UserSettingsTable $userSettingsTable)
     {
