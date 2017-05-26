@@ -55,3 +55,11 @@ CREATE TABLE app_resource (
     UNIQUE (app_id,name),
     FOREIGN KEY (app_id) REFERENCES app(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+CREATE TABLE app_resource_file (
+    id          INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    app_id      INTEGER NOT NULL,
+    name        VARCHAR(255) NOT NULL,
+    UNIQUE (app_id,name),
+    FOREIGN KEY (app_id) REFERENCES app(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
