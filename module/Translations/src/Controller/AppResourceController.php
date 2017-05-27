@@ -15,6 +15,7 @@ use Translations\Model\AppResource;
 use Translations\Model\AppResourceTable;
 use Translations\Model\AppTable;
 use Translations\Model\Helper\FileHelper;
+use Zend\Db\Adapter\Adapter as DbAdapter;
 use Zend\Form\Element\Button;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
@@ -36,6 +37,11 @@ class AppResourceController extends AbstractActionController
      * @var Translator
      */
     private $translator;
+
+    /**
+     * @var DbAdapter
+     */
+    private $dbAdapter;
 
     /**
      * Check if current user has permission to the app and return it
@@ -133,12 +139,14 @@ class AppResourceController extends AbstractActionController
      * @param AppResourceTable $appResourceTable
      * @param AppTable $appTable
      * @param Translator $translator
+     * @param DbAdapter $dbAdapter
      */
-    public function __construct(AppResourceTable $appResourceTable, AppTable $appTable, Translator $translator)
+    public function __construct(AppResourceTable $appResourceTable, AppTable $appTable, Translator $translator, DbAdapter $dbAdapter)
     {
         $this->appResourceTable = $appResourceTable;
         $this->appTable = $appTable;
         $this->translator = $translator;
+        $this->dbAdapter = $dbAdapter;
     }
 
     /**
@@ -219,6 +227,7 @@ class AppResourceController extends AbstractActionController
         }
 
         $appResource = new AppResource();
+        $appResource->setDbAdapter($this->dbAdapter);
         $form->setInputFilter($appResource->getInputFilter());
         $form->setData($request->getPost());
 

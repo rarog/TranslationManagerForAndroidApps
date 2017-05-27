@@ -21,7 +21,8 @@ class AppResourceControllerFactory implements FactoryInterface
         return new \Translations\Controller\AppResourceController(
             $container->get(\Translations\Model\AppResourceTable::class),
             $container->get(\Translations\Model\AppTable::class),
-            $container->get(\Zend\Mvc\I18n\Translator::class)
+            $container->get(\Zend\Mvc\I18n\Translator::class),
+            $container->get(\Zend\Db\Adapter\AdapterInterface::class)
         );
     }
 }
