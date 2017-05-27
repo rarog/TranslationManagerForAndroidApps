@@ -18,14 +18,12 @@ class ResValuesName extends AbstractValidator implements AdapterAwareInterface
     use AdapterAwareTrait;
 
     const VALUESNAME = 'valuesname';
-    const ERROR_RECORD_FOUND = 'recordFound';
 
     /**
      * @var array
      */
     protected $messageTemplates = [
-        self::VALUESNAME         => 'Resource values folder name must be equal to "values" or begin with "values-"',
-        self::ERROR_RECORD_FOUND => 'A record matching the input was found', // This message is translated via zend-i18n-resources for Zend\Validator\Db\AbstractDb
+        self::VALUESNAME => 'Resource values folder name must be equal to "values" or begin with "values-"',
     ];
 
     /**
@@ -57,7 +55,8 @@ class ResValuesName extends AbstractValidator implements AdapterAwareInterface
         $validator = new NoRecordExists($select);
         $validator->setAdapter($this->adapter);
         if (!$validator->isValid($value)) {
-            $this->error(self::ERROR_RECORD_FOUND);
+            $this->abstractOptions['messageTemplates'] = array_merge($this->abstractOptions['messageTemplates'], $validator->getMessageTemplates());
+            $this->error($validator::ERROR_RECORD_FOUND);
             return false;
         }
 
