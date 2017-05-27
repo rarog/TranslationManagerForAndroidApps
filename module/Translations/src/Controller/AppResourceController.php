@@ -20,9 +20,13 @@ use Zend\Form\Element\Button;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\ViewModel;
+use Zend\Db\Adapter\AdapterAwareInterface;
+use Zend\Db\Adapter\AdapterAwareTrait;
 
-class AppResourceController extends AbstractActionController
+class AppResourceController extends AbstractActionController implements AdapterAwareInterface
 {
+    use AdapterAwareTrait;
+
     /**
      * @var AppResourceTable
      */
@@ -37,11 +41,6 @@ class AppResourceController extends AbstractActionController
      * @var Translator
      */
     private $translator;
-
-    /**
-     * @var DbAdapter
-     */
-    private $dbAdapter;
 
     /**
      * Check if current user has permission to the app and return it
@@ -146,7 +145,7 @@ class AppResourceController extends AbstractActionController
         $this->appResourceTable = $appResourceTable;
         $this->appTable = $appTable;
         $this->translator = $translator;
-        $this->dbAdapter = $dbAdapter;
+        $this->setDbAdapter($dbAdapter);
     }
 
     /**
@@ -227,7 +226,7 @@ class AppResourceController extends AbstractActionController
         }
 
         $appResource = new AppResource();
-        $appResource->setDbAdapter($this->dbAdapter);
+        $appResource->setDbAdapter($this->adapter);
         $form->setInputFilter($appResource->getInputFilter());
         $form->setData($request->getPost());
 
