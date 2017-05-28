@@ -1,0 +1,37 @@
+<?php
+$title = sprintf($this->translate('Resource files of app "%s"'), $app->name);
+$this->headTitle($title);
+$this->dataTablesInitHelper(['table' => '#appResourceFiles']);
+$count = count($appResourceFiles);
+?>
+<h1><?= $this->escapeHtml($title) ?></h1>
+<?php if ($this->isGranted('appresourcefile.add')) : ?>
+<p>
+    <a class="btn btn-default" href="<?= $this->url('appresourcefile', ['appId' => $app->id, 'action' => 'add']) ?>"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Add new app resource file')) ?></a>
+</p>
+<?php endif; ?>
+<table class="table table-bordered table-striped" id="appResourceFiles">
+    <thead>
+        <tr>
+            <th><?= $this->escapeHtml($this->translate('Name')) ?></th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+<?php foreach ($appResourceFiles as $appResourceFile) : ?>
+        <tr>
+            <td><?= $this->escapeHtml($appResourceFile->name) ?></td>
+            <td>
+                <div class="btn-group">
+<?php if ($this->isGranted('appresourcefile.edit')) : ?>
+                    <a class="btn btn-default" href="<?= $this->url('appresourcefile', ['appId' => $app->id, 'action' => 'edit', 'resourceId' => $appResourceFile->id]) ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Edit')) ?></a>
+<?php endif; ?>
+<?php if ($this->isGranted('appresourcefile.delete')) : ?>
+                    <a class="btn btn-danger" href="<?= $this->url('appresourcefile', ['appId' => $app->id, 'action' => 'delete', 'resourceId' => $appResourceFile->id]) ?>"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Delete')) ?></a>
+<?php endif; ?>
+                </div>
+            </td>
+        </tr>
+<?php endforeach; ?>
+    </tbody>
+</table>

@@ -22,7 +22,8 @@ class AppResourceFileControllerFactory implements FactoryInterface
             $container->get(\Translations\Model\AppResourceFileTable::class),
             $container->get(\Translations\Model\AppTable::class),
             $container->get(\Translations\Model\AppResourceTable::class),
-            $container->get(\Zend\Mvc\I18n\Translator::class)
+            $container->get(\Zend\Mvc\I18n\Translator::class),
+            $container->get(\Zend\Db\Adapter\AdapterInterface::class)
         );
     }
 }

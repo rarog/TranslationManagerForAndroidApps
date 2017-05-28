@@ -17,13 +17,18 @@ use Translations\Model\AppResourceFileTable;
 use Translations\Model\AppResourceTable;
 use Translations\Model\AppTable;
 use Translations\Model\Helper\FileHelper;
+use Zend\Db\Adapter\Adapter as DbAdapter;
+use Zend\Db\Adapter\AdapterAwareInterface;
+use Zend\Db\Adapter\AdapterAwareTrait;
 use Zend\Form\Element\Button;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\ViewModel;
 
-class AppResourceFileController extends AbstractActionController
+class AppResourceFileController extends AbstractActionController implements AdapterAwareInterface
 {
+    use AdapterAwareTrait;
+
     /**
      * @var AppResourceFileTable
      */
@@ -85,32 +90,33 @@ class AppResourceFileController extends AbstractActionController
     }
 
     /**
-     * Helper for getting absolute path to app resource directory
+     * Helper for getting absolute path to app resource default values directory
      *
      * @param App $app
      * @throws RuntimeException
      * @return string
      */
-    private function getAbsoluteAppResPath(App $app)
+    private function getAbsoluteAppResValuesPath(App $app)
     {
         if (($path = realpath($this->configHelp('tmfaa')->app_dir)) === false) {
             throw new RuntimeException(sprintf(
                 'Configured path app directory "%s" does not exist',
                 $this->configHelp('tmfaa')->app_dir));
         }
-        return FileHelper::concatenatePath($path, $this->getRelativeAppResPath($app));
+        return FileHelper::concatenatePath($path, $this->getRelativeAppResValuesPath($app));
     }
 
     /**
-     * Helper for getting relative path to app resource directory
+     * Helper for getting relative path to app resource default values directory
      *
      * @param App $app
      * @return string
      */
-    private function getRelativeAppResPath(App $app)
+    private function getRelativeAppResValuesPath(App $app)
     {
         $path = FileHelper::concatenatePath((string) $app->id, $app->pathToResFolder);
-        return FileHelper::concatenatePath($path, 'res');
+        $path = FileHelper::concatenatePath($path, 'res');
+        return FileHelper::concatenatePath($path, 'values');
     }
 
     /**
@@ -120,13 +126,15 @@ class AppResourceFileController extends AbstractActionController
      * @param AppTable $appTable
      * @param AppResourceTable $appResourceTable
      * @param Translator $translator
+     * @param DbAdapter $dbAdapter
      */
-    public function __construct(AppResourceFileTable $appResourceFileTable, AppTable $appTable, AppResourceTable $appResourceTable, Translator $translator)
+    public function __construct(AppResourceFileTable $appResourceFileTable, AppTable $appTable, AppResourceTable $appResourceTable, Translator $translator, DbAdapter $dbAdapter)
     {
         $this->appResourceFileTable = $appResourceFileTable;
         $this->appTable = $appTable;
         $this->appResourceTable = $appResourceTable;
         $this->translator = $translator;
+        $this->setDbAdapter($dbAdapter);
     }
 
     /**
@@ -140,26 +148,26 @@ class AppResourceFileController extends AbstractActionController
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
 
-        $path = $this->getAbsoluteAppResPath($app);
+        $path = $this->getAbsoluteAppResValuesPath($app);
         $valuesDirs = [];
         $errorMessage = '';
         $invalidResDir = false;
 
-        $existingValueDirs = [];
-        foreach ($this->appResourceTable->fetchAll(['app_id' => $app->id]) as $entry) {
-            $existingValueDirs[] = $entry->name;
+        $existingResourceFiles = [];
+        foreach ($this->appResourceFileTable->fetchAll(['app_id' => $app->id]) as $entry) {
+            $existingResourceFiles[] = $entry->name;
         }
 
         if (!is_dir($path) &&
             !mkdir($path, 0775)) {
                 $errorMessage = sprintf(
-                    $this->translator->translate('The app resource directory "%s" doesn\'t exist and couldn\'t be created.'),
-                    $this->getRelativeAppResPath($app));
+                    $this->translator->translate('The app resource default values directory "%s" doesn\'t exist and couldn\'t be created.'),
+                    $this->getRelativeAppResValuesPath($app));
                 $invalidResDir = true;
         } else {
             foreach (scandir($path) as $entry) {
                 if ((substr($entry, 0, 7) === 'values-') &&
-                    !in_array($entry, $existingValueDirs)) {
+                    !in_array($entry, $existingResourceFiles)) {
                     $valuesDirs[] = $entry;
                 }
             }
@@ -196,16 +204,16 @@ class AppResourceFileController extends AbstractActionController
             return $viewData;
         }
 
-        $appResource = new AppResource();
-        $form->setInputFilter($appResource->getInputFilter());
+        $appResourceFile = new AppResourceFile();
+        $appResourceFile->setDbAdapter($this->adapter);
+        $form->setInputFilter($appResourceFile->getInputFilter());
         $form->setData($request->getPost());
 
         if (!$form->isValid()) {
             return $viewData;
         }
 
-        $resValuesName = $request->getPost('name');
-        $path = FileHelper::concatenatePath($path, $resValuesName);
+        $path = FileHelper::concatenatePath($path, 'values');
 
         if (!is_dir($path) &&
             !mkdir($path, 0775)) {
@@ -215,10 +223,10 @@ class AppResourceFileController extends AbstractActionController
             return $viewData;
         }
 
-        $appResource->exchangeArray($form->getData());
-        $appResource = $this->appResourceTable->saveAppResource($appResource);
+        $appResourceFile->exchangeArray($form->getData());
+        $appResourceFile = $this->appResourceFileTable->saveAppResource($appResourceFile);
 
-        return $this->redirect()->toRoute('appresource', ['appId' => $app->id, 'action' => 'index']);
+        return $this->redirect()->toRoute('appresourcefile', ['appId' => $app->id, 'action' => 'index']);
     }
 
     /**
@@ -242,6 +250,12 @@ class AppResourceFileController extends AbstractActionController
 
         try {
             $appResource = $this->appResourceTable->getAppResource($id);
+            if ($appResource->appId !== $app->id) {
+                return $this->redirect()->toRoute('appresource', [
+                    'appId'  => $app->id,
+                    'action' => 'index'
+                ]);
+            }
         } catch (\Exception $e) {
             return $this->redirect()->toRoute('appresource', [
                 'appId'  => $app->id,
@@ -315,14 +329,20 @@ class AppResourceFileController extends AbstractActionController
         $id = (int) $this->params()->fromRoute('resourceId', 0);
 
         if (0 === $id) {
-            return $this->redirect()->toRoute('appresource', [
+            return $this->redirect()->toRoute('appresourcefile', [
                 'appId'  => $app->id,
                 'action' => 'add',
             ]);
         }
 
         try {
-            $appResource = $this->appResourceTable->getAppResource($id);
+            $appResourceFile = $this->appResourceFileTable->getAppResourceFile($id);
+            if ($appResourceFile->appId !== $app->id) {
+                return $this->redirect()->toRoute('appresourcefile', [
+                    'appId'  => $app->id,
+                    'action' => 'index'
+                ]);
+            }
         } catch (\Exception $e) {
             return $this->redirect()->toRoute('app', [
                 'appId'  => $app->id,
@@ -330,9 +350,10 @@ class AppResourceFileController extends AbstractActionController
             ]);
         }
 
+        $appResourceFile->setDbAdapter($this->adapter);
         $form = new AppResourceFileForm();
         $form->get('name')->setAttribute('readonly', 'readonly');
-        $form->bind($appResource);
+        $form->bind($appResourceFile);
 
         $viewData = [
             'app'  => $app,
@@ -346,14 +367,14 @@ class AppResourceFileController extends AbstractActionController
             return $viewData;
         }
 
-        $form->setInputFilter($app->getInputFilter());
+        $form->setInputFilter($appResourceFile->getInputFilter());
         $form->setData($request->getPost());
 
         if (!$form->isValid()) {
             return $viewData;
         }
 
-        $this->appResourceTable->saveAppResource($appResource);
+        $this->appResourceTable->saveAppResource($appResourceFile);
 
         return $this->redirect()->toRoute('appresource', [
             'appId'  => $app->id,
@@ -371,11 +392,11 @@ class AppResourceFileController extends AbstractActionController
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
 
-        $appResources = $this->appResourceTable->fetchAll();
+        $appResourceFiles = $this->appResourceFileTable->fetchAll();
 
         return [
             'app'              => $app,
-            'appResources'     => $appResources,
+            'appResourceFiles' => $appResourceFiles,
         ];
     }
 }
