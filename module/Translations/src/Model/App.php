@@ -51,6 +51,12 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
     public $resourceCount;
 
     /**
+     * @var int
+     * Joined field
+     */
+    public $resourceFileCount;
+
+    /**
      * @var InputFilter
      */
     private $inputFilter;
@@ -170,12 +176,13 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
      */
     public function exchangeArray(array $data)
     {
-        $this->id              = !empty($data['id']) ? $data['id'] : null;
-        $this->teamId          = !empty($data['team_id']) ? $data['team_id'] : null;
-        $this->name            = !empty($data['name']) ? $data['name'] : null;
-        $this->gitRepository   = !empty($data['git_repository']) ? $data['git_repository'] : null;
-        $this->pathToResFolder = !empty($data['path_to_res_folder']) ? $data['path_to_res_folder'] : null;
-        $this->resourceCount   = !empty($data['resource_count']) ? $data['resource_count'] : null;
+        $this->id                = !empty($data['id']) ? $data['id'] : null;
+        $this->teamId            = !empty($data['team_id']) ? $data['team_id'] : null;
+        $this->name              = !empty($data['name']) ? $data['name'] : null;
+        $this->gitRepository     = !empty($data['git_repository']) ? $data['git_repository'] : null;
+        $this->pathToResFolder   = !empty($data['path_to_res_folder']) ? $data['path_to_res_folder'] : null;
+        $this->resourceCount     = !empty($data['resource_count']) ? $data['resource_count'] : null;
+        $this->resourceFileCount = !empty($data['resource_file_count']) ? $data['resource_file_count'] : null;
     }
 
     /**
@@ -185,12 +192,13 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
     public function getArrayCopy()
     {
         return [
-            'id'                 => $this->id,
-            'team_id'            => $this->teamId,
-            'name'               => $this->name,
-            'git_repository'     => $this->gitRepository,
-            'path_to_res_folder' => $this->pathToResFolder,
-            'resource_count'     => $this->resourceCount,
+            'id'                  => $this->id,
+            'team_id'             => $this->teamId,
+            'name'                => $this->name,
+            'git_repository'      => $this->gitRepository,
+            'path_to_res_folder'  => $this->pathToResFolder,
+            'resource_count'      => $this->resourceCount,
+            'resource_file_count' => $this->resourceFileCount,
         ];
     }
 }
