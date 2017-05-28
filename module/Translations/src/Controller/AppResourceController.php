@@ -322,7 +322,6 @@ class AppResourceController extends AbstractActionController implements AdapterA
             return $viewData;
         }
 
-        $appResource->setDbAdapter($this->adapter);
         $form->setInputFilter($appResource->getInputFilter());
         $form->setData($request->getPost());
 
@@ -377,6 +376,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
             ]);
         }
 
+        $appResource->setDbAdapter($this->adapter);
         $form = new AppResourceForm();
         $form->get('name')->setAttribute('readonly', 'readonly');
         $form->get('locale')->setValueOptions($this->getLocaleNameArray($this->translator->getLocale()));
