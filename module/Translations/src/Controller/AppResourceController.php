@@ -302,6 +302,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
             ]);
         }
 
+        $appResource->setDbAdapter($this->adapter);
         $form = new DeleteHelperForm();
         $form->add([
             'name' => 'id',
