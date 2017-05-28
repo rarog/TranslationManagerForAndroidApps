@@ -53,20 +53,26 @@ class AppResourceController extends AbstractActionController implements AdapterA
         $appId = (int) $appId;
 
         if (0 === $appId) {
-            return $this->redirect()->toRoute('app', ['action' => 'index']);
+            return $this->redirect()->toRoute('app', [
+                'action' => 'index',
+            ]);
         }
 
         try {
             $app = $this->appTable->getApp($appId);
         } catch (\Exception $e) {
-            return $this->redirect()->toRoute('app', ['action' => 'index']);
+            return $this->redirect()->toRoute('app', [
+                'action' => 'index',
+            ]);
         }
 
         if (!$this->isGranted('app.viewAll') &&
             !$this->appTable->hasUserPermissionForApp(
                 $this->zfcUserAuthentication()->getIdentity()->getId(),
-                $app->id)) {
-            return $this->redirect()->toRoute('app', ['action' => 'index']);
+                $app->Id)) {
+            return $this->redirect()->toRoute('app', [
+                'action' => 'index',
+            ]);
         }
 
         return $app;
@@ -97,7 +103,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
      */
     private function getRelativeAppResPath(App $app)
     {
-        $path = FileHelper::concatenatePath((string) $app->id, $app->pathToResFolder);
+        $path = FileHelper::concatenatePath((string) $app->Id, $app->PathToResFolder);
         return FileHelper::concatenatePath($path, 'res');
     }
 
@@ -159,7 +165,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
 
-        $hasDefaultValues = $this->getHasAppDefaultValues($app->id);
+        $hasDefaultValues = $this->getHasAppDefaultValues($app->Id);
         $path = $this->getAbsoluteAppResPath($app);
         $valuesDirs = [];
         $errorMessage = '';
@@ -167,7 +173,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
 
         if ($hasDefaultValues) {
             $existingValueDirs = [];
-            foreach ($this->appResourceTable->fetchAll(['app_id' => $app->id]) as $entry) {
+            foreach ($this->appResourceTable->fetchAll(['app_id' => $app->Id]) as $entry) {
                 $existingValueDirs[] = $entry->name;
             }
 
@@ -197,7 +203,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
         ]);
 
         $form = new AppResourceForm();
-        $form->get('app_id')->setValue($app->id);
+        $form->get('app_id')->setValue($app->Id);
         if ($hasDefaultValues) {
             $form->get('locale')->setOption('help-block', '');
         } else {
@@ -249,7 +255,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
         $appResource->exchangeArray($form->getData());
         $appResource = $this->appResourceTable->saveAppResource($appResource);
 
-        return $this->redirect()->toRoute('appresource', ['appId' => $app->id, 'action' => 'index']);
+        return $this->redirect()->toRoute('appresource', ['appId' => $app->Id, 'action' => 'index']);
     }
 
     /**
@@ -263,9 +269,9 @@ class AppResourceController extends AbstractActionController implements AdapterA
         $app = $this->getApp($appId);
 
         // Prevent deleting of resources, if default resource doesn't exist.
-        if (!$this->getHasAppDefaultValues($app->id)) {
+        if (!$this->getHasAppDefaultValues($app->Id)) {
             return $this->redirect()->toRoute('appresource', [
-                'appId'  => $app->id,
+                'appId'  => $app->Id,
                 'action' => 'index',
             ]);
         }
@@ -274,22 +280,22 @@ class AppResourceController extends AbstractActionController implements AdapterA
 
         if (0 === $id) {
             return $this->redirect()->toRoute('appresource', [
-                'appId'  => $app->id,
+                'appId'  => $app->Id,
                 'action' => 'index',
             ]);
         }
 
         try {
             $appResource = $this->appResourceTable->getAppResource($id);
-            if ($appResource->appId !== $app->id) {
+            if ($appResource->appId !== $app->Id) {
                 return $this->redirect()->toRoute('appresource', [
-                    'appId'  => $app->id,
+                    'appId'  => $app->Id,
                     'action' => 'index'
                 ]);
             }
         } catch (\Exception $e) {
             return $this->redirect()->toRoute('appresource', [
-                'appId'  => $app->id,
+                'appId'  => $app->Id,
                 'action' => 'index'
             ]);
         }
@@ -297,7 +303,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
         // Prevent deletion of default resource, if other resources exist.
         if (($appResource->name == 'values') && ($app->resourceCount > 1)) {
             return $this->redirect()->toRoute('appresource', [
-                'appId'  => $app->id,
+                'appId'  => $app->Id,
                 'action' => 'index'
             ]);
         }
@@ -319,7 +325,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
         ])->bind($appResource);
 
         $viewData = [
-            'appName'     => $app->name,
+            'app'         => $app,
             'appResource' => $appResource,
             'form'        => $form,
         ];
@@ -343,7 +349,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
         }
 
         return $this->redirect()->toRoute('appresource', [
-            'appId'  => $app->id,
+            'appId'  => $app->Id,
             'action' => 'index'
         ]);
     }
@@ -359,9 +365,9 @@ class AppResourceController extends AbstractActionController implements AdapterA
         $app = $this->getApp($appId);
 
         // Prevent editing of resources, if default resource doesn't exist.
-        if (!$this->getHasAppDefaultValues($app->id)) {
+        if (!$this->getHasAppDefaultValues($app->Id)) {
             return $this->redirect()->toRoute('appresource', [
-                'appId'  => $app->id,
+                'appId'  => $app->Id,
                 'action' => 'index',
             ]);
         }
@@ -370,22 +376,22 @@ class AppResourceController extends AbstractActionController implements AdapterA
 
         if (0 === $id) {
             return $this->redirect()->toRoute('appresource', [
-                'appId'  => $app->id,
+                'appId'  => $app->Id,
                 'action' => 'add',
             ]);
         }
 
         try {
             $appResource = $this->appResourceTable->getAppResource($id);
-            if ($appResource->appId !== $app->id) {
+            if ($appResource->appId !== $app->Id) {
                 return $this->redirect()->toRoute('appresource', [
-                    'appId'  => $app->id,
+                    'appId'  => $app->Id,
                     'action' => 'index'
                 ]);
             }
         } catch (\Exception $e) {
             return $this->redirect()->toRoute('appresource', [
-                'appId'  => $app->id,
+                'appId'  => $app->Id,
                 'action' => 'index'
             ]);
         }
@@ -397,9 +403,9 @@ class AppResourceController extends AbstractActionController implements AdapterA
         $form->bind($appResource);
 
         $viewData = [
-            'app'  => $app,
-            'id'   => $id,
-            'form' => $form,
+            'app'         => $app,
+            'appResource' => $appResource,
+            'form'        => $form,
         ];
 
         $request = $this->getRequest();
@@ -418,7 +424,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
         $this->appResourceTable->saveAppResource($appResource);
 
         return $this->redirect()->toRoute('appresource', [
-            'appId'  => $app->id,
+            'appId'  => $app->Id,
             'action' => 'index'
         ]);
     }
@@ -434,7 +440,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
         $app = $this->getApp($appId);
 
         $appResources = $this->appResourceTable->fetchAll([
-            'app_id' => $app->id,
+            'app_id' => $app->Id,
         ]);
 
         $localeNames = $this->getLocaleNameArray($this->translator->getLocale());
@@ -442,7 +448,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
         return [
             'app'              => $app,
             'appResources'     => $appResources,
-            'hasDefaultValues' => $this->getHasAppDefaultValues($app->id),
+            'hasDefaultValues' => $this->getHasAppDefaultValues($app->Id),
             'localeNames'      => $this->getLocaleNameArray($this->translator->getLocale()),
         ];
     }

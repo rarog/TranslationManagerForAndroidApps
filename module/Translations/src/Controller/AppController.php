@@ -139,7 +139,9 @@ class AppController extends AbstractActionController
             ));
         }
 
-        return $this->redirect()->toRoute('app', ['action' => 'index']);
+        return $this->redirect()->toRoute('app', [
+            'action' => 'index',
+        ]);
     }
 
     /**
@@ -152,13 +154,17 @@ class AppController extends AbstractActionController
         $id = (int) $this->params()->fromRoute('id', 0);
 
         if (0 === $id) {
-            return $this->redirect()->toRoute('app', ['action' => 'index']);
+            return $this->redirect()->toRoute('app', [
+                'action' => 'index',
+            ]);
         }
 
         try {
             $app = $this->appTable->getApp($id);
         } catch (\Exception $e) {
-            return $this->redirect()->toRoute('app', ['action' => 'index']);
+            return $this->redirect()->toRoute('app', [
+                'action' => 'index',
+            ]);
         }
 
         $form = new DeleteHelperForm();
@@ -174,8 +180,7 @@ class AppController extends AbstractActionController
         ])->bind($app);
 
         $viewData = [
-            'id'   => $id,
-            'name' => $app->name,
+            'app'  => $app,
             'form' => $form,
         ];
 
@@ -198,7 +203,9 @@ class AppController extends AbstractActionController
             FileHelper::rmdirRecursive($this->getAppPath($id));
         }
 
-        return $this->redirect()->toRoute('app', ['action' => 'index']);
+        return $this->redirect()->toRoute('app', [
+            'action' => 'index',
+        ]);
     }
 
     /**
@@ -212,13 +219,17 @@ class AppController extends AbstractActionController
         $id = (int) $this->params()->fromRoute('id', 0);
 
         if (0 === $id) {
-            return $this->redirect()->toRoute('app', ['action' => 'add']);
+            return $this->redirect()->toRoute('app', [
+                'action' => 'add',
+            ]);
         }
 
         try {
             $app = $this->appTable->getApp($id);
         } catch (\Exception $e) {
-            return $this->redirect()->toRoute('app', ['action' => 'index']);
+            return $this->redirect()->toRoute('app', [
+                'action' => 'index',
+            ]);
         }
 
         $form = new AppForm();
@@ -226,7 +237,7 @@ class AppController extends AbstractActionController
         $form->bind($app);
 
         $viewData = [
-            'id'   => $id,
+            'app'  => $app,
             'form' => $form,
         ];
 
@@ -245,7 +256,9 @@ class AppController extends AbstractActionController
 
         $this->appTable->saveApp($app);
 
-        return $this->redirect()->toRoute('app', ['action' => 'index']);
+        return $this->redirect()->toRoute('app', [
+            'action' => 'index',
+        ]);
     }
 
     /**

@@ -6,7 +6,7 @@ $this->headTitle($title);
 <?php
 $form->setAttribute('action', $this->url('team', [
     'action' => 'edit',
-    'id'     => $id,
+    'id'     => $team->Id,
 ]));
 echo $this->form($form, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZONTAL);
 ?>

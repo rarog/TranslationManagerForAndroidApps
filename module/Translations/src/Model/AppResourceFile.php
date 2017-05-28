@@ -25,19 +25,19 @@ class AppResourceFile implements AdapterAwareInterface, ArraySerializableInterfa
     use AdapterAwareTrait;
 
     /**
-     * @var int
+     * @var null|int
      */
-    public $id;
+    private $id;
 
     /**
-     * @var int
+     * @var null|int
      */
-    public $appId;
+    private $appId;
 
     /**
-     * @var string
+     * @var null|string
      */
-    public $name;
+    private $name;
 
     /**
      * @var InputFilter
@@ -54,6 +54,85 @@ class AppResourceFile implements AdapterAwareInterface, ArraySerializableInterfa
         if ($data) {
             $this->exchangeArray($data);
         }
+    }
+
+    /**
+     * @param unknown $name
+     * @throws \Exception
+     * @return unknown
+     */
+    public function __get($name)
+    {
+        $method = 'get' . $name;
+        if (!method_exists($this, $method)) {
+            throw new \Exception('Invalid property');
+        }
+        return $this->$method();
+    }
+
+    /**
+     * @param unknown $name
+     * @param unknown $value
+     * @throws \Exception
+     */
+    public function __set($name, $value)
+    {
+        $method = 'set' . $name;
+        if (!method_exists($this, $method)) {
+            throw new \Exception('Invalid property');
+        }
+        $this->$method($value);
+    }
+
+    /**
+     * @return null|int
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * @param null|int $id
+     */
+    public function setId($id) {
+        if (!is_null($id)) {
+            $id = (int) $id;
+        }
+        $this->id = $id;
+    }
+
+    /**
+     * @return null|int
+     */
+    public function getAppId() {
+        return $this->appId;
+    }
+
+    /**
+     * @param null|int $appId
+     */
+    public function setAppId($appId) {
+        if (!is_null($appId)) {
+            $appId = (int) $appId;
+        }
+        $this->appId = $appId;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getName() {
+        return $this->name;
+    }
+
+    /**
+     * @param null|string $name
+     */
+    public function setName($name) {
+        if (!is_null($name)) {
+            $name = (string) $name;
+        }
+        $this->name = $name;
     }
 
     /**
@@ -129,9 +208,9 @@ class AppResourceFile implements AdapterAwareInterface, ArraySerializableInterfa
      */
     public function exchangeArray(array $data)
     {
-        $this->id    = !empty($data['id']) ? $data['id'] : null;
-        $this->appId = !empty($data['app_id']) ? $data['app_id'] : null;
-        $this->name  = !empty($data['name']) ? $data['name'] : null;
+        $this->Id    = !empty($data['id']) ? $data['id'] : null;
+        $this->AppId = !empty($data['app_id']) ? (int) $data['app_id'] : null;
+        $this->Name  = !empty($data['name']) ? (string) $data['name'] : null;
     }
 
     /**
@@ -141,9 +220,9 @@ class AppResourceFile implements AdapterAwareInterface, ArraySerializableInterfa
     public function getArrayCopy()
     {
         return [
-            'id'     => $this->id,
-            'app_id' => $this->appId,
-            'name'   => $this->name,
+            'id'     => $this->Id,
+            'app_id' => $this->AppId,
+            'name'   => $this->Name,
         ];
     }
 }

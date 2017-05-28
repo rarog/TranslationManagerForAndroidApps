@@ -1,13 +1,13 @@
 <?php
-$title = sprintf($this->translate('Edit resource of app "%s"'), $app->name);
+$title = sprintf($this->translate('Edit resource of app "%s"'), $app->Name);
 $this->headTitle($title);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
 <?php
 $form->setAttribute('action', $this->url('appresource', [
-    'appId'      => $app->id,
+    'appId'      => $appResource->AppId,
     'action'     => 'edit',
-    'resourceId' => $id,
+    'resourceId' => $appResouce->Id,
 ]));
 echo $this->form($form, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZONTAL);
 ?>

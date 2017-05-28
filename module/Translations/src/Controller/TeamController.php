@@ -43,9 +43,12 @@ class TeamController extends AbstractActionController
         $form = new TeamForm();
 
         $request = $this->getRequest();
+        $viewData = [
+            'form' => $form,
+        ];
 
         if (!$request->isPost()) {
-            return ['form' => $form];
+            return $viewData;
         }
 
         $team = new Team();
@@ -53,13 +56,15 @@ class TeamController extends AbstractActionController
         $form->setData($request->getPost());
 
         if (!$form->isValid()) {
-            return ['form' => $form];
+            return $viewData;
         }
 
         $team->exchangeArray($form->getData());
         $team = $this->table->saveTeam($team);
 
-        return $this->redirect()->toRoute('team', ['action' => 'index']);
+        return $this->redirect()->toRoute('team', [
+            'action' => 'index',
+        ]);
     }
 
     /**
@@ -73,7 +78,9 @@ class TeamController extends AbstractActionController
         try {
             $team = $this->table->getTeam($id);
         } catch (\Exception $e) {
-            return $this->redirect()->toRoute('team', ['action' => 'index']);
+            return $this->redirect()->toRoute('team', [
+                'action' => 'index',
+            ]);
         }
 
         $form = new DeleteHelperForm();
@@ -87,9 +94,8 @@ class TeamController extends AbstractActionController
 
         $request = $this->getRequest();
         $viewData = [
-            'id'   => $id,
-            'name' => $team->name,
             'form' => $form,
+            'team' => $team,
         ];
 
         if (!$request->isPost()) {
@@ -108,7 +114,9 @@ class TeamController extends AbstractActionController
             $this->table->deleteTeam($id);
         }
 
-        return $this->redirect()->toRoute('team', ['action' => 'index']);
+        return $this->redirect()->toRoute('team', [
+            'action' => 'index'
+        ]);
     }
 
     /**
@@ -122,13 +130,17 @@ class TeamController extends AbstractActionController
         $id = (int) $this->params()->fromRoute('id', 0);
 
         if (0 === $id) {
-            return $this->redirect()->toRoute('team', ['action' => 'add']);
+            return $this->redirect()->toRoute('team', [
+                'action' => 'add',
+            ]);
         }
 
         try {
             $team = $this->table->getTeam($id);
         } catch (\Exception $e) {
-            return $this->redirect()->toRoute('team', ['action' => 'index']);
+            return $this->redirect()->toRoute('team', [
+                'action' => 'index',
+            ]);
         }
 
         $form = new TeamForm();
@@ -136,8 +148,8 @@ class TeamController extends AbstractActionController
 
         $request = $this->getRequest();
         $viewData = [
-            'id'   => $id,
             'form' => $form,
+            'team' => $team,
         ];
 
         if (!$request->isPost()) {
@@ -153,7 +165,9 @@ class TeamController extends AbstractActionController
 
         $this->table->saveTeam($team);
 
-        return $this->redirect()->toRoute('team', ['action' => 'index']);
+        return $this->redirect()->toRoute('team', [
+            'action' => 'index',
+        ]);
     }
 
 

@@ -7,7 +7,9 @@ $printTeams = count($teams) > 1;
 <h1><?= $this->escapeHtml($title) ?></h1>
 <?php if ($this->isGranted('app.add')) : ?>
 <p>
-    <a class="btn btn-default" href="<?= $this->url('app', ['action' => 'add']) ?>"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Add new app')) ?></a>
+    <a class="btn btn-default" href="<?= $this->url('app', [
+    'action' => 'add',
+]) ?>"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Add new app')) ?></a>
 </p>
 <?php endif; ?>
 <table class="table table-bordered table-striped" id="apps">
@@ -26,26 +28,36 @@ $printTeams = count($teams) > 1;
 <?php foreach ($apps as $app) : ?>
         <tr>
 <?php if ($printTeams) : ?>
-            <td><?= $this->escapeHtml((array_key_exists($app->teamId, $teams) ? $teams[$app->teamId] : $app->teamId)) ?></td>
+            <td><?= $this->escapeHtml((array_key_exists($app->teamId, $teams) ? $teams[$app->TeamId] : $app->TeamId)) ?></td>
 <?php endif; ?>
-            <td><?= $this->escapeHtml($app->name) ?></td>
-            <td><?= $this->escapeHtml($app->gitRepository) ?></td>
-            <td><?= $this->escapeHtml($app->pathToResFolder) ?></td>
+            <td><?= $this->escapeHtml($app->Name) ?></td>
+            <td><?= $this->escapeHtml($app->GitRepository) ?></td>
+            <td><?= $this->escapeHtml($app->PathToResFolder) ?></td>
             <td>
                 <div class="btn-group">
 <?php if ($this->isGranted('appresource.view')) : ?>
-                    <a class="btn btn-default" href="<?= $this->url('appresource', ['appId' => $app->id]) ?>"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Resources')) ?>  <span class="badge"><?= (int) $app->resourceCount ?></span></a>
+                    <a class="btn btn-default" href="<?= $this->url('appresource', [
+    'appId' => $app->Id,
+]) ?>"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Resources')) ?>  <span class="badge"><?= (int) $app->ResourceCount ?></span></a>
 <?php endif; ?>
 <?php if ($this->isGranted('appresourcefile.view')) : ?>
-                    <a class="btn btn-default" href="<?= $this->url('appresourcefile', ['appId' => $app->id]) ?>"><span class="fa fa-file-text" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Resource files')) ?>  <span class="badge"><?= (int) $app->resourceFileCount ?></span></a>
+                    <a class="btn btn-default" href="<?= $this->url('appresourcefile', [
+    'appId' => $app->Id,
+]) ?>"><span class="fa fa-file-text" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Resource files')) ?>  <span class="badge"><?= (int) $app->ResourceFileCount ?></span></a>
 <?php endif; ?>
                 </div>
                 <div class="btn-group">
 <?php if ($this->isGranted('app.edit')) : ?>
-                    <a class="btn btn-default" href="<?= $this->url('app', ['action' => 'edit', 'id' => $app->id]) ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Edit')) ?></a>
+                    <a class="btn btn-default" href="<?= $this->url('app', [
+    'action' => 'edit',
+    'id'     => $app->Id,
+]) ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Edit')) ?></a>
 <?php endif; ?>
 <?php if ($this->isGranted('app.delete')) : ?>
-                    <a class="btn btn-danger" href="<?= $this->url('app', ['action' => 'delete', 'id' => $app->id]) ?>"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Delete')) ?></a>
+                    <a class="btn btn-danger" href="<?= $this->url('app', [
+    'action' => 'delete',
+    'id'     => $app->id,
+]) ?>"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Delete')) ?></a>
 <?php endif; ?>
                 </div>
             </td>

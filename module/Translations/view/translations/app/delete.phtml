@@ -3,11 +3,11 @@ $title = $this->translate('Delete app');
 $this->headTitle($title);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
-<p><?= $this->escapeHtml(sprintf($this->translate('Are you sure that you want to delete the app "%s"?'), $name)) ?></p>
+<p><?= $this->escapeHtml(sprintf($this->translate('Are you sure that you want to delete the app "%s"?'), $app->Name)) ?></p>
 <?php
 $form->setAttribute('action', $this->url('app', [
     'action' => 'delete',
-    'id'     => $id,
+    'id'     => $app->Id,
 ]));
 echo $this->form($form, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZONTAL);
 ?>

@@ -3,11 +3,11 @@ $title = $this->translate('Delete team');
 $this->headTitle($title);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
-<p><?= $this->escapeHtml(sprintf($this->translate('Are you sure that you want to delete the team "%s"?'), $name)) ?></p>
+<p><?= $this->escapeHtml(sprintf($this->translate('Are you sure that you want to delete the team "%s"?'), $team->Name)) ?></p>
 <?php
 $form->setAttribute('action', $this->url('team', [
     'action' => 'delete',
-    'id'     => $id,
+    'id'     => $team->Id,
 ]));
 echo $this->form($form, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZONTAL);
 ?>

@@ -1,11 +1,11 @@
 <?php
-$title = sprintf($this->translate('Edit resource file of app "%s"'), $app->name);
+$title = sprintf($this->translate('Edit resource file of app "%s"'), $app->Name);
 $this->headTitle($title);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
 <?php
 $form->setAttribute('action', $this->url('appresourcefile', [
-    'appId'          => $app->id,
+    'appId'          => $app->Id,
     'action'         => 'edit',
     'resourceFileId' => $id,
 ]));

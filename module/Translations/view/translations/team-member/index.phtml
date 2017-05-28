@@ -1,12 +1,15 @@
 <?php
-$title = sprintf($this->translate('Members of team "%s"'), $team->name);
+$title = sprintf($this->translate('Members of team "%s"'), $team->Name);
 $this->headTitle($title);
 $this->dataTablesInitHelper(['table' => '#teamMembers']);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
 <?php if ($this->isGranted('teammember.add')) : ?>
 <p>
-    <a class="btn btn-default" href="<?= $this->url('teammember', ['teamId' => $team->id, 'action' => 'add']) ?>"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Add new team member')) ?></a>
+    <a class="btn btn-default" href="<?= $this->url('teammember', [
+    'teamId' => $team->Id,
+    'action' => 'add',
+]) ?>"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Add new team member')) ?></a>
 </p>
 <?php endif; ?>
 <table class="table table-bordered table-striped" id="teamMembers">
@@ -21,13 +24,17 @@ $this->dataTablesInitHelper(['table' => '#teamMembers']);
     <tbody>
 <?php foreach ($teamMembers as $teammember) : ?>
         <tr>
-            <td><?= $this->escapeHtml($teammember->username) ?></td>
-            <td><?= $this->escapeHtml($teammember->email) ?></td>
-            <td><?= $this->escapeHtml($teammember->displayName) ?></td>
+            <td><?= $this->escapeHtml($teammember->Username) ?></td>
+            <td><?= $this->escapeHtml($teammember->Email) ?></td>
+            <td><?= $this->escapeHtml($teammember->DisplayName) ?></td>
             <td>
                 <div class="btn-group">
 <?php if ($this->isGranted('teammember.remove')) : ?>
-                    <a class="btn btn-danger" href="<?= $this->url('teammember', ['teamId' => $team->id, 'action' => 'remove', 'userId' => $teammember->userId]) ?>"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Remove')) ?></a>
+                    <a class="btn btn-danger" href="<?= $this->url('teammember', [
+    'teamId' => $teammember->TeamId,
+    'action' => 'remove',
+    'userId' => $teammember->UserId,
+]) ?>"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Remove')) ?></a>
 <?php endif; ?>
                 </div>
             </td>

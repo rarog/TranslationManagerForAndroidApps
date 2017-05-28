@@ -1,5 +1,5 @@
 <?php
-$title = sprintf($this->translate('Resources of app "%s"'), $app->name);
+$title = sprintf($this->translate('Resources of app "%s"'), $app->Name);
 $this->headTitle($title);
 $this->dataTablesInitHelper(['table' => '#appResources']);
 $count = count($appResources);
@@ -8,7 +8,10 @@ $disable = !$hasDefaultValues;
 <h1><?= $this->escapeHtml($title) ?></h1>
 <?php if ($this->isGranted('appresource.add')) : ?>
 <p>
-    <a class="btn btn-default" href="<?= $this->url('appresource', ['appId' => $app->id, 'action' => 'add']) ?>"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Add new app resource')) ?></a>
+    <a class="btn btn-default" href="<?= $this->url('appresource', [
+    'appId'  => $app->Id,
+    'action' => 'add',
+]) ?>"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Add new app resource')) ?></a>
 </p>
 <?php endif; ?>
 <table class="table table-bordered table-striped" id="appResources">
@@ -23,16 +26,24 @@ $disable = !$hasDefaultValues;
     <tbody>
 <?php foreach ($appResources as $appResource) : ?>
         <tr>
-            <td><?= $this->escapeHtml($appResource->name) ?></td>
-            <td><?= $this->escapeHtml((array_key_exists($appResource->locale, $localeNames) ? $localeNames[$appResource->locale] : $appResource->locale)) ?></td>
-            <td><?= $this->escapeHtml($appResource->description) ?></td>
+            <td><?= $this->escapeHtml($appResource->Name) ?></td>
+            <td><?= $this->escapeHtml((array_key_exists($appResource->Locale, $localeNames) ? $localeNames[$appResource->Locale] : $appResource->Locale)) ?></td>
+            <td><?= $this->escapeHtml($appResource->Description) ?></td>
             <td>
                 <div class="btn-group">
 <?php if ($this->isGranted('appresource.edit')) : ?>
-                    <a class="btn btn-default" href="<?= $this->url('appresource', ['appId' => $appResource->appId, 'action' => 'edit', 'resourceId' => $appResource->id]) ?>"<?php if ($disable): ?> disabled="disabled"<?php endif; ?>><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Edit')) ?></a>
+                    <a class="btn btn-default" href="<?= $this->url('appresource', [
+    'appId'      => $appResource->AppId,
+    'action'     => 'edit',
+    'resourceId' => $appResource->Id
+]) ?>"<?php if ($disable): ?> disabled="disabled"<?php endif; ?>><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Edit')) ?></a>
 <?php endif; ?>
 <?php if ($this->isGranted('appresource.delete')) : ?>
-                    <a class="btn btn-danger" href="<?= $this->url('appresource', ['appId' => $appResource->appId, 'action' => 'delete', 'resourceId' => $appResource->id]) ?>"<?php if ($disable || (($count > 1) && ($appResource->name == 'values'))): ?> disabled="disabled"<?php endif; ?>><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Delete')) ?></a>
+                    <a class="btn btn-danger" href="<?= $this->url('appresource', [
+    'appId'      => $appResource->AppId,
+    'action'     => 'delete',
+    'resourceId' => $appResource->Id,
+]) ?>"<?php if ($disable || (($count > 1) && ($appResource->name == 'values'))): ?> disabled="disabled"<?php endif; ?>><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Delete')) ?></a>
 <?php endif; ?>
                 </div>
             </td>

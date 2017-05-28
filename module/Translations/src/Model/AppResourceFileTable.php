@@ -69,15 +69,15 @@ class AppResourceFileTable
     public function saveAppResourceFile(AppResourceFile $appResourceFile)
     {
         $data = [
-            'app_id' => $appResourceFile->appId,
-            'name'   => $appResourceFile->name,
+            'app_id' => $appResourceFile->AppId,
+            'name'   => $appResourceFile->Name,
         ];
 
-        $id = (int) $appResourceFile->id;
+        $id = (int) $appResourceFile->Id;
 
         if ($id === 0) {
             $this->tableGateway->insert($data);
-            $appResourceFile->id = $this->tableGateway->getLastInsertValue();
+            $appResourceFile->Id = $this->tableGateway->getLastInsertValue();
             return $appResourceFile;
         }
 
@@ -99,6 +99,7 @@ class AppResourceFileTable
      */
     public function deleteAppResourceFile($id)
     {
-        $this->tableGateway->delete(['id' => (int) $id]);
+        $id = (int) $id;
+        $this->tableGateway->delete(['id' => $id]);
     }
 }

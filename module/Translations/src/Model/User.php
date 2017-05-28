@@ -22,32 +22,32 @@ class User implements ArraySerializableInterface, InputFilterAwareInterface
     /**
      * @var int
      */
-    public $userId;
+    private $userId;
 
     /**
      * @var string
      */
-    public $username;
+    private $username;
 
     /**
      * @var string
      */
-    public $email;
+    private $email;
 
     /**
      * @var string
      */
-    public $displayName;
+    private $displayName;
 
     /**
      * @var string
      */
-    public $password;
+    private $password;
 
     /**
      * @var string
      */
-    public $passwordVerify;
+    private $passwordVerify;
 
     /**
      * @var InputFilter
@@ -64,6 +64,136 @@ class User implements ArraySerializableInterface, InputFilterAwareInterface
         if ($data) {
             $this->exchangeArray($data);
         }
+    }
+
+    /**
+     * @param unknown $name
+     * @throws \Exception
+     * @return unknown
+     */
+    public function __get($name)
+    {
+        $method = 'get' . $name;
+        if (!method_exists($this, $method)) {
+            throw new \Exception('Invalid property');
+        }
+        return $this->$method();
+    }
+
+    /**
+     * @param unknown $name
+     * @param unknown $value
+     * @throws \Exception
+     */
+    public function __set($name, $value)
+    {
+        $method = 'set' . $name;
+        if (!method_exists($this, $method)) {
+            throw new \Exception('Invalid property');
+        }
+        $this->$method($value);
+    }
+
+    /**
+     * @return null|int
+     */
+    public function getUserId() {
+        return $this->userId;
+    }
+
+    /**
+     * @param null|int $userId
+     */
+    public function setUserId($userId) {
+        if (!is_null($userId)) {
+            $userId = (int) $userId;
+        }
+        $this->userId = $userId;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getUsername() {
+        return $this->username;
+    }
+
+    /**
+     * @param null|string $username
+     */
+    public function setUsername($username) {
+        if (!is_null($username)) {
+            $username = (string) $username;
+        }
+        $this->username = $username;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getEmail() {
+        return $this->email;
+    }
+
+    /**
+     * @param null|string $email
+     */
+    public function setEmail($email) {
+        if (!is_null($email)) {
+            $email = (string) $email;
+        }
+        $this->email = $email;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getDisplayName() {
+        return $this->displayName;
+    }
+
+    /**
+     * @param null|string $displayName
+     */
+    public function setDisplayName($displayName) {
+        if (!is_null($displayName)) {
+            $displayName = (string) $displayName;
+        }
+        $this->displayName = $displayName;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getPassword() {
+        return $this->password;
+    }
+
+    /**
+     * @param null|string $password
+     */
+    public function setPassword($password) {
+        if (!is_null($password)) {
+            $password = (string) $password;
+        }
+        $this->password = $password;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getPasswordVerify() {
+        return $this->passwordVerify;
+    }
+
+    /**
+     * @param null|string $passwordVerify
+     */
+    public function setPasswordVerify($passwordVerify) {
+        if (!is_null($passwordVerify)) {
+            $passwordVerify = (string) $passwordVerify;
+        }
+        $this->passwordVerify = $passwordVerify;
     }
 
     /**
@@ -205,12 +335,12 @@ class User implements ArraySerializableInterface, InputFilterAwareInterface
      */
     public function exchangeArray(array $data)
     {
-        $this->userId         = !empty($data['user_id']) ? $data['user_id'] : null;
-        $this->username       = !empty($data['username']) ? $data['username'] : null;
-        $this->email          = !empty($data['email']) ? $data['email'] : null;
-        $this->displayName    = !empty($data['display_name']) ? $data['display_name'] : null;
-        $this->password       = !empty($data['password']) ? $data['password'] : null;
-        $this->passwordVerify = !empty($data['password_verify']) ? $data['password_verify'] : null;
+        $this->UserId         = !empty($data['user_id']) ? $data['user_id'] : null;
+        $this->Username       = !empty($data['username']) ? $data['username'] : null;
+        $this->Email          = !empty($data['email']) ? $data['email'] : null;
+        $this->DisplayName    = !empty($data['display_name']) ? $data['display_name'] : null;
+        $this->Password       = !empty($data['password']) ? $data['password'] : null;
+        $this->PasswordVerify = !empty($data['password_verify']) ? $data['password_verify'] : null;
     }
 
     /**
@@ -220,12 +350,12 @@ class User implements ArraySerializableInterface, InputFilterAwareInterface
     public function getArrayCopy()
     {
         return [
-            'user_id'         => $this->userId,
-            'username'        => $this->username,
-            'email'           => $this->email,
-            'display_name'    => $this->displayName,
-            'password'        => $this->password,
-            'password_verify' => $this->passwordVerify,
+            'user_id'         => $this->UserId,
+            'username'        => $this->Username,
+            'email'           => $this->Email,
+            'display_name'    => $this->DisplayName,
+            'password'        => $this->Password,
+            'password_verify' => $this->PasswordVerify,
         ];
     }
 }

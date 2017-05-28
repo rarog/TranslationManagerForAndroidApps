@@ -60,28 +60,34 @@ class AppResourceFileController extends AbstractActionController implements Adap
         $appId = (int) $appId;
 
         if (0 === $appId) {
-            return $this->redirect()->toRoute('app', ['action' => 'index']);
+            return $this->redirect()->toRoute('app', [
+                'action' => 'index',
+            ]);
         }
 
         try {
             $app = $this->appTable->getApp($appId);
         } catch (\Exception $e) {
-            return $this->redirect()->toRoute('app', ['action' => 'index']);
+            return $this->redirect()->toRoute('app', [
+                'action' => 'index',
+            ]);
         }
 
         if (!$this->isGranted('app.viewAll') &&
             !$this->appTable->hasUserPermissionForApp(
                 $this->zfcUserAuthentication()->getIdentity()->getId(),
-                $app->id)) {
-            return $this->redirect()->toRoute('app', ['action' => 'index']);
+                $app->Id)) {
+            return $this->redirect()->toRoute('app', [
+                'action' => 'index'
+            ]);
         }
 
         // Prevent further action, if default values don't exist.
         try {
-            $this->appResourceTable->getAppResourceByAppIdAndName($app->id, 'values');
+            $this->appResourceTable->getAppResourceByAppIdAndName($app->Id, 'values');
         } catch (\Exception $e) {
             return $this->redirect()->toRoute('appresource', [
-                'appId'  => $app->id,
+                'appId'  => $app->Id,
                 'action' => 'index',
             ]);
         }
@@ -114,7 +120,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
      */
     private function getRelativeAppResValuesPath(App $app)
     {
-        $path = FileHelper::concatenatePath((string) $app->id, $app->pathToResFolder);
+        $path = FileHelper::concatenatePath((string) $app->Id, $app->pathToResFolder);
         $path = FileHelper::concatenatePath($path, 'res');
         return FileHelper::concatenatePath($path, 'values');
     }
@@ -154,7 +160,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
         $invalidResDir = false;
 
         $existingResourceFiles = [];
-        foreach ($this->appResourceFileTable->fetchAll(['app_id' => $app->id]) as $entry) {
+        foreach ($this->appResourceFileTable->fetchAll(['app_id' => $app->Id]) as $entry) {
             $existingResourceFiles[] = $entry->name;
         }
 
@@ -183,7 +189,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
         ]);
 
         $form = new AppResourceFileForm();
-        $form->get('app_id')->setValue($app->id);
+        $form->get('app_id')->setValue($app->Id);
 
         if (count($resourceFiles) === 0) {
             $folderSelectButton->setAttribute('disabled', 'disabled');
@@ -227,7 +233,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
         $appResourceFile->exchangeArray($form->getData());
         $appResourceFile = $this->appResourceFileTable->saveAppResourceFile($appResourceFile);
 
-        return $this->redirect()->toRoute('appresourcefile', ['appId' => $app->id, 'action' => 'index']);
+        return $this->redirect()->toRoute('appresourcefile', ['appId' => $app->Id, 'action' => 'index']);
     }
 
     /**
@@ -244,26 +250,27 @@ class AppResourceFileController extends AbstractActionController implements Adap
 
         if (0 === $id) {
             return $this->redirect()->toRoute('appresource', [
-                'appId'  => $app->id,
+                'appId'  => $app->Id,
                 'action' => 'index',
             ]);
         }
 
         try {
-            $appResource = $this->appResourceTable->getAppResource($id);
-            if ($appResource->appId !== $app->id) {
+            $appResourceFile = $this->appResourceFileTable->getAppResourceFile($id);
+            if ($appResourceFile->appId !== $app->Id) {
                 return $this->redirect()->toRoute('appresource', [
-                    'appId'  => $app->id,
+                    'appId'  => $app->Id,
                     'action' => 'index'
                 ]);
             }
         } catch (\Exception $e) {
             return $this->redirect()->toRoute('appresource', [
-                'appId'  => $app->id,
+                'appId'  => $app->Id,
                 'action' => 'index'
             ]);
         }
 
+        $appResourceFile->setDbAdapter($this->adapter);
         $form = new DeleteHelperForm();
         $form->add([
             'name' => 'id',
@@ -274,15 +281,12 @@ class AppResourceFileController extends AbstractActionController implements Adap
         ])->add([
             'name' => 'name',
             'type' => 'hidden',
-        ])->add([
-            'name' => 'locale',
-            'type' => 'hidden',
-        ])->bind($appResource);
+        ])->bind($appResourceFile);
 
         $viewData = [
-            'appName'     => $app->name,
-            'appResource' => $appResource,
-            'form'        => $form,
+            'app'             => $app,
+            'appResourceFile' => $appResourceFile,
+            'form'            => $form,
         ];
 
         $request = $this->getRequest();
@@ -291,20 +295,28 @@ class AppResourceFileController extends AbstractActionController implements Adap
             return $viewData;
         }
 
+        $postId = (int) $request->getPost('id');
+        $postAppId = (int) $request->getPost('app_id');
+
         $form->setInputFilter($app->getInputFilter());
         $form->setData($request->getPost());
 
-        if (!$form->isValid()) {
+        if (($postId !== $id) ||
+            ($postAppId !== $app->Id) ||
+            !$form->isValid()) {
+            $form->setData([
+                'id'     => $id,
+                'app_id' => $app->Id,
+            ]);
             return $viewData;
         }
 
         if ($request->getPost('del', 'false') === 'true') {
-            $id = (int) $request->getPost('id');
-            $this->appResourceTable->deleteAppResource($id);
+            $this->appResourceFileTable->deleteAppResourceFile($postId);
         }
 
-        return $this->redirect()->toRoute('appresource', [
-            'appId'  => $app->id,
+        return $this->redirect()->toRoute('appresourcefile', [
+            'appId'  => $app->Id,
             'action' => 'index'
         ]);
     }
@@ -323,22 +335,22 @@ class AppResourceFileController extends AbstractActionController implements Adap
 
         if (0 === $id) {
             return $this->redirect()->toRoute('appresourcefile', [
-                'appId'  => $app->id,
+                'appId'  => $app->Id,
                 'action' => 'add',
             ]);
         }
 
         try {
             $appResourceFile = $this->appResourceFileTable->getAppResourceFile($id);
-            if ($appResourceFile->appId !== $app->id) {
+            if ($appResourceFile->AppId !== $app->Id) {
                 return $this->redirect()->toRoute('appresourcefile', [
-                    'appId'  => $app->id,
+                    'appId'  => $app->Id,
                     'action' => 'index'
                 ]);
             }
         } catch (\Exception $e) {
             return $this->redirect()->toRoute('appresourcefile', [
-                'appId'  => $app->id,
+                'appId'  => $app->Id,
                 'action' => 'index'
             ]);
         }
@@ -369,7 +381,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
         $this->appResourceFileTable->saveAppResourceFile($appResourceFile);
 
         return $this->redirect()->toRoute('appresourcefile', [
-            'appId'  => $app->id,
+            'appId'  => $app->Id,
             'action' => 'index'
         ]);
     }
@@ -385,7 +397,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
         $app = $this->getApp($appId);
 
         $appResourceFiles = $this->appResourceFileTable->fetchAll([
-            'app_id' => $app->id,
+            'app_id' => $app->Id,
         ]);
 
         return [

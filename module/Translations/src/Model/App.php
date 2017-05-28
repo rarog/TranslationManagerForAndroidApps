@@ -20,41 +20,41 @@ use Zend\Validator\StringLength;
 class App implements ArraySerializableInterface, InputFilterAwareInterface
 {
     /**
-     * @var int
+     * @var null|int
      */
-    public $id;
+    private $id;
 
     /**
-     * @var int
+     * @var null|int
      */
-    public $teamId;
+    private $teamId;
 
     /**
-     * @var string
+     * @var null|string
      */
-    public $name;
+    private $name;
 
     /**
-     * @var string
+     * @var null|string
      */
-    public $gitRepository;
+    private $gitRepository;
 
     /**
-     * @var string
+     * @var null|string
      */
-    public $pathToResFolder;
+    private $pathToResFolder;
 
     /**
-     * @var int
+     * @var null|int
      * Joined field
      */
-    public $resourceCount;
+    private $resourceCount;
 
     /**
-     * @var int
+     * @var null|int
      * Joined field
      */
-    public $resourceFileCount;
+    private $resourceFileCount;
 
     /**
      * @var InputFilter
@@ -71,6 +71,153 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
         if ($data) {
             $this->exchangeArray($data);
         }
+    }
+
+    /**
+     * @param unknown $name
+     * @throws \Exception
+     * @return unknown
+     */
+    public function __get($name)
+    {
+        $method = 'get' . $name;
+        if (!method_exists($this, $method)) {
+            throw new \Exception('Invalid property');
+        }
+        return $this->$method();
+    }
+
+    /**
+     * @param unknown $name
+     * @param unknown $value
+     * @throws \Exception
+     */
+    public function __set($name, $value)
+    {
+        $method = 'set' . $name;
+        if (!method_exists($this, $method)) {
+            throw new \Exception('Invalid property');
+        }
+        $this->$method($value);
+    }
+
+    /**
+     * @return null|int
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * @param null|int $id
+     */
+    public function setId($id) {
+        if (!is_null($id)) {
+            $id = (int) $id;
+        }
+        $this->id = $id;
+    }
+
+    /**
+     * @return null|int
+     */
+    public function getTeamId() {
+        return $this->teamId;
+    }
+
+    /**
+     * @param null|int $teamId
+     */
+    public function setTeamId($teamId) {
+        if (!is_null($teamId)) {
+            $teamId = (int) $teamId;
+        }
+        $this->teamId = $teamId;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getName() {
+        return $this->name;
+    }
+
+    /**
+     * @param null|string $name
+     */
+    public function setName($name) {
+        if (!is_null($name)) {
+            $name = (string) $name;
+        }
+        $this->name = $name;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getGitRepository() {
+        return $this->gitRepository;
+    }
+
+    /**
+     * @param null|string $gitRepository
+     */
+    public function setGitRepository($gitRepository) {
+        if (!is_null($gitRepository)) {
+            $gitRepository = (string) $gitRepository;
+        }
+        $this->gitRepository = $gitRepository;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getPathToResFolder() {
+        return $this->pathToResFolder;
+    }
+
+    /**
+     * @return null|int
+     */
+    public function getResourceCount() {
+        return $this->resourceCount;
+    }
+
+    /**
+     * @param null|int $resourceCount
+     */
+    public function setResourceCount($resourceCount) {
+        if (!is_null($resourceCount)) {
+            $resourceCount = (int) $resourceCount;
+        }
+        $this->resourceCount = $resourceCount;
+    }
+
+    /**
+     * @return null|int
+     */
+    public function getResourceFileCount() {
+        return $this->resourceFileCount;
+    }
+
+    /**
+     * @param null|int $resourceFileCount
+     */
+    public function setResourceFileCount($resourceFileCount) {
+        if (!is_null($resourceFileCount)) {
+            $resourceFileCount = (int) $resourceFileCount;
+        }
+        $this->resourceFileCount = $resourceFileCount;
+    }
+
+    /**
+     * @param null|string $pathToResFolder
+     */
+    public function setPathToResFolder($pathToResFolder) {
+        if (!is_null($pathToResFolder)) {
+            $pathToResFolder = (string) $pathToResFolder;
+        }
+        $this->pathToResFolder = $pathToResFolder;
     }
 
     /**
@@ -176,13 +323,13 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
      */
     public function exchangeArray(array $data)
     {
-        $this->id                = !empty($data['id']) ? $data['id'] : null;
-        $this->teamId            = !empty($data['team_id']) ? $data['team_id'] : null;
-        $this->name              = !empty($data['name']) ? $data['name'] : null;
-        $this->gitRepository     = !empty($data['git_repository']) ? $data['git_repository'] : null;
-        $this->pathToResFolder   = !empty($data['path_to_res_folder']) ? $data['path_to_res_folder'] : null;
-        $this->resourceCount     = !empty($data['resource_count']) ? $data['resource_count'] : null;
-        $this->resourceFileCount = !empty($data['resource_file_count']) ? $data['resource_file_count'] : null;
+        $this->Id                = !empty($data['id']) ? $data['id'] : null;
+        $this->TeamId            = !empty($data['team_id']) ? $data['team_id'] : null;
+        $this->Name              = !empty($data['name']) ? $data['name'] : null;
+        $this->GitRepository     = !empty($data['git_repository']) ? $data['git_repository'] : null;
+        $this->PathToResFolder   = !empty($data['path_to_res_folder']) ? $data['path_to_res_folder'] : null;
+        $this->ResourceCount     = !empty($data['resource_count']) ? $data['resource_count'] : null;
+        $this->ResourceFileCount = !empty($data['resource_file_count']) ? $data['resource_file_count'] : null;
     }
 
     /**
@@ -192,13 +339,13 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
     public function getArrayCopy()
     {
         return [
-            'id'                  => $this->id,
-            'team_id'             => $this->teamId,
-            'name'                => $this->name,
-            'git_repository'      => $this->gitRepository,
-            'path_to_res_folder'  => $this->pathToResFolder,
-            'resource_count'      => $this->resourceCount,
-            'resource_file_count' => $this->resourceFileCount,
+            'id'                  => $this->Id,
+            'team_id'             => $this->TeamId,
+            'name'                => $this->Name,
+            'git_repository'      => $this->GitRepository,
+            'path_to_res_folder'  => $this->PathToResFolder,
+            'resource_count'      => $this->ResourceCount,
+            'resource_file_count' => $this->ResourceFileCount,
         ];
     }
 }

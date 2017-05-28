@@ -1,5 +1,5 @@
 <?php
-$title = sprintf($this->translate('Add new resource to app "%s"'), $app->name);
+$title = sprintf($this->translate('Add new resource to app "%s"'), $app->Name);
 $this->headTitle($title);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
@@ -16,7 +16,7 @@ if ($errorMessage != '') {
 </div>
 <?php
 $form->setAttribute('action', $this->url('appresource', [
-    'appId'  => $app->id,
+    'appId'  => $app->Id,
     'action' => 'add',
 ]));
 echo $this->form($form, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZONTAL);

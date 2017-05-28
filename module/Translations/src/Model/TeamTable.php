@@ -125,14 +125,14 @@ class TeamTable
     public function saveTeam(Team $team)
     {
         $data = [
-            'name' => $team->name,
+            'name' => $team->Name,
         ];
 
-        $id = (int) $team->id;
+        $id = (int) $team->Id;
 
         if ($id === 0) {
             $this->tableGateway->insert($data);
-            $team->id = $this->tableGateway->getLastInsertValue();
+            $team->Id = $this->tableGateway->getLastInsertValue();
             return $team;
         }
 
@@ -154,6 +154,7 @@ class TeamTable
      */
     public function deleteTeam($id)
     {
-        $this->tableGateway->delete(['id' => (int) $id]);
+        $id = (int) $id;
+        $this->tableGateway->delete(['id' => $id]);
     }
 }

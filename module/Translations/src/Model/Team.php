@@ -20,14 +20,14 @@ use Zend\Validator\StringLength;
 class Team implements ArraySerializableInterface, InputFilterAwareInterface
 {
     /**
-     * @var int
+     * @var null|int
      */
-    public $id;
+    private $id;
 
     /**
-     * @var string
+     * @var null|string
      */
-    public $name;
+    private $name;
 
     /**
      * @var InputFilter
@@ -44,6 +44,68 @@ class Team implements ArraySerializableInterface, InputFilterAwareInterface
         if ($data) {
             $this->exchangeArray($data);
         }
+    }
+
+    /**
+     * @param unknown $name
+     * @throws \Exception
+     * @return unknown
+     */
+    public function __get($name)
+    {
+        $method = 'get' . $name;
+        if (!method_exists($this, $method)) {
+            throw new \Exception('Invalid property');
+        }
+        return $this->$method();
+    }
+
+    /**
+     * @param unknown $name
+     * @param unknown $value
+     * @throws \Exception
+     */
+    public function __set($name, $value)
+    {
+        $method = 'set' . $name;
+        if (!method_exists($this, $method)) {
+            throw new \Exception('Invalid property');
+        }
+        $this->$method($value);
+    }
+
+    /**
+     * @return null|int
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * @param null|int $id
+     */
+    public function setId($id) {
+        if (!is_null($id)) {
+            $id = (int) $id;
+        }
+        $this->id = $id;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getName() {
+        return $this->name;
+    }
+
+    /**
+     * @param null|string $name
+     */
+    public function setName($name) {
+        if (!is_null($name)) {
+            $name = (string) $name;
+        }
+        $this->name = $name;
     }
 
     /**
@@ -106,8 +168,8 @@ class Team implements ArraySerializableInterface, InputFilterAwareInterface
      */
     public function exchangeArray(array $data)
     {
-        $this->id   = !empty($data['id']) ? $data['id'] : null;
-        $this->name = !empty($data['name']) ? $data['name'] : null;
+        $this->Id   = !empty($data['id']) ? $data['id'] : null;
+        $this->Name = !empty($data['name']) ? $data['name'] : null;
     }
 
     /**
@@ -117,8 +179,8 @@ class Team implements ArraySerializableInterface, InputFilterAwareInterface
     public function getArrayCopy()
     {
         return [
-            'id'   => $this->id,
-            'name' => $this->name,
+            'id'   => $this->Id,
+            'name' => $this->Name,
         ];
     }
 }

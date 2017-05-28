@@ -17,38 +17,38 @@ use Zend\Stdlib\ArraySerializableInterface;
 class TeamMember implements ArraySerializableInterface, InputFilterAwareInterface
 {
     /**
-     * @var int
+     * @var null|int
      */
-    public $userId;
+    private $userId;
 
     /**
-     * @var int
+     * @var null|int
      */
-    public $teamId;
+    private $teamId;
 
     /**
-     * @var string
+     * @var null|string
      * Joined field
      */
-    public $username;
+    private $username;
 
     /**
-     * @var string
+     * @var null|string
      * Joined field
      */
-    public $email;
+    private $email;
 
     /**
-     * @var string
+     * @var null|string
      * Joined field
      */
-    public $displayName;
+    private $displayName;
 
     /**
-     * @var string
+     * @var null|string
      * Joined field
      */
-    public $teamName;
+    private $teamName;
 
     /**
      * @var InputFilter
@@ -65,6 +65,136 @@ class TeamMember implements ArraySerializableInterface, InputFilterAwareInterfac
         if ($data) {
             $this->exchangeArray($data);
         }
+    }
+
+    /**
+     * @param unknown $name
+     * @throws \Exception
+     * @return unknown
+     */
+    public function __get($name)
+    {
+        $method = 'get' . $name;
+        if (!method_exists($this, $method)) {
+            throw new \Exception('Invalid property');
+        }
+        return $this->$method();
+    }
+
+    /**
+     * @param unknown $name
+     * @param unknown $value
+     * @throws \Exception
+     */
+    public function __set($name, $value)
+    {
+        $method = 'set' . $name;
+        if (!method_exists($this, $method)) {
+            throw new \Exception('Invalid property');
+        }
+        $this->$method($value);
+    }
+
+    /**
+     * @return null|int
+     */
+    public function getUserId() {
+        return $this->userId;
+    }
+
+    /**
+     * @param null|int $userId
+     */
+    public function setUserId($userId) {
+        if (!is_null($userId)) {
+            $userId = (int) $userId;
+        }
+        $this->userId = $userId;
+    }
+
+    /**
+     * @return null|int
+     */
+    public function getTeamId() {
+        return $this->teamId;
+    }
+
+    /**
+     * @param null|int $teamId
+     */
+    public function setTeamId($teamId) {
+        if (!is_null($teamId)) {
+            $teamId = (int) $teamId;
+        }
+        $this->teamId = $teamId;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getUsername() {
+        return $this->username;
+    }
+
+    /**
+     * @param null|string $username
+     */
+    public function setUsername($username) {
+        if (!is_null($username)) {
+            $username = (string) $username;
+        }
+        $this->username = $username;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getEmail() {
+        return $this->email;
+    }
+
+    /**
+     * @param null|string $email
+     */
+    public function setEmail($email) {
+        if (!is_null($email)) {
+            $email = (string) $email;
+        }
+        $this->email = $email;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getDisplayName() {
+        return $this->displayName;
+    }
+
+    /**
+     * @param null|string $displayName
+     */
+    public function setDisplayName($displayName) {
+        if (!is_null($displayName)) {
+            $displayName = (string) $displayName;
+        }
+        $this->displayName = $displayName;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getTeamName() {
+        return $this->teamName;
+    }
+
+    /**
+     * @param null|string $teamName
+     */
+    public function setTeamName($teamName) {
+        if (!is_null($teamName)) {
+            $teamName = (string) $teamName;
+        }
+        $this->teamName = $teamName;
     }
 
     /**
@@ -116,12 +246,12 @@ class TeamMember implements ArraySerializableInterface, InputFilterAwareInterfac
      */
     public function exchangeArray(array $data)
     {
-        $this->userId      = !empty($data['user_id']) ? $data['user_id'] : null;
-        $this->teamId      = !empty($data['team_id']) ? $data['team_id'] : null;
-        $this->username    = !empty($data['username']) ? $data['username'] : null;
-        $this->email       = !empty($data['email']) ? $data['email'] : null;
-        $this->displayName = !empty($data['display_name']) ? $data['display_name'] : null;
-        $this->teamName    = !empty($data['team_name']) ? $data['team_name'] : null;
+        $this->UserId      = !empty($data['user_id']) ? $data['user_id'] : null;
+        $this->TeamId      = !empty($data['team_id']) ? $data['team_id'] : null;
+        $this->Username    = !empty($data['username']) ? $data['username'] : null;
+        $this->Email       = !empty($data['email']) ? $data['email'] : null;
+        $this->DisplayName = !empty($data['display_name']) ? $data['display_name'] : null;
+        $this->TeamName    = !empty($data['team_name']) ? $data['team_name'] : null;
     }
 
     /**
@@ -131,12 +261,12 @@ class TeamMember implements ArraySerializableInterface, InputFilterAwareInterfac
     public function getArrayCopy()
     {
         return [
-            'user_id'      => $this->userId,
-            'team_id'      => $this->teamId,
-            'username'     => $this->username,
-            'email'        => $this->email,
-            'display_name' => $this->displayName,
-            'team_name'    => $this->teamName,
+            'user_id'      => $this->UserId,
+            'team_id'      => $this->TeamId,
+            'username'     => $this->Username,
+            'email'        => $this->Email,
+            'display_name' => $this->DisplayName,
+            'team_name'    => $this->TeamName,
         ];
     }
 }

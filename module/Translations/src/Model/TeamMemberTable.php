@@ -86,12 +86,12 @@ class TeamMemberTable
     public function saveTeamMember(TeamMember $teamMember)
     {
         $data = [
-            'user_id' => $teamMember->userId,
-            'team_id' => $teamMember->teamId,
+            'user_id' => $teamMember->UserId,
+            'team_id' => $teamMember->TeamId,
         ];
 
-        $userId = (int) $teamMember->userId;
-        $teamId = (int) $teamMember->teamId;
+        $userId = (int) $teamMember->UserId;
+        $teamId = (int) $teamMember->TeamId;
 
         if (($userId === 0) || ($teamId === 0)) {
             throw new RuntimeException('Cannot handle team member with invalid ids');
@@ -116,9 +116,11 @@ class TeamMemberTable
      */
     public function deleteTeamMember($userId, $teamId)
     {
+        $userId = (int) $userId;
+        $teamId = (int) $teamId;
         $this->tableGateway->delete([
-            'user_id' => (int) $userId,
-            'team_id' => (int) $teamId,
+            'user_id' => $userId,
+            'team_id' => $teamId,
         ]);
     }
 }

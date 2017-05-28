@@ -141,17 +141,17 @@ class AppTable
     public function saveApp(App $app)
     {
         $data = [
-            'team_id'            => $app->teamId,
-            'name'               => $app->name,
-            'git_repository'     => $app->gitRepository,
-            'path_to_res_folder' => $app->pathToResFolder,
+            'team_id'            => $app->TeamId,
+            'name'               => $app->Name,
+            'git_repository'     => $app->GitRepository,
+            'path_to_res_folder' => $app->PathToResFolder,
         ];
 
-        $id = (int) $app->id;
+        $id = (int) $app->Id;
 
         if ($id === 0) {
             $this->tableGateway->insert($data);
-            $app->id = $this->tableGateway->getLastInsertValue();
+            $app->Id = $this->tableGateway->getLastInsertValue();
             return $app;
         }
 
@@ -173,6 +173,7 @@ class AppTable
      */
     public function deleteApp($id)
     {
-        $this->tableGateway->delete(['id' => (int) $id]);
+        $id = (int) $id;
+        $this->tableGateway->delete(['id' => $id]);
     }
 }

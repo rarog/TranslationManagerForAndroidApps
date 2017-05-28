@@ -179,7 +179,7 @@ class TeamMemberController extends AbstractActionController
 
         $request = $this->getRequest();
         $viewData = [
-            'form' => $form,
+            'form'       => $form,
             'teamMember' => $teamMember,
         ];
 

@@ -96,17 +96,17 @@ class AppResourceTable
     public function saveAppResource(AppResource $appResource)
     {
         $data = [
-            'app_id'      => $appResource->appId,
-            'name'        => $appResource->name,
-            'locale'      => $appResource->locale,
-            'description' => $appResource->description,
+            'app_id'      => $appResource->AppId,
+            'name'        => $appResource->Name,
+            'locale'      => $appResource->Locale,
+            'description' => $appResource->Description,
         ];
 
-        $id = (int) $appResource->id;
+        $id = (int) $appResource->Id;
 
         if ($id === 0) {
             $this->tableGateway->insert($data);
-            $appResource->id = $this->tableGateway->getLastInsertValue();
+            $appResource->Id = $this->tableGateway->getLastInsertValue();
             return $appResource;
         }
 
@@ -128,6 +128,7 @@ class AppResourceTable
      */
     public function deleteAppResource($id)
     {
-        $this->tableGateway->delete(['id' => (int) $id]);
+        $id = (int) $id;
+        $this->tableGateway->delete(['id' => $id]);
     }
 }

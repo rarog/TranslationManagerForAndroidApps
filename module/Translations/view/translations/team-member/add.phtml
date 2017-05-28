@@ -9,7 +9,10 @@ $form->setAttribute('action', $this->url('teammember', [
 <h1><?= $this->escapeHtml($title) ?></h1>
 <?php if ($this->isGranted('teammember.view')) : ?>
 <p>
-    <a class="btn btn-default" href="<?= $this->url('teammember', ['teamId' => $team->id, 'action' => 'index']) ?>"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Back')) ?></a>
+    <a class="btn btn-default" href="<?= $this->url('teammember', [
+    'teamId' => $team->Id,
+    'action' => 'index',
+]) ?>"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Back')) ?></a>
 </p>
 <?php endif; ?>
 <?php if ($this->isGranted('teammember.add')) : ?>
@@ -27,14 +30,14 @@ $form->setAttribute('action', $this->url('teammember', [
     <tbody>
 <?php foreach ($usersNotInTeam as $user) : ?>
         <tr>
-            <td><?= $this->escapeHtml($user->username) ?></td>
-            <td><?= $this->escapeHtml($user->email) ?></td>
-            <td><?= $this->escapeHtml($user->displayName) ?></td>
+            <td><?= $this->escapeHtml($user->Username) ?></td>
+            <td><?= $this->escapeHtml($user->Email) ?></td>
+            <td><?= $this->escapeHtml($user->DisplayName) ?></td>
             <td>
 <?php
 $teamMember = new \Translations\Model\TeamMember([
-    'user_id' => $user->userId,
-    'team_id' => $team->id,
+    'user_id' => $user->UserId,
+    'team_id' => $team->Id,
 ]);
 $form->bind($teamMember);
 echo $this->form($form, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_INLINE);
