@@ -149,7 +149,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
         $app = $this->getApp($appId);
 
         $path = $this->getAbsoluteAppResValuesPath($app);
-        $valuesDirs = [];
+        $resourceFiles = [];
         $errorMessage = '';
         $invalidResDir = false;
 
@@ -166,9 +166,10 @@ class AppResourceFileController extends AbstractActionController implements Adap
                 $invalidResDir = true;
         } else {
             foreach (scandir($path) as $entry) {
-                if ((substr($entry, 0, 7) === 'values-') &&
+                if ((substr($entry, -4) === '.xml') &&
+                    is_file(FileHelper::concatenatePath($path, $entry)) &&
                     !in_array($entry, $existingResourceFiles)) {
-                    $valuesDirs[] = $entry;
+                    $resourceFiles[] = $entry;
                 }
             }
         }
@@ -178,13 +179,13 @@ class AppResourceFileController extends AbstractActionController implements Adap
         ]);
         $folderSelectButton->setAttributes([
             'data-toggle' => 'modal',
-            'data-target' => '#valueNameSelection',
+            'data-target' => '#resFileNameSelection',
         ]);
 
         $form = new AppResourceFileForm();
         $form->get('app_id')->setValue($app->id);
 
-        if (count($valuesDirs) === 0) {
+        if (count($resourceFiles) === 0) {
             $folderSelectButton->setAttribute('disabled', 'disabled');
         }
         $form->get('name')->setOption('add-on-append', $folderSelectButton);
@@ -197,7 +198,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
             'app'          => $app,
             'errorMessage' => $errorMessage,
             'form'         => $form,
-            'valuesDirs'   => $valuesDirs,
+            'valuesDirs'   => $resourceFiles,
         ];
 
         if (!$request->isPost() || $invalidResDir) {
@@ -224,7 +225,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
         }
 
         $appResourceFile->exchangeArray($form->getData());
-        $appResourceFile = $this->appResourceFileTable->saveAppResource($appResourceFile);
+        $appResourceFile = $this->appResourceFileTable->saveAppResourceFile($appResourceFile);
 
         return $this->redirect()->toRoute('appresourcefile', ['appId' => $app->id, 'action' => 'index']);
     }
