@@ -16,12 +16,12 @@ use Translations\Model\AppResourceTable;
 use Translations\Model\AppTable;
 use Translations\Model\Helper\FileHelper;
 use Zend\Db\Adapter\Adapter as DbAdapter;
+use Zend\Db\Adapter\AdapterAwareInterface;
+use Zend\Db\Adapter\AdapterAwareTrait;
 use Zend\Form\Element\Button;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\ViewModel;
-use Zend\Db\Adapter\AdapterAwareInterface;
-use Zend\Db\Adapter\AdapterAwareTrait;
 
 class AppResourceController extends AbstractActionController implements AdapterAwareInterface
 {
