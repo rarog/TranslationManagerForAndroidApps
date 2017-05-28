@@ -50,7 +50,8 @@ class ResValuesName extends AbstractValidator implements AdapterAwareInterface
 
         $select = new Select('app_resource');
         $select->where->equalTo('name', $value)
-            ->where->equalTo('app_id', $context['app_id']);
+            ->where->equalTo('app_id', $context['app_id'])
+            ->where->notEqualTo('id', $context['id']);
 
         $validator = new NoRecordExists($select);
         $validator->setAdapter($this->adapter);
