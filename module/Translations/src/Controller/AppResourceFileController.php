@@ -264,14 +264,6 @@ class AppResourceFileController extends AbstractActionController implements Adap
             ]);
         }
 
-        // Prevent deletion of default resource, if other resources exist.
-        if (($appResource->name == 'values') && ($app->resourceCount > 1)) {
-            return $this->redirect()->toRoute('appresource', [
-                'appId'  => $app->id,
-                'action' => 'index'
-            ]);
-        }
-
         $form = new DeleteHelperForm();
         $form->add([
             'name' => 'id',
@@ -353,7 +345,6 @@ class AppResourceFileController extends AbstractActionController implements Adap
 
         $appResourceFile->setDbAdapter($this->adapter);
         $form = new AppResourceFileForm();
-        $form->get('name')->setAttribute('readonly', 'readonly');
         $form->bind($appResourceFile);
 
         $viewData = [
@@ -393,7 +384,9 @@ class AppResourceFileController extends AbstractActionController implements Adap
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
 
-        $appResourceFiles = $this->appResourceFileTable->fetchAll();
+        $appResourceFiles = $this->appResourceFileTable->fetchAll([
+            'app_id' => $app->id,
+        ]);
 
         return [
             'app'              => $app,
