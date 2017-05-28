@@ -180,6 +180,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
             } else {
                 foreach (scandir($path) as $entry) {
                     if ((substr($entry, 0, 7) === 'values-') &&
+                        is_dir(FileHelper::concatenatePath($path, $entry)) &&
                         !in_array($entry, $existingValueDirs)) {
                         $valuesDirs[] = $entry;
                     }
