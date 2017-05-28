@@ -322,6 +322,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
             return $viewData;
         }
 
+        $appResource->setDbAdapter($this->adapter);
         $form->setInputFilter($appResource->getInputFilter());
         $form->setData($request->getPost());
 
