@@ -383,7 +383,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
                 ]);
             }
         } catch (\Exception $e) {
-            return $this->redirect()->toRoute('app', [
+            return $this->redirect()->toRoute('appresource', [
                 'appId'  => $app->id,
                 'action' => 'index'
             ]);
