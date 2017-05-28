@@ -322,7 +322,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
             return $viewData;
         }
 
-        $form->setInputFilter($app->getInputFilter());
+        $form->setInputFilter($appResource->getInputFilter());
         $form->setData($request->getPost());
 
         if (!$form->isValid()) {
