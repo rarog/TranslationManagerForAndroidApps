@@ -280,6 +280,12 @@ class AppResourceController extends AbstractActionController implements AdapterA
 
         try {
             $appResource = $this->appResourceTable->getAppResource($id);
+            if ($appResource->appId !== $app->id) {
+                return $this->redirect()->toRoute('appresource', [
+                    'appId'  => $app->id,
+                    'action' => 'index'
+                ]);
+            }
         } catch (\Exception $e) {
             return $this->redirect()->toRoute('appresource', [
                 'appId'  => $app->id,
@@ -369,6 +375,12 @@ class AppResourceController extends AbstractActionController implements AdapterA
 
         try {
             $appResource = $this->appResourceTable->getAppResource($id);
+            if ($appResource->appId !== $app->id) {
+                return $this->redirect()->toRoute('appresource', [
+                    'appId'  => $app->id,
+                    'action' => 'index'
+                ]);
+            }
         } catch (\Exception $e) {
             return $this->redirect()->toRoute('app', [
                 'appId'  => $app->id,
@@ -419,7 +431,9 @@ class AppResourceController extends AbstractActionController implements AdapterA
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
 
-        $appResources = $this->appResourceTable->fetchAll();
+        $appResources = $this->appResourceTable->fetchAll([
+            'app_id' => $app->id,
+        ]);
 
         $localeNames = $this->getLocaleNameArray($this->translator->getLocale());
 
