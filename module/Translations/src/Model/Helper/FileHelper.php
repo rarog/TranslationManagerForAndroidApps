@@ -27,16 +27,6 @@ class FileHelper
         return $path1;
     }
 
-    public static function rmdirRecursive($dir)
-    {
-        $files = array_diff(scandir($dir), array('.','..'));
-        foreach ($files as $file) {
-            $file = $dir . DIRECTORY_SEPARATOR . $file;
-            (is_dir($file)) ? self::rmdirRecursive($file) : unlink($file);
-        }
-        return rmdir($dir);
-    }
-
     /**
      * Normalize a path for insertion in the stack
      *
@@ -58,5 +48,21 @@ class FileHelper
         }
 
         return $path;
+    }
+
+    /**
+     * Removes a directory with all files and subdirectories
+     *
+     * @param  string $dir
+     * @return boolean
+     */
+    public static function rmdirRecursive($dir)
+    {
+        $files = array_diff(scandir($dir), array('.','..'));
+        foreach ($files as $file) {
+            $file = $dir . DIRECTORY_SEPARATOR . $file;
+            (is_dir($file)) ? self::rmdirRecursive($file) : unlink($file);
+        }
+        return rmdir($dir);
     }
 }
