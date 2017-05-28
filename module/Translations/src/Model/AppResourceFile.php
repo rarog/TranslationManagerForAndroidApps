@@ -9,6 +9,8 @@ namespace Translations\Model;
 
 use DomainException;
 use Translations\Validator\ResFileName;
+use Zend\Db\Adapter\AdapterAwareInterface;
+use Zend\Db\Adapter\AdapterAwareTrait;
 use Zend\Filter\StringTrim;
 use Zend\Filter\StripTags;
 use Zend\Filter\ToInt;
@@ -18,8 +20,10 @@ use Zend\InputFilter\InputFilterInterface;
 use Zend\Stdlib\ArraySerializableInterface;
 use Zend\Validator\StringLength;
 
-class AppResourceFile implements ArraySerializableInterface, InputFilterAwareInterface
+class AppResourceFile implements AdapterAwareInterface, ArraySerializableInterface, InputFilterAwareInterface
 {
+    use AdapterAwareTrait;
+
     /**
      * @var int
      */
@@ -108,6 +112,9 @@ class AppResourceFile implements ArraySerializableInterface, InputFilterAwareInt
                 ],
                 [
                     'name' => ResFileName::class,
+                    'options' => [
+                        'dbAdapter' => $this->adapter,
+                    ],
                 ],
             ],
         ]);
