@@ -35,6 +35,7 @@ class AppResourceFileForm extends Form
             'name'       => 'name',
             'options'    => [
                 'column-size'      => 'sm-9',
+                'help-block'       => _('It\'s strongly advised not to change this value in existing app resources.'),
                 'label'            => _('Name'),
                 'label_attributes' => [
                     'class' => 'col-sm-3',
