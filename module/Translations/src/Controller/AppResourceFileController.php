@@ -240,7 +240,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
 
-        $id = (int) $this->params()->fromRoute('resourceId', 0);
+        $id = (int) $this->params()->fromRoute('resourceFileId', 0);
 
         if (0 === $id) {
             return $this->redirect()->toRoute('appresource', [
@@ -319,7 +319,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
 
-        $id = (int) $this->params()->fromRoute('resourceId', 0);
+        $id = (int) $this->params()->fromRoute('resourceFileId', 0);
 
         if (0 === $id) {
             return $this->redirect()->toRoute('appresourcefile', [
@@ -337,7 +337,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
                 ]);
             }
         } catch (\Exception $e) {
-            return $this->redirect()->toRoute('app', [
+            return $this->redirect()->toRoute('appresourcefile', [
                 'appId'  => $app->id,
                 'action' => 'index'
             ]);
@@ -366,9 +366,9 @@ class AppResourceFileController extends AbstractActionController implements Adap
             return $viewData;
         }
 
-        $this->appResourceTable->saveAppResource($appResourceFile);
+        $this->appResourceFileTable->saveAppResourceFile($appResourceFile);
 
-        return $this->redirect()->toRoute('appresource', [
+        return $this->redirect()->toRoute('appresourcefile', [
             'appId'  => $app->id,
             'action' => 'index'
         ]);

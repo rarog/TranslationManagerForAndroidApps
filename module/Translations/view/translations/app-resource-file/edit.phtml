@@ -1,0 +1,13 @@
+<?php
+$title = sprintf($this->translate('Edit resource file of app "%s"'), $app->name);
+$this->headTitle($title);
+?>
+<h1><?= $this->escapeHtml($title) ?></h1>
+<?php
+$form->setAttribute('action', $this->url('appresourcefile', [
+    'appId'          => $app->id,
+    'action'         => 'edit',
+    'resourceFileId' => $id,
+]));
+echo $this->form($form, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZONTAL);
+?>
