@@ -167,7 +167,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
         } else {
             foreach (scandir($path) as $entry) {
                 if ((substr($entry, -4) === '.xml') &&
-                    is_file(FileHelper::concatenatePath($path, $entry)) &&
+                    FileHelper::isFileValidResource(FileHelper::concatenatePath($path, $entry)) &&
                     !in_array($entry, $existingResourceFiles)) {
                     $resourceFiles[] = $entry;
                 }

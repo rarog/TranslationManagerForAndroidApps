@@ -27,6 +27,33 @@ class FileHelper
         return $path1;
     }
 
+
+    /**
+     * Checks if file is valid XML file with root node <resources>
+     *
+     * @param  string $filePath
+     * @return boolean
+     */
+    public static function isFileValidResource($filePath)
+    {
+        $filePath = (string) $filePath;
+
+        if (file_exists($filePath) && is_file($filePath)) {
+            try {
+                libxml_use_internal_errors(true);
+                $xml = simplexml_load_file($filePath);
+
+                if (($xml !== false) && ($xml->getName() === 'resources')) {
+                    return true;
+                }
+            } finally {
+                libxml_use_internal_errors(false);
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Normalize a path for insertion in the stack
      *
