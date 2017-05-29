@@ -144,7 +144,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
     }
 
     /**
-     * App add action
+     * App resource file add action
      *
      * @throws RuntimeException
      * @return \Zend\View\Model\ViewModel
@@ -237,7 +237,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
     }
 
     /**
-     * App delete action
+     * App resource file delete action
      *
      * @return \Zend\View\Model\ViewModel
      */
@@ -298,7 +298,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
         $postId = (int) $request->getPost('id');
         $postAppId = (int) $request->getPost('app_id');
 
-        $form->setInputFilter($app->getInputFilter());
+        $form->setInputFilter($appResourceFile->getInputFilter());
         $form->setData($request->getPost());
 
         if (($postId !== $id) ||
@@ -322,7 +322,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
     }
 
     /**
-     * App edit action
+     * App resource file edit action
      *
      * @return \Zend\View\Model\ViewModel
      */
@@ -387,7 +387,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
     }
 
     /**
-     * App resource overview action
+     * App resource file overview action
      *
      * @return \Zend\View\Model\ViewModel
      */
