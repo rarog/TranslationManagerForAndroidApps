@@ -287,6 +287,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
             'app'             => $app,
             'appResourceFile' => $appResourceFile,
             'form'            => $form,
+            'messages'        => [],
         ];
 
         $request = $this->getRequest();
@@ -297,13 +298,19 @@ class AppResourceFileController extends AbstractActionController implements Adap
 
         $postId = (int) $request->getPost('id');
         $postAppId = (int) $request->getPost('app_id');
+        $postDataInconsistent = ($postId !== $id) || ($postAppId !== $app->Id);
+        if ($postDataInconsistent) {
+            $viewData['messages'][] = [
+                'canClose' => true,
+                'message'  => $this->translator->translate('Form data seems to be inconsistent. For security reasons the last input was corrected.'),
+                'type'     => 'warning',
+            ];
+        }
 
         $form->setInputFilter($appResourceFile->getInputFilter());
         $form->setData($request->getPost());
 
-        if (($postId !== $id) ||
-            ($postAppId !== $app->Id) ||
-            !$form->isValid()) {
+        if ($postDataInconsistent || !$form->isValid()) {
             $form->setData([
                 'id'     => $id,
                 'app_id' => $app->Id,

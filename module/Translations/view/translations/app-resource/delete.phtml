@@ -3,6 +3,17 @@ $title = $this->translate('Delete app resource');
 $this->headTitle($title);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
+<div>
+<?php
+foreach ($messages as $message) {
+    echo $this->partial('partial/alert.phtml', [
+        'type'     => $message['type'],
+        'message'  => $message['message'],
+        'canClose' => $message['canClose'],
+    ]);
+}
+?>
+</div>
 <p><?= $this->escapeHtml(sprintf($this->translate('Are you sure that you want to delete app resource "%s" from the app "%s"?'), $appResource->Name, $app->Name)) ?></p>
 <?php
 $form->setAttribute('action', $this->url('appresource', [

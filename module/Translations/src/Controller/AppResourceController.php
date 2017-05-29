@@ -328,6 +328,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
             'app'         => $app,
             'appResource' => $appResource,
             'form'        => $form,
+            'messages'    => [],
         ];
 
         $request = $this->getRequest();
@@ -336,16 +337,30 @@ class AppResourceController extends AbstractActionController implements AdapterA
             return $viewData;
         }
 
+        $postId = (int) $request->getPost('id');
+        $postAppId = (int) $request->getPost('app_id');
+        $postDataInconsistent = ($postId !== $id) || ($postAppId !== $app->Id);
+        if ($postDataInconsistent) {
+            $viewData['messages'][] = [
+                'canClose' => true,
+                'message'  => $this->translator->translate('Form data seems to be inconsistent. For security reasons the last input was corrected.'),
+                'type'     => 'warning',
+            ];
+        }
+
         $form->setInputFilter($appResource->getInputFilter());
         $form->setData($request->getPost());
 
-        if (!$form->isValid()) {
+        if ($postDataInconsistent || !$form->isValid()) {
+            $form->setData([
+                'id'     => $id,
+                'app_id' => $app->Id,
+            ]);
             return $viewData;
         }
 
         if ($request->getPost('del', 'false') === 'true') {
-            $id = (int) $request->getPost('id');
-            $this->appResourceTable->deleteAppResource($id);
+            $this->appResourceTable->deleteAppResource($postId);
         }
 
         return $this->redirect()->toRoute('appresource', [
