@@ -70,11 +70,11 @@ class UserSettingsTable
     public function saveUserSettings(UserSettings $userSettings)
     {
         $data = [
-            'locale'  => $userSettings->locale,
-            'team_id' => $userSettings->teamId,
+            'locale'  => $userSettings->Locale,
+            'team_id' => $userSettings->TeamId,
         ];
 
-        $userId = (int) $userSettings->userId;
+        $userId = (int) $userSettings->UserId;
 
         if ($userId === 0) {
             throw new RuntimeException('Cannot handle user settings with invalid id');

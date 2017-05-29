@@ -108,7 +108,7 @@ class AppController extends AbstractActionController
 
         if ($this->zfcUserAuthentication()->hasIdentity() &&
             ($userSettings = $this->userSettingsTable->getUserSettings($this->zfcUserAuthentication()->getIdentity()->getId()))) {
-            $teamField->setValue($userSettings->userId);
+            $teamField->setValue($userSettings->UserId);
         }
 
         $request = $this->getRequest();

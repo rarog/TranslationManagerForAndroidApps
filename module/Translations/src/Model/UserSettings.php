@@ -21,19 +21,19 @@ use Zend\Validator\StringLength;
 class UserSettings implements ArraySerializableInterface, InputFilterAwareInterface
 {
     /**
-     * @var int
+     * @var null|int
      */
-    public $userId;
+    private $userId;
 
     /**
-     * @var string
+     * @var null|string
      */
-    public $locale;
+    private $locale;
 
     /**
-     * @var int
+     * @var null|int
      */
-    public $teamId;
+    private $teamId;
 
     /**
      * @var InputFilter
@@ -50,6 +50,85 @@ class UserSettings implements ArraySerializableInterface, InputFilterAwareInterf
         if ($data) {
             $this->exchangeArray($data);
         }
+    }
+
+    /**
+     * @param unknown $name
+     * @throws \Exception
+     * @return unknown
+     */
+    public function __get($name)
+    {
+        $method = 'get' . $name;
+        if (!method_exists($this, $method)) {
+            throw new \Exception('Invalid property');
+        }
+        return $this->$method();
+    }
+
+    /**
+     * @param unknown $name
+     * @param unknown $value
+     * @throws \Exception
+     */
+    public function __set($name, $value)
+    {
+        $method = 'set' . $name;
+        if (!method_exists($this, $method)) {
+            throw new \Exception('Invalid property');
+        }
+        $this->$method($value);
+    }
+
+    /**
+     * @return null|int
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * @param null|int $id
+     */
+    public function setId($id) {
+        if (!is_null($id)) {
+            $id = (int) $id;
+        }
+        $this->id = $id;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getLocale() {
+        return $this->locale;
+    }
+
+    /**
+     * @param null|string $locale
+     */
+    public function setLocale($locale) {
+        if (!is_null($locale)) {
+            $locale = (string) $locale;
+        }
+        $this->locale = $locale;
+    }
+
+    /**
+     * @return null|int
+     */
+    public function getTeamId() {
+        return $this->teamId;
+    }
+
+    /**
+     * @param null|int $teamId
+     */
+    public function setTeamId($teamId) {
+        if (!is_null($teamId)) {
+            $teamId = (int) $teamId;
+        }
+        $this->teamId = $teamId;
     }
 
     /**
