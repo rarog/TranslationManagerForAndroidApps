@@ -7,9 +7,9 @@ $this->headTitle($title);
 <?php
 foreach ($messages as $message) {
     echo $this->partial('partial/alert.phtml', [
-        'type'     => $message['type'],
-        'message'  => $message['message'],
         'canClose' => $message['canClose'],
+        'message'  => $message['message'],
+        'type'     => $message['type'],
     ]);
 }
 ?>

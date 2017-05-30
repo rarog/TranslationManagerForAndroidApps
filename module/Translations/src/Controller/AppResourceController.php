@@ -168,7 +168,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
         $hasDefaultValues = $this->getHasAppDefaultValues($app->Id);
         $path = $this->getAbsoluteAppResPath($app);
         $valuesDirs = [];
-        $errorMessage = '';
+        $messages = [];
         $invalidResDir = false;
 
         if ($hasDefaultValues) {
@@ -179,9 +179,13 @@ class AppResourceController extends AbstractActionController implements AdapterA
 
             if (!is_dir($path) &&
                 !mkdir($path, 0775)) {
-                    $errorMessage = sprintf(
-                        $this->translator->translate('The app resource directory "%s" doesn\'t exist and couldn\'t be created.'),
-                        $this->getRelativeAppResPath($app));
+                    $messages[] = [
+                        'canClose' => true,
+                        'message'  => sprintf(
+                                        $this->translator->translate('The app resource directory "%s" doesn\'t exist and couldn\'t be created.'),
+                                        $this->getRelativeAppResPath($app)),
+                        'type'     => 'danger',
+                    ];
                     $invalidResDir = true;
             } else {
                 foreach (scandir($path) as $entry) {
@@ -222,10 +226,10 @@ class AppResourceController extends AbstractActionController implements AdapterA
 
         $request = $this->getRequest();
         $viewData = [
-            'app'          => $app,
-            'errorMessage' => $errorMessage,
-            'form'         => $form,
-            'valuesDirs'   => $valuesDirs,
+            'app'        => $app,
+            'messages'   => $messages,
+            'form'       => $form,
+            'valuesDirs' => $valuesDirs,
         ];
 
         if (!$request->isPost() || $invalidResDir) {
@@ -246,9 +250,14 @@ class AppResourceController extends AbstractActionController implements AdapterA
 
         if (!is_dir($path) &&
             !mkdir($path, 0775)) {
-            $viewData['errorMessage'] = sprintf(
-                $this->translator->translate('The app resource directory "%s" doesn\'t exist and couldn\'t be created.'),
-                $resValuesName);
+            $viewData['messages'][] = [
+                'canClose' => true,
+                'message'  => sprintf(
+                                $this->translator->translate('The app resource directory "%s" doesn\'t exist and couldn\'t be created.'),
+                                $resValuesName),
+                'type'     => 'danger',
+            ];
+
             return $viewData;
         }
 

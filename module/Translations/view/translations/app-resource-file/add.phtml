@@ -5,11 +5,11 @@ $this->headTitle($title);
 <h1><?= $this->escapeHtml($title) ?></h1>
 <div>
 <?php
-if ($errorMessage != '') {
+foreach ($messages as $message) {
     echo $this->partial('partial/alert.phtml', [
-        'type'     => 'danger',
-        'message'  => $errorMessage,
-        'canClose' => false,
+        'canClose' => $message['canClose'],
+        'message'  => $message['message'],
+        'type'     => $message['type'],
     ]);
 }
 ?>
