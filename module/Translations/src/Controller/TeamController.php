@@ -13,6 +13,7 @@ use Translations\Form\TeamForm;
 use Translations\Model\Team;
 use Translations\Model\TeamTable;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\ViewModel;
 
 class TeamController extends AbstractActionController
@@ -26,10 +27,12 @@ class TeamController extends AbstractActionController
      * Constructor
      *
      * @param TeamTable $table
+     * @param Translator $translator
      */
-    public function __construct(TeamTable $table)
+    public function __construct(TeamTable $table, Translator $translator)
     {
         $this->table = $table;
+        $this->translator = $translator;
     }
 
     /**
@@ -94,18 +97,32 @@ class TeamController extends AbstractActionController
 
         $request = $this->getRequest();
         $viewData = [
-            'form' => $form,
-            'team' => $team,
+            'form'     => $form,
+            'team'     => $team,
+            'messages' => [],
         ];
 
         if (!$request->isPost()) {
             return $viewData;
         }
 
+        $postId = (int) $request->getPost('id');
+        $postDataInconsistent = ($postId !== $id);
+        if ($postDataInconsistent) {
+            $viewData['messages'][] = [
+                'canClose' => true,
+                'message'  => $this->translator->translate('Form data seems to be inconsistent. For security reasons the last input was corrected.'),
+                'type'     => 'warning',
+            ];
+        }
+
         $form->setInputFilter($team->getInputFilter());
         $form->setData($request->getPost());
 
-        if (!$form->isValid()) {
+        if ($postDataInconsistent || !$form->isValid()) {
+            $form->setData([
+                'id' => $id,
+            ]);
             return $viewData;
         }
 

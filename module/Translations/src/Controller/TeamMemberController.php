@@ -181,16 +181,32 @@ class TeamMemberController extends AbstractActionController
         $viewData = [
             'form'       => $form,
             'teamMember' => $teamMember,
+            'messages'   => [],
         ];
 
         if (!$request->isPost()) {
             return $viewData;
         }
 
+        $postTeamId = (int) $request->getPost('team_id');
+        $postUserId = (int) $request->getPost('user_id');
+        $postDataInconsistent = ($postTeamId !== $teamId) || ($postUserId !== $userId);
+        if ($postDataInconsistent) {
+            $viewData['messages'][] = [
+                'canClose' => true,
+                'message'  => $this->translator->translate('Form data seems to be inconsistent. For security reasons the last input was corrected.'),
+                'type'     => 'warning',
+            ];
+        }
+
         $form->setInputFilter($teamMember->getInputFilter());
         $form->setData($request->getPost());
 
-        if (!$form->isValid()) {
+        if ($postDataInconsistent || !$form->isValid()) {
+            $form->setData([
+                'team_id' => $teamId,
+                'user_id' => $userId,
+            ]);
             return $viewData;
         }
 

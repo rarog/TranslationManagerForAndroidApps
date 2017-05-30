@@ -3,6 +3,17 @@ $title = sprintf($this->translate('Remove team member with email "%s"'), $teamMe
 $this->headTitle($title);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
+<div>
+<?php
+foreach ($messages as $message) {
+    echo $this->partial('partial/alert.phtml', [
+        'type'     => $message['type'],
+        'message'  => $message['message'],
+        'canClose' => $message['canClose'],
+    ]);
+}
+?>
+</div>
 <p><?= $this->escapeHtml(sprintf($this->translate('Are you sure that you want to remove the team team member with email "%s" from the team "%s"?'), $teamMember->Email, $teamMember->TeamName)) ?></p>
 <?php
 $form->setAttribute('action', $this->url('teammember', [

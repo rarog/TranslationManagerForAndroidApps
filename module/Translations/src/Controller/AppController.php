@@ -16,6 +16,7 @@ use Translations\Model\Helper\FileHelper;
 use Translations\Model\TeamTable;
 use Translations\Model\UserSettingsTable;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\ViewModel;
 
 class AppController extends AbstractActionController
@@ -39,6 +40,11 @@ class AppController extends AbstractActionController
      * @var array
      */
     private $allTeamsAsArray;
+
+    /**
+     * @var Translator
+     */
+    private $translator;
 
     /**
      * Helper to return all teams as key => val array
@@ -87,12 +93,14 @@ class AppController extends AbstractActionController
      * @param AppTable $appTable
      * @param TeamTable $teamTable
      * @param UserSettingsTable $userSettingsTable
+     * @param Translator $translator
      */
-    public function __construct(AppTable $appTable, TeamTable $teamTable, UserSettingsTable $userSettingsTable)
+    public function __construct(AppTable $appTable, TeamTable $teamTable, UserSettingsTable $userSettingsTable, Translator $translator)
     {
         $this->appTable = $appTable;
         $this->teamTable = $teamTable;
         $this->userSettingsTable = $userSettingsTable;
+        $this->translator = $translator;
     }
 
     /**
@@ -180,8 +188,9 @@ class AppController extends AbstractActionController
         ])->bind($app);
 
         $viewData = [
-            'app'  => $app,
-            'form' => $form,
+            'app'      => $app,
+            'form'     => $form,
+            'messages' => [],
         ];
 
         $request = $this->getRequest();
@@ -190,10 +199,23 @@ class AppController extends AbstractActionController
             return $viewData;
         }
 
+        $postId = (int) $request->getPost('id');
+        $postDataInconsistent = ($postId !== $id);
+        if ($postDataInconsistent) {
+            $viewData['messages'][] = [
+                'canClose' => true,
+                'message'  => $this->translator->translate('Form data seems to be inconsistent. For security reasons the last input was corrected.'),
+                'type'     => 'warning',
+            ];
+        }
+
         $form->setInputFilter($app->getInputFilter());
         $form->setData($request->getPost());
 
-        if (!$form->isValid()) {
+        if ($postDataInconsistent || !$form->isValid()) {
+            $form->setData([
+                'id' => $id,
+            ]);
             return $viewData;
         }
 
