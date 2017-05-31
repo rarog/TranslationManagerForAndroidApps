@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TranslationManagerForAndroidApps\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-21 15:10+0200\n"
-"PO-Revision-Date: 2017-05-21 15:43+0200\n"
+"POT-Creation-Date: 2017-05-31 07:09+0200\n"
+"PO-Revision-Date: 2017-05-31 07:17+0200\n"
 "Last-Translator: rarog <rarogit@gmail.com>\n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -12,14 +12,47 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-KeywordsList: translate;_\n"
 "X-Poedit-Basepath: ..\n"
-"X-Generator: Poedit 2.0.1\n"
+"X-Generator: Poedit 2.0.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: language/msgIds.php:6
+#: language/msgIds.php:8
+msgid "Resource file name must end with \".xml\""
+msgstr ""
+
+#: language/msgIds.php:11
 msgid ""
 "Resource values folder name must be equal to \"values\" or begin with "
 "\"values-\""
+msgstr ""
+
+#: src/Controller/AppController.php:207
+#: src/Controller/AppResourceController.php:355
+#: src/Controller/AppResourceFileController.php:314
+#: src/Controller/TeamController.php:114
+#: src/Controller/TeamMemberController.php:197
+msgid ""
+"Form data seems to be inconsistent. For security reasons the last input was "
+"corrected."
+msgstr ""
+
+# Parameters
+# 1) Directory name
+#: src/Controller/AppResourceController.php:185
+#: src/Controller/AppResourceController.php:256
+#: src/Controller/AppResourceFileController.php:234
+#, php-format
+msgid ""
+"The app resource directory \"%s\" doesn't exist and couldn't be created."
+msgstr ""
+
+# Parameters
+# 1) Directory name
+#: src/Controller/AppResourceFileController.php:172
+#, php-format
+msgid ""
+"The app resource default values directory \"%s\" doesn't exist and couldn't "
+"be created."
 msgstr ""
 
 # Parameters
@@ -34,27 +67,34 @@ msgstr ""
 msgid "It's strongly advised not to change this value in existing apps."
 msgstr ""
 
-#: src/Form/AppForm.php:34 view/translations/app/index.phtml:17
+#: src/Form/AppForm.php:34 view/translations/app/index.phtml:19
 msgid "Team"
 msgstr ""
 
-#: src/Form/AppForm.php:49 src/Form/AppResourceForm.php:38
-#: src/Form/TeamForm.php:34 view/translations/app-resource/index.phtml:15
-#: view/translations/app/index.phtml:19 view/translations/team/index.phtml:15
+#: src/Form/AppForm.php:49 src/Form/AppResourceFileForm.php:39
+#: src/Form/AppResourceForm.php:38 src/Form/TeamForm.php:34
+#: view/translations/app-resource-file/index.phtml:19
+#: view/translations/app-resource/index.phtml:20
+#: view/translations/app/index.phtml:21 view/translations/team/index.phtml:17
 msgid "Name"
 msgstr ""
 
-#: src/Form/AppForm.php:64 view/translations/app/index.phtml:20
+#: src/Form/AppForm.php:64 view/translations/app/index.phtml:22
 msgid "Git repository"
 msgstr ""
 
-#: src/Form/AppForm.php:79 view/translations/app/index.phtml:21
+#: src/Form/AppForm.php:79 view/translations/app/index.phtml:23
 msgid "Path to \"res\" folder"
 msgstr ""
 
-#: src/Form/AppForm.php:97 src/Form/AppResourceForm.php:87
-#: src/Form/TeamForm.php:52
+#: src/Form/AppForm.php:97 src/Form/AppResourceFileForm.php:57
+#: src/Form/AppResourceForm.php:87 src/Form/TeamForm.php:52
 msgid "Save"
+msgstr ""
+
+#: src/Form/AppResourceFileForm.php:38
+msgid ""
+"It's strongly advised not to change this value in existing app resources."
 msgstr ""
 
 #: src/Form/AppResourceForm.php:52
@@ -66,12 +106,12 @@ msgid "Default values should be universal like \"en\" or \"en_US\""
 msgstr ""
 
 #: src/Form/AppResourceForm.php:54
-#: view/translations/app-resource/index.phtml:16
+#: view/translations/app-resource/index.phtml:21
 msgid "Locale"
 msgstr ""
 
 #: src/Form/AppResourceForm.php:69
-#: view/translations/app-resource/index.phtml:17
+#: view/translations/app-resource/index.phtml:22
 msgid "Description"
 msgstr ""
 
@@ -87,11 +127,99 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
+#: view/partial/alert.phtml:10
+msgid "Success:"
+msgstr ""
+
+#: view/partial/alert.phtml:13
+msgid "Info:"
+msgstr ""
+
+#: view/partial/alert.phtml:16
+msgid "Warning:"
+msgstr ""
+
+#: view/partial/alert.phtml:19
+msgid "Error:"
+msgstr ""
+
+#: view/translations/app-resource-file/add.phtml:2
+#, php-format
+msgid "Add new resource file to app \"%s\""
+msgstr ""
+
+#: view/translations/app-resource-file/add.phtml:29
+#: view/translations/app-resource-file/add.phtml:40
+#: view/translations/app-resource/add.phtml:29
+#: view/translations/app-resource/add.phtml:40
+msgid "Close"
+msgstr ""
+
+#: view/translations/app-resource-file/add.phtml:30
+msgid "Select resource file"
+msgstr ""
+
+#: view/translations/app-resource-file/delete.phtml:2
+msgid "Delete app resource file"
+msgstr ""
+
+#: view/translations/app-resource-file/delete.phtml:17
+#, php-format
+msgid ""
+"Are you sure that you want to delete app resource file \"%s\" from the app "
+"\"%s\"?"
+msgstr ""
+
+#: view/translations/app-resource-file/edit.phtml:2
+#, php-format
+msgid "Edit resource file of app \"%s\""
+msgstr ""
+
+#: view/translations/app-resource-file/index.phtml:2
+#, php-format
+msgid "Resource files of app \"%s\""
+msgstr ""
+
+#: view/translations/app-resource-file/index.phtml:13
+msgid "Add new app resource file"
+msgstr ""
+
+#: view/translations/app-resource-file/index.phtml:34
+#: view/translations/app-resource/index.phtml:39
+#: view/translations/app/index.phtml:54 view/translations/team/index.phtml:34
+msgid "Edit"
+msgstr ""
+
+#: view/translations/app-resource-file/index.phtml:40
+#: view/translations/app-resource/index.phtml:46
+#: view/translations/app/index.phtml:60 view/translations/team/index.phtml:40
+msgid "Delete"
+msgstr ""
+
 # Parameters
 # 1) App name
 #: view/translations/app-resource/add.phtml:2
 #, php-format
 msgid "Add new resource to app \"%s\""
+msgstr ""
+
+#: view/translations/app-resource/add.phtml:30
+msgid "Select resource folder"
+msgstr ""
+
+#: view/translations/app-resource/delete.phtml:2
+msgid "Delete app resource"
+msgstr ""
+
+#: view/translations/app-resource/delete.phtml:17
+#, php-format
+msgid ""
+"Are you sure that you want to delete app resource \"%s\" from the app \"%s\"?"
+msgstr ""
+
+#: view/translations/app-resource/edit.phtml:2
+#, php-format
+msgid "Edit resource of app \"%s\""
 msgstr ""
 
 # Parameters
@@ -101,21 +229,11 @@ msgstr ""
 msgid "Resources of app \"%s\""
 msgstr ""
 
-#: view/translations/app-resource/index.phtml:9
+#: view/translations/app-resource/index.phtml:14
 msgid "Add new app resource"
 msgstr ""
 
-#: view/translations/app-resource/index.phtml:30
-#: view/translations/app/index.phtml:40 view/translations/team/index.phtml:27
-msgid "Edit"
-msgstr ""
-
-#: view/translations/app-resource/index.phtml:33
-#: view/translations/app/index.phtml:43 view/translations/team/index.phtml:30
-msgid "Delete"
-msgstr ""
-
-#: view/translations/app/add.phtml:2 view/translations/app/index.phtml:10
+#: view/translations/app/add.phtml:2 view/translations/app/index.phtml:12
 msgid "Add new app"
 msgstr ""
 
@@ -125,7 +243,7 @@ msgstr ""
 
 # Parameters:
 # 1) App name
-#: view/translations/app/delete.phtml:6
+#: view/translations/app/delete.phtml:17
 #, php-format
 msgid "Are you sure that you want to delete the app \"%s\"?"
 msgstr ""
@@ -138,8 +256,12 @@ msgstr ""
 msgid "Apps"
 msgstr ""
 
-#: view/translations/app/index.phtml:37
+#: view/translations/app/index.phtml:41
 msgid "Resources"
+msgstr ""
+
+#: view/translations/app/index.phtml:46
+msgid "Resource files"
 msgstr ""
 
 # Parameters
@@ -149,22 +271,22 @@ msgstr ""
 msgid "Add members to team \"%s\""
 msgstr ""
 
-#: view/translations/team-member/add.phtml:12
+#: view/translations/team-member/add.phtml:15
 msgid "Back"
 msgstr ""
 
-#: view/translations/team-member/add.phtml:21
-#: view/translations/team-member/index.phtml:15
+#: view/translations/team-member/add.phtml:24
+#: view/translations/team-member/index.phtml:18
 msgid "Username"
 msgstr ""
 
-#: view/translations/team-member/add.phtml:22
-#: view/translations/team-member/index.phtml:16
+#: view/translations/team-member/add.phtml:25
+#: view/translations/team-member/index.phtml:19
 msgid "Email"
 msgstr ""
 
-#: view/translations/team-member/add.phtml:23
-#: view/translations/team-member/index.phtml:17
+#: view/translations/team-member/add.phtml:26
+#: view/translations/team-member/index.phtml:20
 msgid "Display name"
 msgstr ""
 
@@ -175,11 +297,11 @@ msgstr ""
 msgid "Members of team \"%s\""
 msgstr ""
 
-#: view/translations/team-member/index.phtml:9
+#: view/translations/team-member/index.phtml:12
 msgid "Add new team member"
 msgstr ""
 
-#: view/translations/team-member/index.phtml:30
+#: view/translations/team-member/index.phtml:37
 msgid "Remove"
 msgstr ""
 
@@ -193,14 +315,14 @@ msgstr ""
 # Parameters:
 # 1) User email
 # 2) App name
-#: view/translations/team-member/remove.phtml:6
+#: view/translations/team-member/remove.phtml:17
 #, php-format
 msgid ""
 "Are you sure that you want to remove the team team member with email \"%s\" "
 "from the team \"%s\"?"
 msgstr ""
 
-#: view/translations/team/add.phtml:2 view/translations/team/index.phtml:9
+#: view/translations/team/add.phtml:2 view/translations/team/index.phtml:11
 msgid "Add new team"
 msgstr ""
 
@@ -210,7 +332,7 @@ msgstr ""
 
 # Parameters:
 # 1) Team name
-#: view/translations/team/delete.phtml:6
+#: view/translations/team/delete.phtml:17
 #, php-format
 msgid "Are you sure that you want to delete the team \"%s\"?"
 msgstr ""
@@ -223,6 +345,6 @@ msgstr ""
 msgid "Teams"
 msgstr ""
 
-#: view/translations/team/index.phtml:26
+#: view/translations/team/index.phtml:30
 msgid "Members"
 msgstr ""
