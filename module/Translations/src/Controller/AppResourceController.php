@@ -178,15 +178,15 @@ class AppResourceController extends AbstractActionController implements AdapterA
             }
 
             if (!is_dir($path) &&
-                !mkdir($path, 0775)) {
-                    $messages[] = [
-                        'canClose' => true,
-                        'message'  => sprintf(
-                                        $this->translator->translate('The app resource directory "%s" doesn\'t exist and couldn\'t be created.'),
-                                        $this->getRelativeAppResPath($app)),
-                        'type'     => 'danger',
-                    ];
-                    $invalidResDir = true;
+                !mkdir($path, 0775, true)) {
+                $messages[] = [
+                    'canClose' => true,
+                    'message'  => sprintf(
+                                    $this->translator->translate('The app resource directory "%s" doesn\'t exist and couldn\'t be created.'),
+                                    $this->getRelativeAppResPath($app)),
+                    'type'     => 'danger',
+                ];
+                $invalidResDir = true;
             } else {
                 foreach (scandir($path) as $entry) {
                     if ((substr($entry, 0, 7) === 'values-') &&
@@ -249,7 +249,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
         $path = FileHelper::concatenatePath($path, $resValuesName);
 
         if (!is_dir($path) &&
-            !mkdir($path, 0775)) {
+            !mkdir($path, 0775, true)) {
             $viewData['messages'][] = [
                 'canClose' => true,
                 'message'  => sprintf(

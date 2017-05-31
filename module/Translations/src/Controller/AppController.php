@@ -140,7 +140,7 @@ class AppController extends AbstractActionController
         $app = $this->appTable->saveApp($app);
 
         $path =  $this->getAppPath($app->id);
-        if (!mkdir($path, 0775)) {
+        if (!mkdir($path, 0775, true)) {
             throw new RuntimeException(sprintf(
                 'Could not create path "%s"',
                 $path
