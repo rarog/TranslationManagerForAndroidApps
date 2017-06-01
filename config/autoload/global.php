@@ -42,6 +42,9 @@ return [
             ],
         ],
     ],
+    'db' => [
+        'driver' => 'Pdo',
+    ],
     'session' => [
         'config' => [
             'class' => Session\Config\SessionConfig::class,
