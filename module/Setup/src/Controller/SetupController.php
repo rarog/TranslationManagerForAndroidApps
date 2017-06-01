@@ -119,11 +119,11 @@ class SetupController extends AbstractActionController
             if ($lastStep > 1) {
                 $action['action'] = 'step' . $lastStep;
             }
-            $this->redirect()->toRoute('setup', $action);
+            return $this->redirect()->toRoute('setup', $action);
         } else {
             $dbHelper = $this->databaseHelper;
 
-            if (!$dbHelper->canConnect()) {
+            if (!$dbHelper->canConnect() && ($currentStep > 2)) {
                 return $this->redirect()->toRoute('setup', ['action' => 'step2']);
             }
         }
