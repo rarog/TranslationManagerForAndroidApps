@@ -251,16 +251,16 @@
         },
         {
             "name": "rarog/user-rbac",
-            "version": "v1.0.1",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rarog/UserRbac.git",
-                "reference": "8ecf3c79673cf1d96db7b761d7a1de98f1639a05"
+                "reference": "97fde2d21c96546230c2fd0051e528f29dc244a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rarog/UserRbac/zipball/8ecf3c79673cf1d96db7b761d7a1de98f1639a05",
-                "reference": "8ecf3c79673cf1d96db7b761d7a1de98f1639a05",
+                "url": "https://api.github.com/repos/rarog/UserRbac/zipball/97fde2d21c96546230c2fd0051e528f29dc244a2",
+                "reference": "97fde2d21c96546230c2fd0051e528f29dc244a2",
                 "shasum": ""
             },
             "require": {
@@ -299,7 +299,7 @@
                 "zf2",
                 "zf3"
             ],
-            "time": "2017-05-25T12:35:58+00:00"
+            "time": "2017-06-04T13:41:45+00:00"
         },
         {
             "name": "tasmaniski/zend-config-helper",
