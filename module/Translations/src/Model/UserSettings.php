@@ -83,18 +83,18 @@ class UserSettings implements ArraySerializableInterface, InputFilterAwareInterf
     /**
      * @return null|int
      */
-    public function getId() {
-        return $this->id;
+    public function getUserId() {
+        return $this->userId;
     }
 
     /**
-     * @param null|int $id
+     * @param null|int $userId
      */
-    public function setId($id) {
-        if (!is_null($id)) {
-            $id = (int) $id;
+    public function setUserId($userId) {
+        if (!is_null($userId)) {
+            $userId = (int) $userId;
         }
-        $this->id = $id;
+        $this->userId= $userId;
     }
 
     /**
