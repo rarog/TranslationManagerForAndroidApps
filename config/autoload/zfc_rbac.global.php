@@ -84,6 +84,9 @@ return [
                 'app*'                   => [
                     'permissions' => ['app.view'],
                 ],
+                'git*'                   => [
+                    'permissions' => ['git'],
+                ],
                 'appresource/add'        => [
                     'permissions' => ['appresource.add'],
                 ],
@@ -164,6 +167,7 @@ return [
                         'appresourcefile.delete',
                         'appresourcefile.edit',
                         'appresourcefile.view',
+                        'git',
                         'team.edit',
                         'team.view',
                         'teammember.add',

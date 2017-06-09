@@ -35,6 +35,12 @@ $printTeams = count($teams) > 1;
             <td><?= $this->escapeHtml($app->PathToResFolder) ?></td>
             <td>
                 <div class="btn-group">
+<?php if ($this->isGranted('git') && (strlen($app->GitRepository) > 0)) : ?>
+                    <a class="btn btn-default" href="<?= $this->url('git', [
+    'appId'  => $app->id,
+    'action' => 'index',
+]) ?>"><span class="fa fa-git" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Git')) ?></a>
+<?php endif; ?>
 <?php if ($this->isGranted('appresource.view')) : ?>
                     <a class="btn btn-default" href="<?= $this->url('appresource', [
     'appId' => $app->Id,

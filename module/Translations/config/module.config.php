@@ -15,6 +15,7 @@ return [
             Controller\AppController::class             => Factory\Controller\AppControllerFactory::class,
             Controller\AppResourceController::class     => Factory\Controller\AppResourceControllerFactory::class,
             Controller\AppResourceFileController::class => Factory\Controller\AppResourceFileControllerFactory::class,
+            Controller\GitController::class             => Factory\Controller\GitControllerFactory::class,
             Controller\TeamController::class            => Factory\Controller\TeamControllerFactory::class,
             Controller\TeamMemberController::class      => Factory\Controller\TeamMemberControllerFactory::class,
         ],
@@ -61,6 +62,20 @@ return [
                     ],
                     'defaults'    => [
                         'controller' => Controller\AppResourceFileController::class,
+                        'action'     => 'index',
+                    ],
+                ],
+            ],
+            'git'             => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'       => '/git/app/:appId[/:action]',
+                    'constraints' => [
+                        'appId'  => '[0-9]+',
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                    ],
+                    'defaults'    => [
+                        'controller' => Controller\GitController::class,
                         'action'     => 'index',
                     ],
                 ],
