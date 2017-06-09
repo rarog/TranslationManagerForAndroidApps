@@ -16,6 +16,7 @@ use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\Stdlib\ArraySerializableInterface;
 use Zend\Validator\StringLength;
+use Zend\Validator\Uri;
 
 class App implements ArraySerializableInterface, InputFilterAwareInterface
 {
@@ -290,6 +291,13 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
                         'encoding' => 'UTF-8',
                         'min'      => 0,
                         'max'      => 4096,
+                    ],
+                ],
+                [
+                    'name'    => Uri::class,
+                    'options' => [
+                        'allowAbsolute' => true,
+                        'allowRelative' => false,
                     ],
                 ],
             ],
