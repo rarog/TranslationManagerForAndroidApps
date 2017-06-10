@@ -11,6 +11,7 @@ use DomainException;
 use Translations\Validator\ResFileName;
 use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\Db\Adapter\AdapterAwareTrait;
+use Zend\Filter\BaseName;
 use Zend\Filter\StringTrim;
 use Zend\Filter\StripTags;
 use Zend\Filter\ToInt;
@@ -179,6 +180,7 @@ class AppResourceFile implements AdapterAwareInterface, ArraySerializableInterfa
             'filters'  => [
                 ['name' => StripTags::class],
                 ['name' => StringTrim::class],
+                ['name' => BaseName::class],
             ],
             'validators' => [
                 [
