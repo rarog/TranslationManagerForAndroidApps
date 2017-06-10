@@ -11,6 +11,7 @@ use DomainException;
 use Translations\Validator\ResValuesName;
 use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\Db\Adapter\AdapterAwareTrait;
+use Zend\Filter\BaseName;
 use Zend\Filter\StringTrim;
 use Zend\Filter\StripTags;
 use Zend\Filter\ToInt;
@@ -223,6 +224,7 @@ class AppResource implements AdapterAwareInterface, ArraySerializableInterface, 
             'filters'  => [
                 ['name' => StripTags::class],
                 ['name' => StringTrim::class],
+                ['name' => BaseName::class],
             ],
             'validators' => [
                 [
