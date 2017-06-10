@@ -7,16 +7,12 @@
 
 namespace Translations\Controller;
 
+use GitWrapper\GitWrapper;
 use RuntimeException;
-use Translations\Form\AppForm;
-use Translations\Form\DeleteHelperForm;
 use Translations\Model\App;
 use Translations\Model\AppTable;
 use Translations\Model\Helper\FileHelper;
-use Translations\Model\TeamTable;
-use Translations\Model\UserSettingsTable;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\ViewModel;
 
 class GitController extends AbstractActionController
@@ -27,13 +23,49 @@ class GitController extends AbstractActionController
     private $appTable;
 
     /**
-     * Helper for getting path to app directory
+     * Check if current user has permission to the app and return it
      *
-     * @param int $id
-     * @throws RuntimeException
-     * @return string
+     * @param int $appId
+     * @return void|\Zend\Http\Response|\Translations\Model\App
      */
-    private function getAppPath($id)
+    private function getApp($appId)
+    {
+        $appId = (int) $appId;
+
+        if (0 === $appId) {
+            return $this->redirect()->toRoute('app', [
+                'action' => 'index',
+            ]);
+        }
+
+        try {
+            $app = $this->appTable->getApp($appId);
+        } catch (\Exception $e) {
+            return $this->redirect()->toRoute('app', [
+                'action' => 'index',
+            ]);
+        }
+
+        if (!$this->isGranted('app.viewAll') &&
+            !$this->appTable->hasUserPermissionForApp(
+                $this->zfcUserAuthentication()->getIdentity()->getId(),
+                $app->Id)) {
+            return $this->redirect()->toRoute('app', [
+                'action' => 'index',
+            ]);
+        }
+
+        return $app;
+    }
+
+    /**
+     * Returns local git repository of the app
+     *
+     * @param App $app
+     * @throws RuntimeException
+     * @return \GitWrapper\GitWorkingCopy
+     */
+    private function getGit(App $app)
     {
         if (($path = realpath($this->configHelp('tmfaa')->app_dir)) === false) {
             throw new RuntimeException(sprintf(
@@ -41,7 +73,11 @@ class GitController extends AbstractActionController
                     $this->configHelp('tmfaa')->app_dir
                     ));
         }
-        return FileHelper::concatenatePath($path, (string) $id);
+        $path = FileHelper::concatenatePath($path, (string) $app->Id);
+
+        $git = new GitWrapper();
+        $git->setEnvVar('HOME', $path);
+        return $git->workingCopy($path);
     }
 
     /**
@@ -61,7 +97,12 @@ class GitController extends AbstractActionController
      */
     public function indexAction()
     {
+        $appId = (int) $this->params()->fromRoute('appId', 0);
+        $app = $this->getApp($appId);
+
         return [
+            'app' => $app,
+            'git' => $this->getGit($app),
         ];
     }
 }
