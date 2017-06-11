@@ -77,18 +77,27 @@ class FileHelper
         return $path;
     }
 
+
     /**
      * Removes a directory with all files and subdirectories
      *
      * @param  string $dir
+     * @param  bool $onlyContent
      * @return boolean
      */
-    public static function rmdirRecursive($dir)
+    public static function rmdirRecursive($dir, $onlyContent = false)
     {
+        $dir = (string) $dir;
+        $onlyContent = (bool) $onlyContent;
+
         $files = array_diff(scandir($dir), array('.','..'));
         foreach ($files as $file) {
             $file = $dir . DIRECTORY_SEPARATOR . $file;
             (is_dir($file)) ? self::rmdirRecursive($file) : unlink($file);
+        }
+
+        if ($onlyContent) {
+            return true;
         }
         return rmdir($dir);
     }

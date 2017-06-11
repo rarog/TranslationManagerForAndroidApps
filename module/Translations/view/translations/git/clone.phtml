@@ -1,0 +1,23 @@
+<?php
+$title = sprintf($this->translate('Cloning repository of app "%s"'), $app->Name);
+$this->headTitle($title);
+?>
+<h1><?= $this->escapeHtml($title) ?></h1>
+<div>
+<?php
+foreach ($messages as $message) {
+    echo $this->partial('partial/alert.phtml', [
+        'type'     => $message['type'],
+        'message'  => $message['message'],
+        'canClose' => $message['canClose'],
+    ]);
+}
+?>
+</div>
+<?php
+$form->setAttribute('action', $this->url('git', [
+    'appId'  => $app->Id,
+    'action' => 'clone',
+]));
+echo $this->form($form, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZONTAL);
+?>

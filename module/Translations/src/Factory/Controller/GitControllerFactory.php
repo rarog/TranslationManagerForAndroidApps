@@ -19,7 +19,8 @@ class GitControllerFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         return new \Translations\Controller\GitController(
-            $container->get(\Translations\Model\AppTable::class)
+            $container->get(\Translations\Model\AppTable::class),
+            $container->get(\Zend\Mvc\I18n\Translator::class)
         );
     }
 }
