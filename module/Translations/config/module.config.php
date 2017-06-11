@@ -16,6 +16,7 @@ return [
             Controller\AppResourceController::class     => Factory\Controller\AppResourceControllerFactory::class,
             Controller\AppResourceFileController::class => Factory\Controller\AppResourceFileControllerFactory::class,
             Controller\GitController::class             => Factory\Controller\GitControllerFactory::class,
+            Controller\SyncController::class            => Factory\Controller\SyncControllerFactory::class,
             Controller\TeamController::class            => Factory\Controller\TeamControllerFactory::class,
             Controller\TeamMemberController::class      => Factory\Controller\TeamMemberControllerFactory::class,
         ],
@@ -76,6 +77,20 @@ return [
                     ],
                     'defaults'    => [
                         'controller' => Controller\GitController::class,
+                        'action'     => 'index',
+                    ],
+                ],
+            ],
+            'sync'            => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'       => '/sync/app/:appId[/:action]',
+                    'constraints' => [
+                        'appId'  => '[0-9]+',
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                    ],
+                    'defaults'    => [
+                        'controller' => Controller\SyncController::class,
                         'action'     => 'index',
                     ],
                 ],

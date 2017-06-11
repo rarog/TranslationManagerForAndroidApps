@@ -87,6 +87,9 @@ return [
                 'git*'                   => [
                     'permissions' => ['git'],
                 ],
+                'sync*'                  => [
+                    'permissions' => ['sync'],
+                ],
                 'appresource/add'        => [
                     'permissions' => ['appresource.add'],
                 ],
@@ -168,6 +171,7 @@ return [
                         'appresourcefile.edit',
                         'appresourcefile.view',
                         'git',
+                        'sync',
                         'team.edit',
                         'team.view',
                         'teammember.add',

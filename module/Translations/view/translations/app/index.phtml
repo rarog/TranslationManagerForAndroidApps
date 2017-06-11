@@ -43,6 +43,12 @@ $printTeams = count($teams) > 1;
     'action' => 'index',
 ]) ?>"><span class="fa fa-git" aria-hidden="true"></span> <?= $this->escapeHtml('Git') ?></a></li>
 <?php endif; ?>
+<?php if ($this->isGranted('sync')) : ?>
+                        <li><a href="<?= $this->url('sync', [
+    'appId'  => $app->id,
+    'action' => 'index',
+                        ]) ?>"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Sync')) ?></a></li>
+<?php endif; ?>
 <?php if ($this->isGranted('appresource.view') || $this->isGranted('appresourcefile.view')) : ?>
                         <li role="separator" class="divider"></li>
 <?php endif; ?>
