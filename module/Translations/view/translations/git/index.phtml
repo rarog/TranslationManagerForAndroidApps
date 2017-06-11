@@ -1,5 +1,12 @@
 <?php
 $title = 'Git';
 $this->headTitle($title);
+$this->headLink()->appendStylesheet($this->basePath('css/octicons.min.css'));
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
+<div class="btn-group">
+	<a class="btn <?php if ($git->isCloned()): ?>btn-danger<?php else: ?>btn-default<?php endif; ?>" href="<?= $this->url('git', [
+    'appId'  => $app->id,
+    'action' => 'clone',
+]) ?>"><span class="octicon octicon-repo-clone" aria-hidden="true"> <?= $this->escapeHtml($this->translate('Clone')) ?></a>
+</div>

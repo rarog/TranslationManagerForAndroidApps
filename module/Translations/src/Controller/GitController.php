@@ -91,6 +91,15 @@ class GitController extends AbstractActionController
     }
 
     /**
+     * Git clone action
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function cloneAction()
+    {
+    }
+
+    /**
      * Git overview action
      *
      * @return \Zend\View\Model\ViewModel
