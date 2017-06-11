@@ -35,24 +35,28 @@ $printTeams = count($teams) > 1;
             <td><?= $this->escapeHtml($app->PathToResFolder) ?></td>
             <td>
                 <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Tasks')) ?> <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
 <?php if ($this->isGranted('git') && (strlen($app->GitRepository) > 0)) : ?>
-                    <a class="btn btn-default" href="<?= $this->url('git', [
+                        <li><a href="<?= $this->url('git', [
     'appId'  => $app->id,
     'action' => 'index',
-]) ?>"><span class="fa fa-git" aria-hidden="true"></span> <?= $this->escapeHtml('Git') ?></a>
+]) ?>"><span class="fa fa-git" aria-hidden="true"></span> <?= $this->escapeHtml('Git') ?></a></li>
+<?php endif; ?>
+<?php if ($this->isGranted('appresource.view') || $this->isGranted('appresourcefile.view')) : ?>
+                        <li role="separator" class="divider"></li>
 <?php endif; ?>
 <?php if ($this->isGranted('appresource.view')) : ?>
-                    <a class="btn btn-default" href="<?= $this->url('appresource', [
+                        <li><a href="<?= $this->url('appresource', [
     'appId' => $app->Id,
-]) ?>"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Resources')) ?>  <span class="badge"><?= (int) $app->ResourceCount ?></span></a>
+]) ?>"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Resources')) ?>  <span class="badge"><?= (int) $app->ResourceCount ?></span></a></li>
 <?php endif; ?>
 <?php if ($this->isGranted('appresourcefile.view')) : ?>
-                    <a class="btn btn-default" href="<?= $this->url('appresourcefile', [
+                        <li><a href="<?= $this->url('appresourcefile', [
     'appId' => $app->Id,
-]) ?>"><span class="fa fa-file-text" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Resource files')) ?>  <span class="badge"><?= (int) $app->ResourceFileCount ?></span></a>
+]) ?>"><span class="fa fa-file-text" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Resource files')) ?>  <span class="badge"><?= (int) $app->ResourceFileCount ?></span></a></li>
 <?php endif; ?>
-                </div>
-                <div class="btn-group">
+                    </ul>
 <?php if ($this->isGranted('app.edit')) : ?>
                     <a class="btn btn-default" href="<?= $this->url('app', [
     'action' => 'edit',
