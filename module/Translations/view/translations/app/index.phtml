@@ -39,7 +39,7 @@ $printTeams = count($teams) > 1;
                     <a class="btn btn-default" href="<?= $this->url('git', [
     'appId'  => $app->id,
     'action' => 'index',
-]) ?>"><span class="fa fa-git" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Git')) ?></a>
+]) ?>"><span class="fa fa-git" aria-hidden="true"></span> <?= $this->escapeHtml('Git') ?></a>
 <?php endif; ?>
 <?php if ($this->isGranted('appresource.view')) : ?>
                     <a class="btn btn-default" href="<?= $this->url('appresource', [
