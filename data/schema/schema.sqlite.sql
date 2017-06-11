@@ -57,9 +57,16 @@ CREATE TABLE app_resource (
 );
 
 CREATE TABLE app_resource_file (
-    id          INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    app_id      INTEGER NOT NULL,
-    name        VARCHAR(255) NOT NULL,
+    id     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    app_id INTEGER NOT NULL,
+    name   VARCHAR(255) NOT NULL,
     UNIQUE (app_id,name),
     FOREIGN KEY (app_id) REFERENCES app(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+CREATE TABLE resource_type (
+    id        INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name      VARCHAR(255) NOT NULL,
+    node_name VARCHAR(255) NOT NULL
+);
+INSERT INTO resource_type (id, name, node_name) VALUES (1, 'String', 'string');
