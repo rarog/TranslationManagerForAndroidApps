@@ -14,7 +14,7 @@ class DeleteHelperForm extends Form
     public function __construct($name = null)
     {
         // Ignore the name provided to the constructor.
-        parent::__construct('app');
+        parent::__construct('delete_helper');
 
         $this->setAttribute('method', 'post');
 
