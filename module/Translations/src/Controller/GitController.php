@@ -166,6 +166,7 @@ class GitController extends AbstractActionController
 
         if (($request->getPost('clone', '') === 'clone') &&
             $form->isValid()) {
+            $form->get('confirm_deletion')->setAttribute('disabled', 'disabled');
             $form->get('clone')->setAttribute('disabled', 'disabled');
 
             try {
