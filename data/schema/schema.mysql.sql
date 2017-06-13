@@ -11,7 +11,7 @@ CREATE TABLE `user_role_linker` (
     `user_id` INT(11) UNSIGNED NOT NULL,
     `role_id` VARCHAR(45) NOT NULL,
     PRIMARY KEY (`user_id`,`role_id`),
-    KEY `user_role_linker_fk1_idx` (`user_id`),
+    KEY `user_role_linker_fk1` (`user_id`),
     CONSTRAINT `user_role_linker_fk1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -34,8 +34,8 @@ CREATE TABLE `team_member` (
     PRIMARY KEY (`user_id`,`team_id`),
     KEY `team_member_fk1_idx` (`user_id`),
     KEY `team_member_fk2_idx` (`team_id`),
-    CONSTRAINT `team_member_fk1_idx` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT `team_member_fk2_idx` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT `team_member_fk1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `team_member_fk2` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `app` (
@@ -70,5 +70,26 @@ CREATE TABLE `resource_type` (
     `name`      VARCHAR(255) NOT NULL,
     `node_name` VARCHAR(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 INSERT INTO `resource_type` (`id`, `name`, `node_name`) VALUES (1, 'String', 'string');
 
+CREATE TABLE `app_resource_file_entry` (
+    `id`                   INT(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `app_resource_file_id` INT(11) UNSIGNED DEFAULT NULL,
+    `resource_type_id`     INT(11) UNSIGNED NOT NULL,
+    `name`                 VARCHAR(255) NOT NULL,
+    `deleted`              TINYINT(1) NOT NULL,
+    INDEX `app_resource_file_entry_ik1` (`deleted`),
+    CONSTRAINT `app_resource_file_entry_fk1` FOREIGN KEY (`app_resource_file_id`) REFERENCES `app_resource_file` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `app_resource_file_entry_fk2` FOREIGN KEY (`resource_type_id`) REFERENCES `resource_type` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DELIMITER $$
+CREATE TRIGGER `app_resource_file_id_becomes_null` BEFORE UPDATE ON `app_resource_file_entry` FOR EACH ROW
+BEGIN
+    IF NEW.app_resource_file_id IS NULL THEN
+        SET NEW.deleted = 1;
+    END IF;
+END
+$$
+DELIMITER ;
