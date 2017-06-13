@@ -72,7 +72,7 @@ CREATE TABLE resource_type (
 
 INSERT INTO resource_type (id, name, node_name) VALUES (1, 'String', 'string');
 
-CREATE TABLE app_resource_file_entry (
+CREATE TABLE resource_file_entry (
     id                   INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     app_resource_file_id INTEGER DEFAULT NULL,
     resource_type_id     INTEGER NOT NULL,
@@ -82,11 +82,11 @@ CREATE TABLE app_resource_file_entry (
     FOREIGN KEY (resource_type_id) REFERENCES resource_type (id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
-CREATE INDEX app_resource_file_entry_ik1 ON app_resource_file_entry (deleted);
+CREATE INDEX resource_file_entry_ik1 ON resource_file_entry (deleted);
 
-CREATE TRIGGER app_resource_file_id_becomes_null AFTER UPDATE ON app_resource_file_entry
+CREATE TRIGGER resource_file_id_becomes_null AFTER UPDATE ON resource_file_entry
 FOR EACH ROW
 WHEN (NEW.app_resource_file_id IS NULL)
 BEGIN
-    UPDATE app_resource_file_entry SET deleted = 1 WHERE id = NEW.id;
+    UPDATE resource_file_entry SET deleted = 1 WHERE id = NEW.id;
 END;

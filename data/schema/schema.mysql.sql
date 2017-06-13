@@ -73,19 +73,19 @@ CREATE TABLE `resource_type` (
 
 INSERT INTO `resource_type` (`id`, `name`, `node_name`) VALUES (1, 'String', 'string');
 
-CREATE TABLE `app_resource_file_entry` (
+CREATE TABLE `resource_file_entry` (
     `id`                   INT(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `app_resource_file_id` INT(11) UNSIGNED DEFAULT NULL,
     `resource_type_id`     INT(11) UNSIGNED NOT NULL,
     `name`                 VARCHAR(255) NOT NULL,
     `deleted`              TINYINT(1) NOT NULL,
-    INDEX `app_resource_file_entry_ik1` (`deleted`),
-    CONSTRAINT `app_resource_file_entry_fk1` FOREIGN KEY (`app_resource_file_id`) REFERENCES `app_resource_file` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT `app_resource_file_entry_fk2` FOREIGN KEY (`resource_type_id`) REFERENCES `resource_type` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+    INDEX `resource_file_entry_ik1` (`deleted`),
+    CONSTRAINT `resource_file_entry_fk1` FOREIGN KEY (`app_resource_file_id`) REFERENCES `app_resource_file` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `resource_file_entry_fk2` FOREIGN KEY (`resource_type_id`) REFERENCES `resource_type` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DELIMITER $$
-CREATE TRIGGER `app_resource_file_id_becomes_null` BEFORE UPDATE ON `app_resource_file_entry` FOR EACH ROW
+CREATE TRIGGER `resource_file_id_becomes_null` BEFORE UPDATE ON `resource_file_entry` FOR EACH ROW
 BEGIN
     IF NEW.app_resource_file_id IS NULL THEN
         SET NEW.deleted = 1;
