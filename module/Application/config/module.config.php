@@ -61,6 +61,12 @@ return [
                         'permission' => 'userBase',
                     ],
                     [
+                        'label'      => _('About...'),
+                        'route'      => 'application/about',
+                        'icon'       => 'glyphicon glyphicon-info-sign',
+                        'permission' => 'userBase',
+                    ],
+                    [
                         'route'     => '#',
                         'separator' => true,
                     ],
@@ -87,14 +93,27 @@ return [
                 ],
             ],
             'application' => [
-                'type'    => Segment::class,
+                'type'    => Literal::class,
                 'options' => [
-                    'route'    => '/application[/:action]',
-                    'defaults' => [
+                    'route'       => '/application',
+                    'defaults'    => [
                         'controller' => Controller\IndexController::class,
                         'action'     => 'index',
                     ],
                 ],
+                'may_terminate' => true,
+                'child_routes' => [
+                    'about' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/about',
+                            'defaults' => [
+                                'controller' => Controller\IndexController::class,
+                                'action'     => 'about',
+                            ],
+                        ],
+                    ],
+                ]
             ],
         ],
     ],
