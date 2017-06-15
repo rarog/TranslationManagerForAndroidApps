@@ -62,6 +62,16 @@ class Module implements ConfigProviderInterface, ServiceProviderInterface
                     $resultSetPrototype->setArrayObjectPrototype(new Model\AppResourceFile());
                     return new TableGateway('app_resource_file', $dbAdapter, null, $resultSetPrototype);
                 },
+                Model\ResourceFileEntryTable::class => function ($container) {
+                    $tableGateway = $container->get(Model\ResourceFileEntryTableGateway::class);
+                    return new Model\ResourceFileEntryTable($tableGateway);
+                },
+                Model\ResourceFileEntryTableGateway::class => function ($container) {
+                    $dbAdapter = $container->get(AdapterInterface::class);
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Model\ResourceFileEntry());
+                    return new TableGateway('resource_file_entry', $dbAdapter, null, $resultSetPrototype);
+                },
                 Model\ResourceTypeTable::class => function ($container) {
                     $tableGateway = $container->get(Model\ResourceTypeTableGateway::class);
                     return new Model\ResourceTypeTable($tableGateway);
@@ -70,7 +80,7 @@ class Module implements ConfigProviderInterface, ServiceProviderInterface
                     $dbAdapter = $container->get(AdapterInterface::class);
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\ResourceType());
-                    return new TableGateway('team', $dbAdapter, null, $resultSetPrototype);
+                    return new TableGateway('resource_type', $dbAdapter, null, $resultSetPrototype);
                 },
                 Model\TeamTable::class => function ($container) {
                     $tableGateway = $container->get(Model\TeamTableGateway::class);
