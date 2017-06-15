@@ -44,7 +44,7 @@ class ResourceTypeTable
      *
      * @param  int $id
      * @throws RuntimeException
-     * @return \Translations\Model\App
+     * @return \Translations\Model\ResourceType
      */
     public function getResourceType($id)
     {
