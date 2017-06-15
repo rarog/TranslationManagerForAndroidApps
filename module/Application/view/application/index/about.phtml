@@ -8,15 +8,35 @@
 <div class="row">
     <div class="col-md-12">
         <h2><?= $this->escapeHtml($this->translate('Libraries')) ?></h2>
-        <table class="table">
-            <tr>
-                <th><?= $this->escapeHtml($this->translate('Name')) ?></th>
-                <th><?= $this->escapeHtml($this->translate('License')) ?></th>
-            </tr>
-            <tr>
-                <th><a href="https://framework.zend.com/" target="_blank">Zend Framework 3</a></th>
-                <th><a href="https://framework.zend.com/license" target="_blank">New BSD License</a></th>
-            </tr>
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th><?= $this->escapeHtml($this->translate('Name')) ?></th>
+                    <th><?= $this->escapeHtml($this->translate('License')) ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th><a href="https://framework.zend.com/" target="_blank">Zend Framework 3</a></th>
+                    <th><a href="https://framework.zend.com/license" target="_blank">New BSD License</a></th>
+                </tr>
+                <tr>
+                    <th><a href="https://getbootstrap.com/" target="_blank">Bootstrap 3</a></th>
+                    <th><a href="https://github.com/twbs/bootstrap/blob/master/LICENSE" target="_blank">MIT License</a></th>
+                </tr>
+                <tr>
+                    <th><a href="https://jquery.com/" target="_blank">jQuery 3</a></th>
+                    <th><a href="https://jquery.org/license/" target="_blank">MIT License</a></th>
+                </tr>
+                <tr>
+                    <th><a href="http://fontawesome.io/" target="_blank">FontAwesome 4</a></th>
+                    <th><a href="http://fontawesome.io/license/" target="_blank">SIL OFL 1.1 / MIT License</a></th>
+                </tr>
+                <tr>
+                    <th><a href="https://octicons.github.com/" target="_blank">Octicons 4</a></th>
+                    <th><a href="https://github.com/primer/octicons/blob/master/LICENSE" target="_blank">MIT License</a></th>
+                </tr>
+            </tbody>
         </table>
     </div>
 </div>
