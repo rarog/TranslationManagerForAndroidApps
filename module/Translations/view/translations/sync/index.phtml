@@ -1,6 +1,17 @@
 <?php
 $title = sprintf($this->translate('Sync ressources of app "%s"'), $app->Name);
 $this->headTitle($title);
+$this->inlineScript()->appendScript('
+function processForm(event) {
+  var form = $(event.currentTarget).parents("form:first");
+  alert("TODO: submit form via AJAX to: " + form.attr("action"));
+  return false;
+}
+$(document).ready(function() {
+  $("#import_submit").bind("click", processForm);
+  $("#export_submit").bind("click", processForm);
+});
+');
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
 <div class="row">

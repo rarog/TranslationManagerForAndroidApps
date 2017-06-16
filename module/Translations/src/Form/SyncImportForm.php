@@ -41,7 +41,7 @@ class SyncImportForm extends Form
         $this->add([
             'attributes' => [
                 'value' => _('Import'),
-                'id'    => 'submit',
+                'id'    => 'import_submit',
             ],
             'name'       => 'submit',
             'options'    => [

@@ -41,7 +41,7 @@ class SyncExportForm extends Form
         $this->add([
             'attributes' => [
                 'value' => _('Export'),
-                'id'    => 'submit',
+                'id'    => 'export_submit',
             ],
             'name'       => 'submit',
             'options'    => [
