@@ -34,85 +34,166 @@ return [
         'guards' => [
             'ZfcRbac\Guard\RoutePermissionsGuard' =>[
                 'home'                   => [
-                    'permissions' => ['userBase'],
+                    'permissions' => [
+                        'userBase',
+                    ],
                 ],
                 'application*'           => [
-                    'permissions' => ['userBase'],
+                    'permissions' => [
+                        'userBase',
+                    ],
                 ],
                 'zfcuser/login'          => [
-                    'permissions' => ['guest'],
+                    'permissions' => [
+                        'guest',
+                    ],
                 ],
                 'zfcuser/register'       => [
-                    'permissions' => ['guest'],
+                    'permissions' => [
+                        'guest',
+                    ],
                 ],
                 'zfcuser*'               => [
-                    'permissions' => ['userBase'],
+                    'permissions' => [
+                        'userBase',
+                    ],
                 ],
                 'setup*'                 => [
-                    'permissions' => ['guest'],
+                    'permissions' => [
+                        'guest',
+                    ],
                 ],
                 'team/add'               => [
-                    'permissions' => ['team.add'],
+                    'permissions' => [
+                        'team.view',
+                        'team.add',
+                    ],
                 ],
                 'team/edit'              => [
-                    'permissions' => ['team.edit'],
+                    'permissions' => [
+                        'team.view',
+                        'team.edit',
+                    ],
                 ],
                 'team/delete'            => [
-                    'permissions' => ['team.delete'],
+                    'permissions' => [
+                        'team.view',
+                        'team.delete',
+                    ],
                 ],
                 'team*'                  => [
-                    'permissions' => ['team.view'],
+                    'permissions' => [
+                        'team.view',
+                    ],
                 ],
                 'teammember/add'         => [
-                    'permissions' => ['teammember.add'],
+                    'permissions' => [
+                        'team.view',
+                        'teammember.view',
+                        'teammember.add',
+                    ],
                 ],
                 'teammember/remove'      => [
-                    'permissions' => ['teammember.remove'],
+                    'permissions' => [
+                        'team.view',
+                        'teammember.view',
+                        'teammember.remove',
+                    ],
                 ],
                 'teammember*'            => [
-                    'permissions' => ['teammember.view'],
+                    'permissions' => [
+                        'team.view',
+                        'teammember.view',
+                    ],
                 ],
                 'app/add'                => [
-                    'permissions' => ['app.add'],
+                    'permissions' => [
+                        'app.view',
+                        'app.add',
+                    ],
                 ],
                 'app/edit'               => [
-                    'permissions' => ['app.edit'],
+                    'permissions' => [
+                        'app.view',
+                        'app.edit',
+                    ],
                 ],
                 'app/delete'             => [
-                    'permissions' => ['app.delete'],
+                    'permissions' => [
+                        'app.view',
+                        'app.delete',
+                    ],
                 ],
                 'app*'                   => [
-                    'permissions' => ['app.view'],
+                    'permissions' => [
+                        'app.view',
+                    ],
                 ],
                 'git*'                   => [
-                    'permissions' => ['git'],
+                    'permissions' => [
+                        'app.view',
+                        'git',
+                    ],
                 ],
                 'sync*'                  => [
-                    'permissions' => ['sync'],
+                    'permissions' => [
+                        'app.view',
+                        'sync',
+                    ],
                 ],
                 'appresource/add'        => [
-                    'permissions' => ['appresource.add'],
+                    'permissions' => [
+                        'app.view',
+                        'appresource.view',
+                        'appresource.add',
+                    ],
                 ],
                 'appresource/edit'       => [
-                    'permissions' => ['appresource.edit'],
+                    'permissions' => [
+                        'app.view',
+                        'appresource.view',
+                        'appresource.edit',
+                    ],
                 ],
                 'appresource/delete'     => [
-                    'permissions' => ['appresource.delete'],
+                    'permissions' => [
+                        'app.view',
+                        'appresource.view',
+                        'appresource.delete',
+                    ],
                 ],
                 'appresource*'           => [
-                    'permissions' => ['appresource.view'],
+                    'permissions' => [
+                        'app.view',
+                        'appresource.view',
+                    ],
                 ],
                 'appresourcefile/add'    => [
-                    'permissions' => ['appresourcefile.add'],
+                    'permissions' => [
+                        'app.view',
+                        'appresourcefile.view',
+                        'appresourcefile.add',
+                    ],
                 ],
                 'appresourcefile/edit'   => [
-                    'permissions' => ['appresourcefile.edit'],
+                    'permissions' => [
+                        'app.view',
+                        'appresourcefile.view',
+                        'appresourcefile.edit',
+                    ],
                 ],
                 'appresourcefile/delete' => [
-                    'permissions' => ['appresourcefile.delete'],
+                    'permissions' => [
+                        'app.view',
+                        'appresourcefile.view',
+                        'appresourcefile.delete',
+                    ],
                 ],
                 'appresourcefile*'       => [
-                    'permissions' => ['appresourcefile.view'],
+                    'permissions' => [
+                        'app.view',
+                        'appresourcefile.view',
+                    ],
                 ],
             ]
         ],
