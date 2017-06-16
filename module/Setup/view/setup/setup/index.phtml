@@ -2,21 +2,21 @@
     $formStep1->setAttribute('action', $this->url('setup'));
 ?>
 <div class="row">
-    <div class="col-lg-12">
-        <h1 class="page-header"><?= $this->escapeHtml($this->translate('Setup')) ?>: <?= $this->escapeHtml(sprintf($this->translate('Step %d'), 1)) ?> &ndash; <?= $this->escapeHtml($this->translate('Language'))?></h1>
-    </div>
+  <div class="col-lg-12">
+    <h1 class="page-header"><?= $this->escapeHtml($this->translate('Setup')) ?>: <?= $this->escapeHtml(sprintf($this->translate('Step %d'), 1)) ?> &ndash; <?= $this->escapeHtml($this->translate('Language'))?></h1>
+  </div>
 </div>
 <div class="row">
-    <div class="col-lg-3">
-        <ul class="nav nav-pills nav-stacked">
-            <li role="presentation" class="active"><a id="step1" href="#"><?= $this->escapeHtml(sprintf($this->translate('Step %d'), 1)) ?> &ndash; <?= $this->escapeHtml($this->translate('Language'))?></a></li>
-            <li role="presentation" class="disabled"><a id="step2" href="#"><?= $this->escapeHtml(sprintf($this->translate('Step %d'), 2)) ?> &ndash; <?= $this->escapeHtml($this->translate('Database'))?></a></li>
-            <li role="presentation" class="disabled"><a id="step3" href="#"><?= $this->escapeHtml(sprintf($this->translate('Step %d'), 3)) ?> &ndash; <?= $this->escapeHtml($this->translate('Database schema'))?></a></li>
-            <li role="presentation" class="disabled"><a id="step4" href="#"><?= $this->escapeHtml(sprintf($this->translate('Step %d'), 4)) ?> &ndash; <?= $this->escapeHtml($this->translate('User creation'))?></a></li>
-        </ul>
-    </div>
-    <div class="col-lg-9">
-        <h3><?= $this->escapeHtml($this->translate('Welcome to the setup routine.')) ?></h3>
-        <div><?= $this->form($formStep1, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZONTAL); ?></div>
-    </div>
+  <div class="col-lg-3">
+    <ul class="nav nav-pills nav-stacked">
+      <li role="presentation" class="active"><a id="step1" href="#"><?= $this->escapeHtml(sprintf($this->translate('Step %d'), 1)) ?> &ndash; <?= $this->escapeHtml($this->translate('Language'))?></a></li>
+      <li role="presentation" class="disabled"><a id="step2" href="#"><?= $this->escapeHtml(sprintf($this->translate('Step %d'), 2)) ?> &ndash; <?= $this->escapeHtml($this->translate('Database'))?></a></li>
+      <li role="presentation" class="disabled"><a id="step3" href="#"><?= $this->escapeHtml(sprintf($this->translate('Step %d'), 3)) ?> &ndash; <?= $this->escapeHtml($this->translate('Database schema'))?></a></li>
+      <li role="presentation" class="disabled"><a id="step4" href="#"><?= $this->escapeHtml(sprintf($this->translate('Step %d'), 4)) ?> &ndash; <?= $this->escapeHtml($this->translate('User creation'))?></a></li>
+    </ul>
+  </div>
+  <div class="col-lg-9">
+    <h3><?= $this->escapeHtml($this->translate('Welcome to the setup routine.')) ?></h3>
+    <div><?= $this->form($formStep1, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZONTAL); ?></div>
+  </div>
 </div>

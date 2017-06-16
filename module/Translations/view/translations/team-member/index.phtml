@@ -6,39 +6,39 @@ $this->dataTablesInitHelper(['table' => '#teamMembers']);
 <h1><?= $this->escapeHtml($title) ?></h1>
 <?php if ($this->isGranted('teammember.add')) : ?>
 <p>
-    <a class="btn btn-default" href="<?= $this->url('teammember', [
+  <a class="btn btn-default" href="<?= $this->url('teammember', [
     'teamId' => $team->Id,
     'action' => 'add',
 ]) ?>"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Add new team member')) ?></a>
 </p>
 <?php endif; ?>
 <table class="table table-bordered table-striped" id="teamMembers">
-    <thead>
-        <tr>
-            <th><?= $this->escapeHtml($this->translate('Username')) ?></th>
-            <th><?= $this->escapeHtml($this->translate('Email')) ?></th>
-            <th><?= $this->escapeHtml($this->translate('Display name')) ?></th>
-            <th>&nbsp;</th>
-        </tr>
-    </thead>
-    <tbody>
+  <thead>
+    <tr>
+      <th><?= $this->escapeHtml($this->translate('Username')) ?></th>
+      <th><?= $this->escapeHtml($this->translate('Email')) ?></th>
+      <th><?= $this->escapeHtml($this->translate('Display name')) ?></th>
+      <th>&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
 <?php foreach ($teamMembers as $teammember) : ?>
-        <tr>
-            <td><?= $this->escapeHtml($teammember->Username) ?></td>
-            <td><?= $this->escapeHtml($teammember->Email) ?></td>
-            <td><?= $this->escapeHtml($teammember->DisplayName) ?></td>
-            <td>
-                <div class="btn-group">
+    <tr>
+      <td><?= $this->escapeHtml($teammember->Username) ?></td>
+      <td><?= $this->escapeHtml($teammember->Email) ?></td>
+      <td><?= $this->escapeHtml($teammember->DisplayName) ?></td>
+      <td>
+        <div class="btn-group">
 <?php if ($this->isGranted('teammember.remove')) : ?>
-                    <a class="btn btn-danger" href="<?= $this->url('teammember', [
+          <a class="btn btn-danger" href="<?= $this->url('teammember', [
     'teamId' => $teammember->TeamId,
     'action' => 'remove',
     'userId' => $teammember->UserId,
 ]) ?>"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Remove')) ?></a>
 <?php endif; ?>
-                </div>
-            </td>
-        </tr>
+        </div>
+      </td>
+    </tr>
 <?php endforeach; ?>
-    </tbody>
+  </tbody>
 </table>

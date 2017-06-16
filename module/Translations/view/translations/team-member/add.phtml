@@ -9,7 +9,7 @@ $form->setAttribute('action', $this->url('teammember', [
 <h1><?= $this->escapeHtml($title) ?></h1>
 <?php if ($this->isGranted('teammember.view')) : ?>
 <p>
-    <a class="btn btn-default" href="<?= $this->url('teammember', [
+  <a class="btn btn-default" href="<?= $this->url('teammember', [
     'teamId' => $team->Id,
     'action' => 'index',
 ]) ?>"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Back')) ?></a>
@@ -19,21 +19,21 @@ $form->setAttribute('action', $this->url('teammember', [
 <?php $this->dataTablesInitHelper(['table' => '#usersNotInTeam']); ?>
 <div><?= $this->message ?></div>
 <table class="table table-bordered table-striped" id="usersNotInTeam">
-    <thead>
-        <tr>
-            <th><?= $this->escapeHtml($this->translate('Username')) ?></th>
-            <th><?= $this->escapeHtml($this->translate('Email')) ?></th>
-            <th><?= $this->escapeHtml($this->translate('Display name')) ?></th>
-            <th>&nbsp;</th>
-        </tr>
-    </thead>
-    <tbody>
+  <thead>
+    <tr>
+      <th><?= $this->escapeHtml($this->translate('Username')) ?></th>
+      <th><?= $this->escapeHtml($this->translate('Email')) ?></th>
+      <th><?= $this->escapeHtml($this->translate('Display name')) ?></th>
+      <th>&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
 <?php foreach ($usersNotInTeam as $user) : ?>
-        <tr>
-            <td><?= $this->escapeHtml($user->Username) ?></td>
-            <td><?= $this->escapeHtml($user->Email) ?></td>
-            <td><?= $this->escapeHtml($user->DisplayName) ?></td>
-            <td>
+    <tr>
+      <td><?= $this->escapeHtml($user->Username) ?></td>
+      <td><?= $this->escapeHtml($user->Email) ?></td>
+      <td><?= $this->escapeHtml($user->DisplayName) ?></td>
+      <td>
 <?php
 $teamMember = new \Translations\Model\TeamMember([
     'user_id' => $user->UserId,
@@ -42,9 +42,9 @@ $teamMember = new \Translations\Model\TeamMember([
 $form->bind($teamMember);
 echo $this->form($form, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_INLINE);
 ?>
-            </td>
-        </tr>
+      </td>
+    </tr>
 <?php endforeach; ?>
-    </tbody>
+  </tbody>
 </table>
 <?php endif; ?>
