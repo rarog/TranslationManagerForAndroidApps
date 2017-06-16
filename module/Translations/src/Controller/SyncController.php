@@ -13,6 +13,8 @@ use Translations\Model\AppTable;
 use Translations\Model\Helper\FileHelper;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Translations\Form\SyncExportForm;
+use Translations\Form\SyncImportForm;
 
 class SyncController extends AbstractActionController
 {
@@ -97,6 +99,24 @@ class SyncController extends AbstractActionController
     }
 
     /**
+     * Sync export action
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function exportAction()
+    {
+    }
+
+    /**
+     * Sync import action
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function importAction()
+    {
+    }
+
+    /**
      * Sync overview action
      *
      * @return \Zend\View\Model\ViewModel
@@ -106,8 +126,13 @@ class SyncController extends AbstractActionController
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
 
+        $formImport = new SyncImportForm();
+        $formExport = new SyncExportForm();
+
         return [
-            'app' => $app,
+            'app'        => $app,
+            'formExport' => $formExport,
+            'formImport' => $formImport,
         ];
     }
 }
