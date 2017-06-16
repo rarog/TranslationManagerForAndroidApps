@@ -30,7 +30,7 @@ class GitCloneForm extends Form
             'type'       => 'checkbox',
         ]);
         $this->add([
-            'name'    => 'csrf_git_clone_helper',
+            'name'    => 'csrf_git_clone',
             'options' => [
                 'csrf_options' => [
                     'timeout' => null,
