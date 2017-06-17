@@ -4,7 +4,22 @@ $this->headTitle($title);
 $this->inlineScript()->appendScript('
 function processForm(event) {
   var form = $(event.currentTarget).parents("form:first");
-  alert("TODO: submit form via AJAX to: " + form.attr("action"));
+  $("#processingModal").modal();
+  $.ajax({
+    url: form.attr("action"),
+    dataType: "json",
+    data: form.serialize(),
+    type: form.attr("method")
+  })
+  .done( function (data) {
+    alert(data);
+  })
+  .fail( function (jqXHR, textStatus, errorThrown) {
+    $("#messages").append("<div class=\"alert alert-danger alert-dismissable\"><a href=\"#\" class=\"close\" data-dismiss=\"alert\" aria-label=\"close\">&times;</a><span class=\"glyphicon glyphicon-exclamation-sign\" aria-hidden=\"true\"></span><span class=\"sr-only\">' .  $this->translate('Error:') . '</span> " + errorThrown + "</div>");
+  })
+  .always( function() {
+    $("#processingModal").modal("hide");
+  });
   return false;
 }
 $(document).ready(function() {
@@ -14,6 +29,7 @@ $(document).ready(function() {
 ');
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
+<div id="messages"></div>
 <div class="row">
   <div class="col-lg-6">
     <div class="panel panel-default">

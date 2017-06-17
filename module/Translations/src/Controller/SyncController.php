@@ -88,6 +88,15 @@ class SyncController extends AbstractActionController
         return $this->appPath;
     }
 
+    private function returnAjaxError()
+    {
+        $this->getResponse()->setStatusCode(428);
+        $view = new ViewModel([
+            'message' => 'An Ajax request was expected',
+        ]);
+        $view->setTemplate('error/index');
+        return $view;
+    }
     /**
      * Constructor
      *
@@ -105,6 +114,11 @@ class SyncController extends AbstractActionController
      */
     public function exportAction()
     {
+        $request = $this->getRequest();
+
+        if (!$request->isXmlHttpRequest()) {
+            return $this->returnAjaxError();
+        }
     }
 
     /**
@@ -114,6 +128,11 @@ class SyncController extends AbstractActionController
      */
     public function importAction()
     {
+        $request = $this->getRequest();
+
+        if (!$request->isXmlHttpRequest()) {
+            return $this->returnAjaxError();
+        }
     }
 
     /**
