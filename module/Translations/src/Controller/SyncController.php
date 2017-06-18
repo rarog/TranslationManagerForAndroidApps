@@ -36,6 +36,21 @@ class SyncController extends AbstractActionController
     private $appPath;
 
     /**
+     * Creates error page
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    private function getAjaxError()
+    {
+        $this->getResponse()->setStatusCode(428);
+        $view = new ViewModel([
+            'message' => 'An Ajax request was expected',
+        ]);
+        $view->setTemplate('error/index');
+        return $view;
+    }
+
+    /**
      * Check if current user has permission to the app and return it
      *
      * @param int $appId
@@ -95,15 +110,31 @@ class SyncController extends AbstractActionController
         return $this->appPath;
     }
 
-    private function returnAjaxError()
+    /**
+     * Renders JSON result containing HTML alert
+     *
+     * @param string $type
+     * @param string $message
+     * @return \Zend\View\Model\JsonModel
+     */
+    private function getJsonAlert($type, $message)
     {
-        $this->getResponse()->setStatusCode(428);
-        $view = new ViewModel([
-            'message' => 'An Ajax request was expected',
+        $type = (string) $type;
+        $message = (string) $message;
+
+        $viewModel = new ViewModel([
+            'type'     => $type,
+            'message'  => $message,
+            'canClose' => true,
         ]);
-        $view->setTemplate('error/index');
-        return $view;
+        $viewModel->setTemplate('partial/alert.phtml')
+            ->setTerminal(true);
+
+        return new JsonModel([
+            $this->renderer->render($viewModel),
+        ]);
     }
+
     /**
      * Constructor
      *
@@ -126,20 +157,18 @@ class SyncController extends AbstractActionController
         $request = $this->getRequest();
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->returnAjaxError();
+            return $this->getAjaxError();
         }
 
-        $viewModel = new ViewModel([
-            'type'     => 'warning',
-            'message'  => 'Not implemented',
-            'canClose' => true,
-        ]);
-        $viewModel->setTemplate('partial/alert.phtml')
-        ->setTerminal(true);
+        $form = new SyncExportForm();
+        $form->setData($request->getPost());
+        if (!$form->isValid()) {
+            return $this->getJsonAlert('danger', 'Invalid request');
+        }
 
-        return new JsonModel([
-            $this->renderer->render($viewModel),
-        ]);
+        $confirmDeletion = (bool) $form->get('confirm_deletion')->getValue();
+
+        return $this->getJsonAlert('warning', 'Not implemented');
     }
 
     /**
@@ -152,20 +181,18 @@ class SyncController extends AbstractActionController
         $request = $this->getRequest();
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->returnAjaxError();
+            return $this->getAjaxError();
         }
 
-        $viewModel = new ViewModel([
-            'type'     => 'warning',
-            'message'  => 'Not implemented',
-            'canClose' => true,
-        ]);
-        $viewModel->setTemplate('partial/alert.phtml')
-            ->setTerminal(true);
+        $form = new SyncImportForm();
+        $form->setData($request->getPost());
+        if (!$form->isValid()) {
+            return $this->getJsonAlert('danger', 'Invalid request');
+        }
 
-        return new JsonModel([
-            $this->renderer->render($viewModel),
-        ]);
+        $confirmDeletion = (bool) $form->get('confirm_deletion')->getValue();
+
+        return $this->getJsonAlert('warning', 'Not implemented');
     }
 
     /**

@@ -23,9 +23,10 @@ class SyncExportForm extends Form
             'name'       => 'confirm_deletion',
             'options'    => [
                 'checked_value'      => 1,
-                'unchecked_value'    => '',
-                'column-size'  => 'sm-12',
-                'label'        => _('Delete resources not present in set'),
+                'column-size'        => 'sm-12',
+                'label'              => _('Delete resources not present in set'),
+                'unchecked_value'    => 0,
+                'use_hidden_element' => true,
             ],
             'type'       => 'checkbox',
         ]);
