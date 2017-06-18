@@ -11,6 +11,7 @@ use RuntimeException;
 use Translations\Form\SyncExportForm;
 use Translations\Form\SyncImportForm;
 use Translations\Model\App;
+use Translations\Model\AppResourceTable;
 use Translations\Model\AppTable;
 use Translations\Model\Helper\FileHelper;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -25,6 +26,11 @@ class SyncController extends AbstractActionController
      * @var AppTable
      */
     private $appTable;
+
+    /**
+     * @var AppResourceTable
+     */
+    private $appResourceTable;
 
     /**
      * @var Translator
@@ -89,6 +95,16 @@ class SyncController extends AbstractActionController
             ]);
         }
 
+        // Prevent further action, if default values don't exist.
+        try {
+            $this->appResourceTable->getAppResourceByAppIdAndName($app->Id, 'values');
+        } catch (\Exception $e) {
+            return $this->redirect()->toRoute('appresource', [
+                'appId'  => $app->Id,
+                'action' => 'index',
+            ]);
+        }
+
         return $app;
     }
 
@@ -145,12 +161,14 @@ class SyncController extends AbstractActionController
      * Constructor
      *
      * @param AppTable $appTable
+     * @param AppResourceTable $appResourceTable
      * @param Translator $translator
      * @param Renderer $renderer
      */
-    public function __construct(AppTable $appTable, Translator $translator, Renderer $renderer)
+    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, Translator $translator, Renderer $renderer)
     {
         $this->appTable = $appTable;
+        $this->appResourceTable = $appResourceTable;
         $this->translator = $translator;
         $this->renderer = $renderer;
     }
