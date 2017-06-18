@@ -161,6 +161,9 @@ class SyncController extends AbstractActionController
      */
     public function exportAction()
     {
+        $appId = (int) $this->params()->fromRoute('appId', 0);
+        $app = $this->getApp($appId);
+
         $request = $this->getRequest();
 
         if (!$request->isXmlHttpRequest()) {
@@ -185,6 +188,9 @@ class SyncController extends AbstractActionController
      */
     public function importAction()
     {
+        $appId = (int) $this->params()->fromRoute('appId', 0);
+        $app = $this->getApp($appId);
+
         $request = $this->getRequest();
 
         if (!$request->isXmlHttpRequest()) {
