@@ -8,13 +8,15 @@
 namespace Translations\Controller;
 
 use RuntimeException;
+use Translations\Form\SyncExportForm;
+use Translations\Form\SyncImportForm;
 use Translations\Model\App;
 use Translations\Model\AppTable;
 use Translations\Model\Helper\FileHelper;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
-use Translations\Form\SyncExportForm;
-use Translations\Form\SyncImportForm;
+use Zend\View\Renderer\PhpRenderer as Renderer;
 
 class SyncController extends AbstractActionController
 {
@@ -22,6 +24,11 @@ class SyncController extends AbstractActionController
      * @var AppTable
      */
     private $appTable;
+
+    /**
+     * @var Renderer
+     */
+    private $renderer;
 
     /**
      * @var string
@@ -101,10 +108,12 @@ class SyncController extends AbstractActionController
      * Constructor
      *
      * @param AppTable $appTable
+     * @param Renderer $renderer
      */
-    public function __construct(AppTable $appTable)
+    public function __construct(AppTable $appTable, Renderer $renderer)
     {
         $this->appTable = $appTable;
+        $this->renderer = $renderer;
     }
 
     /**
@@ -119,6 +128,18 @@ class SyncController extends AbstractActionController
         if (!$request->isXmlHttpRequest()) {
             return $this->returnAjaxError();
         }
+
+        $viewModel = new ViewModel([
+            'type'     => 'warning',
+            'message'  => 'Not implemented',
+            'canClose' => true,
+        ]);
+        $viewModel->setTemplate('partial/alert.phtml')
+        ->setTerminal(true);
+
+        return new JsonModel([
+            $this->renderer->render($viewModel),
+        ]);
     }
 
     /**
@@ -133,6 +154,18 @@ class SyncController extends AbstractActionController
         if (!$request->isXmlHttpRequest()) {
             return $this->returnAjaxError();
         }
+
+        $viewModel = new ViewModel([
+            'type'     => 'warning',
+            'message'  => 'Not implemented',
+            'canClose' => true,
+        ]);
+        $viewModel->setTemplate('partial/alert.phtml')
+            ->setTerminal(true);
+
+        return new JsonModel([
+            $this->renderer->render($viewModel),
+        ]);
     }
 
     /**

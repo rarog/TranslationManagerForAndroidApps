@@ -19,7 +19,8 @@ class SyncControllerFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         return new \Translations\Controller\SyncController(
-            $container->get(\Translations\Model\AppTable::class)
+            $container->get(\Translations\Model\AppTable::class),
+            $container->get(\Zend\View\Renderer\PhpRenderer::class)
         );
     }
 }
