@@ -14,6 +14,7 @@ use Translations\Model\App;
 use Translations\Model\AppTable;
 use Translations\Model\Helper\FileHelper;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer as Renderer;
