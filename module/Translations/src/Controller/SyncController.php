@@ -26,6 +26,11 @@ class SyncController extends AbstractActionController
     private $appTable;
 
     /**
+     * @var Translator
+     */
+    private $translator;
+
+    /**
      * @var Renderer
      */
     private $renderer;
@@ -139,11 +144,13 @@ class SyncController extends AbstractActionController
      * Constructor
      *
      * @param AppTable $appTable
+     * @param Translator $translator
      * @param Renderer $renderer
      */
-    public function __construct(AppTable $appTable, Renderer $renderer)
+    public function __construct(AppTable $appTable, Translator $translator, Renderer $renderer)
     {
         $this->appTable = $appTable;
+        $this->translator = $translator;
         $this->renderer = $renderer;
     }
 
@@ -163,7 +170,7 @@ class SyncController extends AbstractActionController
         $form = new SyncExportForm();
         $form->setData($request->getPost());
         if (!$form->isValid()) {
-            return $this->getJsonAlert('danger', 'Invalid request');
+            return $this->getJsonAlert('danger', $this->translate('Invalid request'));
         }
 
         $confirmDeletion = (bool) $form->get('confirm_deletion')->getValue();
@@ -187,7 +194,7 @@ class SyncController extends AbstractActionController
         $form = new SyncImportForm();
         $form->setData($request->getPost());
         if (!$form->isValid()) {
-            return $this->getJsonAlert('danger', 'Invalid request');
+            return $this->getJsonAlert('danger', $this->translate('Invalid request'));
         }
 
         $confirmDeletion = (bool) $form->get('confirm_deletion')->getValue();
