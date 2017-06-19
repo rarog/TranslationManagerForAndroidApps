@@ -16,6 +16,8 @@ use Translations\Model\AppResourceFile;
 use Translations\Model\AppResourceFileTable;
 use Translations\Model\AppResourceTable;
 use Translations\Model\AppTable;
+use Translations\Model\Helper\AppHelperInterface;
+use Translations\Model\Helper\AppHelperTrait;
 use Translations\Model\Helper\FileHelper;
 use Zend\Db\Adapter\Adapter as DbAdapter;
 use Zend\Db\Adapter\AdapterAwareInterface;
@@ -25,9 +27,10 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\ViewModel;
 
-class AppResourceFileController extends AbstractActionController implements AdapterAwareInterface
+class AppResourceFileController extends AbstractActionController implements AdapterAwareInterface, AppHelperInterface
 {
     use AdapterAwareTrait;
+    use AppHelperTrait;
 
     /**
      * @var AppResourceFileTable
@@ -96,36 +99,6 @@ class AppResourceFileController extends AbstractActionController implements Adap
     }
 
     /**
-     * Helper for getting absolute path to app resource default values directory
-     *
-     * @param App $app
-     * @throws RuntimeException
-     * @return string
-     */
-    private function getAbsoluteAppResValuesPath(App $app)
-    {
-        if (($path = realpath($this->configHelp('tmfaa')->app_dir)) === false) {
-            throw new RuntimeException(sprintf(
-                'Configured path app directory "%s" does not exist',
-                $this->configHelp('tmfaa')->app_dir));
-        }
-        return FileHelper::concatenatePath($path, $this->getRelativeAppResValuesPath($app));
-    }
-
-    /**
-     * Helper for getting relative path to app resource default values directory
-     *
-     * @param App $app
-     * @return string
-     */
-    private function getRelativeAppResValuesPath(App $app)
-    {
-        $path = FileHelper::concatenatePath((string) $app->Id, $app->pathToResFolder);
-        $path = FileHelper::concatenatePath($path, 'res');
-        return FileHelper::concatenatePath($path, 'values');
-    }
-
-    /**
      * Constructor
      *
      * @param AppResourceFileTable $appResourceFileTable
@@ -153,6 +126,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
     {
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
+        $this->setAppDirectory($this->configHelp('tmfaa')->app_dir);
 
         $path = $this->getAbsoluteAppResValuesPath($app);
         $resourceFiles = [];

@@ -13,6 +13,8 @@ use Translations\Form\SyncImportForm;
 use Translations\Model\App;
 use Translations\Model\AppResourceTable;
 use Translations\Model\AppTable;
+use Translations\Model\Helper\AppHelperInterface;
+use Translations\Model\Helper\AppHelperTrait;
 use Translations\Model\Helper\FileHelper;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
@@ -20,8 +22,10 @@ use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer as Renderer;
 
-class SyncController extends AbstractActionController
+class SyncController extends AbstractActionController implements AppHelperInterface
 {
+    use AppHelperTrait;
+
     /**
      * @var AppTable
      */
@@ -46,23 +50,6 @@ class SyncController extends AbstractActionController
      * @var string
      */
     private $appPath;
-
-    /**
-     * Helper for getting absolute path to app resource default values directory
-     *
-     * @param App $app
-     * @throws RuntimeException
-     * @return string
-     */
-    private function getAbsoluteAppResValuesPath(App $app)
-    {
-        if (($path = realpath($this->configHelp('tmfaa')->app_dir)) === false) {
-            throw new RuntimeException(sprintf(
-                'Configured path app directory "%s" does not exist',
-                $this->configHelp('tmfaa')->app_dir));
-        }
-        return FileHelper::concatenatePath($path, $this->getRelativeAppResValuesPath($app));
-    }
 
     /**
      * Creates error page
@@ -175,19 +162,6 @@ class SyncController extends AbstractActionController
     }
 
     /**
-     * Helper for getting relative path to app resource default values directory
-     *
-     * @param App $app
-     * @return string
-     */
-    private function getRelativeAppResValuesPath(App $app)
-    {
-        $path = FileHelper::concatenatePath((string) $app->Id, $app->pathToResFolder);
-        $path = FileHelper::concatenatePath($path, 'res');
-        return FileHelper::concatenatePath($path, 'values');
-    }
-
-    /**
      * Constructor
      *
      * @param AppTable $appTable
@@ -239,6 +213,7 @@ class SyncController extends AbstractActionController
     {
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
+        $this->setAppDirectory($this->configHelp('tmfaa')->app_dir);
 
         $request = $this->getRequest();
 
@@ -256,7 +231,7 @@ class SyncController extends AbstractActionController
 
         $path = $this->getAbsoluteAppResValuesPath($app);
 
-        return $this->getJsonAlert('warning', 'Not implemented');
+        return $this->getJsonAlert('warning', 'Not implemented' . ' ' . $path);
     }
 
     /**
