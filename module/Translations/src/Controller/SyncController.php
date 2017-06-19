@@ -48,6 +48,23 @@ class SyncController extends AbstractActionController
     private $appPath;
 
     /**
+     * Helper for getting absolute path to app resource default values directory
+     *
+     * @param App $app
+     * @throws RuntimeException
+     * @return string
+     */
+    private function getAbsoluteAppResValuesPath(App $app)
+    {
+        if (($path = realpath($this->configHelp('tmfaa')->app_dir)) === false) {
+            throw new RuntimeException(sprintf(
+                'Configured path app directory "%s" does not exist',
+                $this->configHelp('tmfaa')->app_dir));
+        }
+        return FileHelper::concatenatePath($path, $this->getRelativeAppResValuesPath($app));
+    }
+
+    /**
      * Creates error page
      *
      * @return \Zend\View\Model\ViewModel
@@ -158,6 +175,19 @@ class SyncController extends AbstractActionController
     }
 
     /**
+     * Helper for getting relative path to app resource default values directory
+     *
+     * @param App $app
+     * @return string
+     */
+    private function getRelativeAppResValuesPath(App $app)
+    {
+        $path = FileHelper::concatenatePath((string) $app->Id, $app->pathToResFolder);
+        $path = FileHelper::concatenatePath($path, 'res');
+        return FileHelper::concatenatePath($path, 'values');
+    }
+
+    /**
      * Constructor
      *
      * @param AppTable $appTable
@@ -223,6 +253,8 @@ class SyncController extends AbstractActionController
         }
 
         $confirmDeletion = (bool) $form->get('confirm_deletion')->getValue();
+
+        $path = $this->getAbsoluteAppResValuesPath($app);
 
         return $this->getJsonAlert('warning', 'Not implemented');
     }
