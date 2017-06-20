@@ -47,8 +47,8 @@ class AppTable
         return $this->tableGateway->select(
             function (Select $select) use ($where) {
                 $select->columns($this->columns)
-                    ->join('app_resource', 'app_resource.app_id = app.id', ['resource_count' => new Expression('count(app_resource.app_id)')], $select::JOIN_LEFT)
-                    ->join('app_resource_file', 'app_resource_file.app_id = app.id', ['resource_file_count' => new Expression('count(app_resource_file.app_id)')], $select::JOIN_LEFT)
+                    ->join('app_resource', 'app_resource.app_id = app.id', ['resource_count' => new Expression('count(distinct app_resource.id)')], $select::JOIN_LEFT)
+                    ->join('app_resource_file', 'app_resource_file.app_id = app.id', ['resource_file_count' => new Expression('count(distinct app_resource_file.id)')], $select::JOIN_LEFT)
                     ->group($this->columns);
 
                 if ($where) {
