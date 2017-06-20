@@ -199,6 +199,10 @@ class SyncController extends AbstractActionController implements AppHelperInterf
 
         $confirmDeletion = (bool) $form->get('confirm_deletion')->getValue();
 
+        $path = $this->getAbsoluteAppResValuesPath($app);
+
+        $resources = $this->appResourceTable->fetchAll(['app_id' => $app->Id]);
+
         return $this->getJsonAlert('warning', 'Not implemented');
     }
 
@@ -229,7 +233,9 @@ class SyncController extends AbstractActionController implements AppHelperInterf
 
         $path = $this->getAbsoluteAppResValuesPath($app);
 
-        return $this->getJsonAlert('warning', 'Not implemented' . ' ' . $path);
+        $resources = $this->appResourceTable->fetchAll(['app_id' => $app->Id]);
+
+        return $this->getJsonAlert('warning', 'Not implemented');
     }
 
     /**
