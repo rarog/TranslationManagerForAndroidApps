@@ -21,6 +21,14 @@ interface AppHelperInterface
     public function getAbsoluteAppResValuesPath(App $app);
 
     /**
+    * Check if app has default values
+    *
+    * @param App $app
+    * @return boolean
+    */
+    public function getHasAppDefaultValues(App $app);
+
+    /**
      * Helper for getting relative path to app resource default values directory
      *
      * @param App $app

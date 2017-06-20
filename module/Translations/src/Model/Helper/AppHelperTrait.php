@@ -34,6 +34,22 @@ trait AppHelperTrait
     }
 
     /**
+    * Check if app has default values
+    *
+    * @param App $app
+    * @return boolean
+    */
+    public function getHasAppDefaultValues(App $app)
+    {
+        try {
+            $this->appResourceTable->getAppResourceByAppIdAndName($app->Id, 'values');
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
      * Helper for getting relative path to app resource default values directory
      *
      * @param App $app

@@ -100,9 +100,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
         }
 
         // Prevent further action, if default values don't exist.
-        try {
-            $this->appResourceTable->getAppResourceByAppIdAndName($app->Id, 'values');
-        } catch (\Exception $e) {
+        if (!$this->getHasAppDefaultValues($app)) {
             return $this->redirect()->toRoute('appresource', [
                 'appId'  => $app->Id,
                 'action' => 'index',

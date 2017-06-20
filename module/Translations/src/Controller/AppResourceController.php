@@ -14,6 +14,8 @@ use Translations\Model\App;
 use Translations\Model\AppResource;
 use Translations\Model\AppResourceTable;
 use Translations\Model\AppTable;
+use Translations\Model\Helper\AppHelperInterface;
+use Translations\Model\Helper\AppHelperTrait;
 use Translations\Model\Helper\FileHelper;
 use Zend\Db\Adapter\Adapter as DbAdapter;
 use Zend\Db\Adapter\AdapterAwareInterface;
@@ -23,9 +25,10 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\ViewModel;
 
-class AppResourceController extends AbstractActionController implements AdapterAwareInterface
+class AppResourceController extends AbstractActionController implements AdapterAwareInterface, AppHelperInterface
 {
     use AdapterAwareTrait;
+    use AppHelperTrait;
 
     /**
      * @var AppResourceTable
@@ -108,23 +111,6 @@ class AppResourceController extends AbstractActionController implements AdapterA
     }
 
     /**
-     * Check if app has default values
-     *
-     * @param int $appId
-     * @return boolean
-     */
-    private function getHasAppDefaultValues($appId)
-    {
-        $appId = (int) $appId;
-        try {
-            $this->appResourceTable->getAppResourceByAppIdAndName($appId, 'values');
-            return true;
-        } catch (\Exception $e) {
-            return false;
-        }
-    }
-
-    /**
      * Returns array of locale names
      *
      * @param string $inLocale
@@ -165,7 +151,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
 
-        $hasDefaultValues = $this->getHasAppDefaultValues($app->Id);
+        $hasDefaultValues = $this->getHasAppDefaultValues($app);
         $path = $this->getAbsoluteAppResPath($app);
         $valuesDirs = [];
         $messages = [];
@@ -278,7 +264,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
         $app = $this->getApp($appId);
 
         // Prevent deleting of resources, if default resource doesn't exist.
-        if (!$this->getHasAppDefaultValues($app->Id)) {
+        if (!$this->getHasAppDefaultValues($app)) {
             return $this->redirect()->toRoute('appresource', [
                 'appId'  => $app->Id,
                 'action' => 'index',
@@ -389,7 +375,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
         $app = $this->getApp($appId);
 
         // Prevent editing of resources, if default resource doesn't exist.
-        if (!$this->getHasAppDefaultValues($app->Id)) {
+        if (!$this->getHasAppDefaultValues($app)) {
             return $this->redirect()->toRoute('appresource', [
                 'appId'  => $app->Id,
                 'action' => 'index',
@@ -472,7 +458,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
         return [
             'app'              => $app,
             'appResources'     => $appResources,
-            'hasDefaultValues' => $this->getHasAppDefaultValues($app->Id),
+            'hasDefaultValues' => $this->getHasAppDefaultValues($app),
             'localeNames'      => $this->getLocaleNameArray($this->translator->getLocale()),
         ];
     }
