@@ -210,7 +210,17 @@ class SyncController extends AbstractActionController implements AppHelperInterf
         $path = $this->getAbsoluteAppResValuesPath($app);
 
         $resources = $this->appResourceTable->fetchAll(['app_id' => $app->Id]);
+        $resources->buffer();
         $resourceFiles = $this->appResourceFileTable->fetchAll(['app_id' => $app->Id]);
+        $resourceFiles->buffer();
+
+        foreach ($resources as $resource) {
+            $pathRes = FileHelper::concatenatePath($path, $resource->Name);
+
+            foreach ($resourceFiles as $resourceFile) {
+                $pathResFile = FileHelper::concatenatePath($pathRes, $resourceFile->Name);
+            }
+        }
 
         return $this->getJsonAlert('warning', 'Not implemented');
     }
@@ -243,9 +253,19 @@ class SyncController extends AbstractActionController implements AppHelperInterf
         $path = $this->getAbsoluteAppResValuesPath($app);
 
         $resources = $this->appResourceTable->fetchAll(['app_id' => $app->Id]);
+        $resources->buffer();
         $resourceFiles = $this->appResourceFileTable->fetchAll(['app_id' => $app->Id]);
+        $resourceFiles->buffer();
 
-        return $this->getJsonAlert('warning', 'Not implemented');
+        foreach ($resources as $resource) {
+            $pathRes = FileHelper::concatenatePath($path, $resource->Name);
+
+            foreach ($resourceFiles as $resourceFile) {
+                $pathResFile = FileHelper::concatenatePath($pathRes, $resourceFile->Name);
+            }
+        }
+
+        return $this->getJsonAlert('warning', 'Not implemented'.$test);
     }
 
     /**
