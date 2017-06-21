@@ -11,6 +11,7 @@ use RuntimeException;
 use Translations\Form\SyncExportForm;
 use Translations\Form\SyncImportForm;
 use Translations\Model\App;
+use Translations\Model\AppResourceFileTable;
 use Translations\Model\AppResourceTable;
 use Translations\Model\AppTable;
 use Translations\Model\Helper\AppHelperInterface;
@@ -35,6 +36,11 @@ class SyncController extends AbstractActionController implements AppHelperInterf
      * @var AppResourceTable
      */
     private $appResourceTable;
+
+    /**
+     * @var AppResourceFileTable
+     */
+    private $appResourceFileTable;
 
     /**
      * @var Translator
@@ -164,13 +170,15 @@ class SyncController extends AbstractActionController implements AppHelperInterf
      *
      * @param AppTable $appTable
      * @param AppResourceTable $appResourceTable
+     * @param AppResourceFileTable $appResourceFileTable
      * @param Translator $translator
      * @param Renderer $renderer
      */
-    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, Translator $translator, Renderer $renderer)
+    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, AppResourceFileTable $appResourceFileTable, Translator $translator, Renderer $renderer)
     {
         $this->appTable = $appTable;
         $this->appResourceTable = $appResourceTable;
+        $this->appResourceFileTable = $appResourceFileTable;
         $this->translator = $translator;
         $this->renderer = $renderer;
     }
@@ -202,6 +210,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
         $path = $this->getAbsoluteAppResValuesPath($app);
 
         $resources = $this->appResourceTable->fetchAll(['app_id' => $app->Id]);
+        $resourceFiles = $this->appResourceFileTable->fetchAll(['app_id' => $app->Id]);
 
         return $this->getJsonAlert('warning', 'Not implemented');
     }
@@ -234,6 +243,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
         $path = $this->getAbsoluteAppResValuesPath($app);
 
         $resources = $this->appResourceTable->fetchAll(['app_id' => $app->Id]);
+        $resourceFiles = $this->appResourceFileTable->fetchAll(['app_id' => $app->Id]);
 
         return $this->getJsonAlert('warning', 'Not implemented');
     }
