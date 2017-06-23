@@ -250,7 +250,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
 
         $confirmDeletion = (bool) $form->get('confirm_deletion')->getValue();
 
-        $path = $this->getAbsoluteAppResValuesPath($app);
+        $path = $this->getAbsoluteAppResPath($app);
 
         $resources = $this->appResourceTable->fetchAll(['app_id' => $app->Id]);
         $resources->buffer();
@@ -262,10 +262,12 @@ class SyncController extends AbstractActionController implements AppHelperInterf
 
             foreach ($resourceFiles as $resourceFile) {
                 $pathResFile = FileHelper::concatenatePath($pathRes, $resourceFile->Name);
+
+                $xml = FileHelper::loadResourceFile($pathResFile);
             }
         }
 
-        return $this->getJsonAlert('warning', 'Not implemented'.$test);
+        return $this->getJsonAlert('warning', 'Not implemented');
     }
 
     /**
