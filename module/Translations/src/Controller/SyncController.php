@@ -22,6 +22,7 @@ use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer as Renderer;
+use Zend\Dom\Document;
 
 class SyncController extends AbstractActionController implements AppHelperInterface
 {
@@ -263,7 +264,11 @@ class SyncController extends AbstractActionController implements AppHelperInterf
             foreach ($resourceFiles as $resourceFile) {
                 $pathResFile = FileHelper::concatenatePath($pathRes, $resourceFile->Name);
 
-                $xml = FileHelper::loadResourceFile($pathResFile);
+                if (!FileHelper::isFileValidResource($pathResFile)) {
+                    continue;
+                }
+
+                $dom = new Document(file_get_contents($pathResFile));
             }
         }
 
