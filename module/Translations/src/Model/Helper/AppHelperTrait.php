@@ -17,6 +17,23 @@ trait AppHelperTrait
     private $appDirectory;
 
     /**
+     * Helper for getting absolute path to app resource directory
+     *
+     * @param App $app
+     * @throws RuntimeException
+     * @return string
+     */
+    public function getAbsoluteAppResPath(App $app)
+    {
+        if (($path = realpath($this->appDirectory)) === false) {
+            throw new RuntimeException(sprintf(
+                'Configured path app directory "%s" does not exist',
+                $this->configHelp('tmfaa')->app_dir));
+        }
+        return FileHelper::concatenatePath($path, $this->getRelativeAppResPath($app));
+    }
+
+    /**
      * Helper for getting absolute path to app resource default values directory
      *
      * @param App $app
@@ -50,6 +67,18 @@ trait AppHelperTrait
     }
 
     /**
+     * Helper for getting relative path to app resource directory
+     *
+     * @param App $app
+     * @return string
+     */
+    public function getRelativeAppResPath(App $app)
+    {
+        $path = FileHelper::concatenatePath((string) $app->Id, $app->pathToResFolder);
+        return FileHelper::concatenatePath($path, 'res');
+    }
+
+    /**
      * Helper for getting relative path to app resource default values directory
      *
      * @param App $app
@@ -57,9 +86,7 @@ trait AppHelperTrait
      */
     public function getRelativeAppResValuesPath(App $app)
     {
-        $path = FileHelper::concatenatePath((string) $app->Id, $app->pathToResFolder);
-        $path = FileHelper::concatenatePath($path, 'res');
-        return FileHelper::concatenatePath($path, 'values');
+        return FileHelper::concatenatePath($this->getRelativeAppResPath($app), 'values');
     }
 
     /**

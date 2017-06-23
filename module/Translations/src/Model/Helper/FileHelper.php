@@ -38,13 +38,27 @@ class FileHelper
     {
         $filePath = (string) $filePath;
 
+        return self::loadResourceFile($filePath) !== false;
+    }
+
+
+    /**
+     * Load XML resource file
+     *
+     * @param string $filePath
+     * @return SimpleXMLElement|boolean
+     */
+    public static function loadResourceFile($filePath)
+    {
+        $filePath = (string) $filePath;
+
         if (file_exists($filePath) && is_file($filePath)) {
             try {
                 libxml_use_internal_errors(true);
                 $xml = simplexml_load_file($filePath);
 
                 if (($xml !== false) && ($xml->getName() === 'resources')) {
-                    return true;
+                    return $xml;
                 }
             } finally {
                 libxml_use_internal_errors(false);
@@ -53,6 +67,7 @@ class FileHelper
 
         return false;
     }
+
 
     /**
      * Normalize a path for insertion in the stack
