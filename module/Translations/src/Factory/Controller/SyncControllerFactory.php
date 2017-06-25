@@ -22,6 +22,7 @@ class SyncControllerFactory implements FactoryInterface
             $container->get(\Translations\Model\AppTable::class),
             $container->get(\Translations\Model\AppResourceTable::class),
             $container->get(\Translations\Model\AppResourceFileTable::class),
+            $container->get(\Translations\Model\ResourceTypeTable::class),
             $container->get(\Zend\Mvc\I18n\Translator::class),
             $container->get(\Zend\View\Renderer\PhpRenderer::class)
         );

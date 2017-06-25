@@ -23,6 +23,7 @@ use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer as Renderer;
 use Zend\Dom\Document;
+use Translations\Model\ResourceTypeTable;
 
 class SyncController extends AbstractActionController implements AppHelperInterface
 {
@@ -42,6 +43,11 @@ class SyncController extends AbstractActionController implements AppHelperInterf
      * @var AppResourceFileTable
      */
     private $appResourceFileTable;
+
+    /**
+     * @var ResourceTypeTable
+     */
+    private $resourceTypeTable;
 
     /**
      * @var Translator
@@ -172,14 +178,16 @@ class SyncController extends AbstractActionController implements AppHelperInterf
      * @param AppTable $appTable
      * @param AppResourceTable $appResourceTable
      * @param AppResourceFileTable $appResourceFileTable
+     * @param ResourceTypeTable $resourceTypeTable
      * @param Translator $translator
      * @param Renderer $renderer
      */
-    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, AppResourceFileTable $appResourceFileTable, Translator $translator, Renderer $renderer)
+    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, AppResourceFileTable $appResourceFileTable, ResourceTypeTable $resourceTypeTable, Translator $translator, Renderer $renderer)
     {
         $this->appTable = $appTable;
         $this->appResourceTable = $appResourceTable;
         $this->appResourceFileTable = $appResourceFileTable;
+        $this->resourceTypeTable = $resourceTypeTable;
         $this->translator = $translator;
         $this->renderer = $renderer;
     }
@@ -214,6 +222,10 @@ class SyncController extends AbstractActionController implements AppHelperInterf
         $resources->buffer();
         $resourceFiles = $this->appResourceFileTable->fetchAll(['app_id' => $app->Id]);
         $resourceFiles->buffer();
+        $resourceTypes = [];
+        foreach ($this->resourceTypeTable->fetchAll() as $resourceType) {
+            $resourceTypes[$resourceType->Id] = $resourceType->NodeName;
+        }
 
         foreach ($resources as $resource) {
             $pathRes = FileHelper::concatenatePath($path, $resource->Name);
@@ -257,6 +269,10 @@ class SyncController extends AbstractActionController implements AppHelperInterf
         $resources->buffer();
         $resourceFiles = $this->appResourceFileTable->fetchAll(['app_id' => $app->Id]);
         $resourceFiles->buffer();
+        $resourceTypes = [];
+        foreach ($this->resourceTypeTable->fetchAll() as $resourceType) {
+            $resourceTypes[$resourceType->Id] = $resourceType->NodeName;
+        }
 
         foreach ($resources as $resource) {
             $pathRes = FileHelper::concatenatePath($path, $resource->Name);
