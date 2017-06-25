@@ -17,13 +17,14 @@ use Translations\Model\AppTable;
 use Translations\Model\Helper\AppHelperInterface;
 use Translations\Model\Helper\AppHelperTrait;
 use Translations\Model\Helper\FileHelper;
+use Translations\Model\ResourceTypeTable;
+use Zend\Dom\Document;
+use Zend\Dom\Document\Query;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer as Renderer;
-use Zend\Dom\Document;
-use Translations\Model\ResourceTypeTable;
 
 class SyncController extends AbstractActionController implements AppHelperInterface
 {
@@ -274,6 +275,11 @@ class SyncController extends AbstractActionController implements AppHelperInterf
             $resourceTypes[$resourceType->Id] = $resourceType->NodeName;
         }
 
+        $querySelectors = [];
+        foreach ($resourceTypes as $resourceType) {
+            $querySelectors[] = '/resources/' . $resourceType;
+        };
+
         foreach ($resources as $resource) {
             $pathRes = FileHelper::concatenatePath($path, $resource->Name);
 
@@ -285,6 +291,8 @@ class SyncController extends AbstractActionController implements AppHelperInterf
                 }
 
                 $dom = new Document(file_get_contents($pathResFile));
+                $query = new Query();
+                $nodes = $query->execute(implode('|', $querySelectors), $dom);
             }
         }
 
