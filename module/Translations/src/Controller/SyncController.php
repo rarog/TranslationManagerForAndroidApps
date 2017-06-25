@@ -17,6 +17,7 @@ use Translations\Model\AppTable;
 use Translations\Model\Helper\AppHelperInterface;
 use Translations\Model\Helper\AppHelperTrait;
 use Translations\Model\Helper\FileHelper;
+use Translations\Model\ResourceFileEntryTable;
 use Translations\Model\ResourceTypeTable;
 use Zend\Dom\Document;
 use Zend\Dom\Document\Query;
@@ -49,6 +50,11 @@ class SyncController extends AbstractActionController implements AppHelperInterf
      * @var ResourceTypeTable
      */
     private $resourceTypeTable;
+
+    /**
+     * @var ResourceFileEntryTable
+     */
+    private $resourceFileEntryTable;
 
     /**
      * @var Translator
@@ -183,12 +189,13 @@ class SyncController extends AbstractActionController implements AppHelperInterf
      * @param Translator $translator
      * @param Renderer $renderer
      */
-    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, AppResourceFileTable $appResourceFileTable, ResourceTypeTable $resourceTypeTable, Translator $translator, Renderer $renderer)
+    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, AppResourceFileTable $appResourceFileTable, ResourceTypeTable $resourceTypeTable, ResourceFileEntryTable $resourceFileEntryTable,Translator $translator, Renderer $renderer)
     {
         $this->appTable = $appTable;
         $this->appResourceTable = $appResourceTable;
         $this->appResourceFileTable = $appResourceFileTable;
         $this->resourceTypeTable = $resourceTypeTable;
+        $this->resourceFileEntryTable = $resourceFileEntryTable;
         $this->translator = $translator;
         $this->renderer = $renderer;
     }
@@ -288,6 +295,11 @@ class SyncController extends AbstractActionController implements AppHelperInterf
 
                 if (!FileHelper::isFileValidResource($pathResFile)) {
                     continue;
+                }
+
+                $resourceFileEntries = [];
+                foreach ($this->resourceFileEntryTable->fetchAll(['app_resource_file_id' => $resourceFile->Id, 'deleted' => 0]) as $entry) {
+                    $resourceFileEntries[$entry->Name] = $entry;
                 }
 
                 $dom = new Document(file_get_contents($pathResFile));
