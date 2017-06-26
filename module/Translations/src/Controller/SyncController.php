@@ -287,6 +287,8 @@ class SyncController extends AbstractActionController implements AppHelperInterf
             $querySelectors[] = '/resources/' . $resourceType;
         };
 
+        $resourceFileEntries = [];
+
         foreach ($resources as $resource) {
             $pathRes = FileHelper::concatenatePath($path, $resource->Name);
 
@@ -297,9 +299,11 @@ class SyncController extends AbstractActionController implements AppHelperInterf
                     continue;
                 }
 
-                $resourceFileEntries = [];
-                foreach ($this->resourceFileEntryTable->fetchAll(['app_resource_file_id' => $resourceFile->Id, 'deleted' => 0]) as $entry) {
-                    $resourceFileEntries[$entry->Name] = $entry;
+                if (!array_key_exists($resourceFile->Name, $resourceFileEntries)) {
+                    $resourceFileEntries[$resourceFile->Name] = [];
+                    foreach ($this->resourceFileEntryTable->fetchAll(['app_resource_file_id' => $resourceFile->Id, 'deleted' => 0]) as $entry) {
+                        $resourceFileEntries[$resourceFile->Name][$entry->Name] = $entry;
+                    }
                 }
 
                 $dom = new Document(file_get_contents($pathResFile));
