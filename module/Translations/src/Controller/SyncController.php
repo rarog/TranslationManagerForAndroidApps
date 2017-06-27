@@ -286,6 +286,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
         foreach ($resourceTypes as $resourceType) {
             $querySelectors[] = '/resources/' . $resourceType;
         };
+        $querySelector = implode('|', $querySelectors);
 
         $resourceFileEntries = [];
 
@@ -308,7 +309,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
 
                 $dom = new Document(file_get_contents($pathResFile));
                 $query = new Query();
-                $nodes = $query->execute(implode('|', $querySelectors), $dom);
+                $nodes = $query->execute($querySelector, $dom);
             }
         }
 
