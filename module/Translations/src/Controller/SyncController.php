@@ -289,6 +289,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
         $querySelector = implode('|', $querySelectors);
 
         $resourceFileEntries = [];
+        $entriesProcessed = 0;
 
         foreach ($resources as $resource) {
             $pathRes = FileHelper::concatenatePath($path, $resource->Name);
@@ -310,10 +311,30 @@ class SyncController extends AbstractActionController implements AppHelperInterf
                 $dom = new Document(file_get_contents($pathResFile));
                 $query = new Query();
                 $nodes = $query->execute($querySelector, $dom);
+
+                foreach ($nodes as $node) {
+                    /**
+                     * @var \DOMNamedNodeMap $attributes
+                     */
+                    $attributes = $node->attributes;
+                    if (!isset($attributes)) {
+                        continue;
+                    }
+
+                    $name = $attributes->getNamedItem('name');
+                    if (!isset($name)) {
+                        continue;
+                    }
+
+                    $entriesProcessed++;
+                }
             }
         }
 
-        return $this->getJsonAlert('warning', 'Not implemented');
+        $message = $this->translator->translate('Import successful') . '<br>' .
+            sprintf($this->translator->translate('%d entries processed'), $entriesProcessed);
+
+        return $this->getJsonAlert('success', $message);
     }
 
     /**
