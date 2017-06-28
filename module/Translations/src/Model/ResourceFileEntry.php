@@ -61,6 +61,10 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
         if ($data) {
             $this->exchangeArray($data);
         }
+
+        if (!is_set($this->deleted)) {
+            $this->setDeleted(false);
+        }
     }
 
     /**

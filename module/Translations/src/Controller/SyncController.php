@@ -26,6 +26,7 @@ use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer as Renderer;
+use Translations\Model\ResourceFileEntry;
 
 class SyncController extends AbstractActionController implements AppHelperInterface
 {
@@ -321,9 +322,33 @@ class SyncController extends AbstractActionController implements AppHelperInterf
                         continue;
                     }
 
-                    $name = $attributes->getNamedItem('name');
+                    $name = $attributes->getNamedItem('name')->value;
                     if (!isset($name)) {
                         continue;
+                    }
+
+                    if (!array_key_exists($name, $resourceFileEntries[$resourceFile->Name])) {
+                        $resourceFileEntry = new ResourceFileEntry();
+                        $resourceFileEntry->AppResourceFileId = $resourceFile->Id;
+                        $resourceFileEntry->ResourceTypeId = array_search($node->tagName, $resourceTypes);
+                        $resourceFileEntry->Name = $name;
+                        $resourceFileEntries[$resourceFile->Name][$name] = $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
+                    }
+
+                    /**
+                     * @var ResourceFileEntry $resourceFileEntry
+                     */
+                    $resourceFileEntry = $resourceFileEntries[$resourceFile->Name][$name];
+
+                    if ($resourceFileEntry->ResourceTypeId !== array_search($node->tagName, $resourceTypes)) {
+                        $resourceFileEntry->Deleted = true;
+                        $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
+
+                        $resourceFileEntry = new ResourceFileEntry();
+                        $resourceFileEntry->AppResourceFileId = $resourceFile->Id;
+                        $resourceFileEntry->ResourceTypeId = array_search($node->tagName, $resourceTypes);
+                        $resourceFileEntry->Name = $name;
+                        $resourceFileEntries[$resourceFile->Name][$name] = $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
                     }
 
                     $entriesProcessed++;
