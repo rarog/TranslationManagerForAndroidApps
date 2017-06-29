@@ -37,7 +37,7 @@ class TeamMemberTable
     public function fetchAll($where = null)
     {
         return $this->tableGateway->select(
-            function (Select $select) use ($where){
+            function (Select $select) use ($where) {
                 $select->join('user', 'user.user_id = team_member.user_id', ['username', 'email', 'display_name'], $select::JOIN_LEFT)
                     ->join('team', 'team.id = team_member.team_id', ['team_name' => 'name'], $select::JOIN_LEFT);
                 if ($where) {

@@ -38,7 +38,7 @@ class TeamTable
     public function fetchAll($where = null)
     {
         return $this->tableGateway->select(
-            function (Select $select) use ($where){
+            function (Select $select) use ($where) {
                 if ($where) {
                     $select->where($where);
                 }
@@ -101,15 +101,16 @@ class TeamTable
         $userId = (int) $userId;
         $teamId = (int) $teamId;
         $rowset = $this->tableGateway->select(
-                function (Select $select) use ($userId, $teamId) {
-                    $onTeamMember = new Expression('? = ? AND ? = ?', [
-                        ['team_member.team_id' => Expression::TYPE_IDENTIFIER],
-                        ['team.id' => Expression::TYPE_IDENTIFIER],
-                        ['team_member.user_id' => Expression::TYPE_IDENTIFIER],
-                        [$userId  => Expression::TYPE_VALUE]]);
-                    $select->join('team_member', $onTeamMember, [], Select::JOIN_INNER)
-                        ->where(['id' => $teamId]);
-                });
+            function (Select $select) use ($userId, $teamId) {
+                $onTeamMember = new Expression('? = ? AND ? = ?', [
+                    ['team_member.team_id' => Expression::TYPE_IDENTIFIER],
+                    ['team.id' => Expression::TYPE_IDENTIFIER],
+                    ['team_member.user_id' => Expression::TYPE_IDENTIFIER],
+                    [$userId  => Expression::TYPE_VALUE]]);
+                $select->join('team_member', $onTeamMember, [], Select::JOIN_INNER)
+                    ->where(['id' => $teamId]);
+            }
+        );
         $row = $rowset->current();
 
         return !is_null($row);
