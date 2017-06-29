@@ -291,6 +291,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
 
         $resourceFileEntries = [];
         $entriesProcessed = 0;
+        $entriesSkippedNotInDefault = 0;
 
         foreach ($resources as $resource) {
             $pathRes = FileHelper::concatenatePath($path, $resource->Name);
@@ -328,11 +329,16 @@ class SyncController extends AbstractActionController implements AppHelperInterf
                     }
 
                     if (!array_key_exists($name, $resourceFileEntries[$resourceFile->Name])) {
-                        $resourceFileEntry = new ResourceFileEntry();
-                        $resourceFileEntry->AppResourceFileId = $resourceFile->Id;
-                        $resourceFileEntry->ResourceTypeId = array_search($node->tagName, $resourceTypes);
-                        $resourceFileEntry->Name = $name;
-                        $resourceFileEntries[$resourceFile->Name][$name] = $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
+                        if ($resource->Name === 'values') {
+                            $resourceFileEntry = new ResourceFileEntry();
+                            $resourceFileEntry->AppResourceFileId = $resourceFile->Id;
+                            $resourceFileEntry->ResourceTypeId = array_search($node->tagName, $resourceTypes);
+                            $resourceFileEntry->Name = $name;
+                            $resourceFileEntries[$resourceFile->Name][$name] = $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
+                        } else {
+                            $entriesSkippedNotInDefault++;
+                            continue;
+                        }
                     }
 
                     /**
@@ -356,10 +362,16 @@ class SyncController extends AbstractActionController implements AppHelperInterf
             }
         }
 
+        $type = 'success';
         $message = $this->translator->translate('Import successful') . '<br>' .
             sprintf($this->translator->translate('%d entries processed'), $entriesProcessed);
+        if ($entriesSkippedNotInDefault > 0) {
+            $message .= '<br>' .
+                sprintf($this->translator->translate('%d entries skipped (not in default)'), $entriesSkippedNotInDefault);
+            $type = 'warning';
+        }
 
-        return $this->getJsonAlert('success', $message);
+        return $this->getJsonAlert($type, $message);
     }
 
     /**
