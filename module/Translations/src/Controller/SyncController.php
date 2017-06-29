@@ -290,7 +290,9 @@ class SyncController extends AbstractActionController implements AppHelperInterf
         $querySelector = implode('|', $querySelectors);
 
         $resourceFileEntries = [];
+        $resourceFileEntryKeys = [];
         $entriesProcessed = 0;
+        $entriesSkippedExistOnlyInDb = 0;
         $entriesSkippedNotInDefault = 0;
 
         foreach ($resources as $resource) {
@@ -305,8 +307,10 @@ class SyncController extends AbstractActionController implements AppHelperInterf
 
                 if (!array_key_exists($resourceFile->Name, $resourceFileEntries)) {
                     $resourceFileEntries[$resourceFile->Name] = [];
+                    $resourceFileEntryKeys[$resourceFile->Name] = [];
                     foreach ($this->resourceFileEntryTable->fetchAll(['app_resource_file_id' => $resourceFile->Id, 'deleted' => 0]) as $entry) {
                         $resourceFileEntries[$resourceFile->Name][$entry->Name] = $entry;
+                        $resourceFileEntryKeys[$resourceFile->Name][$entry->Name] = $entry;
                     }
                 }
 
@@ -339,6 +343,11 @@ class SyncController extends AbstractActionController implements AppHelperInterf
                             $entriesSkippedNotInDefault++;
                             continue;
                         }
+                    }
+
+                    if (($resource->Name === 'values') &&
+                        array_key_exists($name, $resourceFileEntryKeys[$resourceFile->Name])) {
+                        unset($resourceFileEntryKeys[$resourceFile->Name][$name]);
                     }
 
                     /**
