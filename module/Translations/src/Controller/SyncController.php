@@ -368,15 +368,36 @@ class SyncController extends AbstractActionController implements AppHelperInterf
 
                     $entriesProcessed++;
                 }
+
+                if ($resource->Name === 'values') {
+                    $entriesSkippedExistOnlyInDb += count($resourceFileEntryKeys[$resourceFile->Name]);
+
+                    if ($confirmDeletion) {
+                        foreach ($resourceFileEntryKeys[$resourceFile->Name] as $name => $resourceFileEntry) {
+                            $resourceFileEntry->Deleted = true;
+                            $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
+
+                            if (array_key_exists($name, $resourceFileEntries[$resourceFile->Name])) {
+                                unset($resourceFileEntries[$resourceFile->Name][$name]);
+                            }
+                        }
+                    }
+                }
             }
         }
 
         $type = 'success';
-        $message = $this->translator->translate('Import successful') . '<br>' .
-            sprintf($this->translator->translate('%d entries processed'), $entriesProcessed);
+        $message = $this->translator->translate('Import successful') . '<br>' . sprintf($this->translator->translate('%d entries processed'), $entriesProcessed);
+
+        if ($entriesSkippedExistOnlyInDb > 0) {
+            if ($confirmDeletion) {
+                $message .= '<br>' . sprintf($this->translator->translate('%d entries deleted from database'), $entriesSkippedExistOnlyInDb);
+            } else {
+                $message .= '<br>' . sprintf($this->translator->translate('%d entries skipped (exist only in database)'), $entriesSkippedExistOnlyInDb);
+            }
+        }
         if ($entriesSkippedNotInDefault > 0) {
-            $message .= '<br>' .
-                sprintf($this->translator->translate('%d entries skipped (not in default)'), $entriesSkippedNotInDefault);
+            $message .= '<br>' . sprintf($this->translator->translate('%d entries skipped (not in default)'), $entriesSkippedNotInDefault);
             $type = 'warning';
         }
 
