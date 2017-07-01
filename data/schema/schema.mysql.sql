@@ -93,3 +93,12 @@ BEGIN
 END
 $$
 DELIMITER ;
+
+CREATE TABLE `resource_file_entry_string` (
+    `id`                     INT(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `app_resource_id`        INT(11) UNSIGNED NOT NULL,
+    `resource_file_entry_id` INT(11) UNSIGNED NOT NULL,
+    `value`                  VARCHAR(20480) NOT NULL,
+    CONSTRAINT `resource_file_entry_string_fk1` FOREIGN KEY (`app_resource_id`) REFERENCES `app_resource` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `resource_file_entry_string_fk2` FOREIGN KEY (`resource_file_entry_id`) REFERENCES `resource_file_entry` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

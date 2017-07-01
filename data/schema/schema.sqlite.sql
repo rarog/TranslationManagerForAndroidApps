@@ -90,3 +90,12 @@ WHEN (NEW.app_resource_file_id IS NULL)
 BEGIN
     UPDATE resource_file_entry SET deleted = 1 WHERE id = NEW.id;
 END;
+
+CREATE TABLE resource_file_entry_string (
+    id                     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    app_resource_id        INTEGER NOT NULL,
+    resource_file_entry_id INTEGER NOT NULL,
+    value                  VARCHAR(20480) NOT NULL,
+    FOREIGN KEY (app_resource_id) REFERENCES app_resource (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (resource_file_entry_id) REFERENCES resource_file_entry (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
