@@ -18,6 +18,7 @@ use Translations\Model\Helper\AppHelperInterface;
 use Translations\Model\Helper\AppHelperTrait;
 use Translations\Model\Helper\FileHelper;
 use Translations\Model\ResourceFileEntry;
+use Translations\Model\ResourceFileEntryString;
 use Translations\Model\ResourceFileEntryStringTable;
 use Translations\Model\ResourceFileEntryTable;
 use Translations\Model\ResourceTypeTable;
@@ -300,11 +301,17 @@ class SyncController extends AbstractActionController implements AppHelperInterf
         $resourceFileEntries = [];
         $resourceFileEntryKeys = [];
         $entriesProcessed = 0;
+        $entriesUpdated = 0;
         $entriesSkippedExistOnlyInDb = 0;
         $entriesSkippedNotInDefault = 0;
 
         foreach ($resources as $resource) {
             $pathRes = FileHelper::concatenatePath($path, $resource->Name);
+
+            $resourceFileEntryStrings = [];
+            foreach ($this->resourceFileEntryStringTable->fetchAll(['app_resource_id' => $resource->Id]) as $resourceFileEntryString) {
+                $resourceFileEntryStrings[$resourceFileEntryString->ResourceFileEntryId] = $resourceFileEntryString;
+            }
 
             foreach ($resourceFiles as $resourceFile) {
                 $pathResFile = FileHelper::concatenatePath($pathRes, $resourceFile->Name);
@@ -374,6 +381,23 @@ class SyncController extends AbstractActionController implements AppHelperInterf
                         $resourceFileEntries[$resourceFile->Name][$name] = $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
                     }
 
+                    if ($resourceFileEntry->ResourceTypeId === array_search('string', $resourceTypes)) {
+                        if (!array_key_exists($resourceFileEntry->Id, $resourceFileEntryStrings)) {
+                            $resourceFileEntryString = new ResourceFileEntryString();
+                            $resourceFileEntryString->AppResourceId = $resource->Id;
+                            $resourceFileEntryString->ResourceFileEntryId = $resourceFileEntry->Id;
+                            $resourceFileEntryStrings[$resourceFileEntry->Id] = $resourceFileEntryString;
+                        }
+
+                        $resourceFileEntryString = $resourceFileEntryStrings[$resourceFileEntry->Id];
+                        if ($resourceFileEntryString->Value !== $node->textContent) {
+                            $resourceFileEntryString->Value = $node->textContent;
+                            $this->resourceFileEntryStringTable->saveResourceFileEntryString($resourceFileEntryString);
+
+                            $entriesUpdated++;
+                        }
+                    }
+
                     $entriesProcessed++;
                 }
 
@@ -395,7 +419,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
         }
 
         $type = 'success';
-        $message = $this->translator->translate('Import successful') . '<br>' . sprintf($this->translator->translate('%d entries processed'), $entriesProcessed);
+        $message = $this->translator->translate('Import successful') . '<br>' . sprintf($this->translator->translate('%d entries processed, %d updated'), $entriesProcessed, $entriesUpdated);
 
         if ($entriesSkippedExistOnlyInDb > 0) {
             if ($confirmDeletion) {
