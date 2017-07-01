@@ -126,7 +126,7 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
         if (!is_null($appResourceFileId)) {
             $appResourceFileId = (int) $appResourceFileId;
         }
-        $this->appResourceFileId= $appResourceFileId;
+        $this->appResourceFileId = $appResourceFileId;
     }
 
     /**
@@ -143,7 +143,7 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
         if (!is_null($resourceTypeId)) {
             $resourceTypeId = (int) $resourceTypeId;
         }
-        $this->resourceTypeId= $resourceTypeId;
+        $this->resourceTypeId = $resourceTypeId;
     }
 
     /**
