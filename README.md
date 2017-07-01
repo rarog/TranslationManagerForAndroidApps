@@ -12,9 +12,10 @@ A project to help managing [translation ressources](https://developer.android.co
 
 ### v0.3
 * Support import of strings from and export of strings into xml files
+* Support for standard Strings (`<string>`)
 
 ### v0.4
-* Support for standard Strings (`<string>`)
+* Support export of strings into xml files
 
 ### v0.5
 * Support for advanced user settings and creation of new users with different roles
