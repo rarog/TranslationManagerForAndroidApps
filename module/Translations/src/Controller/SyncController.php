@@ -17,6 +17,8 @@ use Translations\Model\AppTable;
 use Translations\Model\Helper\AppHelperInterface;
 use Translations\Model\Helper\AppHelperTrait;
 use Translations\Model\Helper\FileHelper;
+use Translations\Model\ResourceFileEntry;
+use Translations\Model\ResourceFileEntryStringTable;
 use Translations\Model\ResourceFileEntryTable;
 use Translations\Model\ResourceTypeTable;
 use Zend\Dom\Document;
@@ -26,7 +28,6 @@ use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer as Renderer;
-use Translations\Model\ResourceFileEntry;
 
 class SyncController extends AbstractActionController implements AppHelperInterface
 {
@@ -56,6 +57,11 @@ class SyncController extends AbstractActionController implements AppHelperInterf
      * @var ResourceFileEntryTable
      */
     private $resourceFileEntryTable;
+
+    /**
+     * @var ResourceFileEntryStringTable
+     */
+    private $resourceFileEntryStringTable;
 
     /**
      * @var Translator
@@ -187,16 +193,18 @@ class SyncController extends AbstractActionController implements AppHelperInterf
      * @param AppResourceTable $appResourceTable
      * @param AppResourceFileTable $appResourceFileTable
      * @param ResourceTypeTable $resourceTypeTable
+     * @param ResourceFileEntryStringTable $resourceFileEntryStringTable
      * @param Translator $translator
      * @param Renderer $renderer
      */
-    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, AppResourceFileTable $appResourceFileTable, ResourceTypeTable $resourceTypeTable, ResourceFileEntryTable $resourceFileEntryTable,Translator $translator, Renderer $renderer)
+    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, AppResourceFileTable $appResourceFileTable, ResourceTypeTable $resourceTypeTable, ResourceFileEntryTable $resourceFileEntryTable, ResourceFileEntryStringTable $resourceFileEntryStringTable, Translator $translator, Renderer $renderer)
     {
         $this->appTable = $appTable;
         $this->appResourceTable = $appResourceTable;
         $this->appResourceFileTable = $appResourceFileTable;
         $this->resourceTypeTable = $resourceTypeTable;
         $this->resourceFileEntryTable = $resourceFileEntryTable;
+        $this->resourceFileEntryStringTable = $resourceFileEntryStringTable;
         $this->translator = $translator;
         $this->renderer = $renderer;
     }
