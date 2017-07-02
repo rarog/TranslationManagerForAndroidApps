@@ -43,6 +43,11 @@ return [
                         'userBase',
                     ],
                 ],
+                'settings*'           => [
+                    'permissions' => [
+                        'userBase',
+                    ],
+                ],
                 'zfcuser/login'          => [
                     'permissions' => [
                         'guest',

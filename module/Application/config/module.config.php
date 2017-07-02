@@ -15,6 +15,7 @@ return [
     'controllers' => [
         'factories' => [
             Controller\IndexController::class => InvokableFactory::class,
+            Controller\SettingsController::class => InvokableFactory::class,
         ],
     ],
     'listeners' => [
@@ -110,6 +111,29 @@ return [
                             'defaults' => [
                                 'controller' => Controller\IndexController::class,
                                 'action'     => 'about',
+                            ],
+                        ],
+                    ],
+                ]
+            ],
+            'settings' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'       => '/settings',
+                    'defaults'    => [
+                        'controller' => Controller\SettingsController::class,
+                        'action'     => 'index',
+                    ],
+                ],
+                'may_terminate' => true,
+                'child_routes' => [
+                    'userlanguages' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/settings/userlanguages',
+                            'defaults' => [
+                                'controller' => Controller\SettingsController::class,
+                                'action'     => 'userlanguages',
                             ],
                         ],
                     ],
