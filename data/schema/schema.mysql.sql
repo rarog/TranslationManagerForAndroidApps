@@ -28,6 +28,14 @@ CREATE TABLE `user_settings` (
     CONSTRAINT `user_settings_fk2` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `user_languages` (
+    `user_id` INT(11) UNSIGNED NOT NULL,
+    `locale`  VARCHAR(20) NOT NULL, -- Currently known max length is 11 char.
+    PRIMARY KEY (`user_id`,`locale`),
+    KEY `user_languages_fk1` (`user_id`),
+    CONSTRAINT `user_languages_fk1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `team_member` (
     `user_id` INT(11) UNSIGNED NOT NULL,
     `team_id` INT(11) UNSIGNED NOT NULL,
