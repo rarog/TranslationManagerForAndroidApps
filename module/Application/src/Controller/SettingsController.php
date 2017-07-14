@@ -9,7 +9,7 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
-use Translations\Form\UserLanguagesForm;
+use Application\Form\UserLanguagesForm;
 
 class SettingsController extends AbstractActionController
 {
