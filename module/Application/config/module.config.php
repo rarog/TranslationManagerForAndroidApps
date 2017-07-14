@@ -130,7 +130,7 @@ return [
                     'userlanguages' => [
                         'type' => Literal::class,
                         'options' => [
-                            'route' => '/settings/userlanguages',
+                            'route' => '/userlanguages',
                             'defaults' => [
                                 'controller' => Controller\SettingsController::class,
                                 'action'     => 'userlanguages',
