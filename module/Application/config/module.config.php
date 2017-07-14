@@ -166,6 +166,7 @@ return [
     ],
     'view_helpers' => [
         'invokables'=> [
+            'bootstrapSelectHelper'    => View\Helper\BootstrapSelectHelper::class,
             'dataTablesInitHelper'     => View\Helper\DataTablesInitHelper::class,
             'multilevelNavigationMenu' => View\Helper\MultilevelNavigationMenu::class,
         ],
