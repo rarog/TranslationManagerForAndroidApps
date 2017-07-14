@@ -14,7 +14,7 @@ class BootstrapSelectHelper extends AbstractHelper
     public function __invoke()
     {
         $this->view->headScript()->appendFile($this->view->basePath('/js/bootstrap-select.min.js'));
-        $this->view->headScript()->appendFile($this->view->basePath('/js/i18n/defaults-' . $this->view->plugin('translate')->getTranslator()->getFallbackLocale() . '.min.js'));
+        $this->view->headScript()->appendFile($this->view->basePath('/js/i18n/defaults-' . $this->view->plugin('translate')->getTranslator()->getLocale() . '.min.js'));
         $this->view->headLink()->prependStylesheet($this->view->basePath('/css/bootstrap-select.min.css'));
     }
 }
