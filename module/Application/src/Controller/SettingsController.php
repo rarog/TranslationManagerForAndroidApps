@@ -35,7 +35,7 @@ class SettingsController extends AbstractActionController
 
     public function userlanguagesAction()
     {
-        $localeNamesAll = $this->configHelp('settings')->locale_names->toArray();
+        $localeNamesAll = $this->configHelp('settings')->locale_names_primary->toArray();
         $localeNames = $localeNamesAll[$this->translator->getLocale()];
 
         $form = new UserLanguagesForm();
