@@ -25,10 +25,10 @@ class UserLanguagesForm extends Form
         ]);
         $this->add([
             'attributes' => [
-                'class'    => 'selectpicker',
+                'class'            => 'selectpicker',
                 'data-live-search' => 'true',
-                'id'       => 'languages',
-                'multiple' => 'multiple',
+                'id'               => 'languages',
+                'multiple'         => 'multiple',
             ],
             'name'       => 'languages',
             'options'    => [
