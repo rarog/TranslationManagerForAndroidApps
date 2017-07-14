@@ -14,8 +14,8 @@ use Zend\ServiceManager\Factory\InvokableFactory;
 return [
     'controllers' => [
         'factories' => [
-            Controller\IndexController::class => InvokableFactory::class,
-            Controller\SettingsController::class => InvokableFactory::class,
+            Controller\IndexController::class    => InvokableFactory::class,
+            Controller\SettingsController::class => Factory\Controller\SettingsControllerFactory::class,
         ],
     ],
     'listeners' => [

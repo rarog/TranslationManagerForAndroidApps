@@ -8,9 +8,26 @@
 namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Mvc\I18n\Translator;
+use Translations\Form\UserLanguagesForm;
 
 class SettingsController extends AbstractActionController
 {
+    /**
+     * @var Translator
+     */
+    private $translator;
+
+    /**
+     * Constructor
+     *
+     * @param Translator $translator
+     */
+    public function __construct(Translator $translator)
+    {
+        $this->translator = $translator;
+    }
+
     public function indexAction()
     {
         return $this->redirect()->toRoute('home');
@@ -18,6 +35,14 @@ class SettingsController extends AbstractActionController
 
     public function userlanguagesAction()
     {
-        return [];
+        $localeNamesAll = $this->configHelp('settings')->locale_names->toArray();
+        $localeNames = $localeNamesAll[$this->translator->getLocale()];
+
+        $form = new UserLanguagesForm();
+        $form->get('languages')->setValueOptions($localeNames);
+
+        return [
+            'form' => $form,
+        ];
     }
 }
