@@ -7,8 +7,8 @@
 
 namespace Application\Listener;
 
+use Application\Model\UserSettingsTable;
 use Translations\Model\TeamTable;
-use Translations\Model\UserSettingsTable;
 use UserRbac\Mapper\UserRoleLinkerMapper;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\EventManagerInterface;
@@ -41,6 +41,7 @@ class SetupListener implements ListenerAggregateInterface
      *
      * @param UserRoleLinkerMapper $userRoleLinkerMapper
      * @param TeamTable $teamTable
+     * @param UserSettingsTable $userSettingsTable
      */
     public function __construct(UserRoleLinkerMapper $userRoleLinkerMapper, TeamTable $teamTable, UserSettingsTable $userSettingsTable)
     {
@@ -93,7 +94,7 @@ class SetupListener implements ListenerAggregateInterface
 
             // Give the new user the current setup locale and newly created team.
             $setupContainer = new \Zend\Session\Container('setup');
-            $userSettings = new \Translations\Model\UserSettings([
+            $userSettings = new \Application\Model\UserSettings([
                 'user_id' => $user->getId(),
                 'locale'  => $setupContainer->currentLanguage,
                 'team_id' => $team->id,

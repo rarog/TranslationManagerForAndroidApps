@@ -5,7 +5,7 @@
  * @license   https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License version 3 or later
  */
 
-namespace Translations\Model;
+namespace Application\Model;
 
 use RuntimeException;
 use Zend\Db\TableGateway\TableGateway;
@@ -43,7 +43,7 @@ class UserSettingsTable
      *
      * @param  int $id
      * @throws RuntimeException
-     * @return \Translations\Model\UserSettings
+     * @return \Application\Model\UserSettings
      */
     public function getUserSettings($id)
     {
@@ -65,7 +65,7 @@ class UserSettingsTable
      *
      * @param  UserSettings $userSettings
      * @throws RuntimeException
-     * @return \Translations\Model\UserSettings
+     * @return \Application\Model\UserSettings
      */
     public function saveUserSettings(UserSettings $userSettings)
     {

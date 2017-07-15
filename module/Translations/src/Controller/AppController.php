@@ -7,6 +7,7 @@
 
 namespace Translations\Controller;
 
+use Application\Model\UserSettingsTable;
 use RuntimeException;
 use Translations\Form\AppForm;
 use Translations\Form\DeleteHelperForm;
@@ -14,7 +15,6 @@ use Translations\Model\App;
 use Translations\Model\AppTable;
 use Translations\Model\Helper\FileHelper;
 use Translations\Model\TeamTable;
-use Translations\Model\UserSettingsTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\ViewModel;

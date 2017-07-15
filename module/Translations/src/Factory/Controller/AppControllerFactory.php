@@ -21,7 +21,7 @@ class AppControllerFactory implements FactoryInterface
         return new \Translations\Controller\AppController(
             $container->get(\Translations\Model\AppTable::class),
             $container->get(\Translations\Model\TeamTable::class),
-            $container->get(\Translations\Model\UserSettingsTable::class),
+            $container->get(\Application\Model\UserSettingsTable::class),
             $container->get(\Zend\Mvc\I18n\Translator::class)
         );
     }

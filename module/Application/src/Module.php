@@ -7,6 +7,9 @@
 
 namespace Application;
 
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\TableGateway\TableGateway;
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
@@ -160,7 +163,7 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
                 return;
             }
 
-            $userSettingsTable = $serviceManager->get(\Translations\Model\UserSettingsTable::class);
+            $userSettingsTable = $serviceManager->get(\Application\Model\UserSettingsTable::class);
             try {
                 $userSettings = $userSettingsTable->getUserSettings($auth->getIdentity()->getId());
             } catch (\RuntimeException $e) {
@@ -190,6 +193,27 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
     {
         return [
             'factories' => [
+                Model\UserTable::class => function ($container) {
+                    $tableGateway = $container->get(Model\UserTableGateway::class);
+                    $userMapper = $container->get('zfcuser_user_mapper');
+                    return new Model\UserTable($tableGateway, $userMapper);
+                },
+                Model\UserTableGateway::class => function ($container) {
+                    $dbAdapter = $container->get(AdapterInterface::class);
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Model\User);
+                    return new TableGateway('user', $dbAdapter, null, $resultSetPrototype);
+                },
+                Model\UserSettingsTable::class => function ($container) {
+                    $tableGateway = $container->get(Model\UserSettingsTableGateway::class);
+                    return new Model\UserSettingsTable($tableGateway);
+                },
+                Model\UserSettingsTableGateway::class => function ($container) {
+                    $dbAdapter = $container->get(AdapterInterface::class);
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Model\UserSettings());
+                    return new TableGateway('user_settings', $dbAdapter, null, $resultSetPrototype);
+                },
                 SessionManager::class => function ($container) {
                     $config = $container->get('config');
                     if (!isset($config['session'])) {
