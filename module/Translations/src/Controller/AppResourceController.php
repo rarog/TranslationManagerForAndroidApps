@@ -407,9 +407,15 @@ class AppResourceController extends AbstractActionController implements AdapterA
         }
 
         $appResource->setDbAdapter($this->adapter);
+
         $form = new AppResourceForm();
         $form->get('name')->setAttribute('readonly', 'readonly');
         $form->get('locale')->setValueOptions($this->getLocaleNameArray($this->translator->getLocale()));
+
+        if ($appResource->Name !== 'values') {
+            $form->get('locale')->setOption('help-block', '');
+        }
+
         $form->bind($appResource);
 
         $viewData = [
