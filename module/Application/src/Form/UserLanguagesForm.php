@@ -20,10 +20,6 @@ class UserLanguagesForm extends Form
 
         // Creating the form elements.
         $this->add([
-            'name' => 'user_id',
-            'type' => 'hidden',
-        ]);
-        $this->add([
             'attributes' => [
                 'class'            => 'selectpicker',
                 'data-live-search' => 'true',
