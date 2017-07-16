@@ -104,10 +104,11 @@ class AppResourceTable
     public function saveAppResource(AppResource $appResource)
     {
         $data = [
-            'app_id'      => $appResource->AppId,
-            'name'        => $appResource->Name,
-            'locale'      => $appResource->Locale,
-            'description' => $appResource->Description,
+            'app_id'         => $appResource->AppId,
+            'name'           => $appResource->Name,
+            'locale'         => $appResource->Locale,
+            'primary_locale' => \Locale::getPrimaryLanguage($appResource->Locale), // Field isn't available in model.
+            'description'    => $appResource->Description,
         ];
 
         $id = (int) $appResource->Id;

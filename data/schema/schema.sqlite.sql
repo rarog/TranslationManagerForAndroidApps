@@ -31,7 +31,7 @@ CREATE TABLE user_settings (
 
 CREATE TABLE user_languages (
     user_id INTEGER NOT NULL,
-    locale  VARCHAR(20) NOT NULL, -- Currently known max length is 11 char.
+    locale  VARCHAR(20) NOT NULL, -- Currently known max length for primary locale is 3 char.
     PRIMARY KEY (user_id,locale),
     FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -54,14 +54,17 @@ CREATE TABLE app (
 );
 
 CREATE TABLE app_resource (
-    id          INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    app_id      INTEGER NOT NULL,
-    name        VARCHAR(255) NOT NULL,
-    locale      VARCHAR(20) NOT NULL,
-    description VARCHAR(255) DEFAULT NULL,
+    id             INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    app_id         INTEGER NOT NULL,
+    name           VARCHAR(255) NOT NULL,
+    locale         VARCHAR(20) NOT NULL,
+    primary_locale VARCHAR(20) NOT NULL, -- Currently known max length for primary locale is 3 char. Field isn't available in model.
+    description    VARCHAR(255) DEFAULT NULL,
     UNIQUE (app_id,name),
     FOREIGN KEY (app_id) REFERENCES app (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+CREATE INDEX app_resource_ik1 ON app_resource (primary_locale);
 
 CREATE TABLE app_resource_file (
     id     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
