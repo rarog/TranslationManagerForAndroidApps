@@ -28,6 +28,7 @@ class SettingsController extends AbstractActionController
     /**
      * Constructor
      *
+     * @param UserLanguagesTable $userLanguagesTable
      * @param Translator $translator
      */
     public function __construct(UserLanguagesTable $userLanguagesTable, Translator $translator)
