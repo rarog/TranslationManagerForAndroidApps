@@ -30,11 +30,11 @@ echo $this->form($form, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZO
         <h4 class="modal-title" id="valueNameSelectionLabel"><?= $this->escapeHtml($this->translate('Select resource folder')) ?></h4>
       </div>
       <div class="modal-body">
-        <ul class="list-group">
+        <div class="list-group">
 <?php foreach ($valuesDirs as $dir): ?>
           <button type="button" class="list-group-item" onclick="$('input[name=name]').val('<?= $this->escapeHtmlAttr($dir) ?>');$('#valueNameSelection').modal('hide')"><?= $dir ?></button>
 <?php endforeach; ?>
-        </ul>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal"><?= $this->escapeHtml($this->translate('Close')) ?></button>

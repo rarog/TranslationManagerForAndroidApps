@@ -32,18 +32,19 @@ $disable = !$hasDefaultValues;
       <td>
         <div class="btn-group">
 <?php if ($this->isGranted('appresource.edit')) : ?>
-          <a class="btn btn-default" href="<?= $this->url('appresource', [
+          <a class="btn btn-default<?php if ($disable): ?> disabled<?php endif; ?>" href="<?= ($disable) ? '#' : $this->url('appresource', [
     'appId'      => $appResource->AppId,
     'action'     => 'edit',
     'resourceId' => $appResource->Id
-]) ?>"<?php if ($disable): ?> disabled="disabled"<?php endif; ?>><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Edit')) ?></a>
+]) ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Edit')) ?></a>
 <?php endif; ?>
+<?php $disableDelete = $disable || (($count > 1) && ($appResource->name == 'values')); ?>
 <?php if ($this->isGranted('appresource.delete')) : ?>
-          <a class="btn btn-danger" href="<?= $this->url('appresource', [
+          <a class="btn btn-danger<?php if ($disableDelete): ?> disabled<?php endif; ?>" href="<?= ($disableDelete) ? '#' : $this->url('appresource', [
     'appId'      => $appResource->AppId,
     'action'     => 'delete',
     'resourceId' => $appResource->Id,
-]) ?>"<?php if ($disable || (($count > 1) && ($appResource->name == 'values'))): ?> disabled="disabled"<?php endif; ?>><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Delete')) ?></a>
+]) ?>"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Delete')) ?></a>
 <?php endif; ?>
         </div>
       </td>
