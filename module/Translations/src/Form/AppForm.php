@@ -55,6 +55,21 @@ class AppForm extends Form
         ]);
         $this->add([
             'attributes' => [
+                'id'        => 'path_to_res_folder',
+                'maxlength' => 4096,
+            ],
+            'name'       => 'path_to_res_folder',
+            'options'    => [
+                'column-size'      => 'sm-9',
+                'label'            => _('Path to "res" folder'),
+                'label_attributes' => [
+                    'class' => 'col-sm-3',
+                ],
+            ],
+            'type'       => 'text',
+        ]);
+        $this->add([
+            'attributes' => [
                 'id'        => 'git_repository',
                 'maxlength' => 4096,
             ],
@@ -70,13 +85,77 @@ class AppForm extends Form
         ]);
         $this->add([
             'attributes' => [
-                'id'        => 'path_to_res_folder',
-                'maxlength' => 4096,
+                'id'        => 'git_username',
+                'maxlength' => 255,
             ],
-            'name'       => 'path_to_res_folder',
+            'name'       => 'git_username',
             'options'    => [
                 'column-size'      => 'sm-9',
-                'label'            => _('Path to "res" folder'),
+                'help-block'       => _('Username for git repository access'),
+                'label'            => _('Git username'),
+                'label_attributes' => [
+                    'class' => 'col-sm-3',
+                ],
+            ],
+            'type'       => 'text',
+        ]);
+        $this->add([
+            'attributes' => [
+                'id'        => 'git_password',
+                'maxlength' => 255,
+                'placeholder' => '●●●●●',
+            ],
+            'name'       => 'git_password',
+            'options'    => [
+                'column-size'      => 'sm-9',
+                'help-block'       => _('Password for git repository access. Leave empty to keep old value.'),
+                'label'            => _('Git password'),
+                'label_attributes' => [
+                    'class' => 'col-sm-3',
+                ],
+            ],
+            'type'       => 'password',
+        ]);
+        $this->add([
+            'attributes' => [
+                'id'        => 'git_password_delete',
+            ],
+            'name'       => 'git_password_delete',
+            'options'    => [
+                'unchecked_value'    => 1,
+                'column-size'        => 'sm-9 col-sm-offset-3',
+                'label'              => _('Delete git password'),
+                'unchecked_value'    => 0,
+                'use_hidden_element' => true,
+            ],
+            'type'       => 'checkbox',
+        ]);
+        $this->add([
+            'attributes' => [
+                'id'        => 'git_user',
+                'maxlength' => 255,
+            ],
+            'name'       => 'git_user',
+            'options'    => [
+                'column-size'      => 'sm-9',
+                'help-block'       => _('User for git commits'),
+                'label'            => _('Git user'),
+                'label_attributes' => [
+                    'class' => 'col-sm-3',
+                ],
+            ],
+            'type'       => 'text',
+        ]);
+        $this->add([
+            'attributes' => [
+                'id'        => 'git_email',
+                'maxlength' => 255,
+            ],
+            'name'       => 'git_email',
+            'options'    => [
+                'column-size'      => 'sm-9',
+                'help-block'       => _('Email for git commits'),
+                'label'            => _('Git email'),
                 'label_attributes' => [
                     'class' => 'col-sm-3',
                 ],

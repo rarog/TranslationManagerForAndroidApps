@@ -15,6 +15,7 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\Stdlib\ArraySerializableInterface;
+use Zend\Validator\EmailAddress;
 use Zend\Validator\StringLength;
 use Zend\Validator\Uri;
 
@@ -38,12 +39,32 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
     /**
      * @var null|string
      */
+    private $pathToResFolder;
+
+    /**
+     * @var null|string
+     */
     private $gitRepository;
 
     /**
      * @var null|string
      */
-    private $pathToResFolder;
+    private $gitUsername;
+
+    /**
+     * @var null|string
+     */
+    private $gitPassword;
+
+    /**
+     * @var null|string
+     */
+    private $gitUser;
+
+    /**
+     * @var null|string
+     */
+    private $gitEmail;
 
     /**
      * @var null|int
@@ -156,6 +177,23 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
     /**
      * @return null|string
      */
+    public function getPathToResFolder() {
+        return $this->pathToResFolder;
+    }
+
+    /**
+     * @param null|string $pathToResFolder
+     */
+    public function setPathToResFolder($pathToResFolder) {
+        if (!is_null($pathToResFolder)) {
+            $pathToResFolder = (string) $pathToResFolder;
+        }
+        $this->pathToResFolder = $pathToResFolder;
+    }
+
+    /**
+     * @return null|string
+     */
     public function getGitRepository() {
         return $this->gitRepository;
     }
@@ -173,8 +211,69 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
     /**
      * @return null|string
      */
-    public function getPathToResFolder() {
-        return $this->pathToResFolder;
+    public function getGitUsername() {
+        return $this->gitUsername;
+    }
+
+    /**
+     * @param null|string $gitUsername
+     */
+    public function setGitUsername($gitUsername) {
+        if (!is_null($gitUsername)) {
+            $gitUsername = (string) $gitUsername;
+        }
+        $this->gitUsername = $gitUsername;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getGitPassword() {
+        return $this->gitPassword;
+    }
+
+    /**
+     * @param null|string $gitPassword
+     */
+    public function setGitPassword($gitPassword) {
+        if (!is_null($gitPassword)) {
+            $gitPassword = (string) $gitPassword;
+        }
+        $this->gitPassword = $gitPassword;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getGitUser() {
+        return $this->gitUser;
+    }
+
+    /**
+     * @param null|string $gitUser
+     */
+    public function setGitUser($gitUser) {
+        if (!is_null($gitUser)) {
+            $gitUser = (string) $gitUser;
+        }
+        $this->gitUser = $gitUser;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getGitEmail() {
+        return $this->gitEmail;
+    }
+
+    /**
+     * @param null|string $gitEmail
+     */
+    public function setGitEmail($gitEmail) {
+        if (!is_null($gitEmail)) {
+            $gitEmail = (string) $gitEmail;
+        }
+        $this->gitEmail = $gitEmail;
     }
 
     /**
@@ -209,16 +308,6 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
             $resourceFileCount = (int) $resourceFileCount;
         }
         $this->resourceFileCount = $resourceFileCount;
-    }
-
-    /**
-     * @param null|string $pathToResFolder
-     */
-    public function setPathToResFolder($pathToResFolder) {
-        if (!is_null($pathToResFolder)) {
-            $pathToResFolder = (string) $pathToResFolder;
-        }
-        $this->pathToResFolder = $pathToResFolder;
     }
 
     /**
@@ -278,6 +367,24 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
             ],
         ]);
         $inputFilter->add([
+            'name'       => 'path_to_res_folder',
+            'required'   => false,
+            'filters'    => [
+                ['name' => StripTags::class],
+                ['name' => StringTrim::class],
+            ],
+            'validators' => [
+                [
+                    'name'    => StringLength::class,
+                    'options' => [
+                        'encoding' => 'UTF-8',
+                        'min'      => 0,
+                        'max'      => 4096,
+                    ],
+                ],
+            ],
+        ]);
+        $inputFilter->add([
             'name'       => 'git_repository',
             'required'   => false,
             'filters'    => [
@@ -303,7 +410,7 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
             ],
         ]);
         $inputFilter->add([
-            'name'       => 'path_to_res_folder',
+            'name'       => 'git_username',
             'required'   => false,
             'filters'    => [
                 ['name' => StripTags::class],
@@ -315,8 +422,65 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
                     'options' => [
                         'encoding' => 'UTF-8',
                         'min'      => 0,
-                        'max'      => 4096,
+                        'max'      => 255,
                     ],
+                ],
+            ],
+        ]);
+        $inputFilter->add([
+            'name'       => 'git_password',
+            'required'   => false,
+            'filters'    => [
+                ['name' => StripTags::class],
+                ['name' => StringTrim::class],
+            ],
+            'validators' => [
+                [
+                    'name'    => StringLength::class,
+                    'options' => [
+                        'encoding' => 'UTF-8',
+                        'min'      => 0,
+                        'max'      => 255,
+                    ],
+                ],
+            ],
+        ]);
+        $inputFilter->add([
+            'name'       => 'git_user',
+            'required'   => false,
+            'filters'    => [
+                ['name' => StripTags::class],
+                ['name' => StringTrim::class],
+            ],
+            'validators' => [
+                [
+                    'name'    => StringLength::class,
+                    'options' => [
+                        'encoding' => 'UTF-8',
+                        'min'      => 0,
+                        'max'      => 255,
+                    ],
+                ],
+            ],
+        ]);
+        $inputFilter->add([
+            'name'       => 'git_email',
+            'required'   => false,
+            'filters'    => [
+                ['name' => StripTags::class],
+                ['name' => StringTrim::class],
+            ],
+            'validators' => [
+                [
+                    'name'    => StringLength::class,
+                    'options' => [
+                        'encoding' => 'UTF-8',
+                        'min'      => 0,
+                        'max'      => 255,
+                    ],
+                ],
+                [
+                    'name' => 'EmailAddress'
                 ],
             ],
         ]);
@@ -334,8 +498,12 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
         $this->Id                = !empty($data['id']) ? $data['id'] : null;
         $this->TeamId            = !empty($data['team_id']) ? $data['team_id'] : null;
         $this->Name              = !empty($data['name']) ? $data['name'] : null;
-        $this->GitRepository     = !empty($data['git_repository']) ? $data['git_repository'] : null;
         $this->PathToResFolder   = !empty($data['path_to_res_folder']) ? $data['path_to_res_folder'] : null;
+        $this->GitRepository     = !empty($data['git_repository']) ? $data['git_repository'] : null;
+        $this->GitUsername       = !empty($data['git_username']) ? $data['git_username'] : null;
+        $this->GitPassword       = !empty($data['git_password']) ? $data['git_password'] : null;
+        $this->GitUser           = !empty($data['git_user']) ? $data['git_user'] : null;
+        $this->GitEmail          = !empty($data['git_email']) ? $data['git_email'] : null;
         $this->ResourceCount     = !empty($data['resource_count']) ? $data['resource_count'] : null;
         $this->ResourceFileCount = !empty($data['resource_file_count']) ? $data['resource_file_count'] : null;
     }
@@ -350,8 +518,12 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
             'id'                  => $this->Id,
             'team_id'             => $this->TeamId,
             'name'                => $this->Name,
-            'git_repository'      => $this->GitRepository,
             'path_to_res_folder'  => $this->PathToResFolder,
+            'git_repository'      => $this->GitRepository,
+            'git_username'        => $this->GitUsername,
+            'git_password'        => $this->GitPassword,
+            'git_user'            => $this->GitUser,
+            'git_email'           => $this->GitEmail,
             'resource_count'      => $this->ResourceCount,
             'resource_file_count' => $this->ResourceFileCount,
         ];

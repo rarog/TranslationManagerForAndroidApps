@@ -50,8 +50,12 @@ CREATE TABLE `app` (
     `id`                 INT(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `team_id`            INT(11) UNSIGNED DEFAULT NULL,
     `name`               VARCHAR(255) DEFAULT NULL,
-    `git_repository`     VARCHAR(4096) DEFAULT NULL,
     `path_to_res_folder` VARCHAR(4096) DEFAULT NULL,
+    `git_repository`     VARCHAR(4096) DEFAULT NULL,
+    `git_username`       VARCHAR(255) DEFAULT NULL,
+    `git_password`       VARCHAR(255) DEFAULT NULL,
+    `git_user`           VARCHAR(255) DEFAULT NULL,
+    `git_email`          VARCHAR(255) DEFAULT NULL,
     KEY `app_fk1` (`team_id`),
     CONSTRAINT `app_fk1` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

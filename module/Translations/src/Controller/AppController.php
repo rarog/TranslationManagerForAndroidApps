@@ -254,6 +254,8 @@ class AppController extends AbstractActionController
             ]);
         }
 
+        $oldPassword = $app->GitPassword;
+
         $form = new AppForm();
         $form->get('team_id')->setValueOptions($this->getAllTeamsAsArray());
         $form->bind($app);
@@ -274,6 +276,10 @@ class AppController extends AbstractActionController
 
         if (!$form->isValid()) {
             return $viewData;
+        }
+
+        if (($app->GitPassword == '') && ($request->getPost('git_password_delete') != '1')) {
+            $app->GitPassword = $oldPassword;
         }
 
         $this->appTable->saveApp($app);

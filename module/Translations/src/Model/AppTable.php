@@ -24,7 +24,7 @@ class AppTable
      *
      * @var array
      */
-    private $columns = ['id', 'team_id', 'name', 'git_repository', 'path_to_res_folder'];
+    private $columns = ['id', 'team_id', 'name', 'path_to_res_folder', 'git_repository', 'git_username', 'git_password', 'git_user', 'git_email'];
 
     /**
      * Constructor
@@ -143,8 +143,12 @@ class AppTable
         $data = [
             'team_id'            => $app->TeamId,
             'name'               => $app->Name,
-            'git_repository'     => $app->GitRepository,
             'path_to_res_folder' => $app->PathToResFolder,
+            'git_repository'     => $app->GitRepository,
+            'git_username'       => $app->GitUsername,
+            'git_password'       => $app->GitPassword,
+            'git_user'           => $app->GitUser,
+            'git_email'          => $app->GitEmail,
         ];
 
         $id = (int) $app->Id;

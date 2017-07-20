@@ -19,8 +19,8 @@ $printTeams = count($teams) > 1;
       <th><?= $this->escapeHtml($this->translate('Team')) ?></th>
 <?php endif; ?>
       <th><?= $this->escapeHtml($this->translate('Name')) ?></th>
-      <th><?= $this->escapeHtml($this->translate('Git repository')) ?></th>
       <th><?= $this->escapeHtml($this->translate('Path to "res" folder')) ?></th>
+      <th><?= $this->escapeHtml($this->translate('Git repository')) ?></th>
       <th>&nbsp;</th>
     </tr>
   </thead>
@@ -31,8 +31,8 @@ $printTeams = count($teams) > 1;
       <td><?= $this->escapeHtml((array_key_exists($app->teamId, $teams) ? $teams[$app->TeamId] : $app->TeamId)) ?></td>
 <?php endif; ?>
       <td><?= $this->escapeHtml($app->Name) ?></td>
-      <td><?= $this->escapeHtml($app->GitRepository) ?></td>
       <td><?= $this->escapeHtml($app->PathToResFolder) ?></td>
+      <td><?= $this->escapeHtml($app->GitRepository) ?></td>
       <td>
         <div class="btn-group">
           <div class="btn-group">
