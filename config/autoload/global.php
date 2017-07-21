@@ -49,6 +49,9 @@ return [
     'db' => [
         'driver' => 'Pdo',
     ],
+    'security' => [
+        'master_key' => 'aaa',
+    ],
     'session' => [
         'config' => [
             'class' => Session\Config\SessionConfig::class,

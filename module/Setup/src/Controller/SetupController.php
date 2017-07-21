@@ -142,12 +142,12 @@ class SetupController extends AbstractActionController
     }
 
     /**
-     * Helper function to replace database config in file
+     * Helper function to replace config blocks in file
      *
      * @param string $file
      * @param array $configArray
      */
-    private function replaceDbConfigInFile($file, $configArray)
+    private function replaceConfigInFile($file, $configArray)
     {
         // Reading current content of config file
         $config = include($file);
@@ -155,8 +155,10 @@ class SetupController extends AbstractActionController
             $config = [];
         }
 
-        // Replacing old db config with new
-        $config['db'] = $configArray;
+        // Replacing old config with new
+        foreach ($configArray as $key => $value) {
+            $config[$key] = $value;
+        }
         $this->getConfigWriter()
             ->toFile($file, new \Zend\Config\Config($config, false));
     }
@@ -323,15 +325,16 @@ class SetupController extends AbstractActionController
             $formStep2->setInputFilter($database->getInputFilter());
             $formStep2->setData($request->getPost());
             if ($formStep2->isValid()) {
-                $dbConfig = $database->getArrayCopy();
+                $config = [];
+                $config['db'] = $database->getArrayCopy();
 
                 // Replacing content of local.php config file
-                $this->replaceDbConfigInFile('config/autoload/local.php', $dbConfig);
+                $this->replaceConfigInFile('config/autoload/local.php', $config);
 
                 // Replacing content of config cache if enabled
                 if ($this->listenerOptions->getConfigCacheEnabled() &&
                     file_exists($this->listenerOptions->getConfigCacheFile())) {
-                    $this->replaceDbConfigInFile($this->listenerOptions->getConfigCacheFile(), $dbConfig);
+                    $this->replaceConfigInFile($this->listenerOptions->getConfigCacheFile(), $config);
                 }
 
                 $this->setLastStep(3);

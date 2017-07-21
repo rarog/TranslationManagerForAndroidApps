@@ -8,5 +8,5 @@ $this->headLink()->appendStylesheet($this->basePath('css/octicons.min.css'));
 	<a class="btn <?php if ($git->isCloned()): ?>btn-danger<?php else: ?>btn-default<?php endif; ?>" href="<?= $this->url('git', [
     'appId'  => $app->id,
     'action' => 'clone',
-]) ?>"><span class="octicon octicon-repo-clone" aria-hidden="true"> <?= $this->escapeHtml($this->translate('Clone')) ?></a>
+]) ?>"><span class="octicon octicon-repo-clone" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Clone')) ?></a>
 </div>
