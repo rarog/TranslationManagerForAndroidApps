@@ -8,6 +8,7 @@
 namespace Setup\Controller;
 
 use Setup\Model\DatabaseHelper;
+use Zend\Math\Rand;
 use Zend\ModuleManager\Listener\ListenerOptions;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
@@ -315,18 +316,27 @@ class SetupController extends AbstractActionController
         $database = new \Setup\Model\Database(
             ($this->configHelp()->db) ? $this->configHelp()->db->toArray() : []
         );
+        $security = ($this->configHelp()->security) ? $this->configHelp()->security->toArray(): '';
+        $masterKey = (is_array($security)) ? (string) $security['master_key'] : '';
+        if ($masterKey == '') {
+            $masterKey = Rand::getString(64);
+        }
 
         $formStep2 = new \Setup\Form\Step2Form();
         $formStep2->get('driver')->setValueOptions($this->getSetupConfig()->drivers->toArray());
         $formStep2->bind($database);
+        $formStep2->get('master_key')->setValue($masterKey);
 
         $request = $this->getRequest();
         if ($request->isPost()) {
             $formStep2->setInputFilter($database->getInputFilter());
             $formStep2->setData($request->getPost());
             if ($formStep2->isValid()) {
+                $security['master_key'] = $masterKey;
+
                 $config = [];
                 $config['db'] = $database->getArrayCopy();
+                $config['security'] = $security;
 
                 // Replacing content of local.php config file
                 $this->replaceConfigInFile('config/autoload/local.php', $config);

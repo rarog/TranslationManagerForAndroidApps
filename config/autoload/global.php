@@ -50,7 +50,7 @@ return [
         'driver' => 'Pdo',
     ],
     'security' => [
-        'master_key' => 'aaa',
+        'master_key' => '',
     ],
     'session' => [
         'config' => [

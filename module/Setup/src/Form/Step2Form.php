@@ -121,6 +121,7 @@ class Step2Form extends Form
             'type'       => 'Text',
             'attributes' => [
                 'id' => 'master_key',
+                'readonly' => true
             ],
             'options'    => [
                 'column-size'      => 'sm-10',
