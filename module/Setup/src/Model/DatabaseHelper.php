@@ -8,6 +8,7 @@
 namespace Setup\Model;
 
 use Zend\Config\Config;
+use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Ddl;
 use Zend\Db\Sql\Ddl\Column;
 use Zend\Db\Sql\Ddl\Constraint;
@@ -17,11 +18,32 @@ use ZfcUser\Options\ModuleOptions as ZUModuleOptions;
 class DatabaseHelper
 {
     private $dbConfig;
+
+    /**
+     * @var Adapter
+     */
     private $dbAdapter;
+
+    /**
+     * @var Translator
+     */
     private $translator;
     private $setupConfig;
+
+    /**
+     * @var ZUModuleOptions
+     */
     private $zuModuleOptions;
+    
+    
+    /**
+     * @var unknown
+     */
     private $lastStatus;
+
+	/**
+	 * @var string
+	 */
 	private $lastMessage;
 	private $sql;
 
@@ -140,7 +162,7 @@ class DatabaseHelper
             ));
         }
 
-        $this->dbAdapter->query($sqlString, $this->dbAdapter::QUERY_MODE_EXECUTE);
+        $this->dbAdapter->query($sqlString, Adapter::QUERY_MODE_EXECUTE);
     }
 
     /**
@@ -239,8 +261,8 @@ class DatabaseHelper
     {
         if ($this->isSchemaInstalled()) {
             $select = $this->getSql()
-            ->select($this->zuModuleOptions->getTableName())
-            ->columns(array('count' => new \Zend\Db\Sql\Expression('count(*)')));
+                ->select($this->zuModuleOptions->getTableName())
+                ->columns(array('count' => new \Zend\Db\Sql\Expression('count(*)')));
             $statement = $this->getSql()->prepareStatementForSqlObject($select);
 
             try {
@@ -258,9 +280,9 @@ class DatabaseHelper
             } catch (\Exception $e) {
                 $this->lastStatus = self::SOMETHINGISWRONGWITHWITHUSERTABLE;
                 $this->lastMessage = sprintf(
-                        $this->translator->translate('Something is wrong with the user table, setup can\'t proceed. Error message: %s'),
-                        $e->getMessage()
-                        );
+                    $this->translator->translate('Something is wrong with the user table, setup can\'t proceed. Error message: %s'),
+                    $e->getMessage()
+                );
                 return false;
             }
         } else {
@@ -288,6 +310,6 @@ class DatabaseHelper
      */
     public function setDbConfigArray(array $dbConfig) {
         $this->dbConfig = $dbConfig;
-        $this->dbAdapter = new \Zend\Db\Adapter\Adapter($dbConfig);
+        $this->dbAdapter = new Adapter($dbConfig);
     }
 }
