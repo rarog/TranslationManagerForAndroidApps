@@ -51,7 +51,7 @@ CREATE TABLE app (
     path_to_res_folder VARCHAR(4096) DEFAULT NULL,
     git_repository     VARCHAR(4096) DEFAULT NULL,
     git_username       VARCHAR(255) DEFAULT NULL,
-    git_password       VARCHAR(255) DEFAULT NULL,
+    git_password       VARCHAR(1024) DEFAULT NULL,
     git_user           VARCHAR(255) DEFAULT NULL,
     git_email          VARCHAR(255) DEFAULT NULL,
     FOREIGN KEY (team_id) REFERENCES team (id) ON DELETE SET NULL ON UPDATE CASCADE

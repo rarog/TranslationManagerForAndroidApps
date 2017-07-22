@@ -126,6 +126,11 @@ return [
             ],
         ],
     ],
+    'service_manager' => [
+        'factories' => [
+            Model\Helper\EncryptionHelper::class => Factory\Model\EncryptionHelperFactory::class,
+        ],
+    ],
     'translator' => [
         'translation_file_patterns' => [
             [

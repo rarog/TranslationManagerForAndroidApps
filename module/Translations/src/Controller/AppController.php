@@ -18,6 +18,7 @@ use Translations\Model\TeamTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\ViewModel;
+use Translations\Model\Helper\EncryptionHelper;
 
 class AppController extends AbstractActionController
 {
@@ -45,6 +46,11 @@ class AppController extends AbstractActionController
      * @var Translator
      */
     private $translator;
+
+    /**
+     * @var EncryptionHelper
+     */
+    private $encryptionHelper;
 
     /**
      * Helper to return all teams as key => val array
@@ -94,13 +100,15 @@ class AppController extends AbstractActionController
      * @param TeamTable $teamTable
      * @param UserSettingsTable $userSettingsTable
      * @param Translator $translator
+     * @param EncryptionHelper $encryptionHelper
      */
-    public function __construct(AppTable $appTable, TeamTable $teamTable, UserSettingsTable $userSettingsTable, Translator $translator)
+    public function __construct(AppTable $appTable, TeamTable $teamTable, UserSettingsTable $userSettingsTable, Translator $translator, EncryptionHelper $encryptionHelper)
     {
         $this->appTable = $appTable;
         $this->teamTable = $teamTable;
         $this->userSettingsTable = $userSettingsTable;
         $this->translator = $translator;
+        $this->encryptionHelper = $encryptionHelper;
     }
 
     /**
@@ -278,8 +286,15 @@ class AppController extends AbstractActionController
             return $viewData;
         }
 
-        if (($app->GitPassword == '') && ($request->getPost('git_password_delete') != '1')) {
+        if ($request->getPost('git_password_delete') == '1') {
+            // Password should be deleted
+            $app->GitPassword = '';
+        } elseif ($app->GitPassword == '') {
+            // No new password entered - use old
             $app->GitPassword = $oldPassword;
+        } else {
+            // New password - encrypt it
+            $app->GitPassword = $this->encryptionHelper->encrypt($app->GitPassword);
         }
 
         $this->appTable->saveApp($app);
