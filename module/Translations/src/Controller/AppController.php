@@ -146,6 +146,9 @@ class AppController extends AbstractActionController
         }
 
         $app->exchangeArray($form->getData());
+        if ($app->GitPassword != '') {
+            $app->GitPassword = $this->encryptionHelper->encrypt($app->GitPassword);
+        }
         $app = $this->appTable->saveApp($app);
 
         $path =  $this->getAppPath($app->id);
