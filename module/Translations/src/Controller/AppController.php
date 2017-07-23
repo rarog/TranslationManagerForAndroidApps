@@ -120,6 +120,7 @@ class AppController extends AbstractActionController
     public function addAction()
     {
         $form = new AppForm();
+        $form->remove('git_password_delete');
         $teamField = $form->get('team_id')->setValueOptions($this->getAllTeamsAsArray());
 
         if ($this->zfcUserAuthentication()->hasIdentity() &&
