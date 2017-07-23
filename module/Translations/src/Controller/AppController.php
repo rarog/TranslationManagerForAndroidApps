@@ -13,12 +13,12 @@ use Translations\Form\AppForm;
 use Translations\Form\DeleteHelperForm;
 use Translations\Model\App;
 use Translations\Model\AppTable;
+use Translations\Model\Helper\EncryptionHelper;
 use Translations\Model\Helper\FileHelper;
 use Translations\Model\TeamTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\ViewModel;
-use Translations\Model\Helper\EncryptionHelper;
 
 class AppController extends AbstractActionController
 {
