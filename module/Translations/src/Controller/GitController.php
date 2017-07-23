@@ -12,10 +12,12 @@ use RuntimeException;
 use Translations\Form\GitCloneForm;
 use Translations\Model\App;
 use Translations\Model\AppTable;
+use Translations\Model\Helper\EncryptionHelper;
 use Translations\Model\Helper\FileHelper;
 use Zend\InputFilter\InputFilter;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
+use Zend\Uri\Http;
 use Zend\View\Model\ViewModel;
 
 class GitController extends AbstractActionController
@@ -29,6 +31,11 @@ class GitController extends AbstractActionController
      * @var Translator
      */
     private $translator;
+
+    /**
+     * @var EncryptionHelper
+     */
+    private $encryptionHelper;
 
     /**
      * @var string
@@ -117,11 +124,13 @@ class GitController extends AbstractActionController
      *
      * @param AppTable $appTable
      * @param Translator $translator
+     * @param EncryptionHelper $encryptionHelper
      */
-    public function __construct(AppTable $appTable, Translator $translator)
+    public function __construct(AppTable $appTable, Translator $translator, EncryptionHelper $encryptionHelper)
     {
         $this->appTable = $appTable;
         $this->translator = $translator;
+        $this->encryptionHelper = $encryptionHelper;
     }
 
     /**
@@ -173,7 +182,16 @@ class GitController extends AbstractActionController
                 FileHelper::rmdirRecursive($this->getAppPath($app), true);
 
                 $git = $this->getGit($app);
-                $git->cloneRepository($app->GitRepository);
+
+                $uri = new Http($app->GitRepository);
+                if ($app->GitUsername != '') {
+                    $uri->setUserInfo($app->GitUsername);
+                }
+                if (($app->GitPassword != '') && (($password = $this->encryptionHelper->decrypt($app->GitPassword)) !== false)) {
+                    $uri->setPassword($password);
+                }
+
+                $git->cloneRepository($uri->toString());
 
                 $viewData['messages'][] = [
                     'canClose' => true,
