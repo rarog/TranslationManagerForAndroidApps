@@ -30,7 +30,7 @@ return [
                 'permission' => 'userBase',
             ],
             [
-                'label'      => _('Translations'),
+                'label'      => _('Translation management'),
                 'route'      => '#',
                 'icon'       => 'glyphicon glyphicon-dashboard',
                 'permission' => 'userBase',
@@ -46,6 +46,12 @@ return [
                         'route'      => 'app',
                         'icon'       => 'glyphicon glyphicon-phone',
                         'permission' => 'app.view',
+                    ],
+                    [
+                        'label'      => _('Translations'),
+                        'route'      => 'translations',
+                        'icon'       => 'fa fa-language',
+                        'permission' => 'translations.view',
                     ],
                 ],
             ],

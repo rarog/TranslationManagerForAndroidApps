@@ -19,6 +19,7 @@ return [
             Controller\SyncController::class            => Factory\Controller\SyncControllerFactory::class,
             Controller\TeamController::class            => Factory\Controller\TeamControllerFactory::class,
             Controller\TeamMemberController::class      => Factory\Controller\TeamMemberControllerFactory::class,
+            Controller\TranslationsController::class    => Factory\Controller\TranslationsControllerFactory::class,
         ],
     ],
     'router' => [
@@ -120,6 +121,21 @@ return [
                     ],
                     'defaults'    => [
                         'controller' => Controller\TeamMemberController::class,
+                        'action'     => 'index',
+                    ],
+                ],
+            ],
+            'translations'     => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'       => '/translations[/:action[/app/:appId/resource/:resourceId]]',
+                    'constraints' => [
+                        'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'appId'      => '[0-9]+',
+                        'resourceId' => '[0-9]+',
+                    ],
+                    'defaults'    => [
+                        'controller' => Controller\TranslationsController::class,
                         'action'     => 'index',
                     ],
                 ],

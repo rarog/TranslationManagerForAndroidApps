@@ -200,6 +200,11 @@ return [
                         'appresourcefile.view',
                     ],
                 ],
+                'translations*'       => [
+                    'permissions' => [
+                        'translations.view',
+                    ],
+                ],
             ]
         ],
 
@@ -271,6 +276,7 @@ return [
                 ],
                 'user'      => [
                     'permissions' => [
+                        'translations.view',
                         'userBase',
                     ],
                 ],
