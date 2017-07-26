@@ -30,7 +30,7 @@ return [
                 'permission' => 'userBase',
             ],
             [
-                'label'      => _('Translation management'),
+                'label'      => _('Dashboard'),
                 'route'      => '#',
                 'icon'       => 'glyphicon glyphicon-dashboard',
                 'permission' => 'userBase',
