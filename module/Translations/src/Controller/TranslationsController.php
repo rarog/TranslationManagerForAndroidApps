@@ -35,14 +35,14 @@ class TranslationsController extends AbstractActionController
      */
     public function indexAction()
     {
-        if ($this->isGranted('team.viewAll')) {
-            $apps = $this->appTable->fetchAll();
-        } else {
-            $apps = $this->appTable->fetchAllAllowedToUser($this->zfcUserAuthentication()->getIdentity()->getId());
+        $userId = 0;
+        if (!$this->isGranted('team.viewAll')) {
+            $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
         }
 
+        $values = $this->appTable->getAllAppsAndResourcesAllowedToUser($userId);
+
         return [
-            'apps'  => $apps,
         ];
     }
 }

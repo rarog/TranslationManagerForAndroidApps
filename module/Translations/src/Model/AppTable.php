@@ -11,6 +11,7 @@ use RuntimeException;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Sql\Sql;
 
 class AppTable
 {
@@ -179,5 +180,50 @@ class AppTable
     {
         $id = (int) $id;
         $this->tableGateway->delete(['id' => $id]);
+    }
+
+    /**
+     * Gets array of all apps and their resources allowed to user
+     *
+     * @param int $userId
+     * @return array
+     */
+    public function getAllAppsAndResourcesAllowedToUser($userId)
+    {
+        $userId = (int) $userId;
+
+        $select = new Select;
+        $select->columns([
+            'app_id'   => 'id',
+            'app_name' => 'name',
+        ])->from($this->tableGateway->table);
+
+        if ($userId > 0) {
+            $onTeamMember = new Expression('? = ? AND ? = ?', [
+                ['team_member.team_id' => Expression::TYPE_IDENTIFIER],
+                ['app.team_id' => Expression::TYPE_IDENTIFIER],
+                ['team_member.user_id' => Expression::TYPE_IDENTIFIER],
+                [$userId  => Expression::TYPE_VALUE]]);
+            $select->join('team_member', $onTeamMember, [], Select::JOIN_INNER);
+        }
+
+        $select->join('app_resource', 'app_resource.app_id = app.id', [
+            'app_resource_id' => 'id',
+            'locale',
+        ], $select::JOIN_INNER)->order([
+            'app.name',
+            'app_resource.locale'
+        ]);
+
+        $returnArray = [];
+
+        $sql = new Sql($this->tableGateway->adapter, $this->tableGateway->table);
+        $results = $sql->prepareStatementForSqlObject($select)->execute();
+
+        foreach ($results as $result) {
+            $returnArray[] = $result;
+        }
+
+        return $returnArray;
     }
 }
