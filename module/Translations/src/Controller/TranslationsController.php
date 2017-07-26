@@ -9,6 +9,7 @@ namespace Translations\Controller;
 
 use Translations\Model\AppTable;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\ViewModel;
 
 class TranslationsController extends AbstractActionController
@@ -22,10 +23,12 @@ class TranslationsController extends AbstractActionController
      * Constructor
      *
      * @param AppTable $appTable
+     * @param Translator $translator
      */
-    public function __construct(AppTable $appTable)
+    public function __construct(AppTable $appTable, Translator $translator)
     {
         $this->appTable = $appTable;
+        $this->translator = $translator;
     }
 
     /**
@@ -40,9 +43,23 @@ class TranslationsController extends AbstractActionController
             $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
         }
 
+        $localeNames = $this->configHelp('settings')->locale_names->toArray();
+        $localeNames = $localeNames[$this->translator->getLocale()];
+
+        $apps = [];
+        $resources = [];
         $values = $this->appTable->getAllAppsAndResourcesAllowedToUser($userId);
+        foreach ($values as $value) {
+            if (!array_key_exists($value['app_id'], $apps)) {
+                $apps[$value['app_id']] = $value['app_name'];
+            }
+
+            $resources[$value['app_id']][$value['app_resource_id']] = $localeNames[$value['locale']];
+        }
 
         return [
+            'apps' => $apps,
+            'resources' => $resources,
         ];
     }
 }
