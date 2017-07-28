@@ -118,6 +118,8 @@ CREATE TABLE `resource_file_entry_string` (
     `app_resource_id`        INT(11) UNSIGNED NOT NULL,
     `resource_file_entry_id` INT(11) UNSIGNED NOT NULL,
     `value`                  VARCHAR(20480) NOT NULL,
+    `last_change`            BIGINT(20) NOT NULL,
+    INDEX `resource_file_entry_string_ik1` (`last_change`),
     INDEX `resource_file_entry_string_fk1` (`app_resource_id`),
     INDEX `resource_file_entry_string_fk2` (`resource_file_entry_id`),
     CONSTRAINT `resource_file_entry_string_fk1` FOREIGN KEY (`app_resource_id`) REFERENCES `app_resource` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,

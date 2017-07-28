@@ -74,6 +74,7 @@ class ResourceFileEntryStringTable
             'app_resource_id'        => $resourceFileEntryString->AppResourceId,
             'resource_file_entry_id' => $resourceFileEntryString->ResourceFileEntryId,
             'value'                  => $resourceFileEntryString->Value,
+            'last_change'            => $resourceFileEntryString->LastChange,
         ];
 
         $id = (int) $resourceFileEntryString->Id;

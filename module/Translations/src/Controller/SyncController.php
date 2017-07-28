@@ -300,6 +300,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
 
         $resourceFileEntries = [];
         $resourceFileEntryKeys = [];
+        $timestamp = strtotime(gmdate('Y-m-d H:i:s'));
         $entriesProcessed = 0;
         $entriesUpdated = 0;
         $entriesSkippedExistOnlyInDb = 0;
@@ -392,6 +393,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
                         $resourceFileEntryString = $resourceFileEntryStrings[$resourceFileEntry->Id];
                         if ($resourceFileEntryString->Value !== $node->textContent) {
                             $resourceFileEntryString->Value = $node->textContent;
+                            $resourceFileEntryString->LastChange = $timestamp;
                             $this->resourceFileEntryStringTable->saveResourceFileEntryString($resourceFileEntryString);
 
                             $entriesUpdated++;

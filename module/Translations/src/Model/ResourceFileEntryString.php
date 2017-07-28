@@ -8,7 +8,6 @@
 namespace Translations\Model;
 
 use DomainException;
-use Zend\Filter\Boolean;
 use Zend\Filter\StringTrim;
 use Zend\Filter\StripTags;
 use Zend\Filter\ToInt;
@@ -41,9 +40,9 @@ class ResourceFileEntryString implements ArraySerializableInterface, InputFilter
     private $value;
 
     /**
-     * @var null|boolean
+     * @var null|int
      */
-    private $deleted;
+    private $lastChange;
 
     /**
      * @var InputFilter
@@ -159,6 +158,23 @@ class ResourceFileEntryString implements ArraySerializableInterface, InputFilter
     }
 
     /**
+     * @return null|int
+     */
+    public function getLastChange() {
+        return $this->lastChange;
+    }
+
+    /**
+     * @param null|int $lastChange
+     */
+    public function setLastChange($lastChange = null) {
+        if (!is_null($lastChange)) {
+            $lastChange= (int) $lastChange;
+        }
+        $this->lastChange = $lastChange;
+    }
+
+    /**
      * {@inheritDoc}
      * @see \Zend\InputFilter\InputFilterAwareInterface::setInputFilter()
      */
@@ -205,7 +221,7 @@ class ResourceFileEntryString implements ArraySerializableInterface, InputFilter
         ]);
         $inputFilter->add([
             'name'     => 'value',
-            'required' => false,
+            'required' => true,
             'filters'  => [
                 ['name' => StripTags::class],
                 ['name' => StringTrim::class],
@@ -219,6 +235,13 @@ class ResourceFileEntryString implements ArraySerializableInterface, InputFilter
                         'max' => 20480,
                     ],
                 ],
+            ],
+        ]);
+        $inputFilter->add([
+            'name'       => 'last_change',
+            'required'   => true,
+            'filters'  => [
+                ['name' => ToInt::class],
             ],
         ]);
 
@@ -236,6 +259,7 @@ class ResourceFileEntryString implements ArraySerializableInterface, InputFilter
         $this->AppResourceId       = !empty($data['app_resource_id']) ? $data['app_resource_id'] : null;
         $this->ResourceFileEntryId = !empty($data['resource_file_entry_id']) ? $data['resource_file_entry_id'] : null;
         $this->Value               = !empty($data['value']) ? $data['value'] : null;
+        $this->LastChange          = !empty($data['last_change']) ? $data['last_change'] : null;
     }
 
     /**
@@ -249,6 +273,7 @@ class ResourceFileEntryString implements ArraySerializableInterface, InputFilter
             'app_resource_id'        => $this->AppResourceId,
             'resource_file_entry_id' => $this->ResourceFileEntryId,
             'value'                  => $this->Value,
+            'last_change'            => $this->LastChange,
         ];
     }
 }
