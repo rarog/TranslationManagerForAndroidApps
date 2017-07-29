@@ -3,22 +3,8 @@ $title = $this->translate('Translations');
 $this->headTitle($title);
 $this->bootstrapSelectHelper();
 $this->dataTablesInitHelper(['table' => '#translations']);
-$this->inlineScript()->appendScript('
-var resources = ' . json_encode($resources) . ';
-$("#app").on("changed.bs.select", function(event, clickedIndex, newValue, oldValue) {
-  var resourceSelect = $("#resource");
-  $("option", resourceSelect).remove();
-  if (newValue) {
-    var key = $(this).val();
-    if (key in resources) {
-      $.each(resources[key], function(index, value) {
-        // TODO: add options to resourceSelect
-      });
-    }
-  }
-  resourceSelect.selectpicker("refresh");
-});
-');
+$this->inlineScript()->appendScript('var resources = ' . json_encode($resources) . ';')
+                     ->appendFile($this->basePath('js/translations.min.js'));
 ?>
 <div class="row" id="header">
   <div class="col-lg-12">
