@@ -12,11 +12,18 @@ use Zend\View\Model\ViewModel;
 
 class IndexController extends AbstractActionController
 {
+
+    /**
+     * @return \Zend\View\Model\ViewModel
+     */
     public function aboutAction()
     {
         return [];
     }
 
+    /**
+     * @return \Zend\View\Model\ViewModel
+     */
     public function indexAction()
     {
         return [];
