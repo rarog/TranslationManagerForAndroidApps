@@ -9,6 +9,12 @@ $("#app").on("changed.bs.select", function(event, clickedIndex, newValue, oldVal
   var resourceSelect = $("#resource");
   $("option", resourceSelect).remove();
   if (newValue) {
+    var key = $(this).val();
+    if (key in resources) {
+      $.each(resources[key], function(index, value) {
+        // TODO: add options to resourceSelect
+      });
+    }
   }
   resourceSelect.selectpicker("refresh");
 });
