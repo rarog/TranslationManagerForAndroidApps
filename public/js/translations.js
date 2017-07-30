@@ -25,6 +25,7 @@ function hideTranslationRow(hide) {
     var node = $("#translationRow");
     if (hide) {
         node.addClass("hidden");
+        $("translationTableBody").empty();
     } else {
         node.removeClass("hidden");
     }
@@ -60,7 +61,21 @@ $("#resource").on("changed.bs.select", function(event, clickedIndex, newValue, o
 
         var app = $("#app").val();
         var resource = $(this).val();
-        // TODO: Load translations
+
+        $.ajax({
+            url: translationsPath + "/app/" + app + "/resource/" + resource,
+            dataType: "html",
+            method: "GET"
+        })
+        .done( function (data) {
+            $("translationTableBody").html(data);
+            hideSelectionHint(true);
+            hideSpinner(true);
+            hideTranslationRow(false);
+        })
+        .fail( function (jqXHR, textStatus, errorThrown) {
+            setSelectionNeededState();
+        });
     } else {
         setSelectionNeededState();
     }
