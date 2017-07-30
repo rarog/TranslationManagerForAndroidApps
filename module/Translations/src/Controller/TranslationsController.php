@@ -20,6 +20,36 @@ class TranslationsController extends AbstractActionController
     private $appTable;
 
     /**
+     * Check if current user has permission to the app and return it
+     *
+     * @param int $appId
+     * @return boolean|\Translations\Model\App
+     */
+    private function getApp($appId)
+    {
+        $appId = (int) $appId;
+
+        if (0 === $appId) {
+            return false;
+        }
+
+        try {
+            $app = $this->appTable->getApp($appId);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        if (!$this->isGranted('app.viewAll') &&
+            !$this->appTable->hasUserPermissionForApp(
+                $this->zfcUserAuthentication()->getIdentity()->getId(),
+                $app->Id)) {
+            return false;
+        }
+
+        return $app;
+    }
+
+    /**
      * Constructor
      *
      * @param AppTable $appTable
@@ -61,5 +91,21 @@ class TranslationsController extends AbstractActionController
             'apps' => $apps,
             'resources' => $resources,
         ];
+    }
+
+    /**
+     * App resource add action
+     *
+     * @throws RuntimeException
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function listtranslationsAction()
+    {
+        $appId = (int) $this->params()->fromRoute('appId', 0);
+        $app = $this->getApp($appId);
+
+        if ($app === false) {
+            return [];
+        }
     }
 }
