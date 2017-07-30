@@ -64,11 +64,15 @@ $("#resource").on("changed.bs.select", function(event, clickedIndex, newValue, o
 
         $.ajax({
             url: translationsPath + "/app/" + app + "/resource/" + resource,
-            dataType: "html",
+            dataType: "json",
             method: "GET"
         })
-        .done( function (data) {
-            $("translationTableBody").html(data);
+        .done( function (data) {debugger;
+            var table = $('#translations').DataTable();
+
+            table.clear()
+                .rows.add(data)
+                .draw();
             hideSelectionHint(true);
             hideSpinner(true);
             hideTranslationRow(false);

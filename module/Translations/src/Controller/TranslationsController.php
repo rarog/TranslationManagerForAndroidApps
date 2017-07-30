@@ -10,6 +10,7 @@ namespace Translations\Controller;
 use Translations\Model\AppTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 class TranslationsController extends AbstractActionController
@@ -104,8 +105,16 @@ class TranslationsController extends AbstractActionController
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
 
+        $viewModel = new JsonModel();
+        $viewModel->setTerminal(true);
+
         if ($app === false) {
-            return [];
+            return new JsonModel();
         }
+
+        return new JsonModel([
+            ['Demo a','Demo a','Demo a'],
+            ['Demo b','Demo b','Demo b'],
+        ]);
     }
 }
