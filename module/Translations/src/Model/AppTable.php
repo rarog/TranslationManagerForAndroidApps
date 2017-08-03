@@ -10,8 +10,8 @@ namespace Translations\Model;
 use RuntimeException;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
-use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Sql\Sql;
+use Zend\Db\TableGateway\TableGateway;
 
 class AppTable
 {

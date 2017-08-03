@@ -8,7 +8,9 @@
 namespace Translations\Model;
 
 use RuntimeException;
+use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
 class ResourceFileEntryStringTable
@@ -105,5 +107,64 @@ class ResourceFileEntryStringTable
     {
         $id = (int) $id;
         $this->tableGateway->delete(['id' => $id]);
+    }
+
+    /**
+    * Gets array of all strings for translation
+    *
+    * @param int $appId
+    * @param int $appResourceId
+    * @return array
+    */
+    public function getAllResourceFileEntryStringsForTranslations($appId, $appResourceId)
+    {
+        $appId = (int) $appId;
+        $appResourceId = (int) $appResourceId;
+
+        $select = new Select;
+        $select->columns([
+            'app_resource_id',
+            'resource_file_entry_id',
+            'default_value'       => 'value',
+            'default_last_change' => 'last_change',
+        ])->from(['default' => $this->tableGateway->table]);
+
+        $onAppResource = new Expression('? = ? AND ? = ? AND ? = ?', [
+            ['app_resource.id'         => Expression::TYPE_IDENTIFIER],
+            ['default.app_resource_id' => Expression::TYPE_IDENTIFIER],
+            ['app_resource.app_id'     => Expression::TYPE_IDENTIFIER],
+            [$appId                    => Expression::TYPE_VALUE],
+            ['app_resource.name'       => Expression::TYPE_IDENTIFIER],
+            ['values'                  => Expression::TYPE_VALUE]]);
+        $select->join('app_resource', $onAppResource, [], Select::JOIN_INNER);
+
+        $onResourceFileEntry = new Expression('? = ? AND ? = ?', [
+            ['resource_file_entry.id'         => Expression::TYPE_IDENTIFIER],
+            ['default.resource_file_entry_id' => Expression::TYPE_IDENTIFIER],
+            ['resource_file_entry.deleted'    => Expression::TYPE_IDENTIFIER],
+            [0                                => Expression::TYPE_VALUE]]);
+        $select->join('resource_file_entry', $onResourceFileEntry, [], Select::JOIN_INNER);
+
+        $onResourceFileEntryString = new Expression('? = ? AND ? = ?', [
+            ['resource_file_entry_string.resource_file_entry_id' => Expression::TYPE_IDENTIFIER],
+            ['default.resource_file_entry_id'                    => Expression::TYPE_IDENTIFIER],
+            ['resource_file_entry_string.app_resource_id'        => Expression::TYPE_IDENTIFIER],
+            [$appResourceId                                      => Expression::TYPE_VALUE]]);
+        $select->join('resource_file_entry_string', $onResourceFileEntryString, [
+            'id',
+            'value',
+            'last_change',
+        ], Select::JOIN_LEFT);
+
+        $returnArray = [];
+
+        $sql = new Sql($this->tableGateway->adapter, $this->tableGateway->table);
+        $results = $sql->prepareStatementForSqlObject($select)->execute();
+
+        foreach ($results as $result) {
+            $returnArray[] = $result;
+        }
+
+        return $returnArray;
     }
 }

@@ -7,11 +7,14 @@
 
 namespace Translations\Controller;
 
+use Translations\Model\AppResourceTable;
 use Translations\Model\AppTable;
+use Translations\Model\ResourceFileEntryStringTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
+use Zend\Escaper\Escaper;
 
 class TranslationsController extends AbstractActionController
 {
@@ -19,6 +22,16 @@ class TranslationsController extends AbstractActionController
      * @var AppTable
      */
     private $appTable;
+
+    /**
+     * @var AppResourceTable
+     */
+    private $appResourceTable;
+
+    /**
+     * @var ResourceFileEntryStringTable
+     */
+    private $resourceFileEntryStringTable;
 
     /**
      * Check if current user has permission to the app and return it
@@ -54,11 +67,15 @@ class TranslationsController extends AbstractActionController
      * Constructor
      *
      * @param AppTable $appTable
+     * @param AppResourceTable $appResourceTable
+     * @param ResourceFileEntryStringTable $resourceFileEntryStringTable
      * @param Translator $translator
      */
-    public function __construct(AppTable $appTable, Translator $translator)
+    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, ResourceFileEntryStringTable $resourceFileEntryStringTable, Translator $translator)
     {
         $this->appTable = $appTable;
+        $this->appResourceTable = $appResourceTable;
+        $this->resourceFileEntryStringTable = $resourceFileEntryStringTable;
         $this->translator = $translator;
     }
 
@@ -103,6 +120,8 @@ class TranslationsController extends AbstractActionController
     public function listtranslationsAction()
     {
         $appId = (int) $this->params()->fromRoute('appId', 0);
+        $resourceId = (int) $this->params()->fromRoute('resourceId', 0);
+
         $app = $this->getApp($appId);
 
         $viewModel = new JsonModel();
@@ -112,9 +131,30 @@ class TranslationsController extends AbstractActionController
             return new JsonModel();
         }
 
-        return new JsonModel([
-            ['Demo a','Demo a','Demo a'],
-            ['Demo b','Demo b','Demo b'],
-        ]);
+        try {
+            $resource = $this->appResourceTable->fetchAll([
+                'id'     => $resourceId,
+                'app_id' => $appId,
+            ]);
+        } catch (\Exception $e) {
+            $resource === false;
+        }
+
+        if ($resource === false) {
+            return new JsonModel();
+        }
+
+        $escaper = new Escaper('utf-8');
+
+        $output = [];
+        $entries = $this->resourceFileEntryStringTable->getAllResourceFileEntryStringsForTranslations($appId, $resourceId);
+        foreach ($entries as $entry) {
+            $output[] = [
+                $escaper->escapeHtml($entry['default_value']),
+                $escaper->escapeHtml($entry['value']),
+                '',
+            ];
+        }
+        return new JsonModel($output);
     }
 }

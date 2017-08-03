@@ -20,6 +20,8 @@ class TranslationsControllerFactory implements FactoryInterface
     {
         return new \Translations\Controller\TranslationsController(
             $container->get(\Translations\Model\AppTable::class),
+            $container->get(\Translations\Model\AppResourceTable::class),
+            $container->get(\Translations\Model\ResourceFileEntryStringTable::class),
             $container->get(\Zend\Mvc\I18n\Translator::class)
         );
     }
