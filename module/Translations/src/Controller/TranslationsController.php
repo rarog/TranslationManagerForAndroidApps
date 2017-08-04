@@ -10,11 +10,11 @@ namespace Translations\Controller;
 use Translations\Model\AppResourceTable;
 use Translations\Model\AppTable;
 use Translations\Model\ResourceFileEntryStringTable;
+use Zend\Escaper\Escaper;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
-use Zend\Escaper\Escaper;
 
 class TranslationsController extends AbstractActionController
 {
