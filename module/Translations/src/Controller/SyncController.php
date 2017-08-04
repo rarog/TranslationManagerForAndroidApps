@@ -349,12 +349,20 @@ class SyncController extends AbstractActionController implements AppHelperInterf
                     }
                     $name = $attribute->value;
 
+                    $attribute = $attributes->getNamedItem('translatable');
+                    if (!isset($attribute)) {
+                        $translatable = true;
+                    } else {
+                        $translatable = $attribute->value !== 'false';
+                    }
+
                     if (!array_key_exists($name, $resourceFileEntries[$resourceFile->Name])) {
                         if ($resource->Name === 'values') {
                             $resourceFileEntry = new ResourceFileEntry();
                             $resourceFileEntry->AppResourceFileId = $resourceFile->Id;
                             $resourceFileEntry->ResourceTypeId = array_search($node->tagName, $resourceTypes);
                             $resourceFileEntry->Name = $name;
+                            $resourceFileEntry->Translatable = $translatable;
                             $resourceFileEntries[$resourceFile->Name][$name] = $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
                         } else {
                             $entriesSkippedNotInDefault++;
@@ -371,6 +379,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
                      * @var ResourceFileEntry $resourceFileEntry
                      */
                     $resourceFileEntry = $resourceFileEntries[$resourceFile->Name][$name];
+                    $entryUpdated = false;
 
                     if ($resourceFileEntry->ResourceTypeId !== array_search($node->tagName, $resourceTypes)) {
                         $resourceFileEntry->Deleted = true;
@@ -380,7 +389,14 @@ class SyncController extends AbstractActionController implements AppHelperInterf
                         $resourceFileEntry->AppResourceFileId = $resourceFile->Id;
                         $resourceFileEntry->ResourceTypeId = array_search($node->tagName, $resourceTypes);
                         $resourceFileEntry->Name = $name;
+                        $resourceFileEntry->Translatable = $translatable;
                         $resourceFileEntries[$resourceFile->Name][$name] = $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
+                    } elseif ($resourceFileEntry->Translatable !== $translatable) {
+                        $resourceFileEntry->Translatable = $translatable;//print_r($resourceFileEntry);
+                        $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
+
+                        $entriesUpdated++;
+                        $entryUpdated = true;
                     }
 
                     if ($resourceFileEntry->ResourceTypeId === array_search('string', $resourceTypes)) {
@@ -397,7 +413,9 @@ class SyncController extends AbstractActionController implements AppHelperInterf
                             $resourceFileEntryString->LastChange = $timestamp;
                             $this->resourceFileEntryStringTable->saveResourceFileEntryString($resourceFileEntryString);
 
-                            $entriesUpdated++;
+                            if (!$entryUpdated) {
+                                $entriesUpdated++;
+                            }
                         }
                     }
 
