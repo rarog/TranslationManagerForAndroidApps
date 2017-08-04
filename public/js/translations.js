@@ -29,7 +29,6 @@ function hideTranslationRow(hide) {
     } else {
         node.removeClass("hidden");
         var table = $('#translations').DataTable();
-        table.columns.adjust().draw();
     }
 }
 
