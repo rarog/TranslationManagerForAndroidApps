@@ -74,7 +74,8 @@ class Module implements ConfigProviderInterface, ServiceProviderInterface
                 },
                 Model\ResourceFileEntryStringTable::class => function ($container) {
                     $tableGateway = $container->get(Model\ResourceFileEntryStringTableGateway::class);
-                    return new Model\ResourceFileEntryStringTable($tableGateway);
+                    $appResourceTable = $container->get(Model\AppResourceTable::class);
+                    return new Model\ResourceFileEntryStringTable($tableGateway, $appResourceTable);
                 },
                 Model\ResourceFileEntryStringTableGateway::class => function ($container) {
                     $dbAdapter = $container->get(AdapterInterface::class);

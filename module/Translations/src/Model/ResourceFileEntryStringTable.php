@@ -8,6 +8,7 @@
 namespace Translations\Model;
 
 use RuntimeException;
+use Translations\Model\AppResourceTable;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
@@ -21,13 +22,20 @@ class ResourceFileEntryStringTable
     private $tableGateway;
 
     /**
+     * @var AppResourceTable
+     */
+    private $appResourceTable;
+
+    /**
      * Constructor
      *
      * @param TableGateway $tableGateway
+     * @param AppResourceTable $appResourceTable
      */
-    public function __construct(TableGateway $tableGateway)
+    public function __construct(TableGateway $tableGateway, AppResourceTable $appResourceTable)
     {
         $this->tableGateway = $tableGateway;
+        $this->appResourceTable = $appResourceTable;
     }
 
     /**
@@ -123,6 +131,12 @@ class ResourceFileEntryStringTable
         $appResourceId = (int) $appResourceId;
         $defaultId = (int) $defaultId;
 
+        try {
+            $defaultAppResource = $this->appResourceTable->getAppResourceByAppIdAndName($appId, 'values');
+        } catch (\Exception $e) {
+            $defaultAppResource = false;
+        }
+
         $select = new Select;
         $select->columns([
             'default_id'          => 'id',
@@ -141,11 +155,21 @@ class ResourceFileEntryStringTable
             ['values'                  => Expression::TYPE_VALUE]]);
         $select->join('app_resource', $onAppResource, [], Select::JOIN_INNER);
 
-        $onResourceFileEntry = new Expression('? = ? AND ? = ?', [
-            ['resource_file_entry.id'         => Expression::TYPE_IDENTIFIER],
-            ['default.resource_file_entry_id' => Expression::TYPE_IDENTIFIER],
-            ['resource_file_entry.deleted'    => Expression::TYPE_IDENTIFIER],
-            [0                                => Expression::TYPE_VALUE]]);
+        if (($defaultAppResource === false) || ($defaultAppResource->Id !== $appResourceId)) {
+            $onResourceFileEntry = new Expression('? = ? AND ? = ? AND ? = ?', [
+                ['resource_file_entry.id'           => Expression::TYPE_IDENTIFIER],
+                ['default.resource_file_entry_id'   => Expression::TYPE_IDENTIFIER],
+                ['resource_file_entry.deleted'      => Expression::TYPE_IDENTIFIER],
+                [0                                  => Expression::TYPE_VALUE],
+                ['resource_file_entry.translatable' => Expression::TYPE_IDENTIFIER],
+                [1                                  => Expression::TYPE_VALUE]]);
+        } else {
+            $onResourceFileEntry = new Expression('? = ? AND ? = ?', [
+                ['resource_file_entry.id'           => Expression::TYPE_IDENTIFIER],
+                ['default.resource_file_entry_id'   => Expression::TYPE_IDENTIFIER],
+                ['resource_file_entry.deleted'      => Expression::TYPE_IDENTIFIER],
+                [0                                  => Expression::TYPE_VALUE]]);
+        }
         $select->join('resource_file_entry', $onResourceFileEntry, ['name'], Select::JOIN_INNER);
 
         $onResourceFileEntryString = new Expression('? = ? AND ? = ?', [
