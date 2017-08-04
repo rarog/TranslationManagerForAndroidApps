@@ -343,10 +343,11 @@ class SyncController extends AbstractActionController implements AppHelperInterf
                         continue;
                     }
 
-                    $name = $attributes->getNamedItem('name')->value;
-                    if (!isset($name)) {
+                    $attribute = $attributes->getNamedItem('name');
+                    if (!isset($attribute)) {
                         continue;
                     }
+                    $name = $attribute->value;
 
                     if (!array_key_exists($name, $resourceFileEntries[$resourceFile->Name])) {
                         if ($resource->Name === 'values') {
