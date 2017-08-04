@@ -392,7 +392,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
                         $resourceFileEntry->Translatable = $translatable;
                         $resourceFileEntries[$resourceFile->Name][$name] = $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
                     } elseif ($resourceFileEntry->Translatable !== $translatable) {
-                        $resourceFileEntry->Translatable = $translatable;//print_r($resourceFileEntry);
+                        $resourceFileEntry->Translatable = $translatable;
                         $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
 
                         $entriesUpdated++;
