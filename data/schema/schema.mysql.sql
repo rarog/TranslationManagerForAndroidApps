@@ -96,9 +96,11 @@ CREATE TABLE `resource_file_entry` (
     `resource_type_id`     INT(11) UNSIGNED NOT NULL,
     `name`                 VARCHAR(255) NOT NULL,
     `deleted`              TINYINT(1) NOT NULL,
+    `translatable`         TINYINT(1) NOT NULL,
     INDEX `resource_file_entry_fk1` (`app_resource_file_id`),
     INDEX `resource_file_entry_fk2` (`resource_type_id`),
     INDEX `resource_file_entry_ik1` (`deleted`),
+    INDEX `resource_file_entry_ik2` (`translatable`),
     CONSTRAINT `resource_file_entry_fk1` FOREIGN KEY (`app_resource_file_id`) REFERENCES `app_resource_file` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT `resource_file_entry_fk2` FOREIGN KEY (`resource_type_id`) REFERENCES `resource_type` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

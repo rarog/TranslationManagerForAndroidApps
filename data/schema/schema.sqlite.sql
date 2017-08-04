@@ -92,11 +92,13 @@ CREATE TABLE resource_file_entry (
     resource_type_id     INTEGER NOT NULL,
     name                 TEXT NOT NULL,
     deleted              INTEGER NOT NULL,
+    translatable         INTEGER NOT NULL,
     FOREIGN KEY (app_resource_file_id) REFERENCES app_resource_file (id) ON DELETE SET NULL ON UPDATE CASCADE,
     FOREIGN KEY (resource_type_id) REFERENCES resource_type (id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 CREATE INDEX resource_file_entry_ik1 ON resource_file_entry (deleted);
+CREATE INDEX resource_file_entry_ik2 ON resource_file_entry (translatable);
 
 CREATE TRIGGER resource_file_id_becomes_null AFTER UPDATE ON resource_file_entry
 FOR EACH ROW

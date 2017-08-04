@@ -47,6 +47,11 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
     private $deleted;
 
     /**
+     * @var null|boolean
+     */
+    private $translatable;
+
+    /**
      * @var InputFilter
      */
     private $inputFilter;
@@ -64,6 +69,10 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
 
         if (!isset($this->deleted)) {
             $this->setDeleted(false);
+        }
+
+        if (!isset($this->translatable)) {
+            $this->setTranslatable(true);
         }
     }
 
@@ -181,6 +190,23 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
     }
 
     /**
+     * @return null|boolean
+     */
+    public function getTranslatable() {
+        return $this->translatable;
+    }
+
+    /**
+     * @param null|boolean $translatable
+     */
+    public function setTranslatable($translatable) {
+        if (!is_null($translatable)) {
+            $translatable = (boolean) $translatable;
+        }
+        $this->translatable = $translatable;
+    }
+
+    /**
      * {@inheritDoc}
      * @see \Zend\InputFilter\InputFilterAwareInterface::setInputFilter()
      */
@@ -253,6 +279,13 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
                 ['name' => Boolean::class],
             ],
         ]);
+        $inputFilter->add([
+            'name'       => 'translatable',
+            'required'   => false,
+            'filters'    => [
+                ['name' => Boolean::class],
+            ],
+        ]);
 
         $this->inputFilter = $inputFilter;
         return $this->inputFilter;
@@ -269,6 +302,7 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
         $this->ResourceTypeId    = !empty($data['resource_type_id']) ? $data['resource_type_id'] : null;
         $this->Name              = !empty($data['name']) ? $data['name'] : null;
         $this->Deleted           = !empty($data['deleted']) ? $data['deleted'] : null;
+        $this->Translatable      = !empty($data['translatable']) ? $data['translatable'] : null;
     }
 
     /**
@@ -283,6 +317,7 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
             'resource_type_id'     => $this->ResourceTypeId,
             'name'                 => $this->Name,
             'deleted'              => $this->Deleted,
+            'translatable'         => $this->Translatable,
         ];
     }
 }

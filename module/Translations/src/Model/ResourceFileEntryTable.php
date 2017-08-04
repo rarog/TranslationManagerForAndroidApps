@@ -75,6 +75,7 @@ class ResourceFileEntryTable
             'resource_type_id'     => $resourceFileEntry->ResourceTypeId,
             'name'                 => $resourceFileEntry->Name,
             'deleted'              => $resourceFileEntry->Deleted,
+            'translatable'         => $resourceFileEntry->Translatable,
         ];
 
         $id = (int) $resourceFileEntry->Id;
