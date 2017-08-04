@@ -128,11 +128,12 @@ return [
             'translations'     => [
                 'type'    => Segment::class,
                 'options' => [
-                    'route'       => '/translations[/:action[/app/:appId/resource/:resourceId]]',
+                    'route'       => '/translations[/:action[/app/:appId/resource/:resourceId[/defaultid/:defaultId]]]',
                     'constraints' => [
                         'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'appId'      => '[0-9]+',
                         'resourceId' => '[0-9]+',
+                        'defaultId'  => '[0-9]+',
                     ],
                     'defaults'    => [
                         'controller' => Controller\TranslationsController::class,

@@ -121,6 +121,7 @@ class TranslationsController extends AbstractActionController
     {
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $resourceId = (int) $this->params()->fromRoute('resourceId', 0);
+        $defaultId = (int) $this->params()->fromRoute('defaultId', 0);
 
         $app = $this->getApp($appId);
 
@@ -147,12 +148,14 @@ class TranslationsController extends AbstractActionController
         $escaper = new Escaper('utf-8');
 
         $output = [];
-        $entries = $this->resourceFileEntryStringTable->getAllResourceFileEntryStringsForTranslations($appId, $resourceId);
+        $entries = $this->resourceFileEntryStringTable->getAllResourceFileEntryStringsForTranslations($appId, $resourceId, $defaultId);
         foreach ($entries as $entry) {
             $output[] = [
-                $escaper->escapeHtml($entry['default_value']),
-                $escaper->escapeHtml($entry['value']),
-                '',
+                'defaultId' => $entry['default_id'],
+                'name' => $entry['name'],
+                'defaultValue' => $escaper->escapeHtml($entry['default_value']),
+                'translatedValue' => $escaper->escapeHtml($entry['value']),
+                'buttons' => '',
             ];
         }
         return new JsonModel($output);

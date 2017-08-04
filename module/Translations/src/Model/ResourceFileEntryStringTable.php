@@ -114,15 +114,18 @@ class ResourceFileEntryStringTable
     *
     * @param int $appId
     * @param int $appResourceId
+    * @param int $defaultId
     * @return array
     */
-    public function getAllResourceFileEntryStringsForTranslations($appId, $appResourceId)
+    public function getAllResourceFileEntryStringsForTranslations($appId, $appResourceId, $defaultId)
     {
         $appId = (int) $appId;
         $appResourceId = (int) $appResourceId;
+        $defaultId = (int) $defaultId;
 
         $select = new Select;
         $select->columns([
+            'default_id'          => 'id',
             'app_resource_id',
             'resource_file_entry_id',
             'default_value'       => 'value',
@@ -143,7 +146,7 @@ class ResourceFileEntryStringTable
             ['default.resource_file_entry_id' => Expression::TYPE_IDENTIFIER],
             ['resource_file_entry.deleted'    => Expression::TYPE_IDENTIFIER],
             [0                                => Expression::TYPE_VALUE]]);
-        $select->join('resource_file_entry', $onResourceFileEntry, [], Select::JOIN_INNER);
+        $select->join('resource_file_entry', $onResourceFileEntry, ['name'], Select::JOIN_INNER);
 
         $onResourceFileEntryString = new Expression('? = ? AND ? = ?', [
             ['resource_file_entry_string.resource_file_entry_id' => Expression::TYPE_IDENTIFIER],
@@ -155,6 +158,10 @@ class ResourceFileEntryStringTable
             'value',
             'last_change',
         ], Select::JOIN_LEFT);
+
+        if ($defaultId > 0) {
+            $select->where(['default.id' => $defaultId]);
+        }
 
         $returnArray = [];
 

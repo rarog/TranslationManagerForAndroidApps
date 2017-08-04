@@ -28,6 +28,8 @@ function hideTranslationRow(hide) {
         $("translationTableBody").empty();
     } else {
         node.removeClass("hidden");
+        var table = $('#translations').DataTable();
+        table.columns.adjust().draw();
     }
 }
 
@@ -67,7 +69,7 @@ $("#resource").on("changed.bs.select", function(event, clickedIndex, newValue, o
             dataType: "json",
             method: "GET"
         })
-        .done( function (data) {debugger;
+        .done( function (data) {
             var table = $('#translations').DataTable();
 
             table.clear()

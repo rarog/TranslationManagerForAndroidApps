@@ -2,7 +2,46 @@
 $title = $this->translate('Translations');
 $this->headTitle($title);
 $this->bootstrapSelectHelper();
-$this->dataTablesInitHelper(['table' => '#translations']);
+$this->dataTablesInitHelper([
+    'table'   => '#translations',
+    'options' => [
+        'columnDefs' => [
+            [
+                'data'       => 'name',
+                'orderable'  => true,
+                'searchable' => true,
+                'targets'    => 0,
+                'visible'    => true,
+            ],
+            [
+                'data'       => 'defaultValue',
+                'orderable'  => true,
+                'searchable' => true,
+                'targets'    => 1,
+                'visible'    => true,
+            ],
+            [
+                'data'       => 'translatedValue',
+                'orderable'  => true,
+                'searchable' => true,
+                'targets'    => 2,
+                'visible'    => true,
+            ],
+            [
+                'data'       => 'buttons',
+                'orderable'  => false,
+                'searchable' => false,
+                'targets'    => 3,
+                'visible'    => true,
+            ],
+        ],
+        'order' => [
+            [0, 'asc'],
+        ],
+        'rowId' => 'defaultId',
+    ],
+]);
+
 $this->inlineScript()->appendScript('var resources = ' . json_encode($resources) . ';
 var translationsPath = "' . $this->url('translations', [
     'action' => 'listtranslations',
@@ -49,7 +88,8 @@ var translationsPath = "' . $this->url('translations', [
     <table class="table table-bordered table-striped" id="translations">
       <thead>
         <tr>
-          <th><?= $this->escapeHtml($this->translate('Default')) ?></th>
+          <th><?= $this->escapeHtml($this->translate('Name')) ?></th>
+          <th><?= $this->escapeHtml($this->translate('Default value')) ?></th>
           <th><?= $this->escapeHtml($this->translate('Translation')) ?></th>
           <th>&nbsp;</th>
         </tr>
