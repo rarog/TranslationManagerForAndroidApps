@@ -39,23 +39,26 @@ class DataTablesInitHelper extends AbstractHelper
             $this->view->headScript()->appendFile($this->view->basePath('/js/dataTables.bootstrap.min.js'));
             $this->view->headLink()->prependStylesheet($this->view->basePath('/css/dataTables.bootstrap.min.css'));
 
-            $initConf = '
-"language": {
-    "url": "' . $this->view->basePath('/js/dataTables.' . $this->view->plugin('translate')->getTranslator()->getFallbackLocale() . '.json') . '",
-},
-"lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "' . $this->view->translate('All') . '"]],';
+            $initConf = [
+                'autoWidth'  => false,
+                'language'   => [
+                    'url' => $this->view->basePath('/js/dataTables.' . $this->view->plugin('translate')->getTranslator()->getFallbackLocale() . '.json'),
+                ],
+                'lengthMenu' => [
+                    [25, 50, 100, -1],
+                    [25, 50, 100, $this->view->translate('All')],
+                ],
+            ];
 
-            $initTable = '';
+            $initTable = '$(document).ready(function() {';
             foreach ($tablesToInit as $table) {
-                $initTable .= '$(document).ready(function() {
-$("' . $table['table'] . '").dataTable({' . $initConf;
-                if (array_key_exists('columnDefs', $table)) {
-                    $initTable .= '
-"columnDefs": ' . $table['columnDefs'] . ',';
-                }
-                $initTable .= ' });
-} );';
+                $tableConf = (array_key_exists('options', $table) && is_array($table['options'])) ? array_merge($initConf, $table['options']) : $initConf;
+
+                $initTable .= '
+$("' . $table['table'] . '").DataTable(' . json_encode($tableConf) . ');';
             }
+            $initTable .= '
+} );';
 
             $this->view->headScript()->appendScript($initTable);
         }
