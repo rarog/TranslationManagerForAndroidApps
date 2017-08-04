@@ -301,8 +301,8 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
         $this->AppResourceFileId = !empty($data['app_resource_file_id']) ? $data['app_resource_file_id'] : null;
         $this->ResourceTypeId    = !empty($data['resource_type_id']) ? $data['resource_type_id'] : null;
         $this->Name              = !empty($data['name']) ? $data['name'] : null;
-        $this->Deleted           = !empty($data['deleted']) ? $data['deleted'] : null;
-        $this->Translatable      = !empty($data['translatable']) ? $data['translatable'] : null;
+        $this->Deleted           = $data['deleted'];
+        $this->Translatable      = $data['translatable'];
     }
 
     /**
