@@ -1,3 +1,8 @@
 <div>
+<?php if ($defaultLastChange > $lastChange): ?>
+  <div class="pull-right text-warning">
+    <span class="glyphicon glyphicon-warning-sign" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="<?= $this->escapeHtmlAttr($this->translate('Default value is newer than translation. Please check.')) ?>"></span>
+  </div>
+<?php endif; ?>
 <?= $this->escapeHtml($value) ?>
 </div>
