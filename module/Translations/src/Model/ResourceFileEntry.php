@@ -183,9 +183,8 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
      * @param null|boolean $deleted
      */
     public function setDeleted($deleted) {
-        if (!is_null($deleted)) {
-            $deleted = (boolean) $deleted;
-        }
+        $deleted = (boolean) $deleted;
+
         $this->deleted = $deleted;
     }
 
@@ -200,9 +199,8 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
      * @param null|boolean $translatable
      */
     public function setTranslatable($translatable) {
-        if (!is_null($translatable)) {
-            $translatable = (boolean) $translatable;
-        }
+        $translatable = (boolean) $translatable;
+
         $this->translatable = $translatable;
     }
 
@@ -274,14 +272,14 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
         ]);
         $inputFilter->add([
             'name'       => 'deleted',
-            'required'   => false,
+            'required'   => true,
             'filters'    => [
                 ['name' => Boolean::class],
             ],
         ]);
         $inputFilter->add([
             'name'       => 'translatable',
-            'required'   => false,
+            'required'   => true,
             'filters'    => [
                 ['name' => Boolean::class],
             ],
@@ -301,8 +299,8 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
         $this->AppResourceFileId = !empty($data['app_resource_file_id']) ? $data['app_resource_file_id'] : null;
         $this->ResourceTypeId    = !empty($data['resource_type_id']) ? $data['resource_type_id'] : null;
         $this->Name              = !empty($data['name']) ? $data['name'] : null;
-        $this->Deleted           = $data['deleted'];
-        $this->Translatable      = $data['translatable'];
+        $this->Deleted           = !empty($data['deleted']) ? $data['deleted'] : null;
+        $this->Translatable      = !empty($data['translatable']) ? $data['translatable'] : null;
     }
 
     /**
