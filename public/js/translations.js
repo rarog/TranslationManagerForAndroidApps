@@ -85,3 +85,8 @@ $("#resource").on("changed.bs.select", function(event, clickedIndex, newValue, o
         setSelectionNeededState();
     }
 });
+
+// Enable Bootstrap Tooltips
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+});
