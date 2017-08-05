@@ -204,11 +204,11 @@ class TranslationsController extends AbstractActionController
             $viewModel->setVariables($entry);
 
             $output[] = [
-                'defaultId' => $entry['defaultId'],
-                'name' => $entry['name'],
-                'defaultValue' => $escaper->escapeHtml($entry['defaultValue']),
-                'translatedValue' => $this->renderTemplate($viewModel, 'partial/translations-translatedValue.phtml'),//$escaper->escapeHtml($entry['value']),
-                'buttons' => '',
+                'defaultId'       => $entry['defaultId'],
+                'name'            => $entry['name'],
+                'defaultValue'    => $escaper->escapeHtml($entry['defaultValue']),
+                'translatedValue' => $this->renderTemplate($viewModel, 'partial/translations-translatedValue.phtml'),
+                'buttons'         => $this->renderTemplate($viewModel, 'partial/translations-buttons.phtml'),
             ];
         }
         return new JsonModel($output);
