@@ -204,9 +204,9 @@ class TranslationsController extends AbstractActionController
             $viewModel->setVariables($entry);
 
             $output[] = [
-                'defaultId' => $entry['default_id'],
+                'defaultId' => $entry['defaultId'],
                 'name' => $entry['name'],
-                'defaultValue' => $escaper->escapeHtml($entry['default_value']),
+                'defaultValue' => $escaper->escapeHtml($entry['defaultValue']),
                 'translatedValue' => $this->renderTemplate($viewModel, 'partial/translations-translatedValue.phtml'),//$escaper->escapeHtml($entry['value']),
                 'buttons' => '',
             ];

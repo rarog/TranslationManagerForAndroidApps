@@ -139,11 +139,11 @@ class ResourceFileEntryStringTable
 
         $select = new Select;
         $select->columns([
-            'default_id'          => 'id',
-            'app_resource_id',
-            'resource_file_entry_id',
-            'default_value'       => 'value',
-            'default_last_change' => 'last_change',
+            'defaultId'           => 'id',
+            'appResourceId'       => 'app_resource_id',
+            'resourceFileEntryId' => 'resource_file_entry_id',
+            'defaultValue'        => 'value',
+            'defaultLastChange'   => 'last_change',
         ])->from(['default' => $this->tableGateway->table]);
 
         $onAppResource = new Expression('? = ? AND ? = ? AND ? = ?', [
@@ -178,9 +178,9 @@ class ResourceFileEntryStringTable
             ['resource_file_entry_string.app_resource_id'        => Expression::TYPE_IDENTIFIER],
             [$appResourceId                                      => Expression::TYPE_VALUE]]);
         $select->join('resource_file_entry_string', $onResourceFileEntryString, [
-            'id',
-            'value',
-            'last_change',
+            'id'         => 'id',
+            'value'      => 'value',
+            'lastChange' => 'last_change',
         ], Select::JOIN_LEFT);
 
         if ($defaultId > 0) {
