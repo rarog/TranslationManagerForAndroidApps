@@ -15,6 +15,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
+use Zend\View\Renderer\PhpRenderer as Renderer;
 
 class TranslationsController extends AbstractActionController
 {
@@ -32,6 +33,21 @@ class TranslationsController extends AbstractActionController
      * @var ResourceFileEntryStringTable
      */
     private $resourceFileEntryStringTable;
+
+    /**
+     * @var Translator
+     */
+    private $translator;
+
+    /**
+     * @var Renderer
+     */
+    private $renderer;
+
+    /**
+     * @var ViewModel
+     */
+    private $viewModel;
 
     /**
      * Check if current user has permission to the app and return it
@@ -64,19 +80,53 @@ class TranslationsController extends AbstractActionController
     }
 
     /**
+     * Get ViewModel for partial rendering
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    private function getViewModel()
+    {
+        if ($this->viewModel) {
+            $this->viewModel->clearVariables();
+        } else {
+            $this->viewModel = new ViewModel();
+            $this->viewModel->setTerminal(true);
+        }
+
+        return $this->viewModel;
+    }
+
+    /**
+     * Renders ViewModel in template
+     *
+     * @param ViewModel $viewModel
+     * @param unknown $template
+     * @return string
+     */
+    private function renderTemplate(ViewModel $viewModel, $template)
+    {
+        $template = (string) $template;
+
+        $viewModel->setTemplate($template);
+        return $this->renderer->render($viewModel);
+    }
+
+    /**
      * Constructor
      *
      * @param AppTable $appTable
      * @param AppResourceTable $appResourceTable
      * @param ResourceFileEntryStringTable $resourceFileEntryStringTable
      * @param Translator $translator
+     * @param Renderer $renderer
      */
-    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, ResourceFileEntryStringTable $resourceFileEntryStringTable, Translator $translator)
+    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, ResourceFileEntryStringTable $resourceFileEntryStringTable, Translator $translator, Renderer $renderer)
     {
         $this->appTable = $appTable;
         $this->appResourceTable = $appResourceTable;
         $this->resourceFileEntryStringTable = $resourceFileEntryStringTable;
         $this->translator = $translator;
+        $this->renderer = $renderer;
     }
 
     /**
@@ -150,11 +200,14 @@ class TranslationsController extends AbstractActionController
         $output = [];
         $entries = $this->resourceFileEntryStringTable->getAllResourceFileEntryStringsForTranslations($appId, $resourceId, $defaultId);
         foreach ($entries as $entry) {
+            $viewModel = $this->getViewModel();
+            $viewModel->setVariables($entry);
+
             $output[] = [
                 'defaultId' => $entry['default_id'],
                 'name' => $entry['name'],
                 'defaultValue' => $escaper->escapeHtml($entry['default_value']),
-                'translatedValue' => $escaper->escapeHtml($entry['value']),
+                'translatedValue' => $this->renderTemplate($viewModel, 'partial/translations-translatedValue.phtml'),//$escaper->escapeHtml($entry['value']),
                 'buttons' => '',
             ];
         }
