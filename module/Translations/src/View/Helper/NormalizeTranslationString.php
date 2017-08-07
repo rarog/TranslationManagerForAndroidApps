@@ -22,7 +22,11 @@ class NormalizeTranslationString extends AbstractHelper
     {
         $translationString = (string) $translationString;
 
-        $jsonTranslationString = (substr($translationString, 0, 1) === '"') ? $translationString : '"' . $translationString . '"';
+        if (mb_substr($translationString, 0, 1) === '"') {
+            $jsonTranslationString = $translationString;
+        } else {
+            $jsonTranslationString = '"' . str_replace('\\\'', '\'', $translationString) . '"';
+        }
 
         try {
             return Json::decode($jsonTranslationString);
