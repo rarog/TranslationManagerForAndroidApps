@@ -157,6 +157,11 @@ return [
             ],
         ],
     ],
+    'view_helpers' => [
+        'invokables'=> [
+            'normalizeTranslationString' => View\Helper\NormalizeTranslationString::class,
+        ],
+    ],
     'view_manager' => [
         'template_path_stack' => [
             'translations' => __DIR__ . '/../view',

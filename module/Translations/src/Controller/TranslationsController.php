@@ -206,7 +206,7 @@ class TranslationsController extends AbstractActionController
             $output[] = [
                 'defaultId'       => $entry['defaultId'],
                 'name'            => $entry['name'],
-                'defaultValue'    => $escaper->escapeHtml($entry['defaultValue']),
+                'defaultValue'    => $this->renderTemplate($viewModel, 'partial/translations-defaultValue.phtml'),
                 'translatedValue' => $this->renderTemplate($viewModel, 'partial/translations-translatedValue.phtml'),
                 'buttons'         => $this->renderTemplate($viewModel, 'partial/translations-buttons.phtml'),
             ];
