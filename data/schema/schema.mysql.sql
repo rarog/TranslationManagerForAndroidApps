@@ -127,3 +127,16 @@ CREATE TABLE `resource_file_entry_string` (
     CONSTRAINT `resource_file_entry_string_fk1` FOREIGN KEY (`app_resource_id`) REFERENCES `app_resource` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `resource_file_entry_string_fk2` FOREIGN KEY (`resource_file_entry_id`) REFERENCES `resource_file_entry` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `resource_file_entry_string_suggestion` (
+    `id`                            BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `resource_file_entry_string_id` BIGINT(20) UNSIGNED NOT NULL,
+    `user_id`                       BIGINT(20) UNSIGNED NOT NULL,
+    `value`                         VARCHAR(20480) NOT NULL,
+    `created`                       BIGINT(20) NOT NULL,
+    INDEX `resource_file_entry_string_suggestion_ik1` (`created`),
+    INDEX `resource_file_entry_string_suggestion_fk1` (`resource_file_entry_string_id`),
+    INDEX `resource_file_entry_string_suggestion_fk2` (`user_id`),
+    CONSTRAINT `resource_file_entry_string_suggestion_fk1` FOREIGN KEY (`resource_file_entry_string_id`) REFERENCES `resource_file_entry_string` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `resource_file_entry_string_suggestion_fk2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

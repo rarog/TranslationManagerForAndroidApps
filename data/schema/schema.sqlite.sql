@@ -118,3 +118,15 @@ CREATE TABLE resource_file_entry_string (
 );
 
 CREATE INDEX resource_file_entry_string_ik1 ON resource_file_entry_string (last_change);
+
+CREATE TABLE resource_file_entry_string_suggestion (
+    id                            INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    resource_file_entry_string_id INTEGER NOT NULL,
+    user_id                       INTEGER NOT NULL,
+    value                         TEXT NOT NULL,
+    created                       INTEGER NOT NULL,
+    FOREIGN KEY (resource_file_entry_string_id) REFERENCES resource_file_entry_string (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE INDEX resource_file_entry_string_suggestion_ik1 ON resource_file_entry_string_suggestion (created);
