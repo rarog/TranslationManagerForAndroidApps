@@ -54,7 +54,7 @@ class ResourceFileEntryStringTable
      *
      * @param  int $id
      * @throws RuntimeException
-     * @return \Translations\Model\ResourceFileEntry
+     * @return \Translations\Model\ResourceFileEntryString
      */
     public function getResourceFileEntryString($id)
     {

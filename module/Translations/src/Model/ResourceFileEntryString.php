@@ -167,9 +167,9 @@ class ResourceFileEntryString implements ArraySerializableInterface, InputFilter
     /**
      * @param null|int $lastChange
      */
-    public function setLastChange($lastChange = null) {
+    public function setLastChange($lastChange) {
         if (!is_null($lastChange)) {
-            $lastChange= (int) $lastChange;
+            $lastChange = (int) $lastChange;
         }
         $this->lastChange = $lastChange;
     }
