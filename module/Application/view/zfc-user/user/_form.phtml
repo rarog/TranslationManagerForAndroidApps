@@ -1,5 +1,10 @@
 <?= $this->form()->openTag($form) ?>
 <?php foreach ($form as $element): ?>
+<?php
+if ($element->hasAttribute('name') && !$element->hasAttribute('id')) {
+    $element->setAttribute('id', $element->getAttribute('name'));
+}
+?>
   <div class="form-group">
   <?php if ($hasLabel = ($element->getLabel() != null && !$element instanceof Zend\Form\Element\Button)): ?>
   <?php $element->setOptions(['label_attributes' => ['class' => 'col-sm-2 control-label']]); echo $this->formLabel($element) ?>
