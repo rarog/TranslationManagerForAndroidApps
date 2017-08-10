@@ -238,8 +238,8 @@ class ResourceFileEntryString implements ArraySerializableInterface, InputFilter
             ],
         ]);
         $inputFilter->add([
-            'name'       => 'last_change',
-            'required'   => true,
+            'name'     => 'last_change',
+            'required' => true,
             'filters'  => [
                 ['name' => ToInt::class],
             ],
