@@ -12,11 +12,15 @@ use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Ddl;
 use Zend\Db\Sql\Ddl\Column;
 use Zend\Db\Sql\Ddl\Constraint;
+use Zend\Db\Sql\Sql;
 use Zend\Mvc\I18n\Translator;
 use ZfcUser\Options\ModuleOptions as ZUModuleOptions;
 
 class DatabaseHelper
 {
+    /**
+     * @var mixed
+     */
     private $dbConfig;
 
     /**
@@ -28,16 +32,19 @@ class DatabaseHelper
      * @var Translator
      */
     private $translator;
+
+    /**
+     * @var mixed
+     */
     private $setupConfig;
 
     /**
      * @var ZUModuleOptions
      */
     private $zuModuleOptions;
-    
-    
+
     /**
-     * @var unknown
+     * @var int
      */
     private $lastStatus;
 
@@ -45,6 +52,10 @@ class DatabaseHelper
 	 * @var string
 	 */
 	private $lastMessage;
+
+	/**
+	 * @var Sql
+	 */
 	private $sql;
 
 	const NODBCONNECTION = 0;
@@ -116,15 +127,16 @@ class DatabaseHelper
         return $this->lastMessage;
     }
 
+
     /**
      * Gets SQL object from adapter.
      *
-     * @return \Zend\Db\Sql\Sql
+     * @return Sql
      */
     private function getSql()
     {
         if (is_null($this->sql)) {
-            $this->sql = new \Zend\Db\Sql\Sql($this->dbAdapter);
+            $this->sql = new Sql($this->dbAdapter);
         }
         return $this->sql;
     }
@@ -178,9 +190,9 @@ class DatabaseHelper
             ($this->lastStatus = self::DBNOTINSTALLEDORTABLENOTPRESENT)) {
             // Creating version table.
             $table = new Ddl\CreateTable($this->setupConfig->get('db_schema_version_table'));
-            $table->addColumn(new Column\Integer('version'))
+            $table->addColumn(new Column\BigInteger('version'))
                 ->addColumn(new Column\Varchar('setupid', 32))
-                ->addColumn(new Column\Integer('timestamp'))
+                ->addColumn(new Column\BigInteger('timestamp'))
                 ->addConstraint(new Constraint\PrimaryKey('version'));
             $this->executeSqlStatement($table);
 
