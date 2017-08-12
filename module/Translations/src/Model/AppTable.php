@@ -211,7 +211,18 @@ class AppTable
             'app_resource_id'   => 'id',
             'app_resource_name' => 'name',
             'locale'            => 'locale',
-        ], $select::JOIN_INNER)->order([
+        ], $select::JOIN_INNER);
+
+        if ($userId > 0) {
+            $onUserLanguages = new Expression('? = ? AND ? = ?', [
+                ['user_languages.locale' => Expression::TYPE_IDENTIFIER],
+                ['app_resource.primary_locale' => Expression::TYPE_IDENTIFIER],
+                ['user_languages.user_id' => Expression::TYPE_IDENTIFIER],
+                [$userId  => Expression::TYPE_VALUE]]);
+            $select->join('user_languages', $onUserLanguages, [], Select::JOIN_INNER);
+        }
+
+        $select->order([
             'app.name',
             'app_resource.locale'
         ]);
