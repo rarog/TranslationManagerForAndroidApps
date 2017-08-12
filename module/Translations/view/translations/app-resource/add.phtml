@@ -1,6 +1,7 @@
 <?php
 $title = sprintf($this->translate('Add new resource to app "%s"'), $app->Name);
 $this->headTitle($title);
+$this->bootstrapSelectHelper();
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
 <div>

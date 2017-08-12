@@ -44,7 +44,9 @@ class AppResourceForm extends Form
         ]);
         $this->add([
             'attributes' => [
-                'id' => 'locale',
+                'class'            => 'selectpicker',
+                'data-live-search' => 'true',
+                'id'               => 'locale',
             ],
             'name'       => 'locale',
             'options'    => [
