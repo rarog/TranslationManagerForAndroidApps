@@ -152,7 +152,10 @@ class TranslationsController extends AbstractActionController
                 $apps[$value['app_id']] = $value['app_name'];
             }
 
-            $resources[$value['app_id']][$value['app_resource_id']] = $localeNames[$value['locale']];
+            $resources[$value['app_id']][$value['app_resource_id']] = sprintf(
+                    '%s (%s)',
+                    $value['app_resource_name'],
+                    $localeNames[$value['locale']]);
         }
 
         return [

@@ -208,8 +208,9 @@ class AppTable
         }
 
         $select->join('app_resource', 'app_resource.app_id = app.id', [
-            'app_resource_id' => 'id',
-            'locale',
+            'app_resource_id'   => 'id',
+            'app_resource_name' => 'name',
+            'locale'            => 'locale',
         ], $select::JOIN_INNER)->order([
             'app.name',
             'app_resource.locale'
