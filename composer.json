@@ -34,7 +34,7 @@
 		"zf-commons/zfc-user" : "^3.0",
 		"zf-commons/zfc-rbac" : "^2.6",
 		"rarog/user-rbac" : "^1.0",
-		"cpliakas/git-wrapper": "^1.7"
+		"cpliakas/git-wrapper" : "^1.7"
 	},
 	"autoload" : {
 		"psr-4" : {
@@ -56,7 +56,8 @@
 		"development-status" : "zf-development-mode status",
 		"post-create-project-cmd" : "@development-enable",
 		"serve" : "php -S 0.0.0.0:8080 -t public public/index.php",
-		"test" : "phpunit"
+		"test" : "phpunit",
+		"post-update-cmd" : "php cleancache.php"
 	},
 	"authors" : [{
 			"name" : "Andrej Sinicyn",
