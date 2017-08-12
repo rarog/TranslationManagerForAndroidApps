@@ -136,17 +136,12 @@ class TranslationsController extends AbstractActionController
      */
     public function indexAction()
     {
-        $userId = 0;
-        if (!$this->isGranted('team.viewAll')) {
-            $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
-        }
-
         $localeNames = $this->configHelp('settings')->locale_names->toArray();
         $localeNames = $localeNames[$this->translator->getLocale()];
 
         $apps = [];
         $resources = [];
-        $values = $this->appTable->getAllAppsAndResourcesAllowedToUser($userId);
+        $values = $this->appTable->getAllAppsAndResourcesAllowedToUser($this->zfcUserAuthentication()->getIdentity()->getId());
         foreach ($values as $value) {
             if (!array_key_exists($value['app_id'], $apps)) {
                 $apps[$value['app_id']] = $value['app_name'];
@@ -158,9 +153,27 @@ class TranslationsController extends AbstractActionController
                     $localeNames[$value['locale']]);
         }
 
+        $appsAll = [];
+        $resourcesAll = [];
+        if (!$this->isGranted('team.viewAll')) {
+            $values = $this->appTable->getAllAppsAndResourcesAllowedToUser(0);
+            foreach ($values as $value) {
+                if (!array_key_exists($value['app_id'], $appsAll)) {
+                    $appsAll[$value['app_id']] = $value['app_name'];
+                }
+
+                $resourcesAll[$value['app_id']][$value['app_resource_id']] = sprintf(
+                        '%s (%s)',
+                        $value['app_resource_name'],
+                        $localeNames[$value['locale']]);
+            }
+        }
+
         return [
-            'apps' => $apps,
-            'resources' => $resources,
+            'apps'         => $apps,
+            'appsAll'      => $appsAll,
+            'resources'    => $resources,
+            'resourcesAll' => $resourcesAll,
         ];
     }
 
