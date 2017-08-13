@@ -28,13 +28,6 @@ if (is_array($appConfig) &&
     if ($handle = opendir($cacheDir)) {
         $cacheDir = realpath($cacheDir);
 
-        $configCacheKey = '';
-        if (array_key_exists('config_cache_key', $appConfig['module_listener_options']) &&
-            is_string($appConfig['module_listener_options']['config_cache_key'])) {
-            $configCacheKey = $appConfig['module_listener_options']['config_cache_key'];
-        }
-        //$configCacheFile = 'module-config-cache' . (($configCacheKey <>)) . '.php';
-
         if (!is_dir($cacheDir)) {
             exit;
         }
@@ -56,5 +49,7 @@ if (is_array($appConfig) &&
         }
 
         closedir($handle);
+
+        echo 'Cache cleaned' . PHP_EOL;
     }
 }
