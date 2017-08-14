@@ -10,12 +10,13 @@ namespace Setup\Model;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
+use Zend\Stdlib\ArraySerializableInterface;
 use ZfcUser\Options\ModuleOptions as ZUModuleOptions;
 
-class UserCreation implements InputFilterAwareInterface
+class UserCreation implements ArraySerializableInterface, InputFilterAwareInterface
 {
     /**
-     * @var RegistrationOptionsInterface
+     * @var ZUModuleOptions
      */
     protected $options;
 
@@ -107,6 +108,10 @@ class UserCreation implements InputFilterAwareInterface
         return $this->passwordVerify;
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \Zend\Stdlib\ArraySerializableInterface::exchangeArray()
+     */
     public function exchangeArray($data)
     {
         $this->setUsername((!empty($data['username'])) ? $data['username'] : null);
@@ -117,24 +122,33 @@ class UserCreation implements InputFilterAwareInterface
     }
 
     /**
-     * @return array
+     * {@inheritDoc}
+     * @see \Zend\Stdlib\ArraySerializableInterface::getArrayCopy()
      */
     public function getArrayCopy()
     {
-    	return array(
+    	return [
     	    'username'       => $this->Username,
     	    'email'          => $this->Email,
     	    'display_name'   => $this->DisplayName,
     	    'password'       => $this->Password,
     	    'passwordVerify' => $this->PasswordVerify,
-        );
+        ];
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \Zend\InputFilter\InputFilterAwareInterface::setInputFilter()
+     */
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
         throw new \Exception('Not used');
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \Zend\InputFilter\InputFilterAwareInterface::getInputFilter()
+     */
     public function getInputFilter()
     {
         if (!$this->inputFilter) {

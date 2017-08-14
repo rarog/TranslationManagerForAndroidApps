@@ -159,7 +159,7 @@ class DatabaseHelper
     /**
      * Executes a prepared SQL statement in the configured database.
      *
-     * @param Zend\Db\Sql\SqlInterface|string  $sql
+     * @param \Zend\Db\Sql\SqlInterface|string  $sql
      */
     private function executeSqlStatement($sql)
     {

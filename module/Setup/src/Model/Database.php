@@ -10,8 +10,9 @@ namespace Setup\Model;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
+use Zend\Stdlib\ArraySerializableInterface;
 
-class Database implements InputFilterAwareInterface
+class Database implements ArraySerializableInterface, InputFilterAwareInterface
 {
 	protected $inputFilter;
 	protected $driver;
@@ -124,6 +125,10 @@ class Database implements InputFilterAwareInterface
         return $this->charset;
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \Zend\Stdlib\ArraySerializableInterface::exchangeArray()
+     */
     public function exchangeArray($data)
     {
     	$this->setDriver((!empty($data['driver'])) ? $data['driver'] : null);
@@ -135,9 +140,13 @@ class Database implements InputFilterAwareInterface
     	$this->setCharset((!empty($data['charset'])) ? $data['charset'] : null);
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \Zend\Stdlib\ArraySerializableInterface::getArrayCopy()
+     */
     public function getArrayCopy()
     {
-    	return array(
+    	return [
             'driver'   => $this->Driver,
     	    'database' => $this->Database,
     	    'username' => $this->Username,
@@ -145,14 +154,22 @@ class Database implements InputFilterAwareInterface
     	    'hostname' => $this->Hostname,
     	    'port'     => $this->Port,
     	    'charset'  => $this->Charset,
-        );
+        ];
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \Zend\InputFilter\InputFilterAwareInterface::setInputFilter()
+     */
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
         throw new \Exception('Not used');
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \Zend\InputFilter\InputFilterAwareInterface::getInputFilter()
+     */
     public function getInputFilter()
     {
         if (!$this->inputFilter) {

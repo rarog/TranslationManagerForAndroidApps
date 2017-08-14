@@ -473,7 +473,6 @@ class SetupController extends AbstractActionController
     	]);
     }
 
-
     /**
      * Console only - updates database schema
      */

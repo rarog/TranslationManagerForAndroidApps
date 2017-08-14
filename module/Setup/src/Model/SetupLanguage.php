@@ -10,8 +10,9 @@ namespace Setup\Model;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
+use Zend\Stdlib\ArraySerializableInterface;
 
-class SetupLanguage implements InputFilterAwareInterface
+class SetupLanguage implements ArraySerializableInterface, InputFilterAwareInterface
 {
     protected $inputFilter;
     protected $setupLanguage;
@@ -52,23 +53,39 @@ class SetupLanguage implements InputFilterAwareInterface
         return $this->setupLanguage;
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \Zend\Stdlib\ArraySerializableInterface::exchangeArray()
+     */
     public function exchangeArray($data)
     {
         $this->setSetupLanguage((!empty($data['setup_language'])) ? $data['setup_language'] : null);
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \Zend\Stdlib\ArraySerializableInterface::getArrayCopy()
+     */
     public function getArrayCopy()
     {
-        return array(
+        return [
             'setup_language' => $this->SetupLanguage,
-        );
+        ];
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \Zend\InputFilter\InputFilterAwareInterface::setInputFilter()
+     */
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
         throw new \Exception('Not used');
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \Zend\InputFilter\InputFilterAwareInterface::getInputFilter()
+     */
     public function getInputFilter()
     {
         if (!$this->inputFilter) {
