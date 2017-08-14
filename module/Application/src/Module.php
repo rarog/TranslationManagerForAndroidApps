@@ -7,6 +7,7 @@
 
 namespace Application;
 
+use Zend\Console\Request as ConsoleRequest;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
@@ -14,10 +15,10 @@ use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
-use Zend\Session\Config\SessionConfig;
 use Zend\Session\Container;
 use Zend\Session\SessionManager;
 use Zend\Session\Validator;
+use Zend\Session\Config\SessionConfig;
 
 class Module implements BootstrapListenerInterface, ConfigProviderInterface, ServiceProviderInterface
 {
@@ -56,6 +57,14 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
     private function bootstrapSession(EventInterface $e)
     {
         $serviceManager = $e->getApplication()->getServiceManager();
+
+        $request = $serviceManager->get('Request');
+
+        // A console request doesn't use or need session.
+        if ($request instanceof ConsoleRequest) {
+            return;
+        }
+
         $sharedManager = $e->getApplication()->getEventManager()->getSharedManager();
         $session = $serviceManager->get(SessionManager::class);
 
@@ -76,8 +85,6 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
 
         $container = new Container('initialized');
         if (!isset($container->init)) {
-            $request = $serviceManager->get('Request');
-
             $session->regenerateId(true);
             $container->init          = 1;
             $container->remoteAddr    = $request->getServer()->get('REMOTE_ADDR');

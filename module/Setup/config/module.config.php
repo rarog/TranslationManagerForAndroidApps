@@ -8,8 +8,24 @@
 namespace Setup;
 
 use Zend\Router\Http\Segment;
+use Zend\Router\Http\Literal;
 
 return [
+    'console' => [
+        'router' => [
+            'routes' => [
+                'setup-updateschema' => [
+                    'options' => [
+                        'route'    => 'setup updateschema',
+                        'defaults' => [
+                            'controller' => Controller\SetupController::class,
+                            'action'     => 'updateschema',
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
     'controllers' => [
         'factories' => [
             Controller\SetupController::class => Factory\Controller\SetupControllerFactory::class,

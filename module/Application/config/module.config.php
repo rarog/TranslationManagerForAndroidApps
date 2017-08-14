@@ -120,7 +120,7 @@ return [
                             ],
                         ],
                     ],
-                ]
+                ],
             ],
             'settings' => [
                 'type'    => Literal::class,
@@ -143,7 +143,7 @@ return [
                             ],
                         ],
                     ],
-                ]
+                ],
             ],
         ],
     ],
