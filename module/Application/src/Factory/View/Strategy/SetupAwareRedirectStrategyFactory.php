@@ -9,8 +9,7 @@ namespace Application\Factory\View\Strategy;
 
 use Application\View\Strategy\SetupAwareRedirectStrategy;
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 
 /**
  * Factory to create a setup aware redirect strategy
@@ -19,10 +18,8 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class SetupAwareRedirectStrategyFactory implements FactoryInterface
 {
     /**
-     * @param ContainerInterface $container
-     * @param string $requestedName
-     * @param array|null $options
-     * @return RedirectStrategy
+     * {@inheritDoc}
+     * @see \Zend\ServiceManager\Factory\FactoryInterface::__invoke()
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
@@ -34,13 +31,5 @@ class SetupAwareRedirectStrategyFactory implements FactoryInterface
         $databaseHelper = $container->get(\Setup\Model\DatabaseHelper::class);
 
         return new SetupAwareRedirectStrategy($moduleOptions->getRedirectStrategy(), $authenticationService, $databaseHelper);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator)
-    {
-        return $this($serviceLocator, RedirectStrategy::class);
     }
 }
