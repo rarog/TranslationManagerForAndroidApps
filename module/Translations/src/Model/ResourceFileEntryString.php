@@ -62,9 +62,9 @@ class ResourceFileEntryString implements ArraySerializableInterface, InputFilter
     }
 
     /**
-     * @param unknown $name
+     * @param mixed $name
      * @throws \Exception
-     * @return unknown
+     * @return mixed
      */
     public function __get($name)
     {
@@ -76,8 +76,8 @@ class ResourceFileEntryString implements ArraySerializableInterface, InputFilter
     }
 
     /**
-     * @param unknown $name
-     * @param unknown $value
+     * @param mixed $name
+     * @param mixed $value
      * @throws \Exception
      */
     public function __set($name, $value)

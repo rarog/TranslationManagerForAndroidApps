@@ -47,9 +47,9 @@ class UserLanguages implements ArraySerializableInterface, InputFilterAwareInter
     }
 
     /**
-     * @param unknown $name
+     * @param mixed $name
      * @throws \Exception
-     * @return unknown
+     * @return mixed
      */
     public function __get($name)
     {
@@ -61,8 +61,8 @@ class UserLanguages implements ArraySerializableInterface, InputFilterAwareInter
     }
 
     /**
-     * @param unknown $name
-     * @param unknown $value
+     * @param mixed $name
+     * @param mixed $value
      * @throws \Exception
      */
     public function __set($name, $value)
@@ -143,12 +143,12 @@ class UserLanguages implements ArraySerializableInterface, InputFilterAwareInter
             'name'       => 'username',
             'required'   => true,
             'filters'    => [
-                ['name' => 'StripTags'],
-                ['name' => 'StringTrim'],
+                ['name' => StripTags::class],
+                ['name' => StringTrim::class],
             ],
             'validators' => [
                 [
-                    'name'    => 'StringLength',
+                    'name'    => StringLength::class,
                     'options' => [
                         'encoding' => 'UTF-8',
                         'min'      => 1,
