@@ -100,7 +100,7 @@ class TranslationsController extends AbstractActionController
      * Renders ViewModel in template
      *
      * @param ViewModel $viewModel
-     * @param unknown $template
+     * @param string $template
      * @return string
      */
     private function renderTemplate(ViewModel $viewModel, $template)
@@ -180,7 +180,6 @@ class TranslationsController extends AbstractActionController
     /**
      * App resource add action
      *
-     * @throws RuntimeException
      * @return \Zend\View\Model\ViewModel
      */
     public function listtranslationsAction()
