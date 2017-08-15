@@ -155,7 +155,7 @@ class TranslationsController extends AbstractActionController
 
         $appsAll = [];
         $resourcesAll = [];
-        if (!$this->isGranted('team.viewAll')) {
+        if ($this->isGranted('team.viewAll')) {
             $values = $this->appTable->getAllAppsAndResourcesAllowedToUser(0);
             foreach ($values as $value) {
                 if (!array_key_exists($value['app_id'], $appsAll)) {
