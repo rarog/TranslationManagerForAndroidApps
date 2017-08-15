@@ -229,7 +229,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
         $form = new SyncExportForm();
         $form->setData($request->getPost());
         if (!$form->isValid()) {
-            return $this->getJsonAlert('danger', $this->translate('Invalid request'));
+            return $this->getJsonAlert('danger', $this->translator->translate('Invalid request'));
         }
 
         $confirmDeletion = (bool) $form->get('confirm_deletion')->getValue();
@@ -276,7 +276,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
         $form = new SyncImportForm();
         $form->setData($request->getPost());
         if (!$form->isValid()) {
-            return $this->getJsonAlert('danger', $this->translate('Invalid request'));
+            return $this->getJsonAlert('danger', $this->translator->translate('Invalid request'));
         }
 
         $confirmDeletion = (bool) $form->get('confirm_deletion')->getValue();
@@ -290,6 +290,10 @@ class SyncController extends AbstractActionController implements AppHelperInterf
         $resourceTypes = [];
         foreach ($this->resourceTypeTable->fetchAll() as $resourceType) {
             $resourceTypes[$resourceType->Id] = $resourceType->NodeName;
+        }
+
+        if (count($resourceTypes) == 0) {
+            return $this->getJsonAlert('danger', $this->translator->translate('No resource types are known'));
         }
 
         $querySelectors = [];
