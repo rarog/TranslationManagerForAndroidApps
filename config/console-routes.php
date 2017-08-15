@@ -10,5 +10,6 @@ return [
         'name'              => 'updateschema',
         'description'       => 'Updates database schema version, if a valid datababse schema is installed already and schema updates are detected.',
         'short_description' => 'Updates database schema version',
+        'handler'           => \Setup\Command\UpdateSchema::class,
     ],
 ];

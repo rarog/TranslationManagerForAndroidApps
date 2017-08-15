@@ -8,7 +8,6 @@
 namespace Setup;
 
 use Zend\Router\Http\Segment;
-use Zend\Router\Http\Literal;
 
 return [
     'controllers' => [
@@ -35,6 +34,7 @@ return [
     ],
     'service_manager' => [
         'factories' => [
+            Command\UpdateSchema::class => Factory\Command\UpdateSchemaFactory::class,
             Model\DatabaseHelper::class => Factory\Model\DatabaseHelperFactory::class,
         ],
     ],

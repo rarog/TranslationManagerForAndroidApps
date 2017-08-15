@@ -6,10 +6,9 @@
  */
 
 use Application\Module;
-use Setup\Model\DatabaseHelper;
+use Zend\Console\Console;
 use ZF\Console\Application;
 use ZF\Console\Dispatcher;
-use Zend\Console\Console;
 
 chdir(dirname(__DIR__));
 
@@ -17,13 +16,7 @@ include 'vendor/autoload.php';
 
 $mvcApplication = \Zend\Mvc\Application::init(require 'config/application.config.php');
 $serviceManager = $mvcApplication->getServiceManager();
-
-$databaseHelper = $serviceManager->get(DatabaseHelper::class);
-
-$dispatcher = new Dispatcher();
-$dispatcher->map('updateschema', function ($route, $console) use ($databaseHelper) {
-    return $databaseHelper->updateSchema($console);
-});
+$dispatcher = new Dispatcher($serviceManager);
 
 $application = new Application(
     'TranslationManagerForAndroidApps',

@@ -8,7 +8,6 @@
 namespace Setup\Model;
 
 use Zend\Config\Config;
-use Zend\Console\Adapter\AdapterInterface as ConsoleAdapter;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Ddl;
 use Zend\Db\Sql\Ddl\Column;
@@ -68,6 +67,9 @@ class DatabaseHelper
 
 	const SOMETHINGISWRONGWITHWITHUSERTABLE = 20;
 	const USERTABLESEEMSTOBEOK = 21;
+
+	const SETUPINCOMPLETE = 30;
+	const CURRENTSCHEMAISLATEST = 31;
 
 
 	/**
@@ -328,14 +330,17 @@ class DatabaseHelper
 
     /**
      * Updates database schema version
-     *
-     * @param ConsoleAdapter $console
-     * @return int
      */
-    public function updateSchema(ConsoleAdapter $console)
+    public function updateSchema()
     {
+        if (!$this->isSetupComplete()) {
+            $this->lastStatus = self::SETUPINCOMPLETE;
+            return;
+        }
+
         // TODO: Write proper logic
-        $console->writeLine('TODO: Write proper logic for database schema update');
-        return 0;
+
+        $this->lastStatus = self::CURRENTSCHEMAISLATEST;
+        return;
     }
 }
