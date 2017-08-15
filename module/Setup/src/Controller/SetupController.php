@@ -8,7 +8,6 @@
 namespace Setup\Controller;
 
 use Setup\Model\DatabaseHelper;
-use Zend\Console\Request as ConsoleRequest;
 use Zend\Math\Rand;
 use Zend\ModuleManager\Listener\ListenerOptions;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -471,21 +470,5 @@ class SetupController extends AbstractActionController
     	    'infoArea'  => $infoArea,
             'formStep4' => $formStep4,
     	]);
-    }
-
-    /**
-     * Console only - updates database schema
-     */
-    public function updateschemaAction()
-    {
-        $request = $this->getRequest();
-
-        // Make sure that we are running in a console.
-        if (!($request instanceof ConsoleRequest)) {
-            return  $this->notFoundAction();
-        }
-
-        // TODO: Write proper logic
-        return 'TODO: Write proper logic for database schema update' . "\n";
     }
 }

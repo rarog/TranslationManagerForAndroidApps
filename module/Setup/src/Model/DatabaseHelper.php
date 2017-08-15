@@ -8,6 +8,7 @@
 namespace Setup\Model;
 
 use Zend\Config\Config;
+use Zend\Console\Adapter\AdapterInterface as ConsoleAdapter;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Ddl;
 use Zend\Db\Sql\Ddl\Column;
@@ -323,5 +324,18 @@ class DatabaseHelper
     public function setDbConfigArray(array $dbConfig) {
         $this->dbConfig = $dbConfig;
         $this->dbAdapter = new Adapter($dbConfig);
+    }
+
+    /**
+     * Updates database schema version
+     *
+     * @param ConsoleAdapter $console
+     * @return int
+     */
+    public function updateSchema(ConsoleAdapter $console)
+    {
+        // TODO: Write proper logic
+        $console->writeLine('TODO: Write proper logic for database schema update');
+        return 0;
     }
 }
