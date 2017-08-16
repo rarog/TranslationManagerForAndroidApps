@@ -183,6 +183,22 @@ class ResourceFileEntryStringTable
             'lastChange' => 'last_change',
         ], Select::JOIN_LEFT);
 
+        $select->join('resource_file_entry_string_suggestion', 'resource_file_entry_string_suggestion.resource_file_entry_string_id = resource_file_entry_string.id',[
+            'suggestionCount' => new Expression('count(distinct resource_file_entry_string_suggestion.id)')
+        ], $select::JOIN_LEFT);
+
+        $select->group([
+            'default.id',
+            'default.app_resource_id',
+            'default.resource_file_entry_id',
+            'default.value',
+            'default.last_change',
+            'resource_file_entry.name',
+            'resource_file_entry_string.id',
+            'resource_file_entry_string.value',
+            'resource_file_entry_string.last_change',
+        ]);
+
         if ($defaultId > 0) {
             $select->where(['default.id' => $defaultId]);
         }
