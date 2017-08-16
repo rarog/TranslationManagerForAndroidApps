@@ -38,6 +38,21 @@ function setSelectionNeededState() {
     hideTranslationRow(true);
 }
 
+var curResources = resources;
+
+$("#showAll").on("change", function(event) {debugger;
+	var appSelect = $("#app");
+	appSelect.selectpicker('deselectAll');
+    $("option", appSelect).remove();
+    
+    curApps = (event.target.checked) ? appsAll : apps;
+    curResources = (event.target.checked) ? resourcesAll : resources;
+    
+    $.each(curApps, function(index, value) {
+    	appSelect.append('<option value="' + index + '">' + value + '</option>');
+    });
+});
+
 $("#app").on("changed.bs.select", function(event, clickedIndex, newValue, oldValue) {
     setSelectionNeededState();
 
@@ -45,8 +60,8 @@ $("#app").on("changed.bs.select", function(event, clickedIndex, newValue, oldVal
     $("option", resourceSelect).remove();
     if (newValue) {
         var key = $(this).val();
-        if (key in resources) {
-            $.each(resources[key], function(index, value) {
+        if (key in curResources) {
+            $.each(curResources[key], function(index, value) {
                 resourceSelect.append('<option value="' + index + '">' + value + '</option>');
             });
         }
