@@ -136,16 +136,16 @@ return [
                     ],
                 ],
                 'may_terminate' => true,
-                'child_routes' => [
+                'child_routes'  => [
                     'listtranslations' => [
-                        'type' => Segment::class,
+                        'type'    => Segment::class,
                         'options' => [
-                            'route' => '/listtranslations[/app/:appId/resource/:resourceId]',
+                            'route'       => '/listtranslations[/app/:appId/resource/:resourceId]',
                             'constraints' => [
                                 'appId'      => '[0-9]+',
                                 'resourceId' => '[0-9]+',
                             ],
-                            'defaults' => [
+                            'defaults'    => [
                                 'action' => 'listtranslations',
                             ],
                         ],
