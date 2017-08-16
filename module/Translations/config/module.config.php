@@ -7,6 +7,7 @@
 
 namespace Translations;
 
+use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;
 
 return [
@@ -125,19 +126,29 @@ return [
                     ],
                 ],
             ],
-            'translations'     => [
-                'type'    => Segment::class,
-                'options' => [
-                    'route'       => '/translations[/:action[/app/:appId/resource/:resourceId[/defaultid/:defaultId]]]',
-                    'constraints' => [
-                        'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'appId'      => '[0-9]+',
-                        'resourceId' => '[0-9]+',
-                        'defaultId'  => '[0-9]+',
-                    ],
-                    'defaults'    => [
+            'translations'    => [
+                'type'          => Literal::class,
+                'options'       => [
+                    'route'    => '/translations',
+                    'defaults' => [
                         'controller' => Controller\TranslationsController::class,
                         'action'     => 'index',
+                    ],
+                ],
+                'may_terminate' => true,
+                'child_routes' => [
+                    'listtranslations' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => '/listtranslations[/app/:appId/resource/:resourceId]',
+                            'constraints' => [
+                                'appId'      => '[0-9]+',
+                                'resourceId' => '[0-9]+',
+                            ],
+                            'defaults' => [
+                                'action' => 'listtranslations',
+                            ],
+                        ],
                     ],
                 ],
             ],
