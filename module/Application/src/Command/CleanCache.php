@@ -25,7 +25,7 @@ class CleanCache
 
         $files = array_diff(scandir($dir), [
             '.',
-            '..'
+            '..',
         ]);
         foreach ($files as $file) {
             $file = $dir . DIRECTORY_SEPARATOR . $file;

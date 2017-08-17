@@ -4,7 +4,6 @@
  * @copyright Copyright (c) 2017 Andrej Sinicyn
  * @license   https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License version 3 or later
  */
-
 namespace Setup\Command;
 
 use Zend\Console\Adapter\AdapterInterface;
@@ -14,7 +13,10 @@ use Setup\Model\DatabaseHelper;
 
 class UpdateSchema
 {
+
     /**
+     * Database helper model
+     *
      * @var DatabaseHelper
      */
     private $databaseHelper;
@@ -30,6 +32,8 @@ class UpdateSchema
     }
 
     /**
+     * Main routine
+     *
      * @param Route $route
      * @param AdapterInterface $console
      */
