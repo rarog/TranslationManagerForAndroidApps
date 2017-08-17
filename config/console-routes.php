@@ -7,6 +7,12 @@
 
 return [
     [
+        'name'              => 'cleancache',
+        'description'       => 'Cleans classmap, config and other application caches.',
+        'short_description' => 'Cleans application caches',
+        'handler'           => \Application\Command\CleanCache::class,
+    ],
+    [
         'name'              => 'updateschema',
         'description'       => 'Updates database schema version, if a valid datababse schema is installed already and schema updates are detected.',
         'short_description' => 'Updates database schema version',
