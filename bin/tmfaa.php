@@ -14,7 +14,19 @@ chdir(dirname(__DIR__));
 
 include 'vendor/autoload.php';
 
-$mvcApplication = \Zend\Mvc\Application::init(require 'config/application.config.php');
+$appConfig = require 'config/application.config.php';
+
+// Disable module and config cache usage for console apps
+if (is_array($appConfig) && is_array($appConfig['module_listener_options'])) {
+    if (array_key_exists('config_cache_enabled', $appConfig['module_listener_options'])) {
+        $appConfig['module_listener_options']['config_cache_enabled'] = false;
+    }
+    if (array_key_exists('module_map_cache_enabled', $appConfig['module_listener_options'])) {
+        $appConfig['module_listener_options']['module_map_cache_enabled'] = false;
+    }
+}
+
+$mvcApplication = \Zend\Mvc\Application::init($appConfig);
 $serviceManager = $mvcApplication->getServiceManager();
 $dispatcher = new Dispatcher($serviceManager);
 
