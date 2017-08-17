@@ -4,83 +4,80 @@
  * @copyright Copyright (c) 2017 Andrej Sinicyn
  * @license   https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License version 3 or later
  */
-
 namespace Application;
 
 use Zend\Router\Http\Literal;
-use Zend\Router\Http\Segment;
 use Zend\ServiceManager\Factory\InvokableFactory;
-
 return [
     'controllers' => [
         'factories' => [
-            Controller\IndexController::class    => InvokableFactory::class,
+            Controller\IndexController::class => InvokableFactory::class,
             Controller\SettingsController::class => Factory\Controller\SettingsControllerFactory::class,
         ],
     ],
     'listeners' => [
-        'SetupListener',
+        'SetupListener'
     ],
     'navigation' => [
         'default' => [
             [
-                'label'      => _('Home'),
-                'route'      => 'home',
-                'icon'       => 'glyphicon glyphicon-home',
+                'label' => _('Home'),
+                'route' => 'home',
+                'icon' => 'glyphicon glyphicon-home',
                 'permission' => 'userBase',
             ],
             [
-                'label'      => _('Dashboard'),
-                'route'      => '#',
-                'icon'       => 'glyphicon glyphicon-dashboard',
+                'label' => _('Dashboard'),
+                'route' => '#',
+                'icon' => 'glyphicon glyphicon-dashboard',
                 'permission' => 'userBase',
                 'pages' => [
                     [
-                        'label'      => _('Teams'),
-                        'route'      => 'team',
-                        'icon'       => 'fa fa-users',
-                        'permission' => 'team.view',
+                        'label' => _('Teams'),
+                        'route' => 'team',
+                        'icon' => 'fa fa-users',
+                        'permission' => 'team.view'
                     ],
                     [
-                        'label'      => _('Apps'),
-                        'route'      => 'app',
-                        'icon'       => 'glyphicon glyphicon-phone',
+                        'label' => _('Apps'),
+                        'route' => 'app',
+                        'icon' => 'glyphicon glyphicon-phone',
                         'permission' => 'app.view',
                     ],
                     [
-                        'label'      => _('Translations'),
-                        'route'      => 'translations',
-                        'icon'       => 'fa fa-language',
+                        'label' => _('Translations'),
+                        'route' => 'translations',
+                        'icon' => 'fa fa-language',
                         'permission' => 'translations.view',
                     ],
                 ],
             ],
             [
-                'label'      => '',
-                'route'      => '#',
-                'icon'       => 'glyphicon glyphicon-question-sign',
+                'label' => '',
+                'route' => '#',
+                'icon' => 'glyphicon glyphicon-question-sign',
                 'permission' => 'userBase',
                 'pages' => [
                     [
-                        'label'      => _('My user'),
-                        'route'      => 'zfcuser',
-                        'icon'       => 'glyphicon glyphicon-user',
+                        'label' => _('My user'),
+                        'route' => 'zfcuser',
+                        'icon' => 'glyphicon glyphicon-user',
                         'permission' => 'userBase',
                     ],
                     [
-                        'label'      => _('About...'),
-                        'route'      => 'application/about',
-                        'icon'       => 'glyphicon glyphicon-info-sign',
+                        'label' => _('About...'),
+                        'route' => 'application/about',
+                        'icon' => 'glyphicon glyphicon-info-sign',
                         'permission' => 'userBase',
                     ],
                     [
-                        'route'     => '#',
+                        'route' => '#',
                         'separator' => true,
                     ],
                     [
-                        'label'      => _('Sign out'),
-                        'route'      => 'zfcuser/logout',
-                        'icon'       => 'glyphicon glyphicon-off',
+                        'label' => _('Sign out'),
+                        'route' => 'zfcuser/logout',
+                        'icon' => 'glyphicon glyphicon-off',
                         'permission' => 'userBase',
                     ],
                 ],
@@ -92,20 +89,20 @@ return [
             'home' => [
                 'type' => Literal::class,
                 'options' => [
-                    'route'    => '/',
+                    'route' => '/',
                     'defaults' => [
                         'controller' => Controller\IndexController::class,
-                        'action'     => 'index',
+                        'action' => 'index',
                     ],
                 ],
             ],
             'application' => [
-                'type'    => Literal::class,
+                'type' => Literal::class,
                 'options' => [
-                    'route'       => '/application',
-                    'defaults'    => [
+                    'route' => '/application',
+                    'defaults' => [
                         'controller' => Controller\IndexController::class,
-                        'action'     => 'index',
+                        'action' => 'index',
                     ],
                 ],
                 'may_terminate' => true,
@@ -116,20 +113,20 @@ return [
                             'route' => '/about',
                             'defaults' => [
                                 'controller' => Controller\IndexController::class,
-                                'action'     => 'about',
+                                'action' => 'about',
                             ],
                         ],
                     ],
                 ],
             ],
             'settings' => [
-                'type'    => Literal::class,
+                'type' => Literal::class,
                 'options' => [
-                    'route'       => '/settings',
-                    'defaults'    => [
+                    'route' => '/settings',
+                    'defaults' => [
                         'controller' => Controller\SettingsController::class,
-                        'action'     => 'index',
-                    ],
+                        'action' => 'index',
+                    ]
                 ],
                 'may_terminate' => true,
                 'child_routes' => [
@@ -139,7 +136,7 @@ return [
                             'route' => '/userlanguages',
                             'defaults' => [
                                 'controller' => Controller\SettingsController::class,
-                                'action'     => 'userlanguages',
+                                'action' => 'userlanguages',
                             ],
                         ],
                     ],
@@ -154,9 +151,9 @@ return [
             ],
         ],
         'factories' => [
-            'navigation'                 => \Zend\Navigation\Service\DefaultNavigationFactory::class,
-            'RbacListener'               => Factory\Listener\RbacListenerFactory::class,
-            'SetupListener'              => Factory\Listener\SetupListenerFactory::class,
+            'navigation' => \Zend\Navigation\Service\DefaultNavigationFactory::class,
+            'RbacListener' => Factory\Listener\RbacListenerFactory::class,
+            'SetupListener' => Factory\Listener\SetupListenerFactory::class,
             'SetupAwareRedirectStrategy' => Factory\View\Strategy\SetupAwareRedirectStrategyFactory::class,
         ],
     ],
@@ -164,30 +161,30 @@ return [
         'locale' => 'en_US',
         'translation_file_patterns' => [
             [
-                'type'     => 'gettext',
+                'type' => 'gettext',
                 'base_dir' => __DIR__ . '/../language',
-                'pattern'  => '%s.mo',
+                'pattern' => '%s.mo',
             ],
         ],
     ],
     'view_helpers' => [
-        'invokables'=> [
-            'bootstrapSelectHelper'    => View\Helper\BootstrapSelectHelper::class,
-            'dataTablesInitHelper'     => View\Helper\DataTablesInitHelper::class,
+        'invokables' => [
+            'bootstrapSelectHelper' => View\Helper\BootstrapSelectHelper::class,
+            'dataTablesInitHelper' => View\Helper\DataTablesInitHelper::class,
             'multilevelNavigationMenu' => View\Helper\MultilevelNavigationMenu::class,
         ],
     ],
     'view_manager' => [
         'display_not_found_reason' => true,
-        'display_exceptions'       => true,
-        'doctype'                  => 'HTML5',
-        'not_found_template'       => 'error/404',
-        'exception_template'       => 'error/index',
+        'display_exceptions' => true,
+        'doctype' => 'HTML5',
+        'not_found_template' => 'error/404',
+        'exception_template' => 'error/index',
         'template_map' => [
-            'layout/layout'           => __DIR__ . '/../view/layout/layout.phtml',
+            'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
             'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
-            'error/404'               => __DIR__ . '/../view/error/404.phtml',
-            'error/index'             => __DIR__ . '/../view/error/index.phtml',
+            'error/404' => __DIR__ . '/../view/error/404.phtml',
+            'error/index' => __DIR__ . '/../view/error/index.phtml',
         ],
         'template_path_stack' => [
             __DIR__ . '/../view',

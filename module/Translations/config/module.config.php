@@ -4,148 +4,146 @@
  * @copyright Copyright (c) 2017 Andrej Sinicyn
  * @license   https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License version 3 or later
  */
-
 namespace Translations;
 
 use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;
-
 return [
     'controllers' => [
         'factories' => [
-            Controller\AppController::class             => Factory\Controller\AppControllerFactory::class,
-            Controller\AppResourceController::class     => Factory\Controller\AppResourceControllerFactory::class,
+            Controller\AppController::class => Factory\Controller\AppControllerFactory::class,
+            Controller\AppResourceController::class => Factory\Controller\AppResourceControllerFactory::class,
             Controller\AppResourceFileController::class => Factory\Controller\AppResourceFileControllerFactory::class,
-            Controller\GitController::class             => Factory\Controller\GitControllerFactory::class,
-            Controller\SyncController::class            => Factory\Controller\SyncControllerFactory::class,
-            Controller\TeamController::class            => Factory\Controller\TeamControllerFactory::class,
-            Controller\TeamMemberController::class      => Factory\Controller\TeamMemberControllerFactory::class,
-            Controller\TranslationsController::class    => Factory\Controller\TranslationsControllerFactory::class,
+            Controller\GitController::class => Factory\Controller\GitControllerFactory::class,
+            Controller\SyncController::class => Factory\Controller\SyncControllerFactory::class,
+            Controller\TeamController::class => Factory\Controller\TeamControllerFactory::class,
+            Controller\TeamMemberController::class => Factory\Controller\TeamMemberControllerFactory::class,
+            Controller\TranslationsController::class => Factory\Controller\TranslationsControllerFactory::class,
         ],
     ],
     'router' => [
         'routes' => [
-            'app'             => [
-                'type'    => Segment::class,
+            'app' => [
+                'type' => Segment::class,
                 'options' => [
-                    'route'       => '/app[/:action[/:id]]',
+                    'route' => '/app[/:action[/:id]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'     => '[0-9]+',
+                        'id' => '[0-9]+',
                     ],
-                    'defaults'    => [
+                    'defaults' => [
                         'controller' => Controller\AppController::class,
-                        'action'     => 'index',
+                        'action' => 'index',
                     ],
                 ],
             ],
-            'appresource'     => [
-                'type'    => Segment::class,
+            'appresource' => [
+                'type' => Segment::class,
                 'options' => [
-                    'route'       => '/appresource/app/:appId[/:action[/:resourceId]]',
+                    'route' => '/appresource/app/:appId[/:action[/:resourceId]]',
                     'constraints' => [
-                        'appId'      => '[0-9]+',
-                        'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'appId' => '[0-9]+',
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'resourceId' => '[0-9]+',
                     ],
-                    'defaults'    => [
+                    'defaults' => [
                         'controller' => Controller\AppResourceController::class,
-                        'action'     => 'index',
+                        'action' => 'index',
                     ],
                 ],
             ],
             'appresourcefile' => [
-                'type'    => Segment::class,
+                'type' => Segment::class,
                 'options' => [
-                    'route'       => '/appresourcefile/app/:appId[/:action[/:resourceFileId]]',
+                    'route' => '/appresourcefile/app/:appId[/:action[/:resourceFileId]]',
                     'constraints' => [
-                        'appId'          => '[0-9]+',
-                        'action'         => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'appId' => '[0-9]+',
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'resourceFileId' => '[0-9]+',
                     ],
-                    'defaults'    => [
+                    'defaults' => [
                         'controller' => Controller\AppResourceFileController::class,
-                        'action'     => 'index',
+                        'action' => 'index',
                     ],
                 ],
             ],
-            'git'             => [
-                'type'    => Segment::class,
+            'git' => [
+                'type' => Segment::class,
                 'options' => [
-                    'route'       => '/git/app/:appId[/:action]',
+                    'route' => '/git/app/:appId[/:action]',
                     'constraints' => [
-                        'appId'  => '[0-9]+',
+                        'appId' => '[0-9]+',
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                     ],
-                    'defaults'    => [
+                    'defaults' => [
                         'controller' => Controller\GitController::class,
-                        'action'     => 'index',
+                        'action' => 'index',
                     ],
                 ],
             ],
-            'sync'            => [
-                'type'    => Segment::class,
+            'sync' => [
+                'type' => Segment::class,
                 'options' => [
-                    'route'       => '/sync/app/:appId[/:action]',
+                    'route' => '/sync/app/:appId[/:action]',
                     'constraints' => [
-                        'appId'  => '[0-9]+',
+                        'appId' => '[0-9]+',
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                     ],
-                    'defaults'    => [
+                    'defaults' => [
                         'controller' => Controller\SyncController::class,
-                        'action'     => 'index',
+                        'action' => 'index',
                     ],
                 ],
             ],
-            'team'            => [
-                'type'    => Segment::class,
+            'team' => [
+                'type' => Segment::class,
                 'options' => [
-                    'route'       => '/team[/:action[/:id]]',
+                    'route' => '/team[/:action[/:id]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'     => '[0-9]+',
+                        'id' => '[0-9]+',
                     ],
-                    'defaults'    => [
+                    'defaults' => [
                         'controller' => Controller\TeamController::class,
-                        'action'     => 'index',
+                        'action' => 'index',
                     ],
                 ],
             ],
-            'teammember'      => [
-                'type'    => Segment::class,
+            'teammember' => [
+                'type' => Segment::class,
                 'options' => [
-                    'route'       => '/teammember/team/:teamId[/:action[/:userId]]',
+                    'route' => '/teammember/team/:teamId[/:action[/:userId]]',
                     'constraints' => [
                         'teamId' => '[0-9]+',
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'userId' => '[0-9]+',
                     ],
-                    'defaults'    => [
+                    'defaults' => [
                         'controller' => Controller\TeamMemberController::class,
-                        'action'     => 'index',
+                        'action' => 'index',
                     ],
                 ],
             ],
-            'translations'    => [
-                'type'          => Literal::class,
-                'options'       => [
-                    'route'    => '/translations',
+            'translations' => [
+                'type' => Literal::class,
+                'options' => [
+                    'route' => '/translations',
                     'defaults' => [
                         'controller' => Controller\TranslationsController::class,
-                        'action'     => 'index',
+                        'action' => 'index',
                     ],
                 ],
                 'may_terminate' => true,
-                'child_routes'  => [
+                'child_routes' => [
                     'listtranslations' => [
-                        'type'    => Segment::class,
+                        'type' => Segment::class,
                         'options' => [
-                            'route'       => '/listtranslations[/app/:appId/resource/:resourceId]',
+                            'route' => '/listtranslations[/app/:appId/resource/:resourceId]',
                             'constraints' => [
-                                'appId'      => '[0-9]+',
+                                'appId' => '[0-9]+',
                                 'resourceId' => '[0-9]+',
                             ],
-                            'defaults'    => [
+                            'defaults' => [
                                 'action' => 'listtranslations',
                             ],
                         ],
@@ -162,14 +160,14 @@ return [
     'translator' => [
         'translation_file_patterns' => [
             [
-                'type'     => 'gettext',
+                'type' => 'gettext',
                 'base_dir' => __DIR__ . '/../language',
-                'pattern'  => '%s.mo',
+                'pattern' => '%s.mo',
             ],
         ],
     ],
     'view_helpers' => [
-        'invokables'=> [
+        'invokables' => [
             'normalizeTranslationString' => View\Helper\NormalizeTranslationString::class,
         ],
     ],
