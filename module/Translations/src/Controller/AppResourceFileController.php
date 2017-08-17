@@ -10,8 +10,6 @@ namespace Translations\Controller;
 use RuntimeException;
 use Translations\Form\AppResourceFileForm;
 use Translations\Form\DeleteHelperForm;
-use Translations\Model\App;
-use Translations\Model\AppResource;
 use Translations\Model\AppResourceFile;
 use Translations\Model\AppResourceFileTable;
 use Translations\Model\AppResourceTable;
@@ -22,7 +20,6 @@ use Translations\Model\Helper\FileHelper;
 use Zend\Db\Adapter\Adapter as DbAdapter;
 use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\Db\Adapter\AdapterAwareTrait;
-use Zend\Form\Element\Button;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\ViewModel;
@@ -81,7 +78,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
                 $this->zfcUserAuthentication()->getIdentity()->getId(),
                 $app->Id)) {
             return $this->redirect()->toRoute('app', [
-                'action' => 'index'
+                'action' => 'index',
             ]);
         }
 
@@ -90,7 +87,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
             $this->appResourceTable->getAppResourceByAppIdAndName($app->Id, 'values');
         } catch (\Exception $e) {
             return $this->redirect()->toRoute('appresource', [
-                'appId'  => $app->Id,
+                'appId' => $app->Id,
                 'action' => 'index',
             ]);
         }
@@ -120,7 +117,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
      * App resource file add action
      *
      * @throws RuntimeException
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     public function addAction()
     {
@@ -142,10 +139,8 @@ class AppResourceFileController extends AbstractActionController implements Adap
             !mkdir($path, 0775, true)) {
             $messages[] = [
                 'canClose' => true,
-                'message'  => sprintf(
-                                $this->translator->translate('The app resource default values directory "%s" doesn\'t exist and couldn\'t be created.'),
-                                $this->getRelativeAppResValuesPath($app)),
-                'type'     => 'danger',
+                'message' => sprintf($this->translator->translate('The app resource default values directory "%s" doesn\'t exist and couldn\'t be created.'), $this->getRelativeAppResValuesPath($app)),
+                'type' => 'danger',
             ];
             $invalidResDir = true;
         } else {
@@ -179,9 +174,9 @@ class AppResourceFileController extends AbstractActionController implements Adap
 
         $request = $this->getRequest();
         $viewData = [
-            'app'        => $app,
-            'messages'   => $messages,
-            'form'       => $form,
+            'app' => $app,
+            'messages' => $messages,
+            'form' => $form,
             'valuesDirs' => $resourceFiles,
         ];
 
@@ -204,10 +199,8 @@ class AppResourceFileController extends AbstractActionController implements Adap
             !mkdir($path, 0775, true)) {
             $viewData['messages'][] = [
                 'canClose' => true,
-                'message'  => sprintf(
-                                $this->translator->translate('The app resource directory "%s" doesn\'t exist and couldn\'t be created.'),
-                                $resValuesName),
-                'type'     => 'danger',
+                'message' => sprintf($this->translator->translate('The app resource directory "%s" doesn\'t exist and couldn\'t be created.'), $resValuesName),
+                'type' => 'danger',
             ];
 
             return $viewData;
@@ -222,7 +215,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
     /**
      * App resource file delete action
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     public function deleteAction()
     {
@@ -233,7 +226,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
 
         if (0 === $id) {
             return $this->redirect()->toRoute('appresource', [
-                'appId'  => $app->Id,
+                'appId' => $app->Id,
                 'action' => 'index',
             ]);
         }
@@ -242,14 +235,14 @@ class AppResourceFileController extends AbstractActionController implements Adap
             $appResourceFile = $this->appResourceFileTable->getAppResourceFile($id);
             if ($appResourceFile->appId !== $app->Id) {
                 return $this->redirect()->toRoute('appresource', [
-                    'appId'  => $app->Id,
-                    'action' => 'index'
+                    'appId' => $app->Id,
+                    'action' => 'index',
                 ]);
             }
         } catch (\Exception $e) {
             return $this->redirect()->toRoute('appresource', [
-                'appId'  => $app->Id,
-                'action' => 'index'
+                'appId' => $app->Id,
+                'action' => 'index',
             ]);
         }
 
@@ -267,10 +260,10 @@ class AppResourceFileController extends AbstractActionController implements Adap
         ])->bind($appResourceFile);
 
         $viewData = [
-            'app'             => $app,
+            'app' => $app,
             'appResourceFile' => $appResourceFile,
-            'form'            => $form,
-            'messages'        => [],
+            'form' => $form,
+            'messages' => [],
         ];
 
         $request = $this->getRequest();
@@ -285,8 +278,8 @@ class AppResourceFileController extends AbstractActionController implements Adap
         if ($postDataInconsistent) {
             $viewData['messages'][] = [
                 'canClose' => true,
-                'message'  => $this->translator->translate('Form data seems to be inconsistent. For security reasons the last input was corrected.'),
-                'type'     => 'warning',
+                'message' => $this->translator->translate('Form data seems to be inconsistent. For security reasons the last input was corrected.'),
+                'type' => 'warning',
             ];
         }
 
@@ -295,7 +288,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
 
         if ($postDataInconsistent || !$form->isValid()) {
             $form->setData([
-                'id'     => $id,
+                'id' => $id,
                 'app_id' => $app->Id,
             ]);
             return $viewData;
@@ -314,7 +307,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
     /**
      * App resource file edit action
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     public function editAction()
     {
@@ -325,7 +318,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
 
         if (0 === $id) {
             return $this->redirect()->toRoute('appresourcefile', [
-                'appId'  => $app->Id,
+                'appId' => $app->Id,
                 'action' => 'add',
             ]);
         }
@@ -334,14 +327,14 @@ class AppResourceFileController extends AbstractActionController implements Adap
             $appResourceFile = $this->appResourceFileTable->getAppResourceFile($id);
             if ($appResourceFile->AppId !== $app->Id) {
                 return $this->redirect()->toRoute('appresourcefile', [
-                    'appId'  => $app->Id,
-                    'action' => 'index'
+                    'appId' => $app->Id,
+                    'action' => 'index',
                 ]);
             }
         } catch (\Exception $e) {
             return $this->redirect()->toRoute('appresourcefile', [
-                'appId'  => $app->Id,
-                'action' => 'index'
+                'appId' => $app->Id,
+                'action' => 'index',
             ]);
         }
 
@@ -350,8 +343,8 @@ class AppResourceFileController extends AbstractActionController implements Adap
         $form->bind($appResourceFile);
 
         $viewData = [
-            'app'  => $app,
-            'id'   => $id,
+            'app' => $app,
+            'id' => $id,
             'form' => $form,
         ];
 
@@ -371,7 +364,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
         $this->appResourceFileTable->saveAppResourceFile($appResourceFile);
 
         return $this->redirect()->toRoute('appresourcefile', [
-            'appId'  => $app->Id,
+            'appId' => $app->Id,
             'action' => 'index'
         ]);
     }
@@ -379,7 +372,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
     /**
      * App resource file overview action
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     public function indexAction()
     {
@@ -391,7 +384,7 @@ class AppResourceFileController extends AbstractActionController implements Adap
         ]);
 
         return [
-            'app'              => $app,
+            'app' => $app,
             'appResourceFiles' => $appResourceFiles,
         ];
     }

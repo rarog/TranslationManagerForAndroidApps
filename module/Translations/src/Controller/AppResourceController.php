@@ -20,7 +20,6 @@ use Translations\Model\Helper\FileHelper;
 use Zend\Db\Adapter\Adapter as DbAdapter;
 use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\Db\Adapter\AdapterAwareTrait;
-use Zend\Form\Element\Button;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\ViewModel;
@@ -91,9 +90,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
     private function getAbsoluteAppResPath(App $app)
     {
         if (($path = realpath($this->configHelp('tmfaa')->app_dir)) === false) {
-            throw new RuntimeException(sprintf(
-                'Configured path app directory "%s" does not exist',
-                $this->configHelp('tmfaa')->app_dir));
+            throw new RuntimeException(sprintf('Configured path app directory "%s" does not exist', $this->configHelp('tmfaa')->app_dir));
         }
         return FileHelper::concatenatePath($path, $this->getRelativeAppResPath($app));
     }
@@ -144,7 +141,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
      * App resource add action
      *
      * @throws RuntimeException
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     public function addAction()
     {
@@ -167,10 +164,8 @@ class AppResourceController extends AbstractActionController implements AdapterA
                 !mkdir($path, 0775, true)) {
                 $messages[] = [
                     'canClose' => true,
-                    'message'  => sprintf(
-                                    $this->translator->translate('The app resource directory "%s" doesn\'t exist and couldn\'t be created.'),
-                                    $this->getRelativeAppResPath($app)),
-                    'type'     => 'danger',
+                    'message' => sprintf($this->translator->translate('The app resource directory "%s" doesn\'t exist and couldn\'t be created.'), $this->getRelativeAppResPath($app)),
+                    'type' => 'danger',
                 ];
                 $invalidResDir = true;
             } else {
@@ -212,9 +207,9 @@ class AppResourceController extends AbstractActionController implements AdapterA
 
         $request = $this->getRequest();
         $viewData = [
-            'app'        => $app,
-            'messages'   => $messages,
-            'form'       => $form,
+            'app' => $app,
+            'messages' => $messages,
+            'form' => $form,
             'valuesDirs' => $valuesDirs,
         ];
 
@@ -238,10 +233,8 @@ class AppResourceController extends AbstractActionController implements AdapterA
             !mkdir($path, 0775, true)) {
             $viewData['messages'][] = [
                 'canClose' => true,
-                'message'  => sprintf(
-                                $this->translator->translate('The app resource directory "%s" doesn\'t exist and couldn\'t be created.'),
-                                $resValuesName),
-                'type'     => 'danger',
+                'message' => sprintf($this->translator->translate('The app resource directory "%s" doesn\'t exist and couldn\'t be created.'), $resValuesName),
+                'type' => 'danger',
             ];
 
             return $viewData;
@@ -256,7 +249,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
     /**
      * App resource delete action
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     public function deleteAction()
     {
@@ -320,10 +313,10 @@ class AppResourceController extends AbstractActionController implements AdapterA
         ])->bind($appResource);
 
         $viewData = [
-            'app'         => $app,
+            'app' => $app,
             'appResource' => $appResource,
-            'form'        => $form,
-            'messages'    => [],
+            'form' => $form,
+            'messages' => [],
         ];
 
         $request = $this->getRequest();
@@ -338,8 +331,8 @@ class AppResourceController extends AbstractActionController implements AdapterA
         if ($postDataInconsistent) {
             $viewData['messages'][] = [
                 'canClose' => true,
-                'message'  => $this->translator->translate('Form data seems to be inconsistent. For security reasons the last input was corrected.'),
-                'type'     => 'warning',
+                'message' => $this->translator->translate('Form data seems to be inconsistent. For security reasons the last input was corrected.'),
+                'type' => 'warning',
             ];
         }
 
@@ -348,7 +341,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
 
         if ($postDataInconsistent || !$form->isValid()) {
             $form->setData([
-                'id'     => $id,
+                'id' => $id,
                 'app_id' => $app->Id,
             ]);
             return $viewData;
@@ -359,15 +352,15 @@ class AppResourceController extends AbstractActionController implements AdapterA
         }
 
         return $this->redirect()->toRoute('appresource', [
-            'appId'  => $app->Id,
-            'action' => 'index'
+            'appId' => $app->Id,
+            'action' => 'index',
         ]);
     }
 
     /**
      * App resource edit action
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     public function editAction()
     {
@@ -377,7 +370,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
         // Prevent editing of resources, if default resource doesn't exist.
         if (!$this->getHasAppDefaultValues($app)) {
             return $this->redirect()->toRoute('appresource', [
-                'appId'  => $app->Id,
+                'appId' => $app->Id,
                 'action' => 'index',
             ]);
         }
@@ -386,7 +379,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
 
         if (0 === $id) {
             return $this->redirect()->toRoute('appresource', [
-                'appId'  => $app->Id,
+                'appId' => $app->Id,
                 'action' => 'add',
             ]);
         }
@@ -395,14 +388,14 @@ class AppResourceController extends AbstractActionController implements AdapterA
             $appResource = $this->appResourceTable->getAppResource($id);
             if ($appResource->appId !== $app->Id) {
                 return $this->redirect()->toRoute('appresource', [
-                    'appId'  => $app->Id,
-                    'action' => 'index'
+                    'appId' => $app->Id,
+                    'action' => 'index',
                 ]);
             }
         } catch (\Exception $e) {
             return $this->redirect()->toRoute('appresource', [
-                'appId'  => $app->Id,
-                'action' => 'index'
+                'appId' => $app->Id,
+                'action' => 'index',
             ]);
         }
 
@@ -419,9 +412,9 @@ class AppResourceController extends AbstractActionController implements AdapterA
         $form->bind($appResource);
 
         $viewData = [
-            'app'         => $app,
+            'app' => $app,
             'appResource' => $appResource,
-            'form'        => $form,
+            'form' => $form,
         ];
 
         $request = $this->getRequest();
@@ -440,15 +433,15 @@ class AppResourceController extends AbstractActionController implements AdapterA
         $this->appResourceTable->saveAppResource($appResource);
 
         return $this->redirect()->toRoute('appresource', [
-            'appId'  => $app->Id,
-            'action' => 'index'
+            'appId' => $app->Id,
+            'action' => 'index',
         ]);
     }
 
     /**
      * App resource overview action
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     public function indexAction()
     {
@@ -462,10 +455,10 @@ class AppResourceController extends AbstractActionController implements AdapterA
         $localeNames = $this->getLocaleNameArray($this->translator->getLocale());
 
         return [
-            'app'              => $app,
-            'appResources'     => $appResources,
+            'app' => $app,
+            'appResources' => $appResources,
             'hasDefaultValues' => $this->getHasAppDefaultValues($app),
-            'localeNames'      => $this->getLocaleNameArray($this->translator->getLocale()),
+            'localeNames' => $this->getLocaleNameArray($this->translator->getLocale()),
         ];
     }
 }

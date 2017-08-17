@@ -8,8 +8,6 @@
 namespace Translations\Model;
 
 use RuntimeException;
-use Zend\Db\Sql\Select;
-use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
 class ResourceFileEntryStringSuggestionTable
@@ -43,9 +41,9 @@ class ResourceFileEntryStringSuggestionTable
     /**
      * Get entry
      *
-     * @param  int $id
+     * @param int $id
      * @throws RuntimeException
-     * @return \Translations\Model\ResourceFileEntryStringSuggestion
+     * @return ResourceFileEntryStringSuggestion
      */
     public function getResourceFileEntryStringSuggestion($id)
     {
@@ -53,10 +51,7 @@ class ResourceFileEntryStringSuggestionTable
         $rowset = $this->tableGateway->select(['id' => $id]);
         $row = $rowset->current();
         if (!$row) {
-            throw new RuntimeException(sprintf(
-                'Could not find row with identifier %d',
-                $id
-            ));
+            throw new RuntimeException(sprintf('Could not find row with identifier %d', $id));
         }
 
         return $row;
@@ -65,17 +60,17 @@ class ResourceFileEntryStringSuggestionTable
     /**
      * Resource file entry string suggestion save function
      *
-     * @param  ResourceFileEntryStringSuggestion $resourceFileEntryStringSuggestion
+     * @param ResourceFileEntryStringSuggestion $resourceFileEntryStringSuggestion
      * @throws RuntimeException
-     * @return \Translations\Model\ResourceFileEntryStringSuggestion
+     * @return ResourceFileEntryStringSuggestion
      */
     public function saveResourceFileEntryStringSuggestion(ResourceFileEntryStringSuggestion $resourceFileEntryStringSuggestion)
     {
         $data = [
             'resource_file_entry_string_id' => $resourceFileEntryStringSuggestion->ResourceFileEntryStringId,
-            'user_id'                       => $resourceFileEntryStringSuggestion->UserId,
-            'value'                         => $resourceFileEntryStringSuggestion->Value,
-            'created'                       => $resourceFileEntryStringSuggestion->Created,
+            'user_id' => $resourceFileEntryStringSuggestion->UserId,
+            'value' => $resourceFileEntryStringSuggestion->Value,
+            'created' => $resourceFileEntryStringSuggestion->Created,
         ];
 
         $id = (int) $resourceFileEntryStringSuggestion->Id;
@@ -87,10 +82,7 @@ class ResourceFileEntryStringSuggestionTable
         }
 
         if (!$this->getResourceFileEntryStringSuggestion($id)) {
-            throw new RuntimeException(sprintf(
-                'Cannot update resource file entry string suggestion with identifier %d; does not exist',
-                $id
-            ));
+            throw new RuntimeException(sprintf('Cannot update resource file entry string suggestion with identifier %d; does not exist', $id));
         }
 
         $this->tableGateway->update($data, ['id' => $id]);

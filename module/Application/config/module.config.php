@@ -4,10 +4,12 @@
  * @copyright Copyright (c) 2017 Andrej Sinicyn
  * @license   https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License version 3 or later
  */
+
 namespace Application;
 
 use Zend\Router\Http\Literal;
 use Zend\ServiceManager\Factory\InvokableFactory;
+
 return [
     'controllers' => [
         'factories' => [

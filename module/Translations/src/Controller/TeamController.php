@@ -39,7 +39,7 @@ class TeamController extends AbstractActionController
      * Team add action
      *
      * @throws RuntimeException
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     public function addAction()
     {
@@ -73,7 +73,7 @@ class TeamController extends AbstractActionController
     /**
      * Team delete action
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     public function deleteAction()
     {
@@ -97,8 +97,8 @@ class TeamController extends AbstractActionController
 
         $request = $this->getRequest();
         $viewData = [
-            'form'     => $form,
-            'team'     => $team,
+            'form' => $form,
+            'team' => $team,
             'messages' => [],
         ];
 
@@ -139,7 +139,7 @@ class TeamController extends AbstractActionController
     /**
      * Team edit action
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     public function editAction()
     {
@@ -191,7 +191,7 @@ class TeamController extends AbstractActionController
     /**
      * Team overview action
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     public function indexAction()
     {

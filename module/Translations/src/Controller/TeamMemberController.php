@@ -11,7 +11,6 @@ use Application\Model\UserTable;
 use RuntimeException;
 use Translations\Form\DeleteHelperForm;
 use Translations\Form\TeamMemberForm;
-use Translations\Model\Team;
 use Translations\Model\TeamMember;
 use Translations\Model\TeamMemberTable;
 use Translations\Model\TeamTable;
@@ -103,7 +102,7 @@ class TeamMemberController extends AbstractActionController
      * Team member add action
      *
      * @throws RuntimeException
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     public function addAction()
     {
@@ -130,9 +129,9 @@ class TeamMemberController extends AbstractActionController
                     $teamMember->teamName);
 
                 $viewModel = new ViewModel([
-                    'type'     => 'success',
-                    'message'  => $message,
                     'canClose' => true,
+                    'message' => $message,
+                    'type' => 'success',
                 ]);
                 $viewModel->setTemplate('partial/alert.phtml')
                     ->setTerminal(true);
@@ -141,9 +140,9 @@ class TeamMemberController extends AbstractActionController
         }
 
         return [
-            'form'           => $form,
-            'message'        => $message,
-            'team'           => $team,
+            'form' => $form,
+            'message' => $message,
+            'team' => $team,
             'usersNotInTeam' => $this->userTable->fetchAllNotInTeam($teamId),
         ];
     }
@@ -151,7 +150,7 @@ class TeamMemberController extends AbstractActionController
     /**
      * Team member remove action
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     public function removeAction()
     {
@@ -179,9 +178,9 @@ class TeamMemberController extends AbstractActionController
 
         $request = $this->getRequest();
         $viewData = [
-            'form'       => $form,
+            'form' => $form,
             'teamMember' => $teamMember,
-            'messages'   => [],
+            'messages' => [],
         ];
 
         if (!$request->isPost()) {
@@ -194,8 +193,8 @@ class TeamMemberController extends AbstractActionController
         if ($postDataInconsistent) {
             $viewData['messages'][] = [
                 'canClose' => true,
-                'message'  => $this->translator->translate('Form data seems to be inconsistent. For security reasons the last input was corrected.'),
-                'type'     => 'warning',
+                'message' => $this->translator->translate('Form data seems to be inconsistent. For security reasons the last input was corrected.'),
+                'type' => 'warning',
             ];
         }
 
@@ -224,7 +223,7 @@ class TeamMemberController extends AbstractActionController
     /**
      * Team member overview action
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     public function indexAction()
     {
@@ -232,7 +231,7 @@ class TeamMemberController extends AbstractActionController
         $team = $this->getTeam($teamId);
 
         return [
-            'team'        => $team,
+            'team' => $team,
             'teamMembers' => $this->teamMemberTable->fetchAll(['team_id' => $team->id]),
         ];
     }

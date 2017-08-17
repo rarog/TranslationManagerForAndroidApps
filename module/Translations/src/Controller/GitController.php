@@ -89,10 +89,7 @@ class GitController extends AbstractActionController
     {
         if (!isset($this->appPath)) {
             if (($path = realpath($this->configHelp('tmfaa')->app_dir)) === false) {
-                throw new RuntimeException(sprintf(
-                    'Configured path app directory "%s" does not exist',
-                    $this->configHelp('tmfaa')->app_dir
-                    ));
+                throw new RuntimeException(sprintf('Configured path app directory "%s" does not exist', $this->configHelp('tmfaa')->app_dir));
             }
             $path = FileHelper::concatenatePath($path, (string) $app->Id);
 
@@ -136,7 +133,7 @@ class GitController extends AbstractActionController
     /**
      * Git clone action
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     public function cloneAction()
     {
@@ -195,14 +192,14 @@ class GitController extends AbstractActionController
 
                 $viewData['messages'][] = [
                     'canClose' => true,
-                    'message'  => $this->translator->translate('Git cloning successful'),
-                    'type'     => 'success',
+                    'message' => $this->translator->translate('Git cloning successful'),
+                    'type' => 'success',
                 ];
             } catch (\Exception $e) {
                 $viewData['messages'][] = [
                     'canClose' => true,
-                    'message'  => $e->getMessage(),
-                    'type'     => 'danger',
+                    'message' => $e->getMessage(),
+                    'type' => 'danger',
                 ];
             }
         }
@@ -213,7 +210,7 @@ class GitController extends AbstractActionController
     /**
      * Git overview action
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     public function indexAction()
     {

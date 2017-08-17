@@ -14,7 +14,7 @@ class IndexController extends AbstractActionController
 {
 
     /**
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     public function aboutAction()
     {
@@ -22,7 +22,7 @@ class IndexController extends AbstractActionController
     }
 
     /**
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     public function indexAction()
     {

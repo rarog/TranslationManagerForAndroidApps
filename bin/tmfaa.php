@@ -4,6 +4,7 @@
  * @copyright Copyright (c) 2017 Andrej Sinicyn
  * @license   https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License version 3 or later
  */
+
 use Application\Module;
 use Zend\Console\Console;
 use ZF\Console\Application;

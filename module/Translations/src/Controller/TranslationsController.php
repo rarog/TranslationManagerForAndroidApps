@@ -82,7 +82,7 @@ class TranslationsController extends AbstractActionController
     /**
      * Get ViewModel for partial rendering
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     private function getViewModel()
     {
@@ -132,7 +132,7 @@ class TranslationsController extends AbstractActionController
     /**
      * Translations overview action
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     public function indexAction()
     {
@@ -147,10 +147,7 @@ class TranslationsController extends AbstractActionController
                 $apps[$value['app_id']] = $value['app_name'];
             }
 
-            $resources[$value['app_id']][$value['app_resource_id']] = sprintf(
-                    '%s (%s)',
-                    $value['app_resource_name'],
-                    $localeNames[$value['locale']]);
+            $resources[$value['app_id']][$value['app_resource_id']] = sprintf('%s (%s)', $value['app_resource_name'], $localeNames[$value['locale']]);
         }
 
         $appsAll = [];
@@ -170,9 +167,9 @@ class TranslationsController extends AbstractActionController
         }
 
         return [
-            'apps'         => $apps,
-            'appsAll'      => $appsAll,
-            'resources'    => $resources,
+            'apps' => $apps,
+            'appsAll' => $appsAll,
+            'resources' => $resources,
             'resourcesAll' => $resourcesAll,
         ];
     }
@@ -180,7 +177,7 @@ class TranslationsController extends AbstractActionController
     /**
      * App resource add action
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return JsonModel
      */
     public function listtranslationsAction()
     {
@@ -199,7 +196,7 @@ class TranslationsController extends AbstractActionController
 
         try {
             $resource = $this->appResourceTable->fetchAll([
-                'id'     => $resourceId,
+                'id' => $resourceId,
                 'app_id' => $appId,
             ]);
         } catch (\Exception $e) {
@@ -219,11 +216,11 @@ class TranslationsController extends AbstractActionController
             $viewModel->setVariables($entry);
 
             $output[] = [
-                'defaultId'       => $entry['defaultId'],
-                'name'            => $entry['name'],
-                'defaultValue'    => $this->renderTemplate($viewModel, 'partial/translations-defaultValue.phtml'),
+                'defaultId' => $entry['defaultId'],
+                'name' => $entry['name'],
+                'defaultValue' => $this->renderTemplate($viewModel, 'partial/translations-defaultValue.phtml'),
                 'translatedValue' => $this->renderTemplate($viewModel, 'partial/translations-translatedValue.phtml'),
-                'buttons'         => $this->renderTemplate($viewModel, 'partial/translations-buttons.phtml'),
+                'buttons' => $this->renderTemplate($viewModel, 'partial/translations-buttons.phtml'),
             ];
         }
         return new JsonModel($output);

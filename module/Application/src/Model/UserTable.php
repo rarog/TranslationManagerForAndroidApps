@@ -11,7 +11,6 @@ use RuntimeException;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\TableGateway;
-use ZfcUser\Entity\User;
 use ZfcUser\Mapper\User as UserMapper;
 
 class UserTable
@@ -81,10 +80,7 @@ class UserTable
         $id = (int) $id;
         $row = $this->userMapper->findById($id);
         if (!$row) {
-            throw new RuntimeException(sprintf(
-                'Could not find row with identifier %d',
-                $id
-            ));
+            throw new RuntimeException(sprintf('Could not find row with identifier %d', $id));
         }
 
         return $row;

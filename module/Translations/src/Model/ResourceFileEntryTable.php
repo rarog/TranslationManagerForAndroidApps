@@ -8,7 +8,6 @@
 namespace Translations\Model;
 
 use RuntimeException;
-use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\TableGateway;
 
 class ResourceFileEntryTable
@@ -42,9 +41,9 @@ class ResourceFileEntryTable
     /**
      * Get entry
      *
-     * @param  int $id
+     * @param int $id
      * @throws RuntimeException
-     * @return \Translations\Model\ResourceFileEntry
+     * @return ResourceFileEntry
      */
     public function getResourceFileEntry($id)
     {
@@ -52,10 +51,7 @@ class ResourceFileEntryTable
         $rowset = $this->tableGateway->select(['id' => $id]);
         $row = $rowset->current();
         if (!$row) {
-            throw new RuntimeException(sprintf(
-                'Could not find row with identifier %d',
-                $id
-            ));
+            throw new RuntimeException(sprintf('Could not find row with identifier %d', $id));
         }
 
         return $row;
@@ -64,18 +60,18 @@ class ResourceFileEntryTable
     /**
      * Resource file entry save function
      *
-     * @param  ResourceFileEntry $resourceFileEntry
+     * @param ResourceFileEntry $resourceFileEntry
      * @throws RuntimeException
-     * @return \Translations\Model\ResourceFileEntry
+     * @return ResourceFileEntry
      */
     public function saveResourceFileEntry(ResourceFileEntry $resourceFileEntry)
     {
         $data = [
             'app_resource_file_id' => $resourceFileEntry->AppResourceFileId,
-            'resource_type_id'     => $resourceFileEntry->ResourceTypeId,
-            'name'                 => $resourceFileEntry->Name,
-            'deleted'              => $resourceFileEntry->Deleted,
-            'translatable'         => $resourceFileEntry->Translatable,
+            'resource_type_id' => $resourceFileEntry->ResourceTypeId,
+            'name' => $resourceFileEntry->Name,
+            'deleted' => $resourceFileEntry->Deleted,
+            'translatable' => $resourceFileEntry->Translatable,
         ];
 
         $id = (int) $resourceFileEntry->Id;
@@ -87,10 +83,7 @@ class ResourceFileEntryTable
         }
 
         if (!$this->getResourceFileEntry($id)) {
-            throw new RuntimeException(sprintf(
-                'Cannot update resource file entry with identifier %d; does not exist',
-                $id
-            ));
+            throw new RuntimeException(sprintf('Cannot update resource file entry with identifier %d; does not exist', $id));
         }
 
         $this->tableGateway->update($data, ['id' => $id]);

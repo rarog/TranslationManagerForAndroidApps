@@ -7,10 +7,7 @@
 
 namespace Application\Model;
 
-use Application\Model\UserLanguages;
 use RuntimeException;
-use Zend\Db\Sql\Select;
-use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\TableGateway;
 
 class UserLanguagesTable
@@ -59,7 +56,7 @@ class UserLanguagesTable
      * @param int $userId
      * @param string $locale
      * @throws RuntimeException
-     * @return \Application\Model\UserLanguages
+     * @return UserLanguages
      */
     public function getUserLanguage($userId, $locale)
     {
@@ -71,11 +68,7 @@ class UserLanguagesTable
         ]);
         $row = $rowset->current();
         if (!$row) {
-            throw new RuntimeException(sprintf(
-                'Could not find row with identifiers %d,%d',
-                $userId,
-                $locale
-            ));
+            throw new RuntimeException(sprintf('Could not find row with identifiers %d,%d', $userId, $locale));
         }
 
         return $row;
@@ -86,13 +79,13 @@ class UserLanguagesTable
      *
      * @param UserLanguages $userLanguage
      * @throws RuntimeException
-     * @return \Application\Model\UserLanguages
+     * @return UserLanguages
      */
     public function saveUserLanguage(UserLanguages $userLanguage)
     {
         $data = [
             'user_id' => $userLanguage->UserId,
-            'locale'  => $userLanguage->Locale,
+            'locale' => $userLanguage->Locale,
         ];
 
         $userId = (int) $userLanguage->UserId;

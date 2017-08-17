@@ -8,7 +8,6 @@
 namespace Translations\Model;
 
 use RuntimeException;
-use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\TableGateway;
 
 class ResourceTypeTable
@@ -42,9 +41,9 @@ class ResourceTypeTable
     /**
      * Get entry
      *
-     * @param  int $id
+     * @param int $id
      * @throws RuntimeException
-     * @return \Translations\Model\ResourceType
+     * @return ResourceType
      */
     public function getResourceType($id)
     {
@@ -52,10 +51,7 @@ class ResourceTypeTable
         $rowset = $this->tableGateway->select(['id' => $id]);
         $row = $rowset->current();
         if (!$row) {
-            throw new RuntimeException(sprintf(
-                'Could not find row with identifier %d',
-                $id
-            ));
+            throw new RuntimeException(sprintf('Could not find row with identifier %d', $id));
         }
 
         return $row;
@@ -64,14 +60,14 @@ class ResourceTypeTable
     /**
      * Resource type save function
      *
-     * @param  ResourceType $resourceType
+     * @param ResourceType $resourceType
      * @throws RuntimeException
-     * @return \Translations\Model\ResourceType
+     * @return ResourceType
      */
     public function saveResourceType(ResourceType $resourceType)
     {
         $data = [
-            'name'      => $resourceType->Name,
+            'name' => $resourceType->Name,
             'node_name' => $resourceType->NodeName,
         ];
 
@@ -84,10 +80,7 @@ class ResourceTypeTable
         }
 
         if (!$this->getResourceType($id)) {
-            throw new RuntimeException(sprintf(
-                'Cannot update resource type with identifier %d; does not exist',
-                $id
-            ));
+            throw new RuntimeException(sprintf('Cannot update resource type with identifier %d; does not exist', $id));
         }
 
         $this->tableGateway->update($data, ['id' => $id]);

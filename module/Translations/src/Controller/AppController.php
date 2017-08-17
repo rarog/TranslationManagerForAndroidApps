@@ -85,10 +85,7 @@ class AppController extends AbstractActionController
     private function getAppPath($id)
     {
         if (($path = realpath($this->configHelp('tmfaa')->app_dir)) === false) {
-            throw new RuntimeException(sprintf(
-                    'Configured path app directory "%s" does not exist',
-                    $this->configHelp('tmfaa')->app_dir
-                    ));
+            throw new RuntimeException(sprintf('Configured path app directory "%s" does not exist', $this->configHelp('tmfaa')->app_dir));
         }
         return FileHelper::concatenatePath($path, (string) $id);
     }
@@ -115,7 +112,7 @@ class AppController extends AbstractActionController
      * App add action
      *
      * @throws RuntimeException
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     public function addAction()
     {
@@ -153,10 +150,7 @@ class AppController extends AbstractActionController
 
         $path =  $this->getAppPath($app->id);
         if (!mkdir($path, 0775, true)) {
-            throw new RuntimeException(sprintf(
-                'Could not create path "%s"',
-                $path
-            ));
+            throw new RuntimeException(sprintf('Could not create path "%s"', $path));
         }
 
         return $this->redirect()->toRoute('app', [
@@ -167,7 +161,7 @@ class AppController extends AbstractActionController
     /**
      * App delete action
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     public function deleteAction()
     {
@@ -245,7 +239,7 @@ class AppController extends AbstractActionController
     /**
      * App edit action
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     public function editAction()
     {
@@ -311,7 +305,7 @@ class AppController extends AbstractActionController
     /**
      * App overview action
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     public function indexAction()
     {
@@ -322,7 +316,7 @@ class AppController extends AbstractActionController
         }
 
         return [
-            'apps'  => $apps,
+            'apps' => $apps,
             'teams' => $this->getAllTeamsAsArray(),
         ];
     }

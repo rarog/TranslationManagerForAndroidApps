@@ -33,10 +33,9 @@ class ResFileName extends AbstractValidator implements AdapterAwareInterface
      * getMessages() will return an array of messages that explain why the
      * validation failed.
      *
-     * @param  mixed $value
-     * @param  mixed $context Additional context
+     * @param mixed $value
+     * @param mixed $context Additional context
      * @return bool
-     * @throws Exception\RuntimeException If validation of $value is impossible
      */
     public function isValid($value, $context = null)
     {

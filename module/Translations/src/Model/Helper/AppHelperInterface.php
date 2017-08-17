@@ -7,6 +7,7 @@
 
 namespace Translations\Model\Helper;
 
+use RuntimeException;
 use Translations\Model\App;
 
 interface AppHelperInterface

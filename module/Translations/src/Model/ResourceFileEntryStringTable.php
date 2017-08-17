@@ -8,7 +8,6 @@
 namespace Translations\Model;
 
 use RuntimeException;
-use Translations\Model\AppResourceTable;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
@@ -52,9 +51,9 @@ class ResourceFileEntryStringTable
     /**
      * Get entry
      *
-     * @param  int $id
+     * @param int $id
      * @throws RuntimeException
-     * @return \Translations\Model\ResourceFileEntryString
+     * @return ResourceFileEntryString
      */
     public function getResourceFileEntryString($id)
     {
@@ -62,10 +61,7 @@ class ResourceFileEntryStringTable
         $rowset = $this->tableGateway->select(['id' => $id]);
         $row = $rowset->current();
         if (!$row) {
-            throw new RuntimeException(sprintf(
-                'Could not find row with identifier %d',
-                $id
-            ));
+            throw new RuntimeException(sprintf('Could not find row with identifier %d', $id));
         }
 
         return $row;
@@ -74,17 +70,17 @@ class ResourceFileEntryStringTable
     /**
      * Resource file entry string save function
      *
-     * @param  ResourceFileEntryString $resourceFileEntryString
+     * @param ResourceFileEntryString $resourceFileEntryString
      * @throws RuntimeException
-     * @return \Translations\Model\ResourceFileEntryString
+     * @return ResourceFileEntryString
      */
     public function saveResourceFileEntryString(ResourceFileEntryString $resourceFileEntryString)
     {
         $data = [
-            'app_resource_id'        => $resourceFileEntryString->AppResourceId,
+            'app_resource_id' => $resourceFileEntryString->AppResourceId,
             'resource_file_entry_id' => $resourceFileEntryString->ResourceFileEntryId,
-            'value'                  => $resourceFileEntryString->Value,
-            'last_change'            => $resourceFileEntryString->LastChange,
+            'value'  => $resourceFileEntryString->Value,
+            'last_change' => $resourceFileEntryString->LastChange,
         ];
 
         $id = (int) $resourceFileEntryString->Id;
@@ -96,10 +92,7 @@ class ResourceFileEntryStringTable
         }
 
         if (!$this->getResourceFileEntryString($id)) {
-            throw new RuntimeException(sprintf(
-                'Cannot update resource file entry string with identifier %d; does not exist',
-                $id
-            ));
+            throw new RuntimeException(sprintf('Cannot update resource file entry string with identifier %d; does not exist', $id));
         }
 
         $this->tableGateway->update($data, ['id' => $id]);
@@ -139,52 +132,56 @@ class ResourceFileEntryStringTable
 
         $select = new Select;
         $select->columns([
-            'defaultId'           => 'id',
-            'appResourceId'       => 'app_resource_id',
+            'defaultId' => 'id',
+            'appResourceId'  => 'app_resource_id',
             'resourceFileEntryId' => 'resource_file_entry_id',
-            'defaultValue'        => 'value',
-            'defaultLastChange'   => 'last_change',
+            'defaultValue' => 'value',
+            'defaultLastChange' => 'last_change',
         ])->from(['default' => $this->tableGateway->table]);
 
         $onAppResource = new Expression('? = ? AND ? = ? AND ? = ?', [
-            ['app_resource.id'         => Expression::TYPE_IDENTIFIER],
+            ['app_resource.id'  => Expression::TYPE_IDENTIFIER],
             ['default.app_resource_id' => Expression::TYPE_IDENTIFIER],
-            ['app_resource.app_id'     => Expression::TYPE_IDENTIFIER],
-            [$appId                    => Expression::TYPE_VALUE],
-            ['app_resource.name'       => Expression::TYPE_IDENTIFIER],
-            ['values'                  => Expression::TYPE_VALUE]]);
+            ['app_resource.app_id' => Expression::TYPE_IDENTIFIER],
+            [$appId => Expression::TYPE_VALUE],
+            ['app_resource.name' => Expression::TYPE_IDENTIFIER],
+            ['values' => Expression::TYPE_VALUE],
+        ]);
         $select->join('app_resource', $onAppResource, [], Select::JOIN_INNER);
 
         if (($defaultAppResource === false) || ($defaultAppResource->Id !== $appResourceId)) {
             $onResourceFileEntry = new Expression('? = ? AND ? = ? AND ? = ?', [
-                ['resource_file_entry.id'           => Expression::TYPE_IDENTIFIER],
-                ['default.resource_file_entry_id'   => Expression::TYPE_IDENTIFIER],
-                ['resource_file_entry.deleted'      => Expression::TYPE_IDENTIFIER],
-                [0                                  => Expression::TYPE_VALUE],
+                ['resource_file_entry.id' => Expression::TYPE_IDENTIFIER],
+                ['default.resource_file_entry_id' => Expression::TYPE_IDENTIFIER],
+                ['resource_file_entry.deleted' => Expression::TYPE_IDENTIFIER],
+                [0 => Expression::TYPE_VALUE],
                 ['resource_file_entry.translatable' => Expression::TYPE_IDENTIFIER],
-                [1                                  => Expression::TYPE_VALUE]]);
+                [1 => Expression::TYPE_VALUE],
+            ]);
         } else {
             $onResourceFileEntry = new Expression('? = ? AND ? = ?', [
-                ['resource_file_entry.id'           => Expression::TYPE_IDENTIFIER],
-                ['default.resource_file_entry_id'   => Expression::TYPE_IDENTIFIER],
-                ['resource_file_entry.deleted'      => Expression::TYPE_IDENTIFIER],
-                [0                                  => Expression::TYPE_VALUE]]);
+                ['resource_file_entry.id' => Expression::TYPE_IDENTIFIER],
+                ['default.resource_file_entry_id' => Expression::TYPE_IDENTIFIER],
+                ['resource_file_entry.deleted' => Expression::TYPE_IDENTIFIER],
+                [0 => Expression::TYPE_VALUE],
+            ]);
         }
         $select->join('resource_file_entry', $onResourceFileEntry, ['name'], Select::JOIN_INNER);
 
         $onResourceFileEntryString = new Expression('? = ? AND ? = ?', [
             ['resource_file_entry_string.resource_file_entry_id' => Expression::TYPE_IDENTIFIER],
-            ['default.resource_file_entry_id'                    => Expression::TYPE_IDENTIFIER],
-            ['resource_file_entry_string.app_resource_id'        => Expression::TYPE_IDENTIFIER],
-            [$appResourceId                                      => Expression::TYPE_VALUE]]);
+            ['default.resource_file_entry_id'  => Expression::TYPE_IDENTIFIER],
+            ['resource_file_entry_string.app_resource_id' => Expression::TYPE_IDENTIFIER],
+            [$appResourceId => Expression::TYPE_VALUE],
+        ]);
         $select->join('resource_file_entry_string', $onResourceFileEntryString, [
-            'id'         => 'id',
-            'value'      => 'value',
+            'id' => 'id',
+            'value' => 'value',
             'lastChange' => 'last_change',
         ], Select::JOIN_LEFT);
 
         $select->join('resource_file_entry_string_suggestion', 'resource_file_entry_string_suggestion.resource_file_entry_string_id = resource_file_entry_string.id',[
-            'suggestionCount' => new Expression('count(distinct resource_file_entry_string_suggestion.id)')
+            'suggestionCount' => new Expression('count(distinct resource_file_entry_string_suggestion.id)'),
         ], $select::JOIN_LEFT);
 
         $select->group([

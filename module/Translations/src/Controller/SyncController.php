@@ -82,7 +82,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
     /**
      * Creates error page
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return ViewModel
      */
     private function getAjaxError()
     {
@@ -149,10 +149,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
     {
         if (!isset($this->appPath)) {
             if (($path = realpath($this->configHelp('tmfaa')->app_dir)) === false) {
-                throw new RuntimeException(sprintf(
-                    'Configured path app directory "%s" does not exist',
-                    $this->configHelp('tmfaa')->app_dir
-                    ));
+                throw new RuntimeException(sprintf('Configured path app directory "%s" does not exist', $this->configHelp('tmfaa')->app_dir));
             }
             $path = FileHelper::concatenatePath($path, (string) $app->Id);
 
@@ -167,7 +164,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
      *
      * @param string $type
      * @param string $message
-     * @return \Zend\View\Model\JsonModel
+     * @return JsonModel
      */
     private function getJsonAlert($type, $message)
     {
@@ -213,7 +210,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
     /**
      * Sync export action
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return JsonModel
      */
     public function exportAction()
     {
@@ -259,7 +256,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
     /**
      * Sync import action
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return JsonModel
      */
     public function importAction()
     {
@@ -475,7 +472,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
         $formExport = new SyncExportForm();
 
         return [
-            'app'        => $app,
+            'app' => $app,
             'formExport' => $formExport,
             'formImport' => $formImport,
         ];

@@ -7,6 +7,7 @@
 namespace Setup;
 
 use Zend\Router\Http\Segment;
+
 return [
     'controllers' => [
         'factories' => [
