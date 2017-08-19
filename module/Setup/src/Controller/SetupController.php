@@ -113,7 +113,11 @@ class SetupController extends AbstractActionController
     private function checkSetupStep($currentStep)
     {
         $currentStep = (int) $currentStep;
-        // TODO: Check if starting setup is allowed at all.
+
+        if ($this->databaseHelper->isSetupComplete()) {
+            return $this->redirect()->toRoute('zfcuser/login');
+        }
+
         $lastStep = $this->getLastStep();
         if ($currentStep > $lastStep) {
             $action = [];
@@ -278,6 +282,7 @@ class SetupController extends AbstractActionController
     {
         $this->setCurrentLanguage();
         $this->setLastStep(1);
+        $this->checkSetupStep(1);
 
         $setupLanguage = new \Setup\Model\SetupLanguage([
             'setup_language' => $this->translator->getLocale(),
