@@ -129,7 +129,7 @@ class Database implements ArraySerializableInterface, InputFilterAwareInterface
      * {@inheritDoc}
      * @see \Zend\Stdlib\ArraySerializableInterface::exchangeArray()
      */
-    public function exchangeArray($data)
+    public function exchangeArray(array $data)
     {
     	$this->setDriver((!empty($data['driver'])) ? $data['driver'] : null);
     	$this->setDatabase((!empty($data['database'])) ? $data['database'] : null);

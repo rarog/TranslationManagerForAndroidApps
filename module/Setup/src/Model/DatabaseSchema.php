@@ -57,7 +57,7 @@ class DatabaseSchema implements ArraySerializableInterface, InputFilterAwareInte
      * {@inheritDoc}
      * @see \Zend\Stdlib\ArraySerializableInterface::exchangeArray()
      */
-    public function exchangeArray($data)
+    public function exchangeArray(array $data)
     {
         $this->setOutput((!empty($data['output'])) ? $data['output'] : null);
     }
