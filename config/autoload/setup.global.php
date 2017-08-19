@@ -77,6 +77,15 @@ $settings = [
      * Put your own installation id in the configuration.
      */
     'setup_id' => 'cfe5de0b8a34a639690a5e95a5626ad3',
+
+    /**
+     * Setup session timeout
+     *
+     * Regulates how long the setup session is valid without regeneration and all other sessions will be
+     * locked out.
+     * Defaults to 900 seconds (15 minutes)
+     */
+    'setup_id' => 900,
 ];
 
 /**

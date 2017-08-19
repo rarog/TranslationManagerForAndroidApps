@@ -311,6 +311,16 @@ class SetupController extends AbstractActionController
     }
 
     /**
+     * Action for showing, that setup process is locked by another user
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function lockedAction()
+    {
+        return new ViewModel([]);
+    }
+
+    /**
      * Action for step 2 - setup of the database connection
      */
     public function step2Action()
