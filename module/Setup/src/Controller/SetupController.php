@@ -118,6 +118,8 @@ class SetupController extends AbstractActionController
             return $this->redirect()->toRoute('zfcuser/login');
         }
 
+        $this->ensureThereCanBeOnlyOne();
+
         $lastStep = $this->getLastStep();
         if ($currentStep > $lastStep) {
             $action = [];
@@ -144,6 +146,20 @@ class SetupController extends AbstractActionController
         if ($element) {
             $element->setAttribute('disabled', 'disabled');
         }
+    }
+
+    /**
+     * Ensures that there is only one session working on the setup process
+     *
+     * @return void|\Zend\Http\Response
+     */
+    private function ensureThereCanBeOnlyOne()
+    {
+        if (false) {
+            return $this->redirect()->toRoute('setup', ['action' => 'locked']);
+        }
+
+        return;
     }
 
     /**
