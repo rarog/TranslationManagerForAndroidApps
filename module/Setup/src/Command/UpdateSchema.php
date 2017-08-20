@@ -13,7 +13,6 @@ use Setup\Model\DatabaseHelper;
 
 class UpdateSchema
 {
-
     /**
      * Database helper model
      *

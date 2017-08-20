@@ -41,11 +41,11 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
         $serviceManager = $application->getServiceManager();
 
         // Sets up the redirection strategy
-        $setupAwareRedirectStrategy = $serviceManager->get('SetupAwareRedirectStrategy');
+        $setupAwareRedirectStrategy = $serviceManager->get(View\Strategy\SetupAwareRedirectStrategy::class);
         $setupAwareRedirectStrategy->attach($eventManager);
 
         // Sets up the RBAC listener
-        $rbacListener = $serviceManager->get('RbacListener');
+        $rbacListener = $serviceManager->get(Listener\RbacListener::class);
         $rbacListener->attach($eventManager);
     }
 

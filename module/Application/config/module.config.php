@@ -18,7 +18,7 @@ return [
         ],
     ],
     'listeners' => [
-        'SetupListener'
+        Listener\SetupListener::class
     ],
     'navigation' => [
         'default' => [
@@ -154,9 +154,9 @@ return [
         ],
         'factories' => [
             'navigation' => \Zend\Navigation\Service\DefaultNavigationFactory::class,
-            'RbacListener' => Factory\Listener\RbacListenerFactory::class,
-            'SetupListener' => Factory\Listener\SetupListenerFactory::class,
-            'SetupAwareRedirectStrategy' => Factory\View\Strategy\SetupAwareRedirectStrategyFactory::class,
+            Listener\RbacListener::class => Factory\Listener\RbacListenerFactory::class,
+            Listener\SetupListener::class => Factory\Listener\SetupListenerFactory::class,
+            View\Strategy\SetupAwareRedirectStrategy::class => Factory\View\Strategy\SetupAwareRedirectStrategyFactory::class,
         ],
     ],
     'translator' => [
