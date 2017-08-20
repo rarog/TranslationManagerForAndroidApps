@@ -16,6 +16,7 @@
  * file.
  */
 
+use Zend\Cache\Storage\Plugin;
 use Zend\Session;
 
 // Little helper function to generate list of locales.
@@ -42,7 +43,9 @@ return [
                 'namespace' => 'tmfaa:cache',
             ],
             'plugins' => [
-                'serializer',
+                Plugin\ClearExpiredByFactor::class,
+                Plugin\OptimizeByFactor::class,
+                Plugin\Serializer::class,
             ],
         ],
     ],
