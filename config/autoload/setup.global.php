@@ -85,7 +85,7 @@ $settings = [
      * locked out.
      * Defaults to 900 seconds (15 minutes)
      */
-    'setup_id' => 900,
+    'setup_session_timeout' => 900,
 ];
 
 /**
