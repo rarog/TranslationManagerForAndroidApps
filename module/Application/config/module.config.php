@@ -7,26 +7,10 @@
 
 namespace Application;
 
-use Zend\Cache\Storage\Plugin;
 use Zend\Router\Http\Literal;
 use Zend\ServiceManager\Factory\InvokableFactory;
 
 return [
-    'caches' => [
-        'SetupCache' => [
-            'adapter' => 'filesystem',
-            'options' => [
-                'cache_dir' => __DIR__ . '/../../data/cache/',
-                'ttl' => 86400,
-                'namespace' => 'setup:cache',
-            ],
-            'plugins' => [
-                Plugin\ClearExpiredByFactor::class,
-                Plugin\OptimizeByFactor::class,
-                Plugin\Serializer::class,
-            ],
-        ],
-    ],
     'controllers' => [
         'factories' => [
             Controller\IndexController::class => InvokableFactory::class,

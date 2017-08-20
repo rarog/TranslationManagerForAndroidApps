@@ -6,9 +6,25 @@
  */
 namespace Setup;
 
+use Zend\Cache\Storage\Plugin;
 use Zend\Router\Http\Segment;
 
 return [
+    'caches' => [
+        'SetupCache' => [
+            'adapter' => 'filesystem',
+            'options' => [
+                'cache_dir' => __DIR__ . '/../../data/cache/',
+                'ttl' => 900,
+                'namespace' => 'setup:cache',
+            ],
+            'plugins' => [
+                Plugin\ClearExpiredByFactor::class,
+                Plugin\OptimizeByFactor::class,
+                Plugin\Serializer::class,
+            ],
+        ],
+    ],
     'controllers' => [
         'factories' => [
             Controller\SetupController::class => Factory\Controller\SetupControllerFactory::class,
