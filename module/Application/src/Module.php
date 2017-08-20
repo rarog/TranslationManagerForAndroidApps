@@ -7,6 +7,7 @@
 
 namespace Application;
 
+use Zend\Console\Console;
 use Zend\Console\Request as ConsoleRequest;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\ResultSet\ResultSet;
@@ -61,7 +62,7 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
         $request = $serviceManager->get('Request');
 
         // A console request doesn't use or need session.
-        if ($request instanceof ConsoleRequest) {
+        if (($request instanceof ConsoleRequest) || Console::isConsole()) {
             return;
         }
 
