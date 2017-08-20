@@ -6,12 +6,19 @@
  */
 namespace Application\Command;
 
+use Zend\Cache\Storage\FlushableInterface as FlushableCache;
 use Zend\Console\Adapter\AdapterInterface;
 use Zend\Console\ColorInterface;
 use ZF\Console\Route;
 
 class CleanCache
 {
+    /**
+     * Array of cache adapters
+     *
+     * @var array
+     */
+    private $cacheAdapters;
 
     /**
      * Removes a directory recursively
@@ -36,6 +43,21 @@ class CleanCache
     }
 
     /**
+     * Constructor
+     *
+     * @param DatabaseHelper $cacheAdapters
+     */
+    public function __construct(array $cacheAdapters)
+    {
+        $this->cacheAdapters = [];
+        foreach ($cacheAdapters as $adapter) {
+            if ($adapter instanceof FlushableCache) {
+                $this->cacheAdapters[] = $adapter;
+            }
+        }
+    }
+
+    /**
      * Main routine
      *
      * @param Route $route
@@ -43,14 +65,17 @@ class CleanCache
      */
     public function __invoke(Route $route, AdapterInterface $console)
     {
-        $msg = 'Nothing to do';
+        foreach ($this->cacheAdapters as $adapter) {
+            $adapter->flush();
+        }
+
         $appConfig = include ('config/application.config.php');
         if (is_array($appConfig) && array_key_exists('module_listener_options', $appConfig) && is_array($appConfig['module_listener_options']) && array_key_exists('cache_dir', $appConfig['module_listener_options']) && is_string($appConfig['module_listener_options']['cache_dir'])) {
             $cacheDir = $appConfig['module_listener_options']['cache_dir'];
             if ($handle = opendir($cacheDir)) {
                 $cacheDir = realpath($cacheDir);
 
-                if (! is_dir($cacheDir)) {
+                if (!is_dir($cacheDir)) {
                     exit();
                 }
 
@@ -59,20 +84,18 @@ class CleanCache
                         continue;
                     }
 
-                    $path = $cacheDir . '/' . $entry; // echo $path."\n";
-                    if (is_dir($path) && (substr($entry, 0, 11) === 'tmfaa:cache')) {
-                        self::rmdirRecursive($path);
-                    } elseif (is_file($path) && (substr($entry, - 4, 4) === '.php') && ((substr($entry, 0, 22) === 'module-classmap-cache.') || (substr($entry, 0, 20) === 'module-config-cache.'))) {
+                    $path = $cacheDir . '/' . $entry;
+                    if (is_file($path) && (substr($entry, - 4, 4) === '.php') && ((substr($entry, 0, 22) === 'module-classmap-cache.') || (substr($entry, 0, 20) === 'module-config-cache.'))) {
                         unlink($path);
                     }
                 }
 
                 closedir($handle);
 
-                $msg = 'Cache cleaned';
             }
         }
-        $console->writeLine($msg, ColorInterface::NORMAL);
+
+        $console->writeLine('Cache cleaned', ColorInterface::NORMAL);
         return 0;
     }
 }
