@@ -14,7 +14,7 @@ return [
         'SetupCache' => [
             'adapter' => 'filesystem',
             'options' => [
-                'cache_dir' => __DIR__ . '/../../data/cache/',
+                'cache_dir' => __DIR__ . '/../../../data/cache/',
                 'ttl' => 900,
                 'namespace' => 'setup:cache',
             ],
