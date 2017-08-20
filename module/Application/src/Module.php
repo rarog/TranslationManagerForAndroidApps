@@ -8,7 +8,6 @@
 namespace Application;
 
 use Zend\Console\Console;
-use Zend\Console\Request as ConsoleRequest;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
@@ -59,13 +58,6 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
     {
         $serviceManager = $e->getApplication()->getServiceManager();
 
-        $request = $serviceManager->get('Request');
-
-        // A console request doesn't use or need session.
-        if (($request instanceof ConsoleRequest) || Console::isConsole()) {
-            return;
-        }
-
         $sharedManager = $e->getApplication()->getEventManager()->getSharedManager();
         $session = $serviceManager->get(SessionManager::class);
 
@@ -86,6 +78,8 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
 
         $container = new Container('initialized');
         if (!isset($container->init)) {
+            $request = $serviceManager->get('Request');
+
             $session->regenerateId(true);
             $container->init          = 1;
             $container->remoteAddr    = $request->getServer()->get('REMOTE_ADDR');
@@ -288,6 +282,11 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
      */
     public function onBootstrap(EventInterface $e)
     {
+        // In console all following initializations aren't needed.
+        if (Console::isConsole()) {
+            return;
+        }
+
         $this->bootstrapSession($e);
         $this->bootstrapUserSettings($e);
         $this->bootstrapTranslator($e);
