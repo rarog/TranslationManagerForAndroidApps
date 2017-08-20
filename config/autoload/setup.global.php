@@ -83,9 +83,9 @@ $settings = [
      *
      * Regulates how long the setup session is valid without regeneration and all other sessions will be
      * locked out.
-     * Defaults to 900 seconds (15 minutes)
+     * Defaults to 900 seconds (15 minutes); minimum value 60 seconds (1 minute)
      */
-    'setup_session_timeout' => 900,
+    //'setup_session_timeout' => 900,
 ];
 
 /**
