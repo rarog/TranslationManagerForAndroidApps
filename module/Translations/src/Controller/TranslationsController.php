@@ -80,6 +80,34 @@ class TranslationsController extends AbstractActionController
     }
 
     /**
+     * Gets app resource
+     *
+     * @param int $resourceId
+     * @param int $appId
+     * @return boolean|\Translations\Model\AppResource
+     */
+    private function getResource($resourceId, $appId)
+    {
+        $resourceId = (int) $resourceId;
+        $appId = (int) $appId;
+
+        if ((0 === $resourceId) || (0 === $appId)) {
+            return false;
+        }
+
+        try {
+            $resource = $this->appResourceTable->fetchAll([
+                'id' => $resourceId,
+                'app_id' => $appId,
+            ]);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        return $resource;
+    }
+
+    /**
      * Get ViewModel for partial rendering
      *
      * @return ViewModel
@@ -175,7 +203,33 @@ class TranslationsController extends AbstractActionController
     }
 
     /**
-     * App resource add action
+     * Suggestion listing action
+     *
+     * @return JsonModel
+     */
+    public function listsuggestionsAction()
+    {
+        $appId = (int) $this->params()->fromRoute('appId', 0);
+        $resourceId = (int) $this->params()->fromRoute('resourceId', 0);
+        $suggestionId = (int) $this->params()->fromRoute('suggestionId', 0);
+
+        $app = $this->getApp($appId);
+
+        if ($app === false) {
+            return new JsonModel();
+        }
+
+        $resource = $this->getResource($resourceId, $appId);
+
+        if ($resource === false) {
+            return new JsonModel();
+        }
+
+        return new JsonModel();
+    }
+
+    /**
+     * Translation listing action
      *
      * @return JsonModel
      */
@@ -187,21 +241,11 @@ class TranslationsController extends AbstractActionController
 
         $app = $this->getApp($appId);
 
-        $viewModel = new JsonModel();
-        $viewModel->setTerminal(true);
-
         if ($app === false) {
             return new JsonModel();
         }
 
-        try {
-            $resource = $this->appResourceTable->fetchAll([
-                'id' => $resourceId,
-                'app_id' => $appId,
-            ]);
-        } catch (\Exception $e) {
-            $resource === false;
-        }
+        $resource = $this->getResource($resourceId, $appId);
 
         if ($resource === false) {
             return new JsonModel();
