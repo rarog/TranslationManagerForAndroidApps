@@ -135,6 +135,20 @@ return [
                 ],
                 'may_terminate' => true,
                 'child_routes' => [
+                    'listsuggestions' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => '/listtranslations[/app/:appId/resource/:resourceId/suggestion/:suggestionId]',
+                            'constraints' => [
+                                'appId' => '[0-9]+',
+                                'resourceId' => '[0-9]+',
+                                'suggestionId' => '[0-9]+',
+                            ],
+                            'defaults' => [
+                                'action' => 'listtranslations',
+                            ],
+                        ],
+                    ],
                     'listtranslations' => [
                         'type' => Segment::class,
                         'options' => [
