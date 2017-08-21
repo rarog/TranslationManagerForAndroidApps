@@ -17,33 +17,64 @@ use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer as Renderer;
 use ZfcUser\Options\ModuleOptions as ZUModuleOptions;
 use ZfcUser\Service\User as ZUUser;
+use Zend\Config\Writer\PhpArray as ConfigPhpArray;
 
 class SetupController extends AbstractActionController
 {
+    /**
+     * @var Translator
+     */
     private $translator;
-    private $container;
-    private $setupConfig;
-    private $availableLanguages;
-    private $listenerOptions;
-    private $renderer;
-    private $zuUserService;
-    private $zuModuleOptions;
-    private $databaseHelper;
-    private $configWriter;
-    private $lastStep;
 
     /**
-     * Returns config of Setup module
-     *
-     * @return \Zend\Config\Config
+     * @var Container
      */
-    private function getSetupConfig()
-    {
-        if (is_null($this->setupConfig)) {
-            $this->setupConfig = $this->configHelp('setup');
-        }
-        return $this->setupConfig;
-    }
+    private $container;
+
+    /**
+     * @var ListenerOptions
+     */
+    private $listenerOptions;
+
+    /**
+     * @var Renderer
+     */
+    private $renderer;
+
+    /**
+     * @var ZUUser
+     */
+    private $zuUserService;
+
+    /**
+     * @var ZUModuleOptions
+     */
+    private $zuModuleOptions;
+
+    /**
+     * @var DatabaseHelper
+     */
+    private $databaseHelper;
+
+    /**
+     * @var array
+     */
+    private $availableLanguages;
+
+    /**
+     * @var ConfigPhpArray
+     */
+    private $configWriter;
+
+    /**
+     * @var Config
+     */
+    private $setupConfig;
+
+    /**
+     * @var int
+     */
+    private $lastStep;
 
 
     /**
@@ -62,15 +93,28 @@ class SetupController extends AbstractActionController
     /**
      * Gets an instance of PhpArray config writer
      *
-     * @return \Zend\Config\Writer\PhpArray
+     * @return ConfigPhpArray
      */
     private function getConfigWriter()
     {
         if (is_null($this->configWriter)) {
-            $this->configWriter= new \Zend\Config\Writer\PhpArray();
+            $this->configWriter = new \Zend\Config\Writer\PhpArray();
             $this->configWriter->setUseBracketArraySyntax(true);
         }
         return $this->configWriter;
+    }
+
+    /**
+     * Returns config of Setup module
+     *
+     * @return \Zend\Config\Config
+     */
+    private function getSetupConfig()
+    {
+        if (is_null($this->setupConfig)) {
+            $this->setupConfig = $this->configHelp('setup');
+        }
+        return $this->setupConfig;
     }
 
     /**
