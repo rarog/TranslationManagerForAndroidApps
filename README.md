@@ -11,7 +11,7 @@ A project to help managing [translation ressources](https://developer.android.co
 * Support management of translation files and languages
 
 ### v0.3
-* Support import of strings from and export of strings into xml files
+* Support import of strings from xml files
 * Support for standard Strings (`<string>`)
 
 ### v0.4
