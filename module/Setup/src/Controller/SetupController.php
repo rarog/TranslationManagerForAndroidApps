@@ -170,10 +170,7 @@ class SetupController extends AbstractActionController
     {
         $currentStep = (int) $currentStep;
 
-        if ($this->databaseHelper->isSetupComplete()) {
-            return $this->redirect()->toRoute('zfcuser/login');
-        }
-
+        $this->protectCompletedSetup();
         $this->ensureThereCanBeOnlyOne();
 
         $lastStep = $this->getLastStep();
@@ -233,6 +230,18 @@ class SetupController extends AbstractActionController
         ]);
 
         return;
+    }
+
+    /**
+     * Redirects to login page, if setup is complete.
+     *
+     * @return \Zend\Http\Response
+     */
+    private function protectCompletedSetup()
+    {
+        if ($this->databaseHelper->isSetupComplete()) {
+            return $this->redirect()->toRoute('zfcuser/login');
+        }
     }
 
     /**
@@ -301,6 +310,8 @@ class SetupController extends AbstractActionController
      */
     public function databaseconnectiontestAction()
     {
+        $this->protectCompletedSetup();
+
         $request = $this->getRequest();
         if ($request->isXmlHttpRequest()) {
             $this->setCurrentLanguage();
@@ -341,6 +352,8 @@ class SetupController extends AbstractActionController
      */
     public function databaseschemainstallationAction()
     {
+        $this->protectCompletedSetup();
+
         if ($this->getRequest()->isXmlHttpRequest()) {
             $dbHelper = $this->databaseHelper;
             $dbHelper->installSchema();
@@ -411,6 +424,8 @@ class SetupController extends AbstractActionController
      */
     public function lockedAction()
     {
+        $this->protectCompletedSetup();
+
         return new ViewModel([]);
     }
 
