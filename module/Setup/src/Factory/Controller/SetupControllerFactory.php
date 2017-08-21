@@ -18,11 +18,14 @@ class SetupControllerFactory implements FactoryInterface
         $listenerOptions  = new \Zend\ModuleManager\Listener\ListenerOptions($configuration['module_listener_options']);
         return new \Setup\Controller\SetupController(
             $container->get(\Zend\Mvc\I18n\Translator::class),
+            new \Zend\Session\Container('setup'),
             new \Zend\ModuleManager\Listener\ListenerOptions($configuration['module_listener_options']),
             $container->get(\Zend\View\Renderer\PhpRenderer::class),
             $container->get('zfcuser_user_service'),
             $container->get('zfcuser_module_options'),
-            $container->get(\Setup\Model\DatabaseHelper::class)
+            $container->get(\Setup\Model\DatabaseHelper::class),
+            $container->get(\Zend\Session\SessionManager::class),
+            $container->get('SetupCache')
         );
     }
 }

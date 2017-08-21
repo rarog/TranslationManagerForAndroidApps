@@ -8,16 +8,19 @@
 namespace Setup\Controller;
 
 use Setup\Model\DatabaseHelper;
+use Zend\Cache\Storage\Adapter\AbstractAdapter as CacheAdapter;
+use Zend\Config\Writer\PhpArray as ConfigPhpArray;
 use Zend\Math\Rand;
 use Zend\ModuleManager\Listener\ListenerOptions;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
+use Zend\Session\Container as SessionContainer;
+use Zend\Session\SessionManager;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer as Renderer;
 use ZfcUser\Options\ModuleOptions as ZUModuleOptions;
 use ZfcUser\Service\User as ZUUser;
-use Zend\Config\Writer\PhpArray as ConfigPhpArray;
 
 class SetupController extends AbstractActionController
 {
@@ -27,7 +30,7 @@ class SetupController extends AbstractActionController
     private $translator;
 
     /**
-     * @var Container
+     * @var SessionContainer
      */
     private $container;
 
@@ -57,6 +60,16 @@ class SetupController extends AbstractActionController
     private $databaseHelper;
 
     /**
+     * @var SessionManager
+     */
+    private $session;
+
+    /**
+     * @var CacheAdapter
+     */
+    private $setupCache;
+
+    /**
      * @var array
      */
     private $availableLanguages;
@@ -75,7 +88,6 @@ class SetupController extends AbstractActionController
      * @var int
      */
     private $lastStep;
-
 
     /**
      * Returns array with languages availabe during setup
@@ -118,7 +130,7 @@ class SetupController extends AbstractActionController
     }
 
     /**
-     * Sets the translator lange to the current internal variable content
+     * Sets the translator language to the current internal variable content
      */
     private function setCurrentLanguage()
     {
@@ -199,9 +211,26 @@ class SetupController extends AbstractActionController
      */
     private function ensureThereCanBeOnlyOne()
     {
-        if (false) {
+        $sessionId = $this->session->getId();
+        $now = time();
+
+        if (!($this->setupCache->hasItem('highlanderSessionId') && ($this->setupCache->hasItem('highlanderLastSeen')))) {
+            $this->setupCache->setItems([
+                'highlanderSessionId' => $sessionId,
+                'highlanderLastSeen' => $now,
+            ]);
+        }
+
+        if ($this->setupCache->getItem('highlanderSessionId') !== $sessionId) {
+            // Lock out all other non-highlander people trying to access setup.
             return $this->redirect()->toRoute('setup', ['action' => 'locked']);
         }
+
+        // Refresh highlander session
+        $this->setupCache->setItems([
+            'highlanderSessionId' => $sessionId,
+            'highlanderLastSeen' => $now,
+        ]);
 
         return;
     }
@@ -245,21 +274,26 @@ class SetupController extends AbstractActionController
      * Constructor
      *
      * @param Translator $translator
+     * @param SessionContainer $container
      * @param ListenerOptions $listenerOptions
      * @param Renderer $renderer
      * @param ZUUser $zuUserService
      * @param ZUModuleOptions $zuModuleOptions
      * @param DatabaseHelper $databaseHelper
+     * @param SessionManager $session;
+     * @param CacheAdapter $setupCache
      */
-    public function __construct(Translator $translator, ListenerOptions $listenerOptions, Renderer $renderer, ZUUser $zuUserService, ZUModuleOptions $zuModuleOptions, DatabaseHelper $databaseHelper)
+    public function __construct(Translator $translator, SessionContainer $container, ListenerOptions $listenerOptions, Renderer $renderer, ZUUser $zuUserService, ZUModuleOptions $zuModuleOptions, DatabaseHelper $databaseHelper, SessionManager $session, CacheAdapter $setupCache)
     {
         $this->translator = $translator;
-        $this->container = new \Zend\Session\Container('setup');
+        $this->container = $container;
         $this->listenerOptions = $listenerOptions;
         $this->renderer = $renderer;
         $this->zuUserService = $zuUserService;
         $this->zuModuleOptions = $zuModuleOptions;
         $this->databaseHelper = $databaseHelper;
+        $this->session = $session;
+        $this->setupCache = $setupCache;
     }
 
     /**
