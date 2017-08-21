@@ -152,10 +152,11 @@ return [
                     'listtranslations' => [
                         'type' => Segment::class,
                         'options' => [
-                            'route' => '/listtranslations[/app/:appId/resource/:resourceId]',
+                            'route' => '/listtranslations[/app/:appId/resource/:resourceId[/defaultid/:defaultId]]',
                             'constraints' => [
                                 'appId' => '[0-9]+',
                                 'resourceId' => '[0-9]+',
+                                'defaultId'  => '[0-9]+',
                             ],
                             'defaults' => [
                                 'action' => 'listtranslations',
