@@ -1,5 +1,5 @@
 <div>
 <?php if ($entry->resourceTypeId == array_search('string', $resourceTypes)): ?>
-<?= nl2br($this->escapeHtml($this->normalizeTranslationString($entry->defaultValue))) ?>
+<?= nl2br($this->escapeHtml($entry->defaultValue)) ?>
 <?php endif; ?>
 </div>

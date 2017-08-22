@@ -408,9 +408,10 @@ class SyncController extends AbstractActionController implements AppHelperInterf
                             $resourceFileEntryStrings[$resourceFileEntry->Id] = $resourceFileEntryString;
                         }
 
+                        $decodedString = $this->decodeAndroidTranslationString($node->textContent);
                         $resourceFileEntryString = $resourceFileEntryStrings[$resourceFileEntry->Id];
-                        if ($resourceFileEntryString->Value !== $node->textContent) {
-                            $resourceFileEntryString->Value = $node->textContent;
+                        if ($resourceFileEntryString->Value !== $decodedString) {
+                            $resourceFileEntryString->Value = $decodedString;
                             $resourceFileEntryString->LastChange = $timestamp;
                             $this->resourceFileEntryStringTable->saveResourceFileEntryString($resourceFileEntryString);
 

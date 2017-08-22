@@ -11,7 +11,6 @@ use Translations\Model\AppResourceTable;
 use Translations\Model\AppTable;
 use Translations\Model\ResourceFileEntryStringTable;
 use Translations\Model\ResourceTypeTable;
-use Zend\Escaper\Escaper;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\Stdlib\ArrayObject;
@@ -281,8 +280,6 @@ class TranslationsController extends AbstractActionController
         if ($resource === false) {
             return new JsonModel();
         }
-
-        $escaper = new Escaper('utf-8');
 
         $output = [];
         $entries = $this->resourceFileEntryStringTable->getAllResourceFileEntryStringsForTranslations($appId, $resourceId, $entryId);

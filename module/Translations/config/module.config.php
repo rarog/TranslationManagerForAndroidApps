@@ -9,6 +9,11 @@ namespace Translations;
 use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;
 return [
+    'controller_plugins' => [
+        'invokables' => [
+            'decodeAndroidTranslationString' => Controller\Plugin\DecodeAndroidTranslationString::class,
+        ],
+    ],
     'controllers' => [
         'factories' => [
             Controller\AppController::class => Factory\Controller\AppControllerFactory::class,
@@ -179,11 +184,6 @@ return [
                 'base_dir' => __DIR__ . '/../language',
                 'pattern' => '%s.mo',
             ],
-        ],
-    ],
-    'view_helpers' => [
-        'invokables' => [
-            'normalizeTranslationString' => View\Helper\NormalizeTranslationString::class,
         ],
     ],
     'view_manager' => [

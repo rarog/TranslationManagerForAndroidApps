@@ -5,12 +5,12 @@
  * @license   https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License version 3 or later
  */
 
-namespace Translations\View\Helper;
+namespace Translations\Controller\Plugin;
 
 use Zend\Json\Json;
-use Zend\View\Helper\AbstractHelper;
+use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 
-class NormalizeTranslationString extends AbstractHelper
+class DecodeAndroidTranslationString extends AbstractPlugin
 {
     /**
      * Normalizes the translation

@@ -5,6 +5,6 @@
   </div>
 <?php endif; ?>
 <?php if ($entry->resourceTypeId == array_search('string', $resourceTypes)): ?>
-<?= nl2br($this->escapeHtml($this->normalizeTranslationString($entry->value))) ?>
+<?= nl2br($this->escapeHtml($entry->value)) ?>
 <?php endif; ?>
 </div>
