@@ -115,14 +115,14 @@ class ResourceFileEntryStringTable
     *
     * @param int $appId
     * @param int $appResourceId
-    * @param int $defaultId
+    * @param int $entryId
     * @return array
     */
-    public function getAllResourceFileEntryStringsForTranslations($appId, $appResourceId, $defaultId)
+    public function getAllResourceFileEntryStringsForTranslations($appId, $appResourceId, $entryId)
     {
         $appId = (int) $appId;
         $appResourceId = (int) $appResourceId;
-        $defaultId = (int) $defaultId;
+        $entryId = (int) $entryId;
 
         try {
             $defaultAppResource = $this->appResourceTable->getAppResourceByAppIdAndName($appId, 'values');
@@ -166,7 +166,10 @@ class ResourceFileEntryStringTable
                 [0 => Expression::TYPE_VALUE],
             ]);
         }
-        $select->join('resource_file_entry', $onResourceFileEntry, ['name'], Select::JOIN_INNER);
+        $select->join('resource_file_entry', $onResourceFileEntry, [
+            'resourceTypeId' => 'resource_type_id',
+            'name' => 'name',
+        ], Select::JOIN_INNER);
 
         $onResourceFileEntryString = new Expression('? = ? AND ? = ?', [
             ['resource_file_entry_string.resource_file_entry_id' => Expression::TYPE_IDENTIFIER],
@@ -196,8 +199,8 @@ class ResourceFileEntryStringTable
             'resource_file_entry_string.last_change',
         ]);
 
-        if ($defaultId > 0) {
-            $select->where(['default.id' => $defaultId]);
+        if ($entryId > 0) {
+            $select->where(['default.id' => $entryId]);
         }
 
         $returnArray = [];

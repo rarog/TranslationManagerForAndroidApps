@@ -1,8 +1,10 @@
 <div>
-<?php if ($defaultLastChange > $lastChange): ?>
+<?php if ($entry->defaultLastChange > $entry->lastChange): ?>
   <div class="pull-right text-warning">
     <span class="glyphicon glyphicon-warning-sign" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="<?= $this->escapeHtmlAttr($this->translate('Default value is newer than translation. Please check.')) ?>"></span>
   </div>
 <?php endif; ?>
-<?= nl2br($this->escapeHtml($this->normalizeTranslationString($value))) ?>
+<?php if ($entry->resourceTypeId == array_search('string', $resourceTypes)): ?>
+<?= nl2br($this->escapeHtml($this->normalizeTranslationString($entry->value))) ?>
+<?php endif; ?>
 </div>

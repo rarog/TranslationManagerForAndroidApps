@@ -10,9 +10,11 @@ namespace Translations\Controller;
 use Translations\Model\AppResourceTable;
 use Translations\Model\AppTable;
 use Translations\Model\ResourceFileEntryStringTable;
+use Translations\Model\ResourceTypeTable;
 use Zend\Escaper\Escaper;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
+use Zend\Stdlib\ArrayObject;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer as Renderer;
@@ -35,6 +37,11 @@ class TranslationsController extends AbstractActionController
     private $resourceFileEntryStringTable;
 
     /**
+     * @var ResourceTypeTable
+     */
+    private $resourceTypeTable;
+
+    /**
      * @var Translator
      */
     private $translator;
@@ -48,6 +55,11 @@ class TranslationsController extends AbstractActionController
      * @var ViewModel
      */
     private $viewModel;
+
+    /**
+     * @var array
+     */
+    private $resourceTypes;
 
     /**
      * Check if current user has permission to the app and return it
@@ -108,6 +120,23 @@ class TranslationsController extends AbstractActionController
     }
 
     /**
+     * Gets array of all supported resource types
+     *
+     * @return array
+     */
+    private function getResourceTypes()
+    {
+        if (!is_array($this->resourceTypes)) {
+            $this->resourceTypes = [];
+            foreach ($this->resourceTypeTable->fetchAll() as $resourceType) {
+                $this->resourceTypes[$resourceType->Id] = $resourceType->NodeName;
+            }
+        }
+
+        return $this->resourceTypes;
+    }
+
+    /**
      * Get ViewModel for partial rendering
      *
      * @return ViewModel
@@ -144,14 +173,16 @@ class TranslationsController extends AbstractActionController
      *
      * @param AppTable $appTable
      * @param AppResourceTable $appResourceTable
+     * @param ResourceTypeTable $resourceTypeTable
      * @param ResourceFileEntryStringTable $resourceFileEntryStringTable
      * @param Translator $translator
      * @param Renderer $renderer
      */
-    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, ResourceFileEntryStringTable $resourceFileEntryStringTable, Translator $translator, Renderer $renderer)
+    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, ResourceTypeTable $resourceTypeTable, ResourceFileEntryStringTable $resourceFileEntryStringTable, Translator $translator, Renderer $renderer)
     {
         $this->appTable = $appTable;
         $this->appResourceTable = $appResourceTable;
+        $this->resourceTypeTable = $resourceTypeTable;
         $this->resourceFileEntryStringTable = $resourceFileEntryStringTable;
         $this->translator = $translator;
         $this->renderer = $renderer;
@@ -211,7 +242,7 @@ class TranslationsController extends AbstractActionController
     {
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $resourceId = (int) $this->params()->fromRoute('resourceId', 0);
-        $suggestionId = (int) $this->params()->fromRoute('suggestionId', 0);
+        $entryId = (int) $this->params()->fromRoute('entryId', 0);
 
         $app = $this->getApp($appId);
 
@@ -237,7 +268,7 @@ class TranslationsController extends AbstractActionController
     {
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $resourceId = (int) $this->params()->fromRoute('resourceId', 0);
-        $defaultId = (int) $this->params()->fromRoute('defaultId', 0);
+        $entryId = (int) $this->params()->fromRoute('entryId', 0);
 
         $app = $this->getApp($appId);
 
@@ -254,10 +285,13 @@ class TranslationsController extends AbstractActionController
         $escaper = new Escaper('utf-8');
 
         $output = [];
-        $entries = $this->resourceFileEntryStringTable->getAllResourceFileEntryStringsForTranslations($appId, $resourceId, $defaultId);
+        $entries = $this->resourceFileEntryStringTable->getAllResourceFileEntryStringsForTranslations($appId, $resourceId, $entryId);
         foreach ($entries as $entry) {
             $viewModel = $this->getViewModel();
-            $viewModel->setVariables($entry);
+            $viewModel->setVariables([
+                'entry' => new ArrayObject($entry, ArrayObject::ARRAY_AS_PROPS),
+                'resourceTypes' => $this->getResourceTypes(),
+            ]);
 
             $output[] = [
                 'defaultId' => $entry['defaultId'],
