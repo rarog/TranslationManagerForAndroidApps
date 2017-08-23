@@ -8,10 +8,11 @@ namespace Translations;
 
 use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;
+
 return [
     'controller_plugins' => [
-        'invokables' => [
-            'decodeAndroidTranslationString' => Controller\Plugin\DecodeAndroidTranslationString::class,
+        'factories' => [
+            'decodeAndroidTranslationString' => Factory\Controller\Plugin\DecodeAndroidTranslationStringFactory::class,
         ],
     ],
     'controllers' => [

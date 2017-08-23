@@ -7,11 +7,27 @@
 
 namespace Translations\Controller\Plugin;
 
+use Zend\Log\Logger;
 use Zend\Json\Json;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 
 class DecodeAndroidTranslationString extends AbstractPlugin
 {
+    /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
+     * Constructor
+     *
+     * @param Logger $logger
+     */
+    public function __construct(Logger $logger)
+    {
+        $this->logger = $logger;
+    }
+
     /**
      * Normalizes the translation
      *
@@ -31,6 +47,12 @@ class DecodeAndroidTranslationString extends AbstractPlugin
         try {
             return Json::decode($jsonTranslationString);
         } catch (\Exception $e) {
+            $message = sprintf('Android string: %s
+Exception message: %s
+Exception trace:
+%s', $translationString, $e->getMessage(), $e->getTraceAsString());
+            $this->logger->err('An error during decoding of Android string', ['messageExtended' => $message]);
+
             return $translationString;
         }
     }
