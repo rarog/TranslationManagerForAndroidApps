@@ -158,6 +158,7 @@ return [
             Listener\RbacListener::class => Factory\Listener\RbacListenerFactory::class,
             Listener\SetupListener::class => Factory\Listener\SetupListenerFactory::class,
             View\Strategy\SetupAwareRedirectStrategy::class => Factory\View\Strategy\SetupAwareRedirectStrategyFactory::class,
+            \Zend\Log\Logger::class => Factory\Log\LoggerFactory::class,
         ],
     ],
     'translator' => [

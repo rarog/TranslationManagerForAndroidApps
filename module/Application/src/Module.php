@@ -12,9 +12,6 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\EventManager\EventInterface;
-use Zend\Log\Filter\Priority as LogPriorityFilter;
-use Zend\Log\Logger;
-use Zend\Log\Writer\Db as LogDbWriter;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
@@ -198,43 +195,6 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
     {
         return [
             'factories' => [
-                Model\Logger::class => function ($container) {
-                    $logger = new Logger([
-                        'processors' => [
-                            ['name' => 'backtrace'],
-                        ],
-                    ]);
-
-                    $logLevel = 3; // Default log level 3 = ERR
-
-                    // Set log level from config if present.
-                    $config = $container->get('Config');
-                    if (isset($config['settings']) && isset($config['settings']['log_level']) && is_int($config['settings']['log_level'])) {
-                        $logLevel = $config['settings']['log_level'];
-                    }
-
-                    $dbAdapter = $container->get(AdapterInterface::class);
-
-                    $writer = new LogDbWriter($dbAdapter, 'log', [
-                        'timestamp' => 'timestamp',
-                        'priority' => 'priority',
-                        'priorityName' => 'priority_name',
-                        'message' => 'message',
-                        'extra' => [
-                            'messageExtended' => 'message_extended',
-                            'file' => 'file',
-                            'class' => 'class',
-                            'line' => 'line',
-                            'function' => 'function',
-                        ],
-                    ]);
-                    $writer->addFilter(LogPriorityFilter::class, [
-                        'priority' => $logLevel,
-                    ]);
-                    $logger->addWriter($writer);
-
-                    return $logger;
-                },
                 Model\UserTable::class => function ($container) {
                     $tableGateway = $container->get(Model\UserTableGateway::class);
                     $userMapper = $container->get('zfcuser_user_mapper');
