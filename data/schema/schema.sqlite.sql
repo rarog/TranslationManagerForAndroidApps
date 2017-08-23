@@ -1,3 +1,20 @@
+CREATE TABLE log (
+    id                INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    timestamp         TEXT NOT NULL,
+    priority`         INTEGER NOT NULL,
+    priority_name`    TEXT NOT NULL,
+    message`          TEXT NOT NULL,
+    message_extended` TEXT NULL,
+    file              TEXT DEFAULT NULL,
+    class             TEXT DEFAULT NULL,
+    line              INTEGER DEFAULT NULL,
+    function          TEXT DEFAULT NULL
+);
+
+CREATE INDEX log_ik1 ON log (priority);
+CREATE INDEX log_ik2 ON log (class);
+CREATE INDEX log_ik3 ON log (function);
+
 CREATE TABLE user
 (
     user_id      INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,

@@ -1,3 +1,19 @@
+CREATE TABLE `log` (
+    `id`               BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `timestamp`        VARCHAR(25) NOT NULL,
+    `priority`         TINYINT(4) NOT NULL,
+    `priority_name`    VARCHAR(10) NOT NULL,
+    `message`          VARCHAR(4096) NOT NULL,
+    `message_extended` TEXT NULL,
+    `file`             VARCHAR(1024) DEFAULT NULL,
+    `class`            VARCHAR(1024) DEFAULT NULL,
+    `line`             BIGINT(20) DEFAULT NULL,
+    `function`         VARCHAR(1024) DEFAULT NULL,
+    INDEX `log_ik1` (`priority`),
+    INDEX `log_ik2` (`class`),
+    INDEX `log_ik3` (`function`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `user` (
     `user_id`      BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `username`     VARCHAR(255) DEFAULT NULL UNIQUE,
@@ -56,7 +72,7 @@ CREATE TABLE `app` (
     `git_password`       VARCHAR(1024) DEFAULT NULL,
     `git_user`           VARCHAR(255) DEFAULT NULL,
     `git_email`          VARCHAR(255) DEFAULT NULL,
-    KEY `app_fk1` (`team_id`),
+    INDEX `app_fk1` (`team_id`),
     CONSTRAINT `app_fk1` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
