@@ -206,7 +206,12 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
                     ]);
 
                     $logLevel = 3; // Default log level 3 = ERR
-                    // TODO: Set log level from config
+
+                    // Set log level from config if present.
+                    $config = $container->get('Config');
+                    if (isset($config['settings']) && isset($config['settings']['log_level']) && is_int($config['settings']['log_level'])) {
+                        $logLevel = $config['settings']['log_level'];
+                    }
 
                     $dbAdapter = $container->get(AdapterInterface::class);
 
