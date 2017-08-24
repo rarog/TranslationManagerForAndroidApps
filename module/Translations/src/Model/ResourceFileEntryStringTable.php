@@ -169,6 +169,8 @@ class ResourceFileEntryStringTable
         $select->join('resource_file_entry', $onResourceFileEntry, [
             'resourceTypeId' => 'resource_type_id',
             'name' => 'name',
+            'product' => 'product',
+            'description' => 'description',
         ], Select::JOIN_INNER);
 
         $onResourceFileEntryString = new Expression('? = ? AND ? = ?', [
@@ -194,6 +196,8 @@ class ResourceFileEntryStringTable
             'default.value',
             'default.last_change',
             'resource_file_entry.name',
+            'resource_file_entry.product',
+            'resource_file_entry.description',
             'resource_file_entry_string.id',
             'resource_file_entry_string.value',
             'resource_file_entry_string.last_change',

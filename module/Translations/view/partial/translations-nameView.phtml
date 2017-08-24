@@ -1,0 +1,8 @@
+<div>
+<?php if ($entry->description != ''): ?>
+  <div class="pull-right">
+    <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="<?= $this->escapeHtmlAttr($entry->description) ?>"></span>
+  </div>
+<?php endif; ?>
+<?= $this->escapeHtml($entry->name) ?>
+</div>
