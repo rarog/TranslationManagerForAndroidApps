@@ -44,6 +44,11 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
     /**
      * @var null|string
      */
+    private $product;
+
+    /**
+     * @var null|string
+     */
     private $description;
 
     /**
@@ -180,6 +185,23 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
     /**
      * @return null|string
      */
+    public function getProduct() {
+        return $this->product;
+    }
+
+    /**
+     * @param null|string $product
+     */
+    public function setProduct($product) {
+        if (!is_null($product)) {
+            $product = (string) $product;
+        }
+        $this->product = $product;
+    }
+
+    /**
+     * @return null|string
+     */
     public function getDescription() {
         return $this->description;
     }
@@ -293,6 +315,24 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
             ],
         ]);
         $inputFilter->add([
+            'name' => 'product',
+            'required' => true,
+            'filters' => [
+                ['name' => StripTags::class],
+                ['name' => StringTrim::class],
+            ],
+            'validators' => [
+                [
+                    'name' => StringLength::class,
+                    'options' => [
+                        'encoding' => 'UTF-8',
+                        'min' => 1,
+                        'max' => 255,
+                    ],
+                ],
+            ],
+        ]);
+        $inputFilter->add([
             'name' => 'description',
             'required' => false,
             'filters' => [
@@ -339,6 +379,7 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
         $this->AppResourceFileId = !empty($data['app_resource_file_id']) ? $data['app_resource_file_id'] : null;
         $this->ResourceTypeId = !empty($data['resource_type_id']) ? $data['resource_type_id'] : null;
         $this->Name = !empty($data['name']) ? $data['name'] : null;
+        $this->Product = !empty($data['product']) ? $data['product'] : null;
         $this->Description = !empty($data['description']) ? $data['description'] : null;
         $this->Deleted = !empty($data['deleted']) ? $data['deleted'] : null;
         $this->Translatable = !empty($data['translatable']) ? $data['translatable'] : null;
@@ -355,6 +396,7 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
             'app_resource_file_id' => $this->AppResourceFileId,
             'resource_type_id' => $this->ResourceTypeId,
             'name' => $this->Name,
+            'product' => $this->Product,
             'description' => $this->Description,
             'deleted' => $this->Deleted,
             'translatable' => $this->Translatable,

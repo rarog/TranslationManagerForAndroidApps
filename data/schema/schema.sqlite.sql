@@ -105,25 +105,19 @@ INSERT INTO resource_type (id, name, node_name) VALUES (1, 'String', 'string');
 
 CREATE TABLE resource_file_entry (
     id                   INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    app_resource_file_id INTEGER DEFAULT NULL,
+    app_resource_file_id INTEGER NOT NULL,
     resource_type_id     INTEGER NOT NULL,
     name                 TEXT NOT NULL,
+    product              TEXT NOT NULL,
     description          TEXT DEFAULT NULL,
     deleted              INTEGER NOT NULL,
     translatable         INTEGER NOT NULL,
-    FOREIGN KEY (app_resource_file_id) REFERENCES app_resource_file (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (app_resource_file_id) REFERENCES app_resource_file (id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (resource_type_id) REFERENCES resource_type (id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 CREATE INDEX resource_file_entry_ik1 ON resource_file_entry (deleted);
 CREATE INDEX resource_file_entry_ik2 ON resource_file_entry (translatable);
-
-CREATE TRIGGER resource_file_id_becomes_null AFTER UPDATE ON resource_file_entry
-FOR EACH ROW
-WHEN (NEW.app_resource_file_id IS NULL)
-BEGIN
-    UPDATE resource_file_entry SET deleted = 1 WHERE id = NEW.id;
-END;
 
 CREATE TABLE resource_file_entry_string (
     id                     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,

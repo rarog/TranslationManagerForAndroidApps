@@ -326,8 +326,8 @@ class SyncController extends AbstractActionController implements AppHelperInterf
                     $resourceFileEntries[$resourceFile->Name] = [];
                     $resourceFileEntryKeys[$resourceFile->Name] = [];
                     foreach ($this->resourceFileEntryTable->fetchAll(['app_resource_file_id' => $resourceFile->Id, 'deleted' => 0]) as $entry) {
-                        $resourceFileEntries[$resourceFile->Name][$entry->Name] = $entry;
-                        $resourceFileEntryKeys[$resourceFile->Name][$entry->Name] = $entry;
+                        $resourceFileEntries[$resourceFile->Name][$entry->Name . $entry->Product] = $entry;
+                        $resourceFileEntryKeys[$resourceFile->Name][$entry->Name . $entry->Name] = $entry;
                     }
                 }
 
@@ -340,15 +340,21 @@ class SyncController extends AbstractActionController implements AppHelperInterf
                      * @var \DOMNamedNodeMap $attributes
                      */
                     $attributes = $node->attributes;
-                    if (!isset($attributes)) {
+                    if (is_null($attributes)) {
                         continue;
                     }
 
                     $attribute = $attributes->getNamedItem('name');
-                    if (!isset($attribute)) {
+                    if (is_null($attribute)) {
                         continue;
                     }
                     $name = $attribute->value;
+
+                    $product = 'default';
+                    $attribute = $attributes->getNamedItem('product');
+                    if (!is_null($attribute) && !empty($attribute->value)) {
+                        $product = $attribute->value;
+                    }
 
                     $description = '';
                     $translatable = true;
@@ -372,30 +378,30 @@ class SyncController extends AbstractActionController implements AppHelperInterf
                         }
                     }
 
-                    if (!array_key_exists($name, $resourceFileEntries[$resourceFile->Name])) {
+                    if (! array_key_exists($name . "\n" . $product, $resourceFileEntries[$resourceFile->Name])) {
                         if ($resource->Name === 'values') {
                             $resourceFileEntry = new ResourceFileEntry();
                             $resourceFileEntry->AppResourceFileId = $resourceFile->Id;
                             $resourceFileEntry->ResourceTypeId = array_search($node->tagName, $resourceTypes);
                             $resourceFileEntry->Name = $name;
+                            $resourceFileEntry->Product = $product;
                             $resourceFileEntry->Description = $description;
                             $resourceFileEntry->Translatable = $translatable;
-                            $resourceFileEntries[$resourceFile->Name][$name] = $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
+                            $resourceFileEntries[$resourceFile->Name][$name . "\n" . $product] = $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
                         } else {
                             $entriesSkippedNotInDefault++;
                             continue;
                         }
                     }
 
-                    if (($resource->Name === 'values') &&
-                        array_key_exists($name, $resourceFileEntryKeys[$resourceFile->Name])) {
-                        unset($resourceFileEntryKeys[$resourceFile->Name][$name]);
+                    if (($resource->Name === 'values') && array_key_exists($name . "\n" . product, $resourceFileEntryKeys[$resourceFile->Name])) {
+                        unset($resourceFileEntryKeys[$resourceFile->Name][$name . "\n" . product]);
                     }
 
                     /**
                      * @var ResourceFileEntry $resourceFileEntry
                      */
-                    $resourceFileEntry = $resourceFileEntries[$resourceFile->Name][$name];
+                    $resourceFileEntry = $resourceFileEntries[$resourceFile->Name][$name . "\n" . $product];
                     $entryAlreadyUpdated = false;
 
                     if ($resource->Name === 'values') {
@@ -407,9 +413,10 @@ class SyncController extends AbstractActionController implements AppHelperInterf
                             $resourceFileEntry->AppResourceFileId = $resourceFile->Id;
                             $resourceFileEntry->ResourceTypeId = array_search($node->tagName, $resourceTypes);
                             $resourceFileEntry->Name = $name;
+                            $resourceFileEntry->Product = $product;
                             $resourceFileEntry->Description = $description;
                             $resourceFileEntry->Translatable = $translatable;
-                            $resourceFileEntries[$resourceFile->Name][$name] = $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
+                            $resourceFileEntries[$resourceFile->Name][$name . "\n" . $product] = $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
                         } elseif ($resourceFileEntry->Description != $description || $resourceFileEntry->Translatable !== $translatable) {
                             $resourceFileEntry->Description = $description;
                             $resourceFileEntry->Translatable = $translatable;
@@ -448,12 +455,12 @@ class SyncController extends AbstractActionController implements AppHelperInterf
                     $entriesSkippedExistOnlyInDb += count($resourceFileEntryKeys[$resourceFile->Name]);
 
                     if ($confirmDeletion) {
-                        foreach ($resourceFileEntryKeys[$resourceFile->Name] as $name => $resourceFileEntry) {
+                        foreach ($resourceFileEntryKeys[$resourceFile->Name] as $key => $resourceFileEntry) {
                             $resourceFileEntry->Deleted = true;
                             $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
 
-                            if (array_key_exists($name, $resourceFileEntries[$resourceFile->Name])) {
-                                unset($resourceFileEntries[$resourceFile->Name][$name]);
+                            if (array_key_exists($key, $resourceFileEntries[$resourceFile->Name])) {
+                                unset($resourceFileEntries[$resourceFile->Name][$key]);
                             }
                         }
                     }
