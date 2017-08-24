@@ -108,6 +108,7 @@ CREATE TABLE resource_file_entry (
     app_resource_file_id INTEGER DEFAULT NULL,
     resource_type_id     INTEGER NOT NULL,
     name                 TEXT NOT NULL,
+    description          TEXT DEFAULT NULL,
     deleted              INTEGER NOT NULL,
     translatable         INTEGER NOT NULL,
     FOREIGN KEY (app_resource_file_id) REFERENCES app_resource_file (id) ON DELETE SET NULL ON UPDATE CASCADE,

@@ -70,6 +70,7 @@ class ResourceFileEntryTable
             'app_resource_file_id' => $resourceFileEntry->AppResourceFileId,
             'resource_type_id' => $resourceFileEntry->ResourceTypeId,
             'name' => $resourceFileEntry->Name,
+            'description' => $resourceFileEntry->Description,
             'deleted' => $resourceFileEntry->Deleted,
             'translatable' => $resourceFileEntry->Translatable,
         ];

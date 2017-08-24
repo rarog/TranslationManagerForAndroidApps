@@ -42,6 +42,11 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
     private $name;
 
     /**
+     * @var null|string
+     */
+    private $description;
+
+    /**
      * @var null|boolean
      */
     private $deleted;
@@ -173,6 +178,23 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
     }
 
     /**
+     * @return null|string
+     */
+    public function getDescription() {
+        return $this->description;
+    }
+
+    /**
+     * @param null|string $description
+     */
+    public function setDescription($description) {
+        if (!is_null($description)) {
+            $description = (string) $description;
+        }
+        $this->description = $description;
+    }
+
+    /**
      * @return null|boolean
      */
     public function getDeleted() {
@@ -229,39 +251,39 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
         $inputFilter = new InputFilter();
 
         $inputFilter->add([
-            'name'     => 'id',
+            'name' => 'id',
             'required' => true,
-            'filters'  => [
+            'filters' => [
                 ['name' => ToInt::class],
             ],
         ]);
         $inputFilter->add([
-            'name'     => 'app_resource_file_id',
+            'name' => 'app_resource_file_id',
             'required' => true,
-            'filters'  => [
+            'filters' => [
                 [
-                    'name'    => ToNull::class,
+                    'name' => ToNull::class,
                     'options' => ['type' => ToNull::TYPE_INTEGER],
                 ],
             ],
         ]);
         $inputFilter->add([
-            'name'     => 'resource_type_id',
+            'name' => 'resource_type_id',
             'required' => true,
-            'filters'  => [
+            'filters' => [
                 ['name' => ToInt::class],
             ],
         ]);
         $inputFilter->add([
-            'name'     => 'name',
+            'name' => 'name',
             'required' => true,
-            'filters'  => [
+            'filters' => [
                 ['name' => StripTags::class],
                 ['name' => StringTrim::class],
             ],
             'validators' => [
                 [
-                    'name'    => StringLength::class,
+                    'name' => StringLength::class,
                     'options' => [
                         'encoding' => 'UTF-8',
                         'min' => 1,
@@ -271,16 +293,34 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
             ],
         ]);
         $inputFilter->add([
-            'name'       => 'deleted',
-            'required'   => true,
-            'filters'    => [
+            'name' => 'description',
+            'required' => false,
+            'filters' => [
+                ['name' => StripTags::class],
+                ['name' => StringTrim::class],
+            ],
+            'validators' => [
+                [
+                    'name' => StringLength::class,
+                    'options' => [
+                        'encoding' => 'UTF-8',
+                        'min' => 0,
+                        'max' => 4096,
+                    ],
+                ],
+            ],
+        ]);
+        $inputFilter->add([
+            'name' => 'deleted',
+            'required' => true,
+            'filters' => [
                 ['name' => Boolean::class],
             ],
         ]);
         $inputFilter->add([
-            'name'       => 'translatable',
-            'required'   => true,
-            'filters'    => [
+            'name' => 'translatable',
+            'required' => true,
+            'filters' => [
                 ['name' => Boolean::class],
             ],
         ]);
@@ -295,12 +335,13 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
      */
     public function exchangeArray(array $data)
     {
-        $this->Id                = !empty($data['id']) ? $data['id'] : null;
+        $this->Id = !empty($data['id']) ? $data['id'] : null;
         $this->AppResourceFileId = !empty($data['app_resource_file_id']) ? $data['app_resource_file_id'] : null;
-        $this->ResourceTypeId    = !empty($data['resource_type_id']) ? $data['resource_type_id'] : null;
-        $this->Name              = !empty($data['name']) ? $data['name'] : null;
-        $this->Deleted           = !empty($data['deleted']) ? $data['deleted'] : null;
-        $this->Translatable      = !empty($data['translatable']) ? $data['translatable'] : null;
+        $this->ResourceTypeId = !empty($data['resource_type_id']) ? $data['resource_type_id'] : null;
+        $this->Name = !empty($data['name']) ? $data['name'] : null;
+        $this->Description = !empty($data['description']) ? $data['description'] : null;
+        $this->Deleted = !empty($data['deleted']) ? $data['deleted'] : null;
+        $this->Translatable = !empty($data['translatable']) ? $data['translatable'] : null;
     }
 
     /**
@@ -310,12 +351,13 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
     public function getArrayCopy()
     {
         return [
-            'id'                   => $this->Id,
+            'id'  => $this->Id,
             'app_resource_file_id' => $this->AppResourceFileId,
-            'resource_type_id'     => $this->ResourceTypeId,
-            'name'                 => $this->Name,
-            'deleted'              => $this->Deleted,
-            'translatable'         => $this->Translatable,
+            'resource_type_id' => $this->ResourceTypeId,
+            'name' => $this->Name,
+            'description' => $this->Description,
+            'deleted' => $this->Deleted,
+            'translatable' => $this->Translatable,
         ];
     }
 }

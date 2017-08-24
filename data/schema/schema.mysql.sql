@@ -111,6 +111,7 @@ CREATE TABLE `resource_file_entry` (
     `app_resource_file_id` BIGINT(20) UNSIGNED DEFAULT NULL,
     `resource_type_id`     BIGINT(20) UNSIGNED NOT NULL,
     `name`                 VARCHAR(255) NOT NULL,
+    `description`          VARCHAR(4096) DEFAULT NULL,
     `deleted`              TINYINT(1) NOT NULL,
     `translatable`         TINYINT(1) NOT NULL,
     INDEX `resource_file_entry_fk1` (`app_resource_file_id`),
