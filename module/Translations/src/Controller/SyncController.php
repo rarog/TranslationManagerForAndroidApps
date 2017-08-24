@@ -350,18 +350,26 @@ class SyncController extends AbstractActionController implements AppHelperInterf
                     }
                     $name = $attribute->value;
 
-                    $attribute = $attributes->getNamedItem('translatable');
-                    if (!isset($attribute)) {
-                        $translatable = true;
-                    } else {
-                        $translatable = $attribute->value !== 'false';
-                    }
+                    $description = '';
+                    $translatable = true;
+                    if ($resource->Name === 'values') {
+                        $attribute = $attributes->getNamedItem('translatable');
+                        if (! is_null($attribute)) {
+                            $translatable = $attribute->value !== 'false';
+                        }
 
-                    $attribute = $attributes->getNamedItem('translation_description');
-                    if (!isset($attribute)) {
-                        $description = '';
-                    } else {
-                        $description = $attribute->value;//print_r($description);
+                        $attribute = $attributes->getNamedItem('translation_description');
+                        if (! is_null($attribute)) {
+                            $description = $attribute->value;
+                        } else {
+                            $previousSibling = $node->previousSibling;
+                            while (! is_null($previousSibling) && ($previousSibling instanceof \DOMText) && $previousSibling->isWhitespaceInElementContent()) {
+                                $previousSibling = $previousSibling->previousSibling;
+                            }
+                            if (! is_null($previousSibling) && ($previousSibling instanceof \DOMComment)) {
+                                $description = $previousSibling->textContent;
+                            }
+                        }
                     }
 
                     if (!array_key_exists($name, $resourceFileEntries[$resourceFile->Name])) {
