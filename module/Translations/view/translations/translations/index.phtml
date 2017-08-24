@@ -8,43 +8,50 @@ $this->dataTablesInitHelper([
         'columnDefs' => [
             [
                 'data'       => 'name',
-                'orderable'  => true,
+                'orderable'  => false,
                 'searchable' => true,
                 'targets'    => 0,
                 'visible'    => false,
             ],
             [
-                'data'       => 'nameView',
+                'data'       => 'product',
                 'orderable'  => false,
-                'orderData'  => 0,
-                'searchable' => false,
+                'searchable' => true,
                 'targets'    => 1,
+                'visible'    => false,
+            ],
+            [
+                'data'       => 'nameView',
+                'orderable'  => true,
+                'orderData'  => [0, 1],
+                'searchable' => false,
+                'targets'    => 2,
                 'visible'    => true,
             ],
             [
                 'data'       => 'defaultValue',
                 'orderable'  => true,
                 'searchable' => true,
-                'targets'    => 2,
+                'targets'    => 3,
                 'visible'    => true,
             ],
             [
                 'data'       => 'translatedValue',
                 'orderable'  => true,
                 'searchable' => true,
-                'targets'    => 3,
+                'targets'    => 4,
                 'visible'    => true,
             ],
             [
                 'data'       => 'buttons',
                 'orderable'  => false,
                 'searchable' => false,
-                'targets'    => 4,
+                'targets'    => 5,
                 'visible'    => true,
             ],
         ],
         'order' => [
-            [0, 'asc'],
+            [2, 'asc'],
         ],
         'rowId' => 'defaultId',
     ],
@@ -108,6 +115,8 @@ var translationsPath = "' . $this->url('translations/listtranslations'). '";')->
     <table class="table table-bordered table-striped" id="translations">
       <thead>
         <tr>
+          <th>name</th>
+          <th>product</th>
           <th><?= $this->escapeHtml($this->translate('Name')) ?></th>
           <th><?= $this->escapeHtml($this->translate('Default value')) ?></th>
           <th><?= $this->escapeHtml($this->translate('Translation')) ?></th>

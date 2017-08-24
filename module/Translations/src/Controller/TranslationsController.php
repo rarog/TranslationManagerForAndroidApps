@@ -292,7 +292,8 @@ class TranslationsController extends AbstractActionController
 
             $output[] = [
                 'defaultId' => $entry['defaultId'],
-                'name' => $entry['name'],
+                'name' => $this->renderTemplate($viewModel, 'partial/translations-name.phtml'),
+                'product' => $this->renderTemplate($viewModel, 'partial/translations-product.phtml'),
                 'nameView' => $this->renderTemplate($viewModel, 'partial/translations-nameView.phtml'),
                 'defaultValue' => $this->renderTemplate($viewModel, 'partial/translations-defaultValue.phtml'),
                 'translatedValue' => $this->renderTemplate($viewModel, 'partial/translations-translatedValue.phtml'),

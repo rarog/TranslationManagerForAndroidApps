@@ -4,5 +4,9 @@
     <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="<?= $this->escapeHtmlAttr($entry->description) ?>"></span>
   </div>
 <?php endif; ?>
-<?= $this->escapeHtml($entry->name) ?>
+<?= $this->escapeHtml($entry->name)?>
+<?php if ($entry->entryCount > 1): ?>
+  <br>
+  <?= $this->escapeHtml(sprintf($this->translate('Product: %s'), $entry->product)) ?>
+<?php endif; ?>
 </div>

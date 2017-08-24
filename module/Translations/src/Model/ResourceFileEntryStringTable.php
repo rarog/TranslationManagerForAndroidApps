@@ -173,6 +173,18 @@ class ResourceFileEntryStringTable
             'description' => 'description',
         ], Select::JOIN_INNER);
 
+        $onEntryCount = new Expression('? = ? AND ? = ? AND ? = ?', [
+            ['entry_count.app_resource_file_id' => Expression::TYPE_IDENTIFIER],
+            ['resource_file_entry.app_resource_file_id' => Expression::TYPE_IDENTIFIER],
+            ['entry_count.name' => Expression::TYPE_IDENTIFIER],
+            ['resource_file_entry.name' => Expression::TYPE_IDENTIFIER],
+            ['entry_count.deleted' => Expression::TYPE_IDENTIFIER],
+            [0 => Expression::TYPE_VALUE],
+        ]);
+        $select->join(['entry_count' => 'resource_file_entry'], $onEntryCount,[
+            'entryCount' => new Expression('count(distinct entry_count.id)'),
+        ], $select::JOIN_LEFT);
+
         $onResourceFileEntryString = new Expression('? = ? AND ? = ?', [
             ['resource_file_entry_string.resource_file_entry_id' => Expression::TYPE_IDENTIFIER],
             ['default.resource_file_entry_id'  => Expression::TYPE_IDENTIFIER],
