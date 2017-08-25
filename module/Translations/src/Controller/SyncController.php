@@ -404,7 +404,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
                     /**
                      * @var ResourceFileEntry $resourceFileEntry
                      */
-                    $resourceFileEntry = $resourceFileEntries[$resourceFile->Name][$name . "\n" . $product];
+                    $resourceFileEntry = $resourceFileEntries[$resourceFile->Name][$combinedKey];
                     $entryAlreadyUpdated = false;
 
                     if ($resource->Name === 'values') {
@@ -419,7 +419,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
                             $resourceFileEntry->Product = $product;
                             $resourceFileEntry->Description = $description;
                             $resourceFileEntry->Translatable = $translatable;
-                            $resourceFileEntries[$resourceFile->Name][$name . "\n" . $product] = $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
+                            $resourceFileEntries[$resourceFile->Name][$combinedKey] = $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
                         } elseif ($resourceFileEntry->Description != $description || $resourceFileEntry->Translatable !== $translatable) {
                             $resourceFileEntry->Description = $description;
                             $resourceFileEntry->Translatable = $translatable;
