@@ -20,18 +20,20 @@ use Zend\Cache\Storage\Plugin;
 use Zend\Session;
 
 // Little helper function to generate list of locales.
-function getLocaleNamesInLocale($inLocale, $primaryOnly = false)
-{
-    $locales = [];
-    foreach (ResourceBundle::getLocales('') as $locale) {
-        if ($primaryOnly && (strpos($locale, '_') !== false)) {
-            continue;
-        }
+if (!function_exists('getLocaleNamesInLocale')) {
+    function getLocaleNamesInLocale($inLocale, $primaryOnly = false)
+    {
+        $locales = [];
+        foreach (ResourceBundle::getLocales('') as $locale) {
+            if ($primaryOnly && (strpos($locale, '_') !== false)) {
+                continue;
+            }
 
-        $locales[$locale] = $locale . ' - ' . Locale::getDisplayName($locale, $inLocale);
+            $locales[$locale] = $locale . ' - ' . Locale::getDisplayName($locale, $inLocale);
+        }
+        return $locales;
     }
-    return $locales;
-};
+}
 
 return [
     'caches' => [
