@@ -93,10 +93,12 @@ class ResXmlParser implements AppHelperInterface
         $this->logger = $logger;
     }
 
+
     /**
-     * Normalizes the translation
+     * Decodes the translation into readable form
      *
      * @param string $translationString
+     * @throws \RuntimeException
      * @return string
      */
     public function decodeAndroidTranslationString($translationString)
@@ -139,16 +141,17 @@ class ResXmlParser implements AppHelperInterface
         try {
             return Json::decode($jsonTranslationString);
         } catch (\RuntimeException $e) {
-            $message = sprintf('Android string: %s
-Exception message: %s
-Exception trace:
-%s', $translationString, $e->getMessage(), $e->getTraceAsString());
-            $this->logger->err('An error during decoding of Android string', ['messageExtended' => $message]);
-
-            return $translationString;
+            throw new \RuntimeException('Android string couldn\'t be decoded.');
         }
     }
 
+    /**
+     * Export resources to XML files
+     *
+     * @param App $app
+     * @param bool $confirmDeletion
+     * @return \Translations\Model\ResXmlParserResult
+     */
     public function exportResourcesOfApp(App $app, $confirmDeletion) {
         $confirmDeletion = (bool) $confirmDeletion;
 
@@ -178,6 +181,13 @@ Exception trace:
         return $result;
     }
 
+    /**
+     * Import resources from XML files
+     *
+     * @param App $app
+     * @param bool $confirmDeletion
+     * @return \Translations\Model\ResXmlParserResult
+     */
     public function importResourcesOfApp(App $app, $confirmDeletion) {
         $confirmDeletion = (bool) $confirmDeletion;
 
@@ -339,7 +349,18 @@ Exception trace:
                             $resourceFileEntryStrings[$resourceFileEntry->Id] = $resourceFileEntryString;
                         }
 
-                        $decodedString = $this->decodeAndroidTranslationString($node->textContent);
+                        try {
+                            $decodedString = $this->decodeAndroidTranslationString($node->textContent);
+                        } catch (\RuntimeException $e) {
+                            $decodedString = $node->textContent;
+                            $message = sprintf('Android string: %s
+String name: %s
+String product: %s
+Exception message: %s
+Exception trace:
+%s', $node->textContent, $name, $product, $e->getMessage(), $e->getTraceAsString());
+                            $this->logger->err('An error during decoding of Android string', ['messageExtended' => $message]);
+                        }
                         $resourceFileEntryString = $resourceFileEntryStrings[$resourceFileEntry->Id];
                         if ($resourceFileEntryString->Value !== $decodedString) {
                             $resourceFileEntryString->Value = $decodedString;
