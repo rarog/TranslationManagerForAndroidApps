@@ -59,13 +59,18 @@ class SyncController extends AbstractActionController
      * Check if current user has permission to the app and return it
      *
      * @param int $appId
-     * @return void|\Zend\Http\Response|\Translations\Model\App
+     * @param bool $noRedirect
+     * @return boolean|\Zend\Http\Response|\Translations\Model\App
      */
-    private function getApp($appId)
+    private function getApp($appId, $noRedirect = false)
     {
         $appId = (int) $appId;
+        $noRedirect = (bool) $noRedirect;
 
         if (0 === $appId) {
+            if ($noRedirect) {
+                return false;
+            }
             return $this->redirect()->toRoute('app', [
                 'action' => 'index',
             ]);
@@ -74,15 +79,18 @@ class SyncController extends AbstractActionController
         try {
             $app = $this->appTable->getApp($appId);
         } catch (\Exception $e) {
+            if ($noRedirect) {
+                return false;
+            }
             return $this->redirect()->toRoute('app', [
                 'action' => 'index',
             ]);
         }
 
-        if (!$this->isGranted('app.viewAll') &&
-            !$this->appTable->hasUserPermissionForApp(
-                $this->zfcUserAuthentication()->getIdentity()->getId(),
-                $app->Id)) {
+        if (! $this->isGranted('app.viewAll') && ! $this->appTable->hasUserPermissionForApp($this->zfcUserAuthentication()->getIdentity()->getId(), $app->Id)) {
+            if ($noRedirect) {
+                return false;
+            }
             return $this->redirect()->toRoute('app', [
                 'action' => 'index',
             ]);
@@ -90,6 +98,9 @@ class SyncController extends AbstractActionController
 
         // Prevent further action, if default values don't exist.
         if (!$this->resXmlParser->getHasAppDefaultValues($app)) {
+            if ($noRedirect) {
+                return false;
+            }
             return $this->redirect()->toRoute('appresource', [
                 'appId'  => $app->Id,
                 'action' => 'index',
@@ -147,13 +158,16 @@ class SyncController extends AbstractActionController
      */
     public function exportAction()
     {
-        $appId = (int) $this->params()->fromRoute('appId', 0);
-        $app = $this->getApp($appId);
-
         $request = $this->getRequest();
-
         if (!$request->isXmlHttpRequest()) {
             return $this->getAjaxError();
+        }
+
+        $appId = (int) $this->params()->fromRoute('appId', 0);
+        $app = $this->getApp($appId, true);
+
+        if ($app === false) {
+            return $this->getJsonAlert('danger', 'Invalid app or no permission to access it');
         }
 
         $form = new SyncExportForm();
@@ -176,13 +190,16 @@ class SyncController extends AbstractActionController
      */
     public function importAction()
     {
-        $appId = (int) $this->params()->fromRoute('appId', 0);
-        $app = $this->getApp($appId);
-
         $request = $this->getRequest();
-
         if (!$request->isXmlHttpRequest()) {
             return $this->getAjaxError();
+        }
+
+        $appId = (int) $this->params()->fromRoute('appId', 0);
+        $app = $this->getApp($appId, true);
+
+        if ($app === false) {
+            return $this->getJsonAlert('danger', 'Invalid app or no permission to access it');
         }
 
         $form = new SyncImportForm();
