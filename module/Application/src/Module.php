@@ -233,7 +233,7 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
                 },
                 SessionManager::class => function ($container) {
                     $config = $container->get('config');
-                    if (!isset($config['session'])) {
+                    if (! isset($config['session'])) {
                         $sessionManager = new SessionManager();
                         Container::setDefaultManager($sessionManager);
                         return $sessionManager;
@@ -244,12 +244,12 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
                     $sessionConfig = null;
                     if (isset($session['config'])) {
                         $class = isset($session['config']['class'])
-                        ?  $session['config']['class']
-                        : SessionConfig::class;
+                            ?  $session['config']['class']
+                            : SessionConfig::class;
 
                         $options = isset($session['config']['options'])
-                        ?  $session['config']['options']
-                        : [];
+                            ?  $session['config']['options']
+                            : [];
 
                         $sessionConfig = new $class();
                         $sessionConfig->setOptions($options);
