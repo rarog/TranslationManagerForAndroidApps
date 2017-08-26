@@ -5,13 +5,12 @@
  * @license   https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License version 3 or later
  */
 
-namespace Translations\Controller\Plugin;
+namespace Translations\Model;
 
-use Zend\Log\Logger;
 use Zend\Json\Json;
-use Zend\Mvc\Controller\Plugin\AbstractPlugin;
+use Zend\Log\Logger;
 
-class DecodeAndroidTranslationString extends AbstractPlugin
+class ResXmlParser
 {
     /**
      * @var Logger
@@ -34,7 +33,7 @@ class DecodeAndroidTranslationString extends AbstractPlugin
      * @param string $translationString
      * @return string
      */
-    public function __invoke($translationString)
+    public function decodeAndroidTranslationString($translationString)
     {
         $translationString = (string) $translationString;
 
@@ -73,7 +72,7 @@ class DecodeAndroidTranslationString extends AbstractPlugin
 
         try {
             return Json::decode($jsonTranslationString);
-        } catch (\Exception $e) {
+        } catch (\RuntimeException $e) {
             $message = sprintf('Android string: %s
 Exception message: %s
 Exception trace:

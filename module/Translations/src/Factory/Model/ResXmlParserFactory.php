@@ -5,12 +5,12 @@
  * @license   https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License version 3 or later
  */
 
-namespace Translations\Factory\Controller\Plugin;
+namespace Translations\Factory\Model;
 
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
-class DecodeAndroidTranslationStringFactory implements FactoryInterface
+class ResXmlParserFactory implements FactoryInterface
 {
     /**
      * {@inheritDoc}
@@ -18,7 +18,7 @@ class DecodeAndroidTranslationStringFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new \Translations\Controller\Plugin\DecodeAndroidTranslationString(
+        return new \Translations\Model\ResXmlParser(
             $container->get(\Zend\Log\Logger::class)
         );
     }

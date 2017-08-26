@@ -10,11 +10,6 @@ use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;
 
 return [
-    'controller_plugins' => [
-        'factories' => [
-            'decodeAndroidTranslationString' => Factory\Controller\Plugin\DecodeAndroidTranslationStringFactory::class,
-        ],
-    ],
     'controllers' => [
         'factories' => [
             Controller\AppController::class => Factory\Controller\AppControllerFactory::class,
@@ -176,6 +171,7 @@ return [
     'service_manager' => [
         'factories' => [
             Model\Helper\EncryptionHelper::class => Factory\Model\EncryptionHelperFactory::class,
+            Model\ResXmlParser::class => Factory\Model\ResXmlParserFactory::class,
         ],
     ],
     'translator' => [

@@ -22,6 +22,7 @@ use Translations\Model\ResourceFileEntryString;
 use Translations\Model\ResourceFileEntryStringTable;
 use Translations\Model\ResourceFileEntryTable;
 use Translations\Model\ResourceTypeTable;
+use Translations\Model\ResXmlParser;
 use Zend\Dom\Document;
 use Zend\Dom\Document\Query;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -63,6 +64,11 @@ class SyncController extends AbstractActionController implements AppHelperInterf
      * @var ResourceFileEntryStringTable
      */
     private $resourceFileEntryStringTable;
+
+    /**
+     * @var ResXmlParser
+     */
+    private $resXmlParser;
 
     /**
      * @var Translator
@@ -191,11 +197,13 @@ class SyncController extends AbstractActionController implements AppHelperInterf
      * @param AppResourceTable $appResourceTable
      * @param AppResourceFileTable $appResourceFileTable
      * @param ResourceTypeTable $resourceTypeTable
+     * @param ResourceFileEntryTable $resourceFileEntryTable
      * @param ResourceFileEntryStringTable $resourceFileEntryStringTable
+     * @param ResXmlParser $resXmlParser
      * @param Translator $translator
      * @param Renderer $renderer
      */
-    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, AppResourceFileTable $appResourceFileTable, ResourceTypeTable $resourceTypeTable, ResourceFileEntryTable $resourceFileEntryTable, ResourceFileEntryStringTable $resourceFileEntryStringTable, Translator $translator, Renderer $renderer)
+    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, AppResourceFileTable $appResourceFileTable, ResourceTypeTable $resourceTypeTable, ResourceFileEntryTable $resourceFileEntryTable, ResourceFileEntryStringTable $resourceFileEntryStringTable, ResXmlParser $resXmlParser, Translator $translator, Renderer $renderer)
     {
         $this->appTable = $appTable;
         $this->appResourceTable = $appResourceTable;
@@ -203,6 +211,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
         $this->resourceTypeTable = $resourceTypeTable;
         $this->resourceFileEntryTable = $resourceFileEntryTable;
         $this->resourceFileEntryStringTable = $resourceFileEntryStringTable;
+        $this->resXmlParser = $resXmlParser;
         $this->translator = $translator;
         $this->renderer = $renderer;
     }
@@ -438,7 +447,7 @@ class SyncController extends AbstractActionController implements AppHelperInterf
                             $resourceFileEntryStrings[$resourceFileEntry->Id] = $resourceFileEntryString;
                         }
 
-                        $decodedString = $this->decodeAndroidTranslationString($node->textContent);
+                        $decodedString = $this->resXmlParser->decodeAndroidTranslationString(lo$node->textContent);
                         $resourceFileEntryString = $resourceFileEntryStrings[$resourceFileEntry->Id];
                         if ($resourceFileEntryString->Value !== $decodedString) {
                             $resourceFileEntryString->Value = $decodedString;
