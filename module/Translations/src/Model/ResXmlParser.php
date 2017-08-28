@@ -109,12 +109,6 @@ class ResXmlParser implements AppHelperInterface
             return '';
         }
 
-        // TODO: Add following test cases:
-        // - String encapsulated by "
-        // - String not encapsulated by "
-        // - String not beginning with " but ending with " (values/strings.xml -> reset_network_desc)
-        // - Multiline strings with real (non-escaped) newlines (values/strings.xml -> font_size_preview_text_body)
-
         // Fixing strings stored in multiline format. Why, is it relevant to copypaste Android strings like "font_size_preview_text_body" this way?
         // 1) Be paranoid about strings form files with Windows newlines
         $translationString = str_replace("\r\n", "\n", $translationString);
@@ -122,10 +116,18 @@ class ResXmlParser implements AppHelperInterface
         $translationString = str_replace("\r", "\n", $translationString);
         // 3) Remove newlines and empty spaces before actual text in lines
         $splitString = explode("\n", $translationString);
-        if (($splitString !== false) && !empty($splitString)) {
+
+        $handleSpecialMultiline = ($splitString !== false) && (count($splitString) > 1);
+        if ($handleSpecialMultiline) {
             $translationString = '';
             foreach ($splitString as $line) {
-                $translationString .= ltrim($line);
+                $line = trim($line);
+
+                if (empty($line)) {
+                    continue;
+                }
+
+                $translationString .= (empty($line)) ? '' : ' ' . $line;
             }
         }
 
@@ -139,7 +141,18 @@ class ResXmlParser implements AppHelperInterface
         }
 
         try {
-            return Json::decode($jsonTranslationString);
+            $decoded = Json::decode($jsonTranslationString);
+
+            if ($handleSpecialMultiline) {
+                $splitString = explode("\n", $decoded);
+                $decodedArray = [];
+                foreach ($splitString as $line) {
+                    $decodedArray[] = trim($line);
+                }
+                $decoded = implode("\n", $decodedArray);
+            }
+
+            return $decoded;
         } catch (\RuntimeException $e) {
             throw new \RuntimeException('Android string couldn\'t be decoded.');
         }
