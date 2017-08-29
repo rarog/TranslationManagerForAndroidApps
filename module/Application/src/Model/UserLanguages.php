@@ -173,10 +173,10 @@ class UserLanguages implements ArraySerializableInterface, InputFilterAwareInter
      * {@inheritDoc}
      * @see \Zend\Stdlib\ArraySerializableInterface::exchangeArray()
      */
-    public function exchangeArray(array $data)
+    public function exchangeArray(array $array)
     {
-        $this->UserId = !empty($data['user_id']) ? $data['user_id'] : null;
-        $this->Locale = !empty($data['locale']) ? $data['locale'] : null;
+        $this->UserId = !empty($array['user_id']) ? $array['user_id'] : null;
+        $this->Locale = !empty($array['locale']) ? $array['locale'] : null;
     }
 
     /**
@@ -187,7 +187,7 @@ class UserLanguages implements ArraySerializableInterface, InputFilterAwareInter
     {
         return [
             'user_id' => $this->UserId,
-            'locale'  => $this->Locale,
+            'locale' => $this->Locale,
         ];
     }
 }

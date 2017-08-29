@@ -62,10 +62,8 @@ class AppResourceFileController extends AbstractActionController implements Adap
      * @param int $appId
      * @return void|\Zend\Http\Response|\Translations\Model\App
      */
-    private function getApp($appId)
+    private function getApp(int $appId)
     {
-        $appId = (int) $appId;
-
         if (0 === $appId) {
             return $this->redirect()->toRoute('app', [
                 'action' => 'index',

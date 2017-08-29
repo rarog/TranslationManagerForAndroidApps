@@ -18,11 +18,17 @@ use Zend\View\Helper\AbstractHelper;
 
 class DataTablesInitHelper extends AbstractHelper
 {
-    private function processArray($array)
+    /**
+     * Prepares array for DataTables initialisation.
+     *
+     * @param array $array
+     * @return array
+     */
+    private function processArray(array $array = null)
     {
-        $resultArray = array();
+        $resultArray = [];
 
-        if (is_array($array)) {
+        if (! is_null($array)) {
             if (array_key_exists('table', $array)) {
                 array_push($resultArray, $array);
             } else {
@@ -37,11 +43,16 @@ class DataTablesInitHelper extends AbstractHelper
         return $resultArray;
     }
 
-    public function __invoke($tablesToInit)
+    /**
+     * Injects JS and CSS for DataTables library.
+     *
+     * @param array $tablesToInit
+     */
+    public function __invoke(array $tablesToInit = null)
     {
         $tablesToInit = $this->processArray($tablesToInit);
 
-        if (!empty($tablesToInit)){
+        if (! empty($tablesToInit)){
             $this->view->headScript()->appendFile($this->view->basePath('/js/jquery.dataTables.min.js'));
             $this->view->headScript()->appendFile($this->view->basePath('/js/dataTables.bootstrap.min.js'));
             $this->view->headLink()->prependStylesheet($this->view->basePath('/css/dataTables.bootstrap.min.css'));

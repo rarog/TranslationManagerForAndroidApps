@@ -52,12 +52,11 @@ class ResourceFileEntryStringSuggestionTable
      * @throws RuntimeException
      * @return ResourceFileEntryStringSuggestion
      */
-    public function getResourceFileEntryStringSuggestion($id)
+    public function getResourceFileEntryStringSuggestion(int $id)
     {
-        $id = (int) $id;
         $rowset = $this->tableGateway->select(['id' => $id]);
         $row = $rowset->current();
-        if (!$row) {
+        if (! $row) {
             throw new RuntimeException(sprintf('Could not find row with identifier %d', $id));
         }
 
@@ -101,9 +100,8 @@ class ResourceFileEntryStringSuggestionTable
      *
      * @param int $id
      */
-    public function deleteResourceFileEntryStringSuggestion($id)
+    public function deleteResourceFileEntryStringSuggestion(int $id)
     {
-        $id = (int) $id;
         $this->tableGateway->delete(['id' => $id]);
     }
 }

@@ -52,12 +52,11 @@ class ResourceFileEntryTable
      * @throws RuntimeException
      * @return ResourceFileEntry
      */
-    public function getResourceFileEntry($id)
+    public function getResourceFileEntry(int $id)
     {
-        $id = (int) $id;
         $rowset = $this->tableGateway->select(['id' => $id]);
         $row = $rowset->current();
-        if (!$row) {
+        if (! $row) {
             throw new RuntimeException(sprintf('Could not find row with identifier %d', $id));
         }
 
@@ -104,9 +103,8 @@ class ResourceFileEntryTable
      *
      * @param int $id
      */
-    public function deleteResourceFileEntry($id)
+    public function deleteResourceFileEntry(int $id)
     {
-        $id = (int) $id;
         $this->tableGateway->delete(['id' => $id]);
     }
 }

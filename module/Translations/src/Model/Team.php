@@ -173,10 +173,10 @@ class Team implements ArraySerializableInterface, InputFilterAwareInterface
      * {@inheritDoc}
      * @see \Zend\Stdlib\ArraySerializableInterface::exchangeArray()
      */
-    public function exchangeArray(array $data)
+    public function exchangeArray(array $array)
     {
-        $this->Id   = !empty($data['id']) ? $data['id'] : null;
-        $this->Name = !empty($data['name']) ? $data['name'] : null;
+        $this->Id = !empty($array['id']) ? $array['id'] : null;
+        $this->Name = !empty($array['name']) ? $array['name'] : null;
     }
 
     /**
@@ -186,7 +186,7 @@ class Team implements ArraySerializableInterface, InputFilterAwareInterface
     public function getArrayCopy()
     {
         return [
-            'id'   => $this->Id,
+            'id' => $this->Id,
             'name' => $this->Name,
         ];
     }

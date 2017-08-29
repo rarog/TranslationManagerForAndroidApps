@@ -260,13 +260,13 @@ class ResourceFileEntryStringSuggestion implements ArraySerializableInterface, I
      * {@inheritDoc}
      * @see \Zend\Stdlib\ArraySerializableInterface::exchangeArray()
      */
-    public function exchangeArray(array $data)
+    public function exchangeArray(array $array)
     {
-        $this->Id                        = !empty($data['id']) ? $data['id'] : null;
-        $this->ResourceFileEntryStringId = !empty($data['resource_file_entry_string_id']) ? $data['resource_file_entry_string_id'] : null;
-        $this->UserId                    = !empty($data['user_id']) ? $data['user_id'] : null;
-        $this->Value                     = !empty($data['value']) ? $data['value'] : null;
-        $this->Created                   = !empty($data['created']) ? $data['created'] : null;
+        $this->Id = !empty($array['id']) ? $array['id'] : null;
+        $this->ResourceFileEntryStringId = !empty($array['resource_file_entry_string_id']) ? $array['resource_file_entry_string_id'] : null;
+        $this->UserId = !empty($array['user_id']) ? $array['user_id'] : null;
+        $this->Value = !empty($array['value']) ? $array['value'] : null;
+        $this->Created = !empty($array['created']) ? $array['created'] : null;
     }
 
     /**
@@ -276,11 +276,11 @@ class ResourceFileEntryStringSuggestion implements ArraySerializableInterface, I
     public function getArrayCopy()
     {
         return [
-            'id'                            => $this->Id,
+            'id' => $this->Id,
             'resource_file_entry_string_id' => $this->ResourceFileEntryStringId,
-            'user_id'                       => $this->UserId,
-            'value'                         => $this->Value,
-            'created'                       => $this->Created,
+            'user_id' => $this->UserId,
+            'value' => $this->Value,
+            'created' => $this->Created,
         ];
     }
 }

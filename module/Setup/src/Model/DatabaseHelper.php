@@ -311,7 +311,7 @@ class DatabaseHelper
      * @param  string $path
      * @return string
      */
-    private function normalizePath($path)
+    private function normalizePath(string $path)
     {
         $path = rtrim($path, '/');
         $path = rtrim($path, '\\');

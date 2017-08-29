@@ -208,11 +208,11 @@ class UserSettings implements ArraySerializableInterface, InputFilterAwareInterf
      * {@inheritDoc}
      * @see \Zend\Stdlib\ArraySerializableInterface::exchangeArray()
      */
-    public function exchangeArray(array $data)
+    public function exchangeArray(array $array)
     {
-        $this->userId = !empty($data['user_id']) ? $data['user_id'] : null;
-        $this->locale = !empty($data['locale']) ? $data['locale'] : null;
-        $this->teamId = !empty($data['team_id']) ? $data['team_id'] : null;
+        $this->userId = !empty($array['user_id']) ? $array['user_id'] : null;
+        $this->locale = !empty($array['locale']) ? $array['locale'] : null;
+        $this->teamId = !empty($array['team_id']) ? $array['team_id'] : null;
     }
 
     /**
@@ -223,7 +223,7 @@ class UserSettings implements ArraySerializableInterface, InputFilterAwareInterf
     {
         return [
             'user_id' => $this->userId,
-            'locale'  => $this->locale,
+            'locale' => $this->locale,
             'team_id' => $this->teamId,
         ];
     }

@@ -23,7 +23,7 @@ class FileHelper
      * @param  string $path2
      * @return string
      */
-    public static function concatenatePath($path1, $path2)
+    public static function concatenatePath(string $path1, string $path2)
     {
         $path1 = self::normalizePath($path1);
 
@@ -41,10 +41,8 @@ class FileHelper
      * @param  string $filePath
      * @return boolean
      */
-    public static function isFileValidResource($filePath)
+    public static function isFileValidResource(string $filePath)
     {
-        $filePath = (string) $filePath;
-
         if (file_exists($filePath) && is_file($filePath)) {
             try {
                 libxml_use_internal_errors(true);
@@ -68,11 +66,8 @@ class FileHelper
      * @param  bool $trimLeft
      * @return string
      */
-    public static function normalizePath($path, $trimLeft = false)
+    public static function normalizePath(string $path, bool $trimLeft = false)
     {
-        $path = (string) $path;
-        $trimLeft = (bool) $trimLeft;
-
         $path = rtrim($path, '/');
         $path = rtrim($path, '\\');
 

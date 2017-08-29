@@ -380,16 +380,16 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
      * {@inheritDoc}
      * @see \Zend\Stdlib\ArraySerializableInterface::exchangeArray()
      */
-    public function exchangeArray(array $data)
+    public function exchangeArray(array $array)
     {
-        $this->Id = !empty($data['id']) ? $data['id'] : null;
-        $this->AppResourceFileId = !empty($data['app_resource_file_id']) ? $data['app_resource_file_id'] : null;
-        $this->ResourceTypeId = !empty($data['resource_type_id']) ? $data['resource_type_id'] : null;
-        $this->Name = !empty($data['name']) ? $data['name'] : null;
-        $this->Product = !empty($data['product']) ? $data['product'] : null;
-        $this->Description = !empty($data['description']) ? $data['description'] : null;
-        $this->Deleted = !empty($data['deleted']) ? $data['deleted'] : null;
-        $this->Translatable = !empty($data['translatable']) ? $data['translatable'] : null;
+        $this->Id = !empty($array['id']) ? $array['id'] : null;
+        $this->AppResourceFileId = !empty($array['app_resource_file_id']) ? $array['app_resource_file_id'] : null;
+        $this->ResourceTypeId = !empty($array['resource_type_id']) ? $array['resource_type_id'] : null;
+        $this->Name = !empty($array['name']) ? $array['name'] : null;
+        $this->Product = !empty($array['product']) ? $array['product'] : null;
+        $this->Description = !empty($array['description']) ? $array['description'] : null;
+        $this->Deleted = !empty($array['deleted']) ? $array['deleted'] : null;
+        $this->Translatable = !empty($array['translatable']) ? $array['translatable'] : null;
     }
 
     /**

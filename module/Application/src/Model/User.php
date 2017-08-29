@@ -340,14 +340,14 @@ class User implements ArraySerializableInterface, InputFilterAwareInterface
      * {@inheritDoc}
      * @see \Zend\Stdlib\ArraySerializableInterface::exchangeArray()
      */
-    public function exchangeArray(array $data)
+    public function exchangeArray(array $array)
     {
-        $this->UserId         = !empty($data['user_id']) ? $data['user_id'] : null;
-        $this->Username       = !empty($data['username']) ? $data['username'] : null;
-        $this->Email          = !empty($data['email']) ? $data['email'] : null;
-        $this->DisplayName    = !empty($data['display_name']) ? $data['display_name'] : null;
-        $this->Password       = !empty($data['password']) ? $data['password'] : null;
-        $this->PasswordVerify = !empty($data['password_verify']) ? $data['password_verify'] : null;
+        $this->UserId = !empty($array['user_id']) ? $array['user_id'] : null;
+        $this->Username = !empty($array['username']) ? $array['username'] : null;
+        $this->Email = !empty($array['email']) ? $array['email'] : null;
+        $this->DisplayName = !empty($array['display_name']) ? $array['display_name'] : null;
+        $this->Password = !empty($array['password']) ? $array['password'] : null;
+        $this->PasswordVerify = !empty($array['password_verify']) ? $array['password_verify'] : null;
     }
 
     /**
@@ -357,11 +357,11 @@ class User implements ArraySerializableInterface, InputFilterAwareInterface
     public function getArrayCopy()
     {
         return [
-            'user_id'         => $this->UserId,
-            'username'        => $this->Username,
-            'email'           => $this->Email,
-            'display_name'    => $this->DisplayName,
-            'password'        => $this->Password,
+            'user_id' => $this->UserId,
+            'username' => $this->Username,
+            'email' => $this->Email,
+            'display_name' => $this->DisplayName,
+            'password' => $this->Password,
             'password_verify' => $this->PasswordVerify,
         ];
     }

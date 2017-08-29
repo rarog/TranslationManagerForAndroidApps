@@ -260,13 +260,13 @@ class ResourceFileEntryString implements ArraySerializableInterface, InputFilter
      * {@inheritDoc}
      * @see \Zend\Stdlib\ArraySerializableInterface::exchangeArray()
      */
-    public function exchangeArray(array $data)
+    public function exchangeArray(array $array)
     {
-        $this->Id                  = !empty($data['id']) ? $data['id'] : null;
-        $this->AppResourceId       = !empty($data['app_resource_id']) ? $data['app_resource_id'] : null;
-        $this->ResourceFileEntryId = !empty($data['resource_file_entry_id']) ? $data['resource_file_entry_id'] : null;
-        $this->Value               = !empty($data['value']) ? $data['value'] : null;
-        $this->LastChange          = !empty($data['last_change']) ? $data['last_change'] : null;
+        $this->Id = !empty($array['id']) ? $array['id'] : null;
+        $this->AppResourceId = !empty($array['app_resource_id']) ? $array['app_resource_id'] : null;
+        $this->ResourceFileEntryId = !empty($array['resource_file_entry_id']) ? $array['resource_file_entry_id'] : null;
+        $this->Value = !empty($array['value']) ? $array['value'] : null;
+        $this->LastChange = !empty($array['last_change']) ? $array['last_change'] : null;
     }
 
     /**
@@ -276,11 +276,11 @@ class ResourceFileEntryString implements ArraySerializableInterface, InputFilter
     public function getArrayCopy()
     {
         return [
-            'id'                     => $this->Id,
-            'app_resource_id'        => $this->AppResourceId,
+            'id' => $this->Id,
+            'app_resource_id' => $this->AppResourceId,
             'resource_file_entry_id' => $this->ResourceFileEntryId,
-            'value'                  => $this->Value,
-            'last_change'            => $this->LastChange,
+            'value' => $this->Value,
+            'last_change' => $this->LastChange,
         ];
     }
 }

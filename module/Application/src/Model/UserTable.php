@@ -60,10 +60,8 @@ class UserTable
      * @param int $teamId
      * @return \Zend\Db\ResultSet\ResultSet
      */
-    public function fetchAllNotInTeam($teamId)
+    public function fetchAllNotInTeam(int $teamId)
     {
-        $teamId = (int) $teamId;
-
         $select = new Select();
         $select->columns(['user_id'])
             ->from('team_member')
@@ -82,11 +80,10 @@ class UserTable
      * @throws RuntimeException
      * @return \ZfcUser\Entity\User
      */
-    public function getUser($id)
+    public function getUser(int $id)
     {
-        $id = (int) $id;
         $row = $this->userMapper->findById($id);
-        if (!$row) {
+        if (! $row) {
             throw new RuntimeException(sprintf('Could not find row with identifier %d', $id));
         }
 

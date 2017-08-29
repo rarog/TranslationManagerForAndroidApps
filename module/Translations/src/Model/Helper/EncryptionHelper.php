@@ -41,10 +41,8 @@ class EncryptionHelper
         $this->masterKey = ($security->master_key) ? $security->master_key : '';
 	}
 
-	public function decrypt($text)
+	public function decrypt(string $text)
 	{
-	    $text = (string) $text;
-
 	    $blockCipher = $this->getBlockCipher();
 
 	    $blockCipher->setKey($this->masterKey);
@@ -65,10 +63,8 @@ class EncryptionHelper
 	 * @param string $text
 	 * @return string
 	 */
-	public function encrypt($text)
+	public function encrypt(string $text)
 	{
-	    $text = (string) $text;
-
 	    $blockCipher = $this->getBlockCipher();
 	    $salt = Rand::getBytes(32, true);
 	    $key = Pbkdf2::calc('sha256', $this->masterKey, $salt, 10000, 32);

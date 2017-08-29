@@ -59,10 +59,8 @@ class TeamMemberController extends AbstractActionController
      * @param int $teamId
      * @return void|\Zend\Http\Response|\Translations\Model\Team
      */
-    private function getTeam($teamId)
+    private function getTeam(int $teamId)
     {
-        $teamId = (int) $teamId;
-
         if (0 === $teamId) {
             return $this->redirect()->toRoute('team', ['action' => 'index']);
         }

@@ -89,7 +89,7 @@ class AppController extends AbstractActionController
      * @throws RuntimeException
      * @return string
      */
-    private function getAppPath($id)
+    private function getAppPath(int $id)
     {
         if (($path = realpath($this->configHelp('tmfaa')->app_dir)) === false) {
             throw new RuntimeException(sprintf('Configured path app directory "%s" does not exist', $this->configHelp('tmfaa')->app_dir));

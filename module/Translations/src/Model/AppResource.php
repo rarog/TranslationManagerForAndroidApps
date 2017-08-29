@@ -295,13 +295,13 @@ class AppResource implements AdapterAwareInterface, ArraySerializableInterface, 
      * {@inheritDoc}
      * @see \Zend\Stdlib\ArraySerializableInterface::exchangeArray()
      */
-    public function exchangeArray(array $data)
+    public function exchangeArray(array $array)
     {
-        $this->Id          = !empty($data['id']) ? $data['id'] : null;
-        $this->AppId       = !empty($data['app_id']) ? $data['app_id'] : null;
-        $this->Name        = !empty($data['name']) ? $data['name'] : null;
-        $this->Locale      = !empty($data['locale']) ? $data['locale'] : null;
-        $this->Description = !empty($data['description']) ? $data['description'] : null;
+        $this->Id = !empty($array['id']) ? $array['id'] : null;
+        $this->AppId = !empty($array['app_id']) ? $array['app_id'] : null;
+        $this->Name = !empty($array['name']) ? $array['name'] : null;
+        $this->Locale = !empty($array['locale']) ? $array['locale'] : null;
+        $this->Description = !empty($array['description']) ? $array['description'] : null;
     }
 
     /**
@@ -311,10 +311,10 @@ class AppResource implements AdapterAwareInterface, ArraySerializableInterface, 
     public function getArrayCopy()
     {
         return [
-            'id'          => $this->Id,
-            'app_id'      => $this->AppId,
-            'name'        => $this->Name,
-            'locale'      => $this->Locale,
+            'id' => $this->Id,
+            'app_id' => $this->AppId,
+            'name' => $this->Name,
+            'locale' => $this->Locale,
             'description' => $this->Description,
         ];
     }

@@ -500,19 +500,19 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
      * {@inheritDoc}
      * @see \Zend\Stdlib\ArraySerializableInterface::exchangeArray()
      */
-    public function exchangeArray(array $data)
+    public function exchangeArray(array $array)
     {
-        $this->Id                = !empty($data['id']) ? $data['id'] : null;
-        $this->TeamId            = !empty($data['team_id']) ? $data['team_id'] : null;
-        $this->Name              = !empty($data['name']) ? $data['name'] : null;
-        $this->PathToResFolder   = !empty($data['path_to_res_folder']) ? $data['path_to_res_folder'] : null;
-        $this->GitRepository     = !empty($data['git_repository']) ? $data['git_repository'] : null;
-        $this->GitUsername       = !empty($data['git_username']) ? $data['git_username'] : null;
-        $this->GitPassword       = !empty($data['git_password']) ? $data['git_password'] : null;
-        $this->GitUser           = !empty($data['git_user']) ? $data['git_user'] : null;
-        $this->GitEmail          = !empty($data['git_email']) ? $data['git_email'] : null;
-        $this->ResourceCount     = !empty($data['resource_count']) ? $data['resource_count'] : null;
-        $this->ResourceFileCount = !empty($data['resource_file_count']) ? $data['resource_file_count'] : null;
+        $this->Id = !empty($array['id']) ? $array['id'] : null;
+        $this->TeamId = !empty($array['team_id']) ? $array['team_id'] : null;
+        $this->Name = !empty($array['name']) ? $array['name'] : null;
+        $this->PathToResFolder = !empty($array['path_to_res_folder']) ? $array['path_to_res_folder'] : null;
+        $this->GitRepository = !empty($array['git_repository']) ? $array['git_repository'] : null;
+        $this->GitUsername = !empty($array['git_username']) ? $array['git_username'] : null;
+        $this->GitPassword = !empty($array['git_password']) ? $array['git_password'] : null;
+        $this->GitUser = !empty($array['git_user']) ? $array['git_user'] : null;
+        $this->GitEmail = !empty($array['git_email']) ? $array['git_email'] : null;
+        $this->ResourceCount = !empty($array['resource_count']) ? $array['resource_count'] : null;
+        $this->ResourceFileCount = !empty($array['resource_file_count']) ? $array['resource_file_count'] : null;
     }
 
     /**
@@ -522,16 +522,16 @@ class App implements ArraySerializableInterface, InputFilterAwareInterface
     public function getArrayCopy()
     {
         return [
-            'id'                  => $this->Id,
-            'team_id'             => $this->TeamId,
-            'name'                => $this->Name,
-            'path_to_res_folder'  => $this->PathToResFolder,
-            'git_repository'      => $this->GitRepository,
-            'git_username'        => $this->GitUsername,
-            'git_password'        => $this->GitPassword,
-            'git_user'            => $this->GitUser,
-            'git_email'           => $this->GitEmail,
-            'resource_count'      => $this->ResourceCount,
+            'id' => $this->Id,
+            'team_id' => $this->TeamId,
+            'name' => $this->Name,
+            'path_to_res_folder' => $this->PathToResFolder,
+            'git_repository' => $this->GitRepository,
+            'git_username' => $this->GitUsername,
+            'git_password' => $this->GitPassword,
+            'git_user' => $this->GitUser,
+            'git_email' => $this->GitEmail,
+            'resource_count' => $this->ResourceCount,
             'resource_file_count' => $this->ResourceFileCount,
         ];
     }

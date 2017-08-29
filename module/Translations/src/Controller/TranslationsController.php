@@ -73,10 +73,8 @@ class TranslationsController extends AbstractActionController
      * @param int $appId
      * @return boolean|\Translations\Model\App
      */
-    private function getApp($appId)
+    private function getApp(int $appId)
     {
-        $appId = (int) $appId;
-
         if (0 === $appId) {
             return false;
         }
@@ -104,11 +102,8 @@ class TranslationsController extends AbstractActionController
      * @param int $appId
      * @return boolean|\Translations\Model\AppResource
      */
-    private function getResource($resourceId, $appId)
+    private function getResource(int $resourceId, int $appId)
     {
-        $resourceId = (int) $resourceId;
-        $appId = (int) $appId;
-
         if ((0 === $resourceId) || (0 === $appId)) {
             return false;
         }
@@ -166,10 +161,8 @@ class TranslationsController extends AbstractActionController
      * @param string $template
      * @return string
      */
-    private function renderTemplate(ViewModel $viewModel, $template)
+    private function renderTemplate(ViewModel $viewModel, string $template)
     {
-        $template = (string) $template;
-
         $viewModel->setTemplate($template);
         return $this->renderer->render($viewModel);
     }

@@ -16,8 +16,7 @@ namespace Application\Delegator;
 
 use Interop\Container\ContainerInterface;
 use Zend\I18n\Translator\Resources;
-use Zend\ServiceManager\DelegatorFactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Factory\DelegatorFactoryInterface;
 
 class TranslatorDelegator implements DelegatorFactoryInterface
 {
@@ -40,13 +39,5 @@ class TranslatorDelegator implements DelegatorFactoryInterface
         );
 
         return $translator;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see \Zend\ServiceManager\DelegatorFactoryInterface::createDelegatorWithName()
-	 */
-	public function createDelegatorWithName(ServiceLocatorInterface $container, $name, $requestedName, $callback) {
-        return $this($container, $requestedName, $callback);
 	}
 }

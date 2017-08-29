@@ -59,9 +59,8 @@ class TeamTable
      * @param int $userId
      * @return \Zend\Db\ResultSet\ResultSet
      */
-    public function fetchAllAllowedToUser($userId)
+    public function fetchAllAllowedToUser(int $userId)
     {
-        $userId = (int) $userId;
         return $this->tableGateway->select(
             function (Select $select) use ($userId) {
                 $onTeamMember = new Expression('? = ? AND ? = ?', [
@@ -81,12 +80,11 @@ class TeamTable
      * @throws RuntimeException
      * @return \Translations\Model\Team
      */
-    public function getTeam($id)
+    public function getTeam(int $id)
     {
-        $id = (int) $id;
         $rowset = $this->tableGateway->select(['id' => $id]);
         $row = $rowset->current();
-        if (!$row) {
+        if (! $row) {
             throw new RuntimeException(sprintf(
                 'Could not find row with identifier %d',
                 $id
@@ -103,10 +101,8 @@ class TeamTable
      * @param int $teamId
      * @return boolean
      */
-    public function hasUserPermissionForTeam($userId, $teamId)
+    public function hasUserPermissionForTeam(int $userId, int $teamId)
     {
-        $userId = (int) $userId;
-        $teamId = (int) $teamId;
         $rowset = $this->tableGateway->select(
             function (Select $select) use ($userId, $teamId) {
                 $onTeamMember = new Expression('? = ? AND ? = ?', [
@@ -160,9 +156,8 @@ class TeamTable
      *
      * @param int $id
      */
-    public function deleteTeam($id)
+    public function deleteTeam(int $id)
     {
-        $id = (int) $id;
         $this->tableGateway->delete(['id' => $id]);
     }
 }

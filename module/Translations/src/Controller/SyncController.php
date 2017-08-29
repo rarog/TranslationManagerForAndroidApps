@@ -69,11 +69,8 @@ class SyncController extends AbstractActionController
      * @param bool $noRedirect
      * @return boolean|\Zend\Http\Response|\Translations\Model\App
      */
-    private function getApp($appId, $noRedirect = false)
+    private function getApp(int $appId, bool $noRedirect = false)
     {
-        $appId = (int) $appId;
-        $noRedirect = (bool) $noRedirect;
-
         if (0 === $appId) {
             if ($noRedirect) {
                 return false;
@@ -124,11 +121,8 @@ class SyncController extends AbstractActionController
      * @param string $message
      * @return JsonModel
      */
-    private function getJsonAlert($type, $message)
+    private function getJsonAlert(string $type, string $message)
     {
-        $type = (string) $type;
-        $message = (string) $message;
-
         $viewModel = new ViewModel([
             'type'     => $type,
             'message'  => $message,
