@@ -45,12 +45,11 @@ class ResourceTypeTable
      * @throws RuntimeException
      * @return ResourceType
      */
-    public function getResourceType($id)
+    public function getResourceType(int $id)
     {
-        $id = (int) $id;
         $rowset = $this->tableGateway->select(['id' => $id]);
         $row = $rowset->current();
-        if (!$row) {
+        if (! $row) {
             throw new RuntimeException(sprintf('Could not find row with identifier %d', $id));
         }
 
@@ -92,9 +91,8 @@ class ResourceTypeTable
      *
      * @param int $id
      */
-    public function deleteResourceType($id)
+    public function deleteResourceType(int $id)
     {
-        $id = (int) $id;
         $this->tableGateway->delete(['id' => $id]);
     }
 }

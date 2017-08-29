@@ -112,13 +112,13 @@ class UserCreation implements ArraySerializableInterface, InputFilterAwareInterf
      * {@inheritDoc}
      * @see \Zend\Stdlib\ArraySerializableInterface::exchangeArray()
      */
-    public function exchangeArray($data)
+    public function exchangeArray(array $array)
     {
-        $this->setUsername((!empty($data['username'])) ? $data['username'] : null);
-        $this->setEmail((!empty($data['email'])) ? $data['email'] : null);
-        $this->setDisplayName((!empty($data['display_name'])) ? $data['display_name'] : null);
-    	$this->setPassword((!empty($data['password'])) ? $data['password'] : null);
-    	$this->setPasswordVerify((!empty($data['passwordVerify'])) ? $data['passwordVerify'] : null);
+        $this->setUsername((!empty($array['username'])) ? $array['username'] : null);
+        $this->setEmail((!empty($array['email'])) ? $array['email'] : null);
+        $this->setDisplayName((!empty($array['display_name'])) ? $array['display_name'] : null);
+    	$this->setPassword((!empty($array['password'])) ? $array['password'] : null);
+    	$this->setPasswordVerify((!empty($array['passwordVerify'])) ? $array['passwordVerify'] : null);
     }
 
     /**
@@ -128,10 +128,10 @@ class UserCreation implements ArraySerializableInterface, InputFilterAwareInterf
     public function getArrayCopy()
     {
     	return [
-    	    'username'       => $this->Username,
-    	    'email'          => $this->Email,
-    	    'display_name'   => $this->DisplayName,
-    	    'password'       => $this->Password,
+    	    'username' => $this->Username,
+    	    'email' => $this->Email,
+    	    'display_name' => $this->DisplayName,
+    	    'password' => $this->Password,
     	    'passwordVerify' => $this->PasswordVerify,
         ];
     }

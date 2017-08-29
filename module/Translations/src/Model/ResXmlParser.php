@@ -101,10 +101,8 @@ class ResXmlParser implements AppHelperInterface
      * @throws \RuntimeException
      * @return string
      */
-    public function decodeAndroidTranslationString($translationString)
+    public function decodeAndroidTranslationString(string $translationString)
     {
-        $translationString = (string) $translationString;
-
         if (($translationString == '') || $translationString == '""') {
             return '';
         }
@@ -165,9 +163,7 @@ class ResXmlParser implements AppHelperInterface
      * @param bool $confirmDeletion
      * @return \Translations\Model\ResXmlParserResult
      */
-    public function exportResourcesOfApp(App $app, $confirmDeletion) {
-        $confirmDeletion = (bool) $confirmDeletion;
-
+    public function exportResourcesOfApp(App $app, bool $confirmDeletion) {
         $result = new ResXmlParserResult();
 
         $path = $this->getAbsoluteAppResValuesPath($app);
@@ -201,9 +197,7 @@ class ResXmlParser implements AppHelperInterface
      * @param bool $confirmDeletion
      * @return \Translations\Model\ResXmlParserResult
      */
-    public function importResourcesOfApp(App $app, $confirmDeletion) {
-        $confirmDeletion = (bool) $confirmDeletion;
-
+    public function importResourcesOfApp(App $app, bool $confirmDeletion) {
         $result = new ResXmlParserResult();
 
         $path = $this->getAbsoluteAppResPath($app);

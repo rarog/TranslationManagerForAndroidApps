@@ -208,11 +208,11 @@ class AppResourceFile implements AdapterAwareInterface, ArraySerializableInterfa
      * {@inheritDoc}
      * @see \Zend\Stdlib\ArraySerializableInterface::exchangeArray()
      */
-    public function exchangeArray(array $data)
+    public function exchangeArray(array $array)
     {
-        $this->Id    = !empty($data['id']) ? $data['id'] : null;
-        $this->AppId = !empty($data['app_id']) ? (int) $data['app_id'] : null;
-        $this->Name  = !empty($data['name']) ? (string) $data['name'] : null;
+        $this->Id = !empty($array['id']) ? $array['id'] : null;
+        $this->AppId = !empty($array['app_id']) ? (int) $array['app_id'] : null;
+        $this->Name = !empty($array['name']) ? (string) $array['name'] : null;
     }
 
     /**
@@ -222,9 +222,9 @@ class AppResourceFile implements AdapterAwareInterface, ArraySerializableInterfa
     public function getArrayCopy()
     {
         return [
-            'id'     => $this->Id,
+            'id' => $this->Id,
             'app_id' => $this->AppId,
-            'name'   => $this->Name,
+            'name' => $this->Name,
         ];
     }
 }

@@ -206,11 +206,11 @@ class ResourceType implements ArraySerializableInterface, InputFilterAwareInterf
      * {@inheritDoc}
      * @see \Zend\Stdlib\ArraySerializableInterface::exchangeArray()
      */
-    public function exchangeArray(array $data)
+    public function exchangeArray(array $array)
     {
-        $this->Id       = !empty($data['id']) ? $data['id'] : null;
-        $this->Name     = !empty($data['name']) ? $data['name'] : null;
-        $this->NodeName = !empty($data['node_name']) ? $data['node_name'] : null;
+        $this->Id = !empty($array['id']) ? $array['id'] : null;
+        $this->Name = !empty($array['name']) ? $array['name'] : null;
+        $this->NodeName = !empty($array['node_name']) ? $array['node_name'] : null;
     }
 
     /**
@@ -220,8 +220,8 @@ class ResourceType implements ArraySerializableInterface, InputFilterAwareInterf
     public function getArrayCopy()
     {
         return [
-            'id'        => $this->Id,
-            'name'      => $this->Name,
+            'id' => $this->Id,
+            'name' => $this->Name,
             'node_name' => $this->NodeName,
         ];
     }

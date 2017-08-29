@@ -50,10 +50,8 @@ class AppResourceController extends AbstractActionController implements AdapterA
      * @param int $appId
      * @return void|\Zend\Http\Response|\Translations\Model\App
      */
-    private function getApp($appId)
+    private function getApp(int $appId)
     {
-        $appId = (int) $appId;
-
         if (0 === $appId) {
             return $this->redirect()->toRoute('app', [
                 'action' => 'index',
@@ -113,10 +111,8 @@ class AppResourceController extends AbstractActionController implements AdapterA
      * @param string $inLocale
      * @return array
      */
-    private function getLocaleNameArray($inLocale)
+    private function getLocaleNameArray(string $inLocale)
     {
-        $inLocale = (string) $inLocale;
-
         $localeNames = $this->configHelp('settings')->locale_names->toArray();
         return $localeNames[$inLocale];
     }

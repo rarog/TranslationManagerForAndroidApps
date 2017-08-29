@@ -129,15 +129,15 @@ class Database implements ArraySerializableInterface, InputFilterAwareInterface
      * {@inheritDoc}
      * @see \Zend\Stdlib\ArraySerializableInterface::exchangeArray()
      */
-    public function exchangeArray(array $data)
+    public function exchangeArray(array $array)
     {
-    	$this->setDriver((!empty($data['driver'])) ? $data['driver'] : null);
-    	$this->setDatabase((!empty($data['database'])) ? $data['database'] : null);
-    	$this->setUsername((!empty($data['username'])) ? $data['username'] : null);
-    	$this->setPassword((!empty($data['password'])) ? $data['password'] : null);
-    	$this->setHostname((!empty($data['hostname'])) ? $data['hostname'] : null);
-    	$this->setPort((!empty($data['port'])) ? $data['port'] : null);
-    	$this->setCharset((!empty($data['charset'])) ? $data['charset'] : null);
+    	$this->setDriver((!empty($array['driver'])) ? $array['driver'] : null);
+    	$this->setDatabase((!empty($array['database'])) ? $array['database'] : null);
+    	$this->setUsername((!empty($array['username'])) ? $array['username'] : null);
+    	$this->setPassword((!empty($array['password'])) ? $array['password'] : null);
+    	$this->setHostname((!empty($array['hostname'])) ? $array['hostname'] : null);
+    	$this->setPort((!empty($array['port'])) ? $array['port'] : null);
+    	$this->setCharset((!empty($array['charset'])) ? $array['charset'] : null);
     }
 
     /**
@@ -147,13 +147,13 @@ class Database implements ArraySerializableInterface, InputFilterAwareInterface
     public function getArrayCopy()
     {
     	return [
-            'driver'   => $this->Driver,
+            'driver' => $this->Driver,
     	    'database' => $this->Database,
     	    'username' => $this->Username,
     	    'password' => $this->Password,
     	    'hostname' => $this->Hostname,
-    	    'port'     => $this->Port,
-    	    'charset'  => $this->Charset,
+    	    'port' => $this->Port,
+    	    'charset' => $this->Charset,
         ];
     }
 

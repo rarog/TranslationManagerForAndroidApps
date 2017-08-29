@@ -44,9 +44,8 @@ class UserLanguagesTable
      * @param  int $userId
      * @return \Zend\Db\ResultSet\ResultSet
      */
-    public function fetchAllOfUser($userId)
+    public function fetchAllOfUser(int $userId)
     {
-        $userId = (int) $userId;
         return $this->fetchAll(['user_id' => $userId]);
     }
 
@@ -58,16 +57,14 @@ class UserLanguagesTable
      * @throws RuntimeException
      * @return UserLanguages
      */
-    public function getUserLanguage($userId, $locale)
+    public function getUserLanguage(int $userId, string $locale)
     {
-        $userId = (int) $userId;
-        $locale = (string) $locale;
         $rowset = $this->fetchAll([
             'user_id' => $userId,
-            'locale'  => $locale,
+            'locale' => $locale,
         ]);
         $row = $rowset->current();
-        if (!$row) {
+        if (! $row) {
             throw new RuntimeException(sprintf('Could not find row with identifiers %d,%d', $userId, $locale));
         }
 

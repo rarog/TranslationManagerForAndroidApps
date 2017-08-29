@@ -65,9 +65,8 @@ class AppTable
      * @param int $userId
      * @return \Zend\Db\ResultSet\ResultSet
      */
-    public function fetchAllAllowedToUser($userId)
+    public function fetchAllAllowedToUser(int $userId)
     {
-        $userId = (int) $userId;
         return $this->tableGateway->select(
             function (Select $select) use ($userId) {
                 $onTeamMember = new Expression('? = ? AND ? = ?', [
@@ -91,12 +90,11 @@ class AppTable
      * @throws RuntimeException
      * @return \Translations\Model\App
      */
-    public function getApp($id)
+    public function getApp(int $id)
     {
-        $id = (int) $id;
         $rowset = $this->fetchAll(['app.id' => $id]);
         $row = $rowset->current();
-        if (!$row) {
+        if (! $row) {
             throw new RuntimeException(sprintf(
                 'Could not find row with identifier %d',
                 $id
@@ -113,10 +111,8 @@ class AppTable
      * @param int $appId
      * @return boolean
      */
-    public function hasUserPermissionForApp($userId, $appId)
+    public function hasUserPermissionForApp(int $userId, int $appId)
     {
-        $userId = (int) $userId;
-        $appId = (int) $appId;
         $rowset = $this->tableGateway->select(
                 function (Select $select) use ($userId, $appId) {
                     $onTeamMember = new Expression('? = ? AND ? = ?', [
@@ -142,14 +138,14 @@ class AppTable
     public function saveApp(App $app)
     {
         $data = [
-            'team_id'            => $app->TeamId,
-            'name'               => $app->Name,
+            'team_id' => $app->TeamId,
+            'name' => $app->Name,
             'path_to_res_folder' => $app->PathToResFolder,
-            'git_repository'     => $app->GitRepository,
-            'git_username'       => $app->GitUsername,
-            'git_password'       => $app->GitPassword,
-            'git_user'           => $app->GitUser,
-            'git_email'          => $app->GitEmail,
+            'git_repository' => $app->GitRepository,
+            'git_username' => $app->GitUsername,
+            'git_password' => $app->GitPassword,
+            'git_user' => $app->GitUser,
+            'git_email' => $app->GitEmail,
         ];
 
         $id = (int) $app->Id;
@@ -176,9 +172,8 @@ class AppTable
      *
      * @param int $id
      */
-    public function deleteApp($id)
+    public function deleteApp(int $id)
     {
-        $id = (int) $id;
         $this->tableGateway->delete(['id' => $id]);
     }
 
@@ -188,10 +183,8 @@ class AppTable
      * @param int $userId
      * @return array
      */
-    public function getAllAppsAndResourcesAllowedToUser($userId)
+    public function getAllAppsAndResourcesAllowedToUser(int $userId)
     {
-        $userId = (int) $userId;
-
         $select = new Select;
         $select->columns([
             'app_id'   => 'id',

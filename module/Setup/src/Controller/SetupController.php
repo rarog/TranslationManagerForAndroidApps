@@ -9,6 +9,7 @@ namespace Setup\Controller;
 
 use Setup\Model\DatabaseHelper;
 use Zend\Cache\Storage\Adapter\AbstractAdapter as CacheAdapter;
+use Zend\Config\Config;
 use Zend\Config\Writer\PhpArray as ConfigPhpArray;
 use Zend\Math\Rand;
 use Zend\ModuleManager\Listener\ListenerOptions;
@@ -156,8 +157,8 @@ class SetupController extends AbstractActionController
      *
      * @param int $lastStep
      */
-    private function setLastStep($lastStep) {
-        $this->container->lastStep = (int) $lastStep;
+    private function setLastStep(int $lastStep) {
+        $this->container->lastStep = $lastStep;
     }
 
     /**
@@ -166,10 +167,8 @@ class SetupController extends AbstractActionController
      * @param int $currentStep
      * @return \Zend\Http\Response
      */
-    private function checkSetupStep($currentStep)
+    private function checkSetupStep(int $currentStep)
     {
-        $currentStep = (int) $currentStep;
-
         $this->protectCompletedSetup();
         $this->ensureThereCanBeOnlyOne();
 
@@ -250,7 +249,7 @@ class SetupController extends AbstractActionController
      * @param string $file
      * @param array $configArray
      */
-    private function replaceConfigInFile($file, $configArray)
+    private function replaceConfigInFile(string $file, array $configArray)
     {
         // Reading current content of config file
         $config = include($file);

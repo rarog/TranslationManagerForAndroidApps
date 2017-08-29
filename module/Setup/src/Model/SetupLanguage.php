@@ -57,9 +57,9 @@ class SetupLanguage implements ArraySerializableInterface, InputFilterAwareInter
      * {@inheritDoc}
      * @see \Zend\Stdlib\ArraySerializableInterface::exchangeArray()
      */
-    public function exchangeArray(array $data)
+    public function exchangeArray(array $array)
     {
-        $this->setSetupLanguage((!empty($data['setup_language'])) ? $data['setup_language'] : null);
+        $this->setSetupLanguage((!empty($array['setup_language'])) ? $array['setup_language'] : null);
     }
 
     /**

@@ -45,12 +45,11 @@ class UserSettingsTable
      * @throws RuntimeException
      * @return \Application\Model\UserSettings
      */
-    public function getUserSettings($id)
+    public function getUserSettings(int $id)
     {
-        $id = (int) $id;
         $rowset = $this->tableGateway->select(['user_id' => $id]);
         $row = $rowset->current();
-        if (!$row) {
+        if (! $row) {
             throw new RuntimeException(sprintf(
                 'Could not find row with identifier %d',
                 $id
@@ -70,7 +69,7 @@ class UserSettingsTable
     public function saveUserSettings(UserSettings $userSettings)
     {
         $data = [
-            'locale'  => $userSettings->Locale,
+            'locale' => $userSettings->Locale,
             'team_id' => $userSettings->TeamId,
         ];
 
@@ -98,8 +97,8 @@ class UserSettingsTable
      *
      * @param int $id
      */
-    /*public function deleteUserSettings($id)
+    /*public function deleteUserSettings(int $id)
     {
-        $this->tableGateway->delete(['id' => (int) $id]);
+        $this->tableGateway->delete(['id' => $id]);
     }*/
 }

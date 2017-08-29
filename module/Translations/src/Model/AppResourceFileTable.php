@@ -45,12 +45,11 @@ class AppResourceFileTable
      * @throws RuntimeException
      * @return \Translations\Model\AppResourceFile
      */
-    public function getAppResourceFile($id)
+    public function getAppResourceFile(int $id)
     {
-        $id = (int) $id;
         $rowset = $this->tableGateway->select(['id' => $id]);
         $row = $rowset->current();
-        if (!$row) {
+        if (! $row) {
             throw new RuntimeException(sprintf(
                 'Could not find row with identifier %d',
                 $id));
@@ -70,7 +69,7 @@ class AppResourceFileTable
     {
         $data = [
             'app_id' => $appResourceFile->AppId,
-            'name'   => $appResourceFile->Name,
+            'name' => $appResourceFile->Name,
         ];
 
         $id = (int) $appResourceFile->Id;
@@ -97,9 +96,8 @@ class AppResourceFileTable
      *
      * @param int $id
      */
-    public function deleteAppResourceFile($id)
+    public function deleteAppResourceFile(int $id)
     {
-        $id = (int) $id;
         $this->tableGateway->delete(['id' => $id]);
     }
 }

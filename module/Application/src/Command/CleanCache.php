@@ -26,10 +26,8 @@ class CleanCache
      * @param string $dir
      * @return boolean
      */
-    private function rmdirRecursive($dir)
+    private function rmdirRecursive(string $dir)
     {
-        $dir = (string) $dir;
-
         $files = array_diff(scandir($dir), [
             '.',
             '..',
@@ -45,7 +43,7 @@ class CleanCache
     /**
      * Constructor
      *
-     * @param DatabaseHelper $cacheAdapters
+     * @param array $cacheAdapters
      */
     public function __construct(array $cacheAdapters)
     {

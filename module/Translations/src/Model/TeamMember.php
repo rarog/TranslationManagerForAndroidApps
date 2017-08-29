@@ -244,14 +244,14 @@ class TeamMember implements ArraySerializableInterface, InputFilterAwareInterfac
      * {@inheritDoc}
      * @see \Zend\Stdlib\ArraySerializableInterface::exchangeArray()
      */
-    public function exchangeArray(array $data)
+    public function exchangeArray(array $array)
     {
-        $this->UserId      = !empty($data['user_id']) ? $data['user_id'] : null;
-        $this->TeamId      = !empty($data['team_id']) ? $data['team_id'] : null;
-        $this->Username    = !empty($data['username']) ? $data['username'] : null;
-        $this->Email       = !empty($data['email']) ? $data['email'] : null;
-        $this->DisplayName = !empty($data['display_name']) ? $data['display_name'] : null;
-        $this->TeamName    = !empty($data['team_name']) ? $data['team_name'] : null;
+        $this->UserId = !empty($array['user_id']) ? $array['user_id'] : null;
+        $this->TeamId = !empty($array['team_id']) ? $array['team_id'] : null;
+        $this->Username = !empty($array['username']) ? $array['username'] : null;
+        $this->Email = !empty($array['email']) ? $array['email'] : null;
+        $this->DisplayName = !empty($array['display_name']) ? $array['display_name'] : null;
+        $this->TeamName = !empty($array['team_name']) ? $array['team_name'] : null;
     }
 
     /**
@@ -261,12 +261,12 @@ class TeamMember implements ArraySerializableInterface, InputFilterAwareInterfac
     public function getArrayCopy()
     {
         return [
-            'user_id'      => $this->UserId,
-            'team_id'      => $this->TeamId,
-            'username'     => $this->Username,
-            'email'        => $this->Email,
+            'user_id' => $this->UserId,
+            'team_id' => $this->TeamId,
+            'username' => $this->Username,
+            'email' => $this->Email,
             'display_name' => $this->DisplayName,
-            'team_name'    => $this->TeamName,
+            'team_name' => $this->TeamName,
         ];
     }
 }

@@ -11,6 +11,9 @@ use Zend\View\Helper\AbstractHelper;
 
 class BootstrapSelectHelper extends AbstractHelper
 {
+    /**
+     * Injects JS and CSS for bootstrap-select library.
+     */
     public function __invoke()
     {
         $this->view->headScript()->appendFile($this->view->basePath('/js/bootstrap-select.min.js'));

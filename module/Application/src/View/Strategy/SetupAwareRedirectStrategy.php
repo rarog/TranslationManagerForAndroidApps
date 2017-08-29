@@ -52,9 +52,8 @@ class SetupAwareRedirectStrategy extends AbstractStrategy
     }
 
     /**
-     * @private
-     * @param  MvcEvent $event
-     * @return void
+     * {@inheritDoc}
+     * @see \ZfcRbac\View\Strategy\AbstractStrategy::onError()
      */
     public function onError(MvcEvent $event)
     {

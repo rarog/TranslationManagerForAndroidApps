@@ -102,9 +102,8 @@ trait AppHelperTrait
      *
      * @param string $appDirectory
      */
-    public function setAppDirectory($appDirectory)
+    public function setAppDirectory(string $appDirectory)
     {
-        $appDirectory = (string) $appDirectory;
         $this->appDirectory = $appDirectory;
     }
 }

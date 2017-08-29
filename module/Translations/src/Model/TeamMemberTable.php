@@ -56,16 +56,14 @@ class TeamMemberTable
      * @throws RuntimeException
      * @return \Translations\Model\TeamMember
      */
-    public function getTeamMember($userId, $teamId)
+    public function getTeamMember(int $userId, int $teamId)
     {
-        $userId = (int) $userId;
-        $teamId = (int) $teamId;
         $rowset = $this->fetchAll([
             'team_member.user_id' => $userId,
             'team_member.team_id' => $teamId,
         ]);
         $row = $rowset->current();
-        if (!$row) {
+        if (! $row) {
             throw new RuntimeException(sprintf(
                 'Could not find row with identifiers %d,%d',
                 $userId,
@@ -114,10 +112,8 @@ class TeamMemberTable
      * @param int $userId
      * @param int $teamId
      */
-    public function deleteTeamMember($userId, $teamId)
+    public function deleteTeamMember(int $userId, int $teamId)
     {
-        $userId = (int) $userId;
-        $teamId = (int) $teamId;
         $this->tableGateway->delete([
             'user_id' => $userId,
             'team_id' => $teamId,

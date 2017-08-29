@@ -55,12 +55,11 @@ class ResourceFileEntryStringTable
      * @throws RuntimeException
      * @return ResourceFileEntryString
      */
-    public function getResourceFileEntryString($id)
+    public function getResourceFileEntryString(int $id)
     {
-        $id = (int) $id;
         $rowset = $this->tableGateway->select(['id' => $id]);
         $row = $rowset->current();
-        if (!$row) {
+        if (! $row) {
             throw new RuntimeException(sprintf('Could not find row with identifier %d', $id));
         }
 
@@ -104,9 +103,8 @@ class ResourceFileEntryStringTable
      *
      * @param int $id
      */
-    public function deleteResourceFileEntryString($id)
+    public function deleteResourceFileEntryString(int $id)
     {
-        $id = (int) $id;
         $this->tableGateway->delete(['id' => $id]);
     }
 
@@ -118,12 +116,8 @@ class ResourceFileEntryStringTable
     * @param int $entryId
     * @return array
     */
-    public function getAllResourceFileEntryStringsForTranslations($appId, $appResourceId, $entryId)
+    public function getAllResourceFileEntryStringsForTranslations(int $appId, int $appResourceId, int $entryId)
     {
-        $appId = (int) $appId;
-        $appResourceId = (int) $appResourceId;
-        $entryId = (int) $entryId;
-
         try {
             $defaultAppResource = $this->appResourceTable->getAppResourceByAppIdAndName($appId, 'values');
         } catch (\Exception $e) {

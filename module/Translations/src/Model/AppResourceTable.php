@@ -53,12 +53,11 @@ class AppResourceTable
      * @throws RuntimeException
      * @return \Translations\Model\AppResource
      */
-    public function getAppResource($id)
+    public function getAppResource(int $id)
     {
-        $id = (int) $id;
         $rowset = $this->tableGateway->select(['id' => $id]);
         $row = $rowset->current();
-        if (!$row) {
+        if (! $row) {
             throw new RuntimeException(sprintf(
                 'Could not find row with identifier %d',
                 $id));
@@ -75,16 +74,14 @@ class AppResourceTable
      * @throws RuntimeException
      * @return \Translations\Model\AppResource
      */
-    public function getAppResourceByAppIdAndName($appId, $name)
+    public function getAppResourceByAppIdAndName(int $appId, string $name)
     {
-        $appId = (int) $appId;
-        $name = (string) $name;
         $rowset = $this->tableGateway->select([
             'app_id' => $appId,
-            'name'   => $name
+            'name' => $name
         ]);
         $row = $rowset->current();
-        if (!$row) {
+        if (! $row) {
             throw new RuntimeException(sprintf(
                 'Could not find row with app id %d and name %s',
                 $appId,
@@ -104,11 +101,11 @@ class AppResourceTable
     public function saveAppResource(AppResource $appResource)
     {
         $data = [
-            'app_id'         => $appResource->AppId,
-            'name'           => $appResource->Name,
-            'locale'         => $appResource->Locale,
+            'app_id' => $appResource->AppId,
+            'name' => $appResource->Name,
+            'locale' => $appResource->Locale,
             'primary_locale' => \Locale::getPrimaryLanguage($appResource->Locale), // Field isn't available in model.
-            'description'    => $appResource->Description,
+            'description' => $appResource->Description,
         ];
 
         $id = (int) $appResource->Id;
@@ -135,9 +132,8 @@ class AppResourceTable
      *
      * @param int $id
      */
-    public function deleteAppResource($id)
+    public function deleteAppResource(int $id)
     {
-        $id = (int) $id;
         $this->tableGateway->delete(['id' => $id]);
     }
 }
