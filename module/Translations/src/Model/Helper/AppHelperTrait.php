@@ -89,7 +89,7 @@ trait AppHelperTrait
      */
     public function getRelativeAppResPath(App $app)
     {
-        $path = FileHelper::concatenatePath((string) $app->Id, $app->pathToResFolder);
+        $path = FileHelper::concatenatePath((string) $app->Id, (string) $app->pathToResFolder);
         return FileHelper::concatenatePath($path, 'res');
     }
 
