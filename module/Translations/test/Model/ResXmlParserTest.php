@@ -66,8 +66,14 @@ class ResXmlParserTest extends TestCase
     // master_clear_accounts - https://github.com/android/platform_packages_apps_settings/blob/nougat-release/res/values-de/strings.xml
     private $badUndecodableStringLeadingToException = '\n\n"Du bist zurzeit in folgenden Konten angemeldet:\n"';
 
+    /**
+     * @var ResXmlParser
+     */
     private $resXmlParser;
 
+    /**
+     * @return ResXmlParser
+     */
     private function getResXmlParser()
     {
         if (is_null($this->resXmlParser)) {
@@ -83,47 +89,90 @@ class ResXmlParserTest extends TestCase
         return $this->resXmlParser;
     }
 
+    /**
+     * Call protected/private method of a class.
+     *
+     * @param object $object Instantiated object that we will run method on.
+     * @param string $methodName Method name to call
+     * @param array  $parameters Array of parameters to pass into method.
+     * @return mixed Method return.
+     */
+    private function invokeMethod($object, $methodName, array $parameters = array())
+    {
+        $reflection = new \ReflectionClass(get_class($object));
+        $method = $reflection->getMethod($methodName);
+        $method->setAccessible(true);
+
+        return $method->invokeArgs($object, $parameters);
+    }
+
+    /**
+     * @covers \Translations\Model\ResXmlParser::decodeAndroidTranslationString
+     */
     public function testEmptyStringWithoutQuotes()
     {
-        $result = $this->getResXmlParser()->decodeAndroidTranslationString($this->emptyStringWithoutQuotes);
+        $resXmlParser = $this->getResXmlParser();
+        $result = $this->invokeMethod($resXmlParser, 'decodeAndroidTranslationString', [$this->emptyStringWithoutQuotes]);
         $this->assertEquals($this->emptyStringWithoutQuotesDecoded, $result);
     }
 
+    /**
+     * @covers \Translations\Model\ResXmlParser::decodeAndroidTranslationString
+     */
     public function testEmptyStringWithQuotes()
     {
-        $result = $this->getResXmlParser()->decodeAndroidTranslationString($this->emptyStringWithQuotes);
+        $resXmlParser = $this->getResXmlParser();
+        $result = $this->invokeMethod($resXmlParser, 'decodeAndroidTranslationString', [$this->emptyStringWithQuotes]);
         $this->assertEquals($this->emptyStringWithQuotesDecoded, $result);
     }
 
+    /**
+     * @covers \Translations\Model\ResXmlParser::decodeAndroidTranslationString
+     */
     public function testStringWithoutQuotes()
     {
-        $result = $this->getResXmlParser()->decodeAndroidTranslationString($this->stringWithoutQuotes);
+        $resXmlParser = $this->getResXmlParser();
+        $result = $this->invokeMethod($resXmlParser, 'decodeAndroidTranslationString', [$this->stringWithoutQuotes]);
         $this->assertEquals($this->stringWithoutQuotesDecoded, $result);
     }
 
+    /**
+     * @covers \Translations\Model\ResXmlParser::decodeAndroidTranslationString
+     */
     public function testStringWithQuotes()
     {
-        $result = $this->getResXmlParser()->decodeAndroidTranslationString($this->stringWithQuotes);
+        $resXmlParser = $this->getResXmlParser();
+        $result = $this->invokeMethod($resXmlParser, 'decodeAndroidTranslationString', [$this->stringWithQuotes]);
         $this->assertEquals($this->stringWithQuotesDecoded, $result);
     }
 
+    /**
+     * @covers \Translations\Model\ResXmlParser::decodeAndroidTranslationString
+     */
     public function testBrokenStringNotBeginnungButEndingWithQuote()
     {
-        $result = $this->getResXmlParser()->decodeAndroidTranslationString($this->brokenStringNotBeginnungButEndingWithQuote);
+        $resXmlParser = $this->getResXmlParser();
+        $result = $this->invokeMethod($resXmlParser, 'decodeAndroidTranslationString', [$this->brokenStringNotBeginnungButEndingWithQuote]);
         $this->assertEquals($this->brokenStringNotBeginnungButEndingWithQuoteDecoded, $result);
     }
 
+    /**
+     * @covers \Translations\Model\ResXmlParser::decodeAndroidTranslationString
+     */
     public function testMultilineStringWithRealNewlines()
     {
-        $result = $this->getResXmlParser()->decodeAndroidTranslationString($this->multilineStringWithRealNewlines);
+        $resXmlParser = $this->getResXmlParser();
+        $result = $this->invokeMethod($resXmlParser, 'decodeAndroidTranslationString', [$this->multilineStringWithRealNewlines]);
         $this->assertEquals($this->multilineStringWithRealNewlinesDecoded, $result);
     }
 
     /**
+     * @covers \Translations\Model\ResXmlParser::decodeAndroidTranslationString
      * @expectedException RuntimeException
      */
     public function testBadUndecodableStringLeadingToException()
     {
-        $this->getResXmlParser()->decodeAndroidTranslationString($this->badUndecodableStringLeadingToException);
+        $resXmlParser = $this->getResXmlParser();
+        $result = $this->invokeMethod($resXmlParser, 'decodeAndroidTranslationString', [$this->badUndecodableStringLeadingToException]);
     }
 }

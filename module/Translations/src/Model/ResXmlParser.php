@@ -30,6 +30,9 @@ use Zend\Dom\Document\Query;
 use Zend\Json\Json;
 use Zend\Log\Logger;
 
+/**
+ * @codeCoverageIgnore
+ */
 class ResXmlParserResult
 {
     public $entriesProcessed;
@@ -81,34 +84,13 @@ class ResXmlParser implements AppHelperInterface
     private $logger;
 
     /**
-     * Constructor
-     *
-     * @param AppResourceTable $appResourceTable
-     * @param AppResourceFileTable $appResourceFileTable
-     * @param ResourceTypeTable $resourceTypeTable
-     * @param ResourceFileEntryTable $resourceFileEntryTable
-     * @param ResourceFileEntryStringTable $resourceFileEntryStringTable
-     * @param Logger $logger
-     */
-    public function __construct(AppResourceTable $appResourceTable, AppResourceFileTable $appResourceFileTable, ResourceTypeTable $resourceTypeTable, ResourceFileEntryTable $resourceFileEntryTable, ResourceFileEntryStringTable $resourceFileEntryStringTable, Logger $logger)
-    {
-        $this->appResourceTable = $appResourceTable;
-        $this->appResourceFileTable = $appResourceFileTable;
-        $this->resourceTypeTable = $resourceTypeTable;
-        $this->resourceFileEntryTable = $resourceFileEntryTable;
-        $this->resourceFileEntryStringTable = $resourceFileEntryStringTable;
-        $this->logger = $logger;
-    }
-
-
-    /**
      * Decodes the translation into readable form
      *
      * @param string $translationString
      * @throws \RuntimeException
      * @return string
      */
-    public function decodeAndroidTranslationString(string $translationString)
+    private function decodeAndroidTranslationString(string $translationString)
     {
         if (($translationString == '') || $translationString == '""') {
             return '';
@@ -164,11 +146,33 @@ class ResXmlParser implements AppHelperInterface
     }
 
     /**
+     * Constructor
+     *
+     * @param AppResourceTable $appResourceTable
+     * @param AppResourceFileTable $appResourceFileTable
+     * @param ResourceTypeTable $resourceTypeTable
+     * @param ResourceFileEntryTable $resourceFileEntryTable
+     * @param ResourceFileEntryStringTable $resourceFileEntryStringTable
+     * @param Logger $logger
+     * @codeCoverageIgnore
+     */
+    public function __construct(AppResourceTable $appResourceTable, AppResourceFileTable $appResourceFileTable, ResourceTypeTable $resourceTypeTable, ResourceFileEntryTable $resourceFileEntryTable, ResourceFileEntryStringTable $resourceFileEntryStringTable, Logger $logger)
+    {
+        $this->appResourceTable = $appResourceTable;
+        $this->appResourceFileTable = $appResourceFileTable;
+        $this->resourceTypeTable = $resourceTypeTable;
+        $this->resourceFileEntryTable = $resourceFileEntryTable;
+        $this->resourceFileEntryStringTable = $resourceFileEntryStringTable;
+        $this->logger = $logger;
+    }
+
+    /**
      * Export resources to XML files
      *
      * @param App $app
      * @param bool $confirmDeletion
      * @return \Translations\Model\ResXmlParserResult
+     * @codeCoverageIgnore
      */
     public function exportResourcesOfApp(App $app, bool $confirmDeletion) {
         $result = new ResXmlParserResult();
@@ -203,6 +207,7 @@ class ResXmlParser implements AppHelperInterface
      * @param App $app
      * @param bool $confirmDeletion
      * @return \Translations\Model\ResXmlParserResult
+     * @codeCoverageIgnore
      */
     public function importResourcesOfApp(App $app, bool $confirmDeletion) {
         $result = new ResXmlParserResult();
@@ -228,8 +233,8 @@ class ResXmlParser implements AppHelperInterface
         };
         $querySelector = implode('|', $querySelectors);
 
-        $resourceFileEntries = [];
-        $resourceFileEntryKeys = [];
+        $resourceFileEntries = new \ArrayObject();
+        $resourceFileEntryKeys = new \ArrayObject();
         $timestamp = strtotime(gmdate('Y-m-d H:i:s'));
 
         foreach ($resources as $resource) {
@@ -248,8 +253,8 @@ class ResXmlParser implements AppHelperInterface
                 }
 
                 if (!array_key_exists($resourceFile->Name, $resourceFileEntries)) {
-                    $resourceFileEntries[$resourceFile->Name] = [];
-                    $resourceFileEntryKeys[$resourceFile->Name] = [];
+                    $resourceFileEntries[$resourceFile->Name] = new \ArrayObject();
+                    $resourceFileEntryKeys[$resourceFile->Name] = new \ArrayObject();
                     foreach ($this->resourceFileEntryTable->fetchAll(['app_resource_file_id' => $resourceFile->Id, 'deleted' => 0]) as $entry) {
                         $combinedKey = $entry->Name . "\n" . $entry->Product;
                         $resourceFileEntries[$resourceFile->Name][$combinedKey] = $entry;

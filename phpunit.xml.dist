@@ -8,4 +8,9 @@
             <directory>./module/Translations/test</directory>
         </testsuite>
     </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <file>./module/Translations/src/Model/ResXmlParser.php</file>
+        </whitelist>
+    </filter>
 </phpunit>
