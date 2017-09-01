@@ -19,9 +19,9 @@ use ZF\Console\Dispatcher;
 
 chdir(dirname(__DIR__));
 
-include 'vendor/autoload.php';
+require 'vendor/autoload.php';
 
-$appConfig = require 'config/application.config.php';
+$appConfig = include 'config/application.config.php';
 
 // Disable module and config cache usage for console apps
 if (is_array($appConfig) && is_array($appConfig['module_listener_options'])) {
@@ -37,7 +37,7 @@ $mvcApplication = \Zend\Mvc\Application::init($appConfig);
 $serviceManager = $mvcApplication->getServiceManager();
 $dispatcher = new Dispatcher($serviceManager);
 
-$application = new Application('TranslationManagerForAndroidApps', Module::VERSION, include 'config/console-routes.php', Console::getInstance(), $dispatcher);
+$application = new Application('TranslationManagerForAndroidApps', Module::VERSION, require 'config/console-routes.php', Console::getInstance(), $dispatcher);
 
 $exit = $application->run();
 exit($exit);
