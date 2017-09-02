@@ -71,27 +71,9 @@ class SyncController extends AbstractActionController
      */
     private function getApp(int $appId, bool $noRedirect = false)
     {
-        if (0 === $appId) {
-            if ($noRedirect) {
-                return false;
-            }
-            return $this->redirect()->toRoute('app', [
-                'action' => 'index',
-            ]);
-        }
+        $app = $this->getAppIfAllowed($appId);
 
-        try {
-            $app = $this->appTable->getApp($appId);
-        } catch (\Exception $e) {
-            if ($noRedirect) {
-                return false;
-            }
-            return $this->redirect()->toRoute('app', [
-                'action' => 'index',
-            ]);
-        }
-
-        if (! $this->isGranted('app.viewAll') && ! $this->appTable->hasUserPermissionForApp($this->zfcUserAuthentication()->getIdentity()->getId(), $app->Id)) {
+        if ($app === false) {
             if ($noRedirect) {
                 return false;
             }

@@ -17,6 +17,14 @@ use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;
 
 return [
+    'controller_plugins' => [
+        'aliases' => [
+            'getAppIfAllowed' => Controller\Plugin\GetAppIfAllowed::class,
+        ],
+        'factories' => [
+            Controller\Plugin\GetAppIfAllowed::class => Factory\Controller\Plugin\GetAppIfAllowedFactory::class,
+        ],
+    ],
     'controllers' => [
         'factories' => [
             Controller\AppController::class => Factory\Controller\AppControllerFactory::class,

@@ -60,28 +60,13 @@ class AppResourceFileController extends AbstractActionController implements Adap
      * Check if current user has permission to the app and return it
      *
      * @param int $appId
-     * @return void|\Zend\Http\Response|\Translations\Model\App
+     * @return \Zend\Http\Response|\Translations\Model\App
      */
     private function getApp(int $appId)
     {
-        if (0 === $appId) {
-            return $this->redirect()->toRoute('app', [
-                'action' => 'index',
-            ]);
-        }
+        $app = $this->getAppIfAllowed($appId);
 
-        try {
-            $app = $this->appTable->getApp($appId);
-        } catch (\Exception $e) {
-            return $this->redirect()->toRoute('app', [
-                'action' => 'index',
-            ]);
-        }
-
-        if (!$this->isGranted('app.viewAll') &&
-            !$this->appTable->hasUserPermissionForApp(
-                $this->zfcUserAuthentication()->getIdentity()->getId(),
-                $app->Id)) {
+        if ($app === false) {
             return $this->redirect()->toRoute('app', [
                 'action' => 'index',
             ]);

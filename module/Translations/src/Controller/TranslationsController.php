@@ -75,24 +75,7 @@ class TranslationsController extends AbstractActionController
      */
     private function getApp(int $appId)
     {
-        if (0 === $appId) {
-            return false;
-        }
-
-        try {
-            $app = $this->appTable->getApp($appId);
-        } catch (\Exception $e) {
-            return false;
-        }
-
-        if (!$this->isGranted('app.viewAll') &&
-            !$this->appTable->hasUserPermissionForApp(
-                $this->zfcUserAuthentication()->getIdentity()->getId(),
-                $app->Id)) {
-            return false;
-        }
-
-        return $app;
+        return $this->getAppIfAllowed($appId);
     }
 
     /**

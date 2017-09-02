@@ -83,6 +83,25 @@ class AppController extends AbstractActionController
     }
 
     /**
+     * Check if current user has permission to the app and return it
+     *
+     * @param int $appId
+     * @return \Zend\Http\Response|\Translations\Model\App;
+     */
+    private function getApp(int $appId)
+    {
+        $app = $this->getAppIfAllowed($appId);
+
+        if ($app === false) {
+            return $this->redirect()->toRoute('app', [
+                'action' => 'index',
+            ]);
+        }
+
+        return $app;
+    }
+
+    /**
      * Helper for getting path to app directory
      *
      * @param int $id
@@ -174,19 +193,7 @@ class AppController extends AbstractActionController
     {
         $id = (int) $this->params()->fromRoute('id', 0);
 
-        if (0 === $id) {
-            return $this->redirect()->toRoute('app', [
-                'action' => 'index',
-            ]);
-        }
-
-        try {
-            $app = $this->appTable->getApp($id);
-        } catch (\Exception $e) {
-            return $this->redirect()->toRoute('app', [
-                'action' => 'index',
-            ]);
-        }
+        $app = $this->getApp($id);
 
         $form = new DeleteHelperForm();
         $form->add([
@@ -250,7 +257,6 @@ class AppController extends AbstractActionController
      */
     public function editAction()
     {
-
         $id = (int) $this->params()->fromRoute('id', 0);
 
         if (0 === $id) {
@@ -259,13 +265,7 @@ class AppController extends AbstractActionController
             ]);
         }
 
-        try {
-            $app = $this->appTable->getApp($id);
-        } catch (\Exception $e) {
-            return $this->redirect()->toRoute('app', [
-                'action' => 'index',
-            ]);
-        }
+        $app = $this->getApp($id);
 
         $oldPassword = $app->GitPassword;
 
