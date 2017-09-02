@@ -143,16 +143,16 @@ class ResXmlParser implements AppHelperInterface
      *
      * @param string $xmlString
      * @param string $querySelector
-     * @param bool $delete
+     * @param bool $deleteDbOnly
      * @param AppResource $resource
      * @param AppResourceFile $resourceFile
      * @param array $resourceTypes
      * @param ArrayObject $entries
-     * @param ArrayObject $entryKeys
-     * @param ArrayObject $resourceFileEntryStrings
+     * @param ArrayObject $entriesDbOnly
+     * @param ArrayObject $entryStrings
      * @param ResXmlParserResult $result
      */
-    private function importXmlString(string $xmlString, string $querySelector, bool $delete, AppResource $resource, AppResourceFile $resourceFile, array $resourceTypes, ArrayObject $entries, ArrayObject $entryKeys, ArrayObject $resourceFileEntryStrings, ResXmlParserResult $result)
+    private function importXmlString(string $xmlString, string $querySelector, bool $deleteDbOnly, AppResource $resource, AppResourceFile $resourceFile, array $resourceTypes, ArrayObject $entries, ArrayObject $entriesDbOnly, ArrayObject $entryStrings, ResXmlParserResult $result)
     {
         $dom = new Document($xmlString);
         $query = new Query();
@@ -175,7 +175,7 @@ class ResXmlParser implements AppHelperInterface
 
             $product = 'default';
             $attribute = $attributes->getNamedItem('product');
-            if (!is_null($attribute) && !empty($attribute->value)) {
+            if (! is_null($attribute) && ! empty($attribute->value)) {
                 $product = $attribute->value;
             }
 
@@ -219,8 +219,8 @@ class ResXmlParser implements AppHelperInterface
                 }
             }
 
-            if (($resource->Name === 'values') && array_key_exists($combinedKey, $entryKeys)) {
-                unset($entryKeys[$combinedKey]);
+            if (($resource->Name === 'values') && array_key_exists($combinedKey, $entriesDbOnly)) {
+                unset($entriesDbOnly[$combinedKey]);
             }
 
             /**
@@ -253,11 +253,11 @@ class ResXmlParser implements AppHelperInterface
             }
 
             if ($resourceFileEntry->ResourceTypeId === array_search('string', $resourceTypes)) {
-                if (!array_key_exists($resourceFileEntry->Id, $resourceFileEntryStrings)) {
+                if (! array_key_exists($resourceFileEntry->Id, $entryStrings)) {
                     $resourceFileEntryString = new ResourceFileEntryString();
                     $resourceFileEntryString->AppResourceId = $resource->Id;
                     $resourceFileEntryString->ResourceFileEntryId = $resourceFileEntry->Id;
-                    $resourceFileEntryStrings[$resourceFileEntry->Id] = $resourceFileEntryString;
+                    $entryStrings[$resourceFileEntry->Id] = $resourceFileEntryString;
                 }
 
                 try {
@@ -273,13 +273,13 @@ Exception trace:
                     $this->logger->err('An error during decoding of Android string', ['messageExtended' => $message]);
                 }
 
-                $resourceFileEntryString = $resourceFileEntryStrings[$resourceFileEntry->Id];
+                $resourceFileEntryString = $entryStrings[$resourceFileEntry->Id];
                 if ($resourceFileEntryString->Value !== $decodedString) {
                     $resourceFileEntryString->Value = $decodedString;
                     $resourceFileEntryString->LastChange = time();
                     $this->resourceFileEntryStringTable->saveResourceFileEntryString($resourceFileEntryString);
 
-                    if (!$entryAlreadyUpdated) {
+                    if (! $entryAlreadyUpdated) {
                         $result->entriesUpdated++;
                     }
                 }
@@ -289,9 +289,9 @@ Exception trace:
         }
 
         if ($resource->Name === 'values') {
-            $result->entriesSkippedExistOnlyInDb += count($entryKeys);
+            $result->entriesSkippedExistOnlyInDb += count($entriesDbOnly);
 
-            if ($delete) {
+            if ($deleteDbOnly) {
                 foreach ($resourceFileEntryKeys[$resourceFile->Name] as $key => $resourceFileEntry) {
                     $resourceFileEntry->Deleted = true;
                     $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
@@ -364,11 +364,11 @@ Exception trace:
      * Import resources from XML files
      *
      * @param App $app
-     * @param bool $confirmDeletion
+     * @param bool $deleteDbOnly
      * @return \Translations\Model\ResXmlParserResult
      * @codeCoverageIgnore
      */
-    public function importResourcesOfApp(App $app, bool $confirmDeletion) {
+    public function importResourcesOfApp(App $app, bool $deleteDbOnly) {
         $result = new ResXmlParserResult();
 
         $path = $this->getAbsoluteAppResPath($app);
@@ -392,15 +392,15 @@ Exception trace:
         };
         $querySelector = implode('|', $querySelectors);
 
-        $resourceFileEntries = new ArrayObject();
-        $resourceFileEntryKeys = new ArrayObject();
+        $entries = new ArrayObject();
+        $entriesDbOnly = new ArrayObject();
 
         foreach ($resources as $resource) {
             $pathRes = FileHelper::concatenatePath($path, $resource->Name);
 
-            $resourceFileEntryStrings = new ArrayObject();
+            $entryStrings = new ArrayObject();
             foreach ($this->resourceFileEntryStringTable->fetchAll(['app_resource_id' => $resource->Id]) as $resourceFileEntryString) {
-                $resourceFileEntryStrings[$resourceFileEntryString->ResourceFileEntryId] = $resourceFileEntryString;
+                $entryStrings[$resourceFileEntryString->ResourceFileEntryId] = $resourceFileEntryString;
             }
 
             foreach ($resourceFiles as $resourceFile) {
@@ -410,17 +410,17 @@ Exception trace:
                     continue;
                 }
 
-                if (!array_key_exists($resourceFile->Name, $resourceFileEntries)) {
-                    $resourceFileEntries[$resourceFile->Name] = new ArrayObject();
-                    $resourceFileEntryKeys[$resourceFile->Name] = new ArrayObject();
+                if (!array_key_exists($resourceFile->Name, $entries)) {
+                    $entries[$resourceFile->Name] = new ArrayObject();
+                    $entriesDbOnly[$resourceFile->Name] = new ArrayObject();
                     foreach ($this->resourceFileEntryTable->fetchAll(['app_resource_file_id' => $resourceFile->Id, 'deleted' => 0]) as $entry) {
                         $combinedKey = $entry->Name . "\n" . $entry->Product;
-                        $resourceFileEntries[$resourceFile->Name][$combinedKey] = $entry;
-                        $resourceFileEntryKeys[$resourceFile->Name][$combinedKey] = $entry;
+                        $entries[$resourceFile->Name][$combinedKey] = $entry;
+                        $entriesDbOnly[$resourceFile->Name][$combinedKey] = $entry;
                     }
                 }
 
-                $this->importXmlString(file_get_contents($pathResFile), $querySelector, $confirmDeletion, $resource, $resourceFile, $resourceTypes, $resourceFileEntries[$resourceFile->Name], $resourceFileEntryKeys[$resourceFile->Name], $resourceFileEntryStrings, $result);
+                $this->importXmlString(file_get_contents($pathResFile), $querySelector, $deleteDbOnly, $resource, $resourceFile, $resourceTypes, $entries[$resourceFile->Name], $entriesDbOnly[$resourceFile->Name], $entryStrings, $result);
             }
         }
 
