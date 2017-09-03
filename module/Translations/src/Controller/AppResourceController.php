@@ -27,6 +27,7 @@ use Translations\Model\Helper\FileHelper;
 use Zend\Db\Adapter\Adapter as DbAdapter;
 use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\Db\Adapter\AdapterAwareTrait;
+use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\ViewModel;
@@ -136,6 +137,10 @@ class AppResourceController extends AbstractActionController implements AdapterA
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
 
+        if ($app instanceof HttpResponse) {
+            return $app;
+        }
+
         $hasDefaultValues = $this->getHasAppDefaultValues($app);
         $path = $this->getAbsoluteAppResPath($app);
         $valuesDirs = [];
@@ -243,6 +248,10 @@ class AppResourceController extends AbstractActionController implements AdapterA
     {
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
+
+        if ($app instanceof HttpResponse) {
+            return $app;
+        }
 
         // Prevent deleting of resources, if default resource doesn't exist.
         if (!$this->getHasAppDefaultValues($app)) {
@@ -355,6 +364,10 @@ class AppResourceController extends AbstractActionController implements AdapterA
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
 
+        if ($app instanceof HttpResponse) {
+            return $app;
+        }
+
         // Prevent editing of resources, if default resource doesn't exist.
         if (!$this->getHasAppDefaultValues($app)) {
             return $this->redirect()->toRoute('appresource', [
@@ -435,6 +448,10 @@ class AppResourceController extends AbstractActionController implements AdapterA
     {
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
+
+        if ($app instanceof HttpResponse) {
+            return $app;
+        }
 
         $appResources = $this->appResourceTable->fetchAll([
             'app_id' => $app->Id,

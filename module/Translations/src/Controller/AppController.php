@@ -23,6 +23,7 @@ use Translations\Model\AppTable;
 use Translations\Model\Helper\EncryptionHelper;
 use Translations\Model\Helper\FileHelper;
 use Translations\Model\TeamTable;
+use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\ViewModel;
@@ -195,6 +196,10 @@ class AppController extends AbstractActionController
 
         $app = $this->getApp($id);
 
+        if ($app instanceof HttpResponse) {
+            return $app;
+        }
+
         $form = new DeleteHelperForm();
         $form->add([
             'name' => 'id',
@@ -266,6 +271,10 @@ class AppController extends AbstractActionController
         }
 
         $app = $this->getApp($id);
+
+        if ($app instanceof HttpResponse) {
+            return $app;
+        }
 
         $oldPassword = $app->GitPassword;
 

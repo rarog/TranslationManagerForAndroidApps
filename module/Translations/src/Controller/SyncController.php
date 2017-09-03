@@ -16,9 +16,9 @@ namespace Translations\Controller;
 
 use Translations\Form\SyncExportForm;
 use Translations\Form\SyncImportForm;
-use Translations\Model\App;
 use Translations\Model\AppTable;
 use Translations\Model\ResXmlParser;
+use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\JsonModel;
@@ -71,24 +71,13 @@ class SyncController extends AbstractActionController
      */
     private function getApp(int $appId, bool $noRedirect = false)
     {
-        $app = $this->getAppIfAllowed($appId);
+        $app = $this->getAppIfAllowed($appId, true);
 
         if ($app === false) {
             if ($noRedirect) {
                 return false;
             }
             return $this->redirect()->toRoute('app', [
-                'action' => 'index',
-            ]);
-        }
-
-        // Prevent further action, if default values don't exist.
-        if (!$this->resXmlParser->getHasAppDefaultValues($app)) {
-            if ($noRedirect) {
-                return false;
-            }
-            return $this->redirect()->toRoute('appresource', [
-                'appId'  => $app->Id,
                 'action' => 'index',
             ]);
         }
@@ -222,6 +211,10 @@ class SyncController extends AbstractActionController
     {
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
+
+        if ($app instanceof HttpResponse) {
+            return $app;
+        }
 
         $formImport = new SyncImportForm();
         $formExport = new SyncExportForm();

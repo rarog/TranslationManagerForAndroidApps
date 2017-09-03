@@ -22,6 +22,7 @@ use Translations\Model\AppTable;
 use Translations\Model\Helper\EncryptionHelper;
 use Translations\Model\Helper\FileHelper;
 use Zend\InputFilter\InputFilter;
+use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\Uri\Http;
@@ -130,6 +131,10 @@ class GitController extends AbstractActionController
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
 
+        if ($app instanceof HttpResponse) {
+            return $app;
+        }
+
         $inputFilter = new InputFilter();
         $inputFilter->add([
             'name'     => 'confirm_deletion',
@@ -206,6 +211,10 @@ class GitController extends AbstractActionController
     {
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
+
+        if ($app instanceof HttpResponse) {
+            return $app;
+        }
 
         return [
             'app' => $app,

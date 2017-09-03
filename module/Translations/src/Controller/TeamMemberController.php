@@ -21,6 +21,7 @@ use Translations\Form\TeamMemberForm;
 use Translations\Model\TeamMember;
 use Translations\Model\TeamMemberTable;
 use Translations\Model\TeamTable;
+use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\ViewModel;
@@ -57,7 +58,7 @@ class TeamMemberController extends AbstractActionController
      * Check if current user has permission to the team and return it
      *
      * @param int $teamId
-     * @return void|\Zend\Http\Response|\Translations\Model\Team
+     * @return \Zend\Http\Response|\Translations\Model\Team
      */
     private function getTeam(int $teamId)
     {
@@ -114,6 +115,10 @@ class TeamMemberController extends AbstractActionController
         $teamId = (int) $this->params()->fromRoute('teamId', 0);
         $team = $this->getTeam($teamId);
 
+        if ($team instanceof HttpResponse) {
+            return $team;
+        }
+
         $form = new TeamMemberForm();
 
         $request = $this->getRequest();
@@ -161,6 +166,10 @@ class TeamMemberController extends AbstractActionController
     {
         $teamId = (int) $this->params()->fromRoute('teamId', 0);
         $team = $this->getTeam($teamId);
+
+        if ($team instanceof HttpResponse) {
+            return $team;
+        }
 
         $userId = (int) $this->params()->fromRoute('userId', 0);
         try {
@@ -234,6 +243,10 @@ class TeamMemberController extends AbstractActionController
     {
         $teamId = (int) $this->params()->fromRoute('teamId', 0);
         $team = $this->getTeam($teamId);
+
+        if ($team instanceof HttpResponse) {
+            return $team;
+        }
 
         return [
             'team' => $team,

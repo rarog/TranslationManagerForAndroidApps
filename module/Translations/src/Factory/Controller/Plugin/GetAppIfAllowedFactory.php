@@ -27,6 +27,7 @@ class GetAppIfAllowedFactory implements FactoryInterface
     {
         return new \Translations\Controller\Plugin\GetAppIfAllowed(
             $container->get(\Translations\Model\AppTable::class),
+            $container->get(\Translations\Model\AppResourceTable::class),
             $container->get(\ZfcRbac\Service\AuthorizationService::class)
         );
     }

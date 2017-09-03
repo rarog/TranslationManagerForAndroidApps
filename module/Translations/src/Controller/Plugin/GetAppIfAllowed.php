@@ -14,7 +14,7 @@
 
 namespace Translations\Controller\Plugin;
 
-use Translations\Model\App;
+use Translations\Model\AppResourceTable;
 use Translations\Model\AppTable;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use ZfcRbac\Service\AuthorizationService;
@@ -27,6 +27,11 @@ class GetAppIfAllowed extends AbstractPlugin
     private $appTable;
 
     /**
+     * @var AppResourceTable
+     */
+    private $appResourceTable;
+
+    /**
      * @var AuthorizationService
      */
     private $authorizationService;
@@ -36,19 +41,20 @@ class GetAppIfAllowed extends AbstractPlugin
      *
      * @param AppTable $appTable
      */
-    public function __construct(AppTable $appTable, AuthorizationService $authorizationService)
+    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, AuthorizationService $authorizationService)
     {
         $this->appTable = $appTable;
+        $this->appResourceTable = $appResourceTable;
         $this->authorizationService = $authorizationService;
     }
 
     /**
      * Check if current user has permission to the app and return it
-     *
      * @param int $appId
+     * @param bool $checkHasDefaultValues
      * @return boolean|\Translations\Model\App
      */
-    public function __invoke(int $appId)
+    public function __invoke(int $appId, bool $checkHasDefaultValues = false)
     {
         if (0 === $appId) {
             return false;;
@@ -62,6 +68,14 @@ class GetAppIfAllowed extends AbstractPlugin
 
         if (! $this->authorizationService->isGranted('app.viewAll') && ! $this->appTable->hasUserPermissionForApp($this->zfcUserAuthentication()->getIdentity()->getId(), $app->Id)) {
             return false;
+        }
+
+        if ($checkHasDefaultValues) {
+            try {
+                $this->appResourceTable->getAppResourceByAppIdAndName($app->Id, 'values');throw new \RuntimeException();
+            } catch (\RuntimeException $e) {
+                return false;
+            }
         }
 
         return $app;

@@ -27,6 +27,7 @@ use Translations\Model\Helper\FileHelper;
 use Zend\Db\Adapter\Adapter as DbAdapter;
 use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\Db\Adapter\AdapterAwareTrait;
+use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\ViewModel;
@@ -64,20 +65,10 @@ class AppResourceFileController extends AbstractActionController implements Adap
      */
     private function getApp(int $appId)
     {
-        $app = $this->getAppIfAllowed($appId);
+        $app = $this->getAppIfAllowed($appId, true);
 
         if ($app === false) {
             return $this->redirect()->toRoute('app', [
-                'action' => 'index',
-            ]);
-        }
-
-        // Prevent further action, if default values don't exist.
-        try {
-            $this->appResourceTable->getAppResourceByAppIdAndName($app->Id, 'values');
-        } catch (\Exception $e) {
-            return $this->redirect()->toRoute('appresource', [
-                'appId' => $app->Id,
                 'action' => 'index',
             ]);
         }
@@ -113,6 +104,11 @@ class AppResourceFileController extends AbstractActionController implements Adap
     {
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
+
+        if ($app instanceof HttpResponse) {
+            return $app;
+        }
+
         $this->setAppDirectory($this->configHelp('tmfaa')->app_dir);
 
         $path = $this->getAbsoluteAppResValuesPath($app);
@@ -212,6 +208,10 @@ class AppResourceFileController extends AbstractActionController implements Adap
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
 
+        if ($app instanceof HttpResponse) {
+            return $app;
+        }
+
         $id = (int) $this->params()->fromRoute('resourceFileId', 0);
 
         if (0 === $id) {
@@ -304,6 +304,10 @@ class AppResourceFileController extends AbstractActionController implements Adap
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
 
+        if ($app instanceof HttpResponse) {
+            return $app;
+        }
+
         $id = (int) $this->params()->fromRoute('resourceFileId', 0);
 
         if (0 === $id) {
@@ -368,6 +372,10 @@ class AppResourceFileController extends AbstractActionController implements Adap
     {
         $appId = (int) $this->params()->fromRoute('appId', 0);
         $app = $this->getApp($appId);
+
+        if ($app instanceof HttpResponse) {
+            return $app;
+        }
 
         $appResourceFiles = $this->appResourceFileTable->fetchAll([
             'app_id' => $app->Id,
