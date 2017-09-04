@@ -40,14 +40,14 @@ function setSelectionNeededState() {
 
 var curResources = resources;
 
-$("#showAll").on("change", function(event) {debugger;
+$("#showAll").on("change", function(event) {
 	var appSelect = $("#app");
 	appSelect.selectpicker('deselectAll');
     $("option", appSelect).remove();
-    
+
     curApps = (event.target.checked) ? appsAll : apps;
     curResources = (event.target.checked) ? resourcesAll : resources;
-    
+
     $.each(curApps, function(index, value) {
     	appSelect.append('<option value="' + index + '">' + value + '</option>');
     });
@@ -99,6 +99,15 @@ $("#resource").on("changed.bs.select", function(event, clickedIndex, newValue, o
     } else {
         setSelectionNeededState();
     }
+});
+
+$(".translationDetails").on("click", function(event) {
+    debugger;
+    var app = $("#app").val();
+    var resource = $("#resource").val();
+    var entry = event.target.data("entryid");
+
+    alert(app + '-' + resource + '-' + entry);
 });
 
 // Enable Bootstrap Tooltips
