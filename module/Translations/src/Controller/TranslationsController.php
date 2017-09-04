@@ -171,6 +171,32 @@ class TranslationsController extends AbstractActionController
     }
 
     /**
+     * Translation detail management action
+     *
+     * @return JsonModel
+     */
+    public function detailsAction()
+    {
+        $appId = (int) $this->params()->fromRoute('appId', 0);
+        $resourceId = (int) $this->params()->fromRoute('resourceId', 0);
+        $entryId = (int) $this->params()->fromRoute('entryId', 0);
+
+        $app = $this->getApp($appId);
+
+        if ($app === false) {
+            return new JsonModel();
+        }
+
+        $resource = $this->getResource($resourceId, $appId);
+
+        if ($resource === false) {
+            return new JsonModel();
+        }
+
+        return new JsonModel();
+    }
+
+    /**
      * Translations overview action
      *
      * @return ViewModel
@@ -213,32 +239,6 @@ class TranslationsController extends AbstractActionController
             'resources' => $resources,
             'resourcesAll' => $resourcesAll,
         ];
-    }
-
-    /**
-     * Suggestion listing action
-     *
-     * @return JsonModel
-     */
-    public function listsuggestionsAction()
-    {
-        $appId = (int) $this->params()->fromRoute('appId', 0);
-        $resourceId = (int) $this->params()->fromRoute('resourceId', 0);
-        $entryId = (int) $this->params()->fromRoute('entryId', 0);
-
-        $app = $this->getApp($appId);
-
-        if ($app === false) {
-            return new JsonModel();
-        }
-
-        $resource = $this->getResource($resourceId, $appId);
-
-        if ($resource === false) {
-            return new JsonModel();
-        }
-
-        return new JsonModel();
     }
 
     /**

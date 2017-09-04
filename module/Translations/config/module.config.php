@@ -151,17 +151,17 @@ return [
                 ],
                 'may_terminate' => true,
                 'child_routes' => [
-                    'listsuggestions' => [
+                    'details' => [
                         'type' => Segment::class,
                         'options' => [
-                            'route' => '/listtranslations[/app/:appId/resource/:resourceId/entry/:entryId]',
+                            'route' => '/details[/app/:appId/resource/:resourceId/entry/:entryId]',
                             'constraints' => [
                                 'appId' => '[0-9]+',
                                 'resourceId' => '[0-9]+',
                                 'entryId' => '[0-9]+',
                             ],
                             'defaults' => [
-                                'action' => 'listtranslations',
+                                'action' => 'details',
                             ],
                         ],
                     ],
