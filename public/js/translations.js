@@ -101,13 +101,10 @@ $("#resource").on("changed.bs.select", function(event, clickedIndex, newValue, o
     }
 });
 
-$(".translationDetails").on("click", function(event) {
-    debugger;
+$("#translations").on("click", ".translationDetails", function(event) {
     var app = $("#app").val();
     var resource = $("#resource").val();
-    var entry = event.target.data("entryid");
-
-    alert(app + '-' + resource + '-' + entry);
+    var entry = $(event.target).data("entryid");
 });
 
 // Enable Bootstrap Tooltips
