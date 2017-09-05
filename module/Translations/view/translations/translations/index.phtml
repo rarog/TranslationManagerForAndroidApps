@@ -61,7 +61,8 @@ $this->inlineScript()->appendScript('var apps = ' . json_encode($apps) . ';
 var resources = ' . json_encode($resources) . ';
 var appsAll = ' . json_encode($appsAll) . ';
 var resourcesAll = ' . json_encode($resourcesAll) . ';
-var translationsPath = "' . $this->url('translations/listtranslations'). '";')->appendFile($this->basePath('js/translations.min.js'));
+var translationsPath = "' . $this->url('translations/listtranslations'). '";
+var detailsPath = "' . $this->url('translations/details'). '";')->appendFile($this->basePath('js/translations.min.js'));
 ?>
 <div class="row" id="header">
   <div class="col-lg-12">

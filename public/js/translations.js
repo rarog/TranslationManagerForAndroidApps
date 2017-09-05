@@ -40,7 +40,7 @@ function setSelectionNeededState() {
 
 var curResources = resources;
 
-$("#showAll").on("change", function(event) {
+$("#showAll").on("change", function (event) {
 	var appSelect = $("#app");
 	appSelect.selectpicker('deselectAll');
     $("option", appSelect).remove();
@@ -83,7 +83,7 @@ $("#resource").on("changed.bs.select", function(event, clickedIndex, newValue, o
             dataType: "json",
             method: "GET"
         })
-        .done( function (data) {
+        .done(function(data) {
             var table = $('#translations').DataTable();
 
             table.clear()
@@ -93,7 +93,7 @@ $("#resource").on("changed.bs.select", function(event, clickedIndex, newValue, o
             hideSpinner(true);
             hideTranslationRow(false);
         })
-        .fail( function (jqXHR, textStatus, errorThrown) {
+        .fail(function(jqXHR, textStatus, errorThrown) {
             setSelectionNeededState();
         });
     } else {
@@ -105,9 +105,19 @@ $("#translations").on("click", ".translationDetails", function(event) {
     var app = $("#app").val();
     var resource = $("#resource").val();
     var entry = $(event.target).data("entryid");
+
+    $.ajax({
+        url: detailsPath + "/app/" + app + "/resource/" + resource + "/entry/" + entry,
+        dataType: "json",
+        method: "GET"
+    })
+    .done(function(data) {
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+    });
 });
 
 // Enable Bootstrap Tooltips
-$(function () {
+$(function() {
   $('[data-toggle="tooltip"]').tooltip()
 });
