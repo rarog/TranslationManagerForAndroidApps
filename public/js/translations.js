@@ -38,6 +38,10 @@ function setSelectionNeededState() {
     hideTranslationRow(true);
 }
 
+function showModalError() {
+	$('#modalError').modal();
+}
+
 var curResources = resources;
 
 $("#showAll").on("change", function (event) {
@@ -114,6 +118,7 @@ $("#translations").on("click", ".translationDetails", function(event) {
     .done(function(data) {
     })
     .fail(function(jqXHR, textStatus, errorThrown) {
+    	showModalError();
     });
 });
 
