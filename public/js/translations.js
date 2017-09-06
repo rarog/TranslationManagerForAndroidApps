@@ -116,6 +116,12 @@ $("#translations").on("click", ".translationDetails", function(event) {
         method: "GET"
     })
     .done(function(data) {
+        if ($.type(data) == 'object' && data['modal']) {
+            $("#modalContainer").html(data['modal']);
+            $('#modalDetails').modal();
+        } else {
+            showModalError();
+        }
     })
     .fail(function(jqXHR, textStatus, errorThrown) {
     	showModalError();

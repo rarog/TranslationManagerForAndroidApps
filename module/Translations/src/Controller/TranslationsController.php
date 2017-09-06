@@ -228,7 +228,7 @@ class TranslationsController extends AbstractActionController
         $viewModel = $this->getViewModel();
         $viewModel->setVariables([
             'entry' => new ArrayObject($typedEntry, ArrayObject::ARRAY_AS_PROPS),
-            'types' => $type,
+            'type' => $type->Name,
         ]);
 
         return new JsonModel([

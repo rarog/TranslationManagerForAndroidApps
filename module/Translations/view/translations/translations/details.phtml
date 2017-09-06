@@ -1,44 +1,55 @@
-<div class="modal fade modalDetails" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+<div class="modal fade" id="modalDetails" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="modalLabel"><?= $this->escapeHtml($this->translate('Suggestions')) ?></h4>
+        <h4 class="modal-title" id="modalLabel"><?= $this->escapeHtml($this->translate('Translations details')) ?></h4>
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-lg-3"><?= $this->escapeHtml($this->translate('Default value:')) ?></div>
-          <div class="col-lg-9"><?= $this->escapeHtml($defaultValue) ?></div>
+          <div class="col-lg-3"><b><?= $this->escapeHtml($this->translate('Default value:')) ?></b></div>
+          <div class="col-lg-9">
+<?php if ($type == 'String'): ?>
+<?= nl2br($this->escapeHtml($entry->defaultValue)) ?>
+<?php endif; ?>
+          </div>
         </div>
         <div class="row">
           <div class="col-lg-12"><hr></div>
         </div>
         <div class="row">
-          <div class="col-lg-3"><?= $this->escapeHtml($this->translate('Current value:')) ?></div>
-          <div class="col-lg-9"><?= $this->escapeHtml($currentValue) ?></div>
+          <div class="col-lg-3"><b><?= $this->escapeHtml($this->translate('Current value:')) ?></b></div>
+          <div class="col-lg-9">
+<?php if ($type == 'String'): ?>
+<?= nl2br($this->escapeHtml($entry->value)) ?>
+<?php endif; ?>
+          </div>
         </div>
         <div class="row">
           <div class="col-lg-12"><hr></div>
-        </div>
-        <div class="row">
-          <div class="col-lg-12"><?= $this->escapeHtml($this->translate('Suggestions:')) ?></div>
         </div>
         <div class="row">
           <div class="col-lg-12">
+            <h5><b><?= $this->escapeHtml($this->translate('Suggestions:')) ?></b></h5>
+<?php if ($entry->suggestionCount > 0): ?>
             <table class="table table-condensed table-striped">
               <thead>
                 <tr>
-                  <td><?= $this->escapeHtml($this->translate('Value')) ?></td>
-                  <td><?= $this->escapeHtml($this->translate('Votes')) ?></td>
-                  <td></td>
+                  <th><?= $this->escapeHtml($this->translate('Value')) ?></th>
+                  <th><?= $this->escapeHtml($this->translate('Votes')) ?></th>
+                  <th></th>
                 </tr>
               </thead>
             </table>
+<?php else: ?>
+            <?= $this->escapeHtml($this->translate('No entries available')) ?>
+<?php endif; ?>
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default"><?= $this->escapeHtml($this->translate('Add new suggestion')) ?></button>
+        <button type="button" class="btn btn-primary"><?= $this->escapeHtml($this->translate('Add new suggestion')) ?></button>
+        <button type="button" class="btn btn-default" data-dismiss="modal"><?= $this->escapeHtml($this->translate('Close')) ?></button>
       </div>
     </div>
   </div>
