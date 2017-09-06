@@ -203,12 +203,37 @@ class TranslationsController extends AbstractActionController
 
         try {
             $entry = $this->resourceFileEntryTable->getResourceFileEntry($entryId);
-        } catch (\Exception $e) {
+        } catch (\RuntimeException$e) {
             return new JsonModel();
         }
-        $resource->Id;
 
-        return new JsonModel();
+        try {
+            $type = $this->resourceTypeTable->getResourceType($entry->ResourceTypeId);
+        } catch (\RuntimeException $e) {
+            return new JsonModel();
+        }
+
+        switch ($type->Name) {
+            case 'String':
+                $typedEntry = $this->resourceFileEntryStringTable->getAllResourceFileEntryStringsForTranslations($appId, $resourceId, $entryId);
+                break;
+            default:
+                return new JsonModel();
+        }
+
+        if (is_array($typedEntry) && (count($typedEntry) == 1)) {
+            $typedEntry = $typedEntry[0];
+        }
+
+        $viewModel = $this->getViewModel();
+        $viewModel->setVariables([
+            'entry' => new ArrayObject($typedEntry, ArrayObject::ARRAY_AS_PROPS),
+            'types' => $type,
+        ]);
+
+        return new JsonModel([
+            'modal' => $this->renderTemplate($viewModel, 'translations/translations/details.phtml'),
+        ]);
     }
 
     /**
