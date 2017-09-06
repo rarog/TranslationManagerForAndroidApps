@@ -17,6 +17,7 @@ namespace Translations\Controller;
 use Translations\Model\AppResourceTable;
 use Translations\Model\AppTable;
 use Translations\Model\ResourceFileEntryStringTable;
+use Translations\Model\ResourceFileEntryTable;
 use Translations\Model\ResourceTypeTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
@@ -38,14 +39,19 @@ class TranslationsController extends AbstractActionController
     private $appResourceTable;
 
     /**
-     * @var ResourceFileEntryStringTable
-     */
-    private $resourceFileEntryStringTable;
-
-    /**
      * @var ResourceTypeTable
      */
     private $resourceTypeTable;
+
+    /**
+     * @var ResourceFileEntryTable
+     */
+    private $resourceFileEntryTable;
+
+    /**
+     * @var ResourceFileEntryStringTable
+     */
+    private $resourceFileEntryStringTable;
 
     /**
      * @var Translator
@@ -91,12 +97,12 @@ class TranslationsController extends AbstractActionController
             return false;
         }
 
-        try {
-            $resource = $this->appResourceTable->fetchAll([
-                'id' => $resourceId,
-                'app_id' => $appId,
-            ]);
-        } catch (\Exception $e) {
+        $rowset = $this->appResourceTable->fetchAll([
+            'id' => $resourceId,
+            'app_id' => $appId,
+        ]);
+        $resource = $rowset->current();
+        if (! $resource) {
             return false;
         }
 
@@ -156,15 +162,17 @@ class TranslationsController extends AbstractActionController
      * @param AppTable $appTable
      * @param AppResourceTable $appResourceTable
      * @param ResourceTypeTable $resourceTypeTable
+     * @param ResourceFileEntryTable $resourceFileEntryTable
      * @param ResourceFileEntryStringTable $resourceFileEntryStringTable
      * @param Translator $translator
      * @param Renderer $renderer
      */
-    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, ResourceTypeTable $resourceTypeTable, ResourceFileEntryStringTable $resourceFileEntryStringTable, Translator $translator, Renderer $renderer)
+    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, ResourceTypeTable $resourceTypeTable, ResourceFileEntryTable $resourceFileEntryTable, ResourceFileEntryStringTable $resourceFileEntryStringTable, Translator $translator, Renderer $renderer)
     {
         $this->appTable = $appTable;
         $this->appResourceTable = $appResourceTable;
         $this->resourceTypeTable = $resourceTypeTable;
+        $this->resourceFileEntryTable = $resourceFileEntryTable;
         $this->resourceFileEntryStringTable = $resourceFileEntryStringTable;
         $this->translator = $translator;
         $this->renderer = $renderer;
@@ -192,6 +200,13 @@ class TranslationsController extends AbstractActionController
         if ($resource === false) {
             return new JsonModel();
         }
+
+        try {
+            $entry = $this->resourceFileEntryTable->getResourceFileEntry($entryId);
+        } catch (\Exception $e) {
+            return new JsonModel();
+        }
+        $resource->Id;
 
         return new JsonModel();
     }
