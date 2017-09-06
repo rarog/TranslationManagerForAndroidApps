@@ -18,6 +18,7 @@
     ?>
 
     <?= $this->headScript()
+        ->prependFile($this->basePath('js/fixJumpingNavbar.min.js'))
         ->prependFile($this->basePath('js/bootstrap.min.js'))
         ->prependFile($this->basePath('js/jquery.min.js'))
     ?>
