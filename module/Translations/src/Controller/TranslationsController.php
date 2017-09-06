@@ -14,6 +14,7 @@
 
 namespace Translations\Controller;
 
+use ArrayObject;
 use Translations\Model\AppResourceTable;
 use Translations\Model\AppTable;
 use Translations\Model\ResourceFileEntryStringTable;
@@ -21,7 +22,6 @@ use Translations\Model\ResourceFileEntryTable;
 use Translations\Model\ResourceTypeTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
-use Zend\Stdlib\ArrayObject;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer as Renderer;
