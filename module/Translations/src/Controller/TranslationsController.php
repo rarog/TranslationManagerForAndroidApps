@@ -17,6 +17,7 @@ namespace Translations\Controller;
 use ArrayObject;
 use Translations\Model\AppResourceTable;
 use Translations\Model\AppTable;
+use Translations\Model\ResourceFileEntryStringSuggestionTable;
 use Translations\Model\ResourceFileEntryStringTable;
 use Translations\Model\ResourceFileEntryTable;
 use Translations\Model\ResourceTypeTable;
@@ -52,6 +53,11 @@ class TranslationsController extends AbstractActionController
      * @var ResourceFileEntryStringTable
      */
     private $resourceFileEntryStringTable;
+
+    /**
+     * @var ResourceFileEntryStringSuggestionTable
+     */
+    private $resourceFileEntryStringSuggestionsTable;
 
     /**
      * @var Translator
@@ -164,16 +170,18 @@ class TranslationsController extends AbstractActionController
      * @param ResourceTypeTable $resourceTypeTable
      * @param ResourceFileEntryTable $resourceFileEntryTable
      * @param ResourceFileEntryStringTable $resourceFileEntryStringTable
+     * @param ResourceFileEntryStringSuggestionTable $resourceFileEntryStringSuggestionsTable
      * @param Translator $translator
      * @param Renderer $renderer
      */
-    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, ResourceTypeTable $resourceTypeTable, ResourceFileEntryTable $resourceFileEntryTable, ResourceFileEntryStringTable $resourceFileEntryStringTable, Translator $translator, Renderer $renderer)
+    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, ResourceTypeTable $resourceTypeTable, ResourceFileEntryTable $resourceFileEntryTable, ResourceFileEntryStringTable $resourceFileEntryStringTable, ResourceFileEntryStringSuggestionTable $resourceFileEntryStringSuggestionsTable, Translator $translator, Renderer $renderer)
     {
         $this->appTable = $appTable;
         $this->appResourceTable = $appResourceTable;
         $this->resourceTypeTable = $resourceTypeTable;
         $this->resourceFileEntryTable = $resourceFileEntryTable;
         $this->resourceFileEntryStringTable = $resourceFileEntryStringTable;
+        $this->resourceFileEntryStringSuggestionsTable = $resourceFileEntryStringSuggestionsTable;
         $this->translator = $translator;
         $this->renderer = $renderer;
     }
@@ -223,11 +231,23 @@ class TranslationsController extends AbstractActionController
 
         if (is_array($typedEntry) && (count($typedEntry) == 1)) {
             $typedEntry = $typedEntry[0];
+        } else {
+            return new JsonModel();
         }
+
+        switch ($type->Name) {
+            case 'String':
+                $typedSuggestions = $this->resourceFileEntryStringSuggestionsTable->fetchAll([
+                    'resource_file_entry_string_id' => $typedEntry['id'],
+                ]);
+                break;
+        }
+        $typedSuggestions->buffer();
 
         $viewModel = $this->getViewModel();
         $viewModel->setVariables([
             'entry' => new ArrayObject($typedEntry, ArrayObject::ARRAY_AS_PROPS),
+            'suggestions' => $typedSuggestions,
             'type' => $type->Name,
         ]);
 

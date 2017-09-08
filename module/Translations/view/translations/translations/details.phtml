@@ -29,9 +29,9 @@
           <div class="col-lg-12"><hr></div>
         </div>
         <div class="row">
-          <div class="col-lg-12">
-            <h5><b><?= $this->escapeHtml($this->translate('Suggestions:')) ?></b></h5>
 <?php if ($entry->suggestionCount > 0): ?>
+          <div class="col-lg-12">
+            <b><?= $this->escapeHtml($this->translate('Suggestions:')) ?></b>
             <table class="table table-condensed table-striped">
               <thead>
                 <tr>
@@ -40,11 +40,25 @@
                   <th></th>
                 </tr>
               </thead>
-            </table>
-<?php else: ?>
-            <?= $this->escapeHtml($this->translate('No entries available')) ?>
+              <tbody>
+<?php foreach ($suggestions as $suggestion): ?>
+                <tr>
+                  <td>
+<?php if ($type == 'String'): ?>
+<?= nl2br($this->escapeHtml($suggestion->value)) ?>
 <?php endif; ?>
+                  </td>
+                  <td></td>
+                  <td></td>
+                </tr>
+<?php endforeach; ?>
+              </tbody>
+            </table>
           </div>
+<?php else: ?>
+          <div class="col-lg-3"><b><?= $this->escapeHtml($this->translate('Suggestions:')) ?></b></div>
+          <div class="col-lg-9"><?= $this->escapeHtml($this->translate('No entries available')) ?></div>
+<?php endif; ?>
         </div>
       </div>
       <div class="modal-footer">
