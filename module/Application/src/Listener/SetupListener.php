@@ -20,9 +20,15 @@ use UserRbac\Mapper\UserRoleLinkerMapper;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
+use ZfcUser\Mapper\User as UserMapper;
 
 class SetupListener implements ListenerAggregateInterface
 {
+    /**
+     * @var UserMapper
+     */
+    private $userMapper;
+
     /**
      * @var UserRoleLinkerMapper
      */
@@ -46,12 +52,14 @@ class SetupListener implements ListenerAggregateInterface
     /**
      * Constructor
      *
+     * @param UserMapper $userMapper
      * @param UserRoleLinkerMapper $userRoleLinkerMapper
      * @param TeamTable $teamTable
      * @param UserSettingsTable $userSettingsTable
      */
-    public function __construct(UserRoleLinkerMapper $userRoleLinkerMapper, TeamTable $teamTable, UserSettingsTable $userSettingsTable)
+    public function __construct(UserMapper $userMapper, UserRoleLinkerMapper $userRoleLinkerMapper, TeamTable $teamTable, UserSettingsTable $userSettingsTable)
     {
+        $this->userMapper = $userMapper;
         $this->userRoleLinkerMapper = $userRoleLinkerMapper;
         $this->teamTable = $teamTable;
         $this->userSettingsTable = $userSettingsTable;
@@ -89,6 +97,10 @@ class SetupListener implements ListenerAggregateInterface
     {
         $user = $event->getParam('user', null);
         if ($user instanceof \ZfcUser\Entity\UserInterface) {
+            // Enable the user for login.
+            $user->setState(1);
+            $this->userMapper->update($user);
+
             // Giving the new user the admin role.
             $userLinker = new \UserRbac\Entity\UserRoleLinker($user, 'admin');
             $this->userRoleLinkerMapper->insert($userLinker);
