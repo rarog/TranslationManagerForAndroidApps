@@ -19,6 +19,10 @@ use Zend\ServiceManager\Factory\FactoryInterface;
 
 class CleanCacheFactory implements FactoryInterface
 {
+    /**
+     * {@inheritDoc}
+     * @see \Zend\ServiceManager\Factory\FactoryInterface::__invoke()
+     */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $cacheArray = [];
