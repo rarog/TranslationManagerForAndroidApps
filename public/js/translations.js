@@ -3,6 +3,12 @@
  * @copyright Copyright (c) 2017 Andrej Sinicyn
  * @license   https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License version 3 or later
  */
+function enableBootstrapTooltips() {
+    $(function() {
+        $('[data-toggle="tooltip"]').tooltip({container: 'body'});
+    });
+}
+
 function hideSelectionHint(hide) {
     var node = $("#selectionHint");
     if (hide) {
@@ -96,6 +102,7 @@ $("#resource").on("changed.bs.select", function(event, clickedIndex, newValue, o
             hideSelectionHint(true);
             hideSpinner(true);
             hideTranslationRow(false);
+            enableBootstrapTooltips();
         })
         .fail(function(jqXHR, textStatus, errorThrown) {
             setSelectionNeededState();
@@ -119,6 +126,7 @@ $("#translations").on("click", ".translationDetails", function(event) {
         if ($.type(data) == 'object' && data['modal']) {
             $("#modalContainer").html(data['modal']);
             $('#modalDetails').modal();
+            enableBootstrapTooltips();
         } else {
             showModalError();
         }
@@ -126,9 +134,4 @@ $("#translations").on("click", ".translationDetails", function(event) {
     .fail(function(jqXHR, textStatus, errorThrown) {
     	showModalError();
     });
-});
-
-// Enable Bootstrap Tooltips
-$(function() {
-  $('[data-toggle="tooltip"]').tooltip()
 });
