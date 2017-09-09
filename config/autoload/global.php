@@ -109,5 +109,6 @@ return [
     ],
     'tmfaa' => [
         'app_dir' => __DIR__ . '/../../data/apps/',
+        'use_minified' => true,
     ],
 ];

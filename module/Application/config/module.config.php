@@ -179,6 +179,9 @@ return [
         ],
     ],
     'view_helpers' => [
+        'factories' => [
+            'useMinified' => Factory\View\Helper\UseMinifiedHelperFactory::class,
+        ],
         'invokables' => [
             'bootstrapSelectHelper' => View\Helper\BootstrapSelectHelper::class,
             'dataTablesInitHelper' => View\Helper\DataTablesInitHelper::class,
