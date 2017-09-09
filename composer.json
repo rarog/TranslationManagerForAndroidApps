@@ -46,7 +46,8 @@
 	},
 	"autoload-dev" : {
 		"psr-4" : {
-			"ApplicationTest\\" : "module/Application/test/"
+			"ApplicationTest\\" : "module/Application/test/",
+			"TranslationsTest\\" : "module/Translations/test/"
 		}
 	},
 	"scripts" : {
@@ -55,6 +56,11 @@
 		"development-disable" : "zf-development-mode disable",
 		"development-enable" : "zf-development-mode enable",
 		"development-status" : "zf-development-mode status",
+		"minify" : [
+			"yui-compressor --type css -o ./public/css/style.min.css ./public/css/style.css",
+			"yui-compressor --type js -o ./public/js/fixJumpingNavbar.min.js ./public/js/fixJumpingNavbar.js",
+			"yui-compressor --type js -o ./public/js/translations.min.js ./public/js/translations.js"
+		],
 		"post-create-project-cmd" : "@development-enable",
 		"serve" : "php -S 0.0.0.0:8080 -t public public/index.php",
 		"test" : "phpunit",
@@ -76,5 +82,9 @@
 	"require-dev" : {
 		"zendframework/zend-test" : "^3.1",
 		"phpunit/phpunit" : "^5.0 || ^6.0"
+	},
+	"support" : {
+		"source" : "https://github.com/rarog/TranslationManagerForAndroidApps",
+		"issues" : "https://github.com/rarog/TranslationManagerForAndroidApps/issues"
 	}
 }
