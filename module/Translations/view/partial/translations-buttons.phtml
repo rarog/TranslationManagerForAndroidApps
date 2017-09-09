@@ -3,5 +3,5 @@ $btnClass = ($entry->suggestionCount > 0) ? 'btn-info' : 'btn-default';
 $tooltip = sprintf($this->translatePlural('%d suggestion', '%d suggestions', $entry->suggestionCount), $entry->suggestionCount);
 ?>
 <div class="btn-group" role="group">
-  <button type="button" class="btn <?= $btnClass ?> translationDetails" data-entryid="<?= $this->escapeHtmlAttr($entry->defaultId) ?>" data-toggle="tooltip" data-placement="right" title="<?= $this->escapeHtmlAttr($tooltip) ?>" role="button"><?= $this->escapeHtml($this->translate('Details')) ?></button>
+  <button type="button" class="btn <?= $btnClass ?> translationDetails" data-entryid="<?= $this->escapeHtmlAttr($entry->defaultId) ?>" data-toggle="tooltip" data-placement="bottom" title="<?= $this->escapeHtmlAttr($tooltip) ?>" role="button"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Details')) ?></button>
 </div>
