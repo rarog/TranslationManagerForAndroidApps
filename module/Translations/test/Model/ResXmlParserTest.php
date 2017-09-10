@@ -82,7 +82,8 @@ class ResXmlParserTest extends TestCase
                 $this->createMock(\Translations\Model\AppResourceFileTable::class),
                 $this->createMock(\Translations\Model\ResourceTypeTable::class),
                 $this->createMock(\Translations\Model\ResourceFileEntryTable::class),
-                $this->createMock(\Translations\Model\ResourceFileEntryStringTable::class),
+                $this->createMock(\Translations\Model\EntryCommonTable::class),
+                $this->createMock(\Translations\Model\EntryStringTable::class),
                 $this->createMock(\Zend\Log\Logger::class)
             );
         }

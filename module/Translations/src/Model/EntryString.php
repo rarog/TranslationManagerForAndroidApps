@@ -175,7 +175,7 @@ class EntryString implements ArraySerializableInterface, InputFilterAwareInterfa
      */
     public function exchangeArray(array $array)
     {
-        $this->Id = !empty($array['entry_common_id']) ? $array['entry_common_id'] : null;
+        $this->EntryCommonId = !empty($array['entry_common_id']) ? $array['entry_common_id'] : null;
         $this->Value = !empty($array['value']) ? $array['value'] : null;
     }
 
@@ -186,7 +186,7 @@ class EntryString implements ArraySerializableInterface, InputFilterAwareInterfa
     public function getArrayCopy()
     {
         return [
-            'entry_common_id' => $this->Id,
+            'entry_common_id' => $this->EntryCommonId,
             'value' => $this->Value,
         ];
     }

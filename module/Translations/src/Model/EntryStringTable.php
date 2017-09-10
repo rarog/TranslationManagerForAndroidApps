@@ -67,7 +67,7 @@ class EntryStringTable
         $rowset = $this->tableGateway->select(['entry_common_id' => $entryCommonId]);
         $row = $rowset->current();
         if (! $row) {
-            throw new RuntimeException(sprintf('Could not find row with identifier %d', $id));
+            throw new RuntimeException(sprintf('Could not find row with identifier %d', $entryCommonId));
         }
 
         return $row;
@@ -101,7 +101,7 @@ class EntryStringTable
             $this->tableGateway->insert($data);
         }
 
-        return $resourceFileEntryString;
+        return $entryString;
     }
 
     /**

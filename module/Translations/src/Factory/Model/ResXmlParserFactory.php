@@ -30,7 +30,8 @@ class ResXmlParserFactory implements FactoryInterface
             $container->get(\Translations\Model\AppResourceFileTable::class),
             $container->get(\Translations\Model\ResourceTypeTable::class),
             $container->get(\Translations\Model\ResourceFileEntryTable::class),
-            $container->get(\Translations\Model\ResourceFileEntryStringTable::class),
+            $container->get(\Translations\Model\EntryCommonTable::class),
+            $container->get(\Translations\Model\EntryStringTable::class),
             $container->get(\Zend\Log\Logger::class)
         );
 

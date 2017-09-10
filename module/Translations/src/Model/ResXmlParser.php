@@ -67,9 +67,14 @@ class ResXmlParser implements AppHelperInterface
     private $resourceFileEntryTable;
 
     /**
-     * @var ResourceFileEntryStringTable
+     * @var EntryCommonTable
      */
-    private $resourceFileEntryStringTable;
+    private $entryCommonTable;
+
+    /**
+     * @var EntryStringTable
+     */
+    private $entryStringTable;
 
     /**
      * @var Logger
@@ -149,10 +154,11 @@ class ResXmlParser implements AppHelperInterface
      * @param array $resourceTypes
      * @param ArrayObject $entries
      * @param ArrayObject $entriesDbOnly
+     * @param ArrayObject $entryCommons
      * @param ArrayObject $entryStrings
      * @param ResXmlParserResult $result
      */
-    private function importXmlString(string $xmlString, string $querySelector, bool $deleteDbOnly, AppResource $resource, AppResourceFile $resourceFile, array $resourceTypes, ArrayObject $entries, ArrayObject $entriesDbOnly, ArrayObject $entryStrings, ResXmlParserResult $result)
+    private function importXmlString(string $xmlString, string $querySelector, bool $deleteDbOnly, AppResource $resource, AppResourceFile $resourceFile, array $resourceTypes, ArrayObject $entries, ArrayObject $entriesDbOnly, ArrayObject $entryCommons, ArrayObject $entryStrings, ResXmlParserResult $result)
     {
         $dom = new Document($xmlString);
         $query = new Query();
@@ -253,12 +259,27 @@ class ResXmlParser implements AppHelperInterface
             }
 
             if ($resourceFileEntry->ResourceTypeId === array_search('string', $resourceTypes)) {
-                if (! array_key_exists($resourceFileEntry->Id, $entryStrings)) {
-                    $resourceFileEntryString = new ResourceFileEntryString();
-                    $resourceFileEntryString->AppResourceId = $resource->Id;
-                    $resourceFileEntryString->ResourceFileEntryId = $resourceFileEntry->Id;
-                    $entryStrings[$resourceFileEntry->Id] = $resourceFileEntryString;
+                if (! array_key_exists($resourceFileEntry->Id, $entryCommons)) {
+                    $entryCommon = new EntryCommon();
+                    $entryCommon->AppResourceId = $resource->Id;
+                    $entryCommon->ResourceFileEntryId = $resourceFileEntry->Id;
+                    $entryCommon->LastChange = 0;
+
+                    $entryCommon = $this->entryCommonTable->saveEntryCommon($entryCommon);
+
+                    $entryCommons[$resourceFileEntry->Id] = $entryCommon;
                 }
+
+                $entryCommon = $entryCommons[$resourceFileEntry->Id];
+
+                if (! array_key_exists($entryCommon->Id, $entryStrings)) {
+                    $entryString = new EntryString();
+                    $entryString->EntryCommonId = $entryCommon->Id;
+
+                    $entryStrings[$entryCommon->Id] = $entryString;
+                }
+
+                $entryString = $entryStrings[$entryCommon->Id];
 
                 try {
                     $decodedString = $this->decodeAndroidTranslationString($node->textContent);
@@ -273,11 +294,12 @@ Exception trace:
                     $this->logger->err('An error during decoding of Android string', ['messageExtended' => $message]);
                 }
 
-                $resourceFileEntryString = $entryStrings[$resourceFileEntry->Id];
-                if ($resourceFileEntryString->Value !== $decodedString) {
-                    $resourceFileEntryString->Value = $decodedString;
-                    $resourceFileEntryString->LastChange = time();
-                    $this->resourceFileEntryStringTable->saveResourceFileEntryString($resourceFileEntryString);
+                if ($entryString->Value !== $decodedString) {
+                    $entryString->Value = $decodedString;
+                    $entryCommon->LastChange = time();
+
+                    $this->entryCommonTable->saveEntryCommon($entryCommon);
+                    $this->entryStringTable->saveEntryString($entryString);
 
                     if (! $entryAlreadyUpdated) {
                         $result->entriesUpdated++;
@@ -311,17 +333,19 @@ Exception trace:
      * @param AppResourceFileTable $appResourceFileTable
      * @param ResourceTypeTable $resourceTypeTable
      * @param ResourceFileEntryTable $resourceFileEntryTable
-     * @param ResourceFileEntryStringTable $resourceFileEntryStringTable
+     * @param EntryCommonTable  $entryCommonTable
+     * @param EntryStringTable $entryStringTable
      * @param Logger $logger
      * @codeCoverageIgnore
      */
-    public function __construct(AppResourceTable $appResourceTable, AppResourceFileTable $appResourceFileTable, ResourceTypeTable $resourceTypeTable, ResourceFileEntryTable $resourceFileEntryTable, ResourceFileEntryStringTable $resourceFileEntryStringTable, Logger $logger)
+    public function __construct(AppResourceTable $appResourceTable, AppResourceFileTable $appResourceFileTable, ResourceTypeTable $resourceTypeTable, ResourceFileEntryTable $resourceFileEntryTable, EntryCommonTable  $entryCommonTable, EntryStringTable $entryStringTable, Logger $logger)
     {
         $this->appResourceTable = $appResourceTable;
         $this->appResourceFileTable = $appResourceFileTable;
         $this->resourceTypeTable = $resourceTypeTable;
         $this->resourceFileEntryTable = $resourceFileEntryTable;
-        $this->resourceFileEntryStringTable = $resourceFileEntryStringTable;
+        $this->entryCommonTable = $entryCommonTable;
+        $this->entryStringTable = $entryStringTable;
         $this->logger = $logger;
     }
 
@@ -398,9 +422,21 @@ Exception trace:
         foreach ($resources as $resource) {
             $pathRes = FileHelper::concatenatePath($path, $resource->Name);
 
+            $entryIds = [];
+            $entryCommons = new ArrayObject();
+            foreach ($this->entryCommonTable->fetchAll(['app_resource_id' => $resource->Id]) as $entryCommon) {
+                $entryIds[] = $entryCommon->Id;
+                $entryCommons[$entryCommon->ResourceFileEntryId] = $entryCommon;
+            }
+
+            // If empty, make sure there is a valid SQL that returns no results.
+            if (count($entryIds) == 0) {
+                $entryIds = 0;
+            }
+
             $entryStrings = new ArrayObject();
-            foreach ($this->resourceFileEntryStringTable->fetchAll(['app_resource_id' => $resource->Id]) as $resourceFileEntryString) {
-                $entryStrings[$resourceFileEntryString->ResourceFileEntryId] = $resourceFileEntryString;
+            foreach ($this->entryStringTable->fetchAll(['entry_common_id' => $entryIds]) as $entryString) {
+                $entryStrings[$entryString->EntryCommonId] = $entryString;
             }
 
             foreach ($resourceFiles as $resourceFile) {
@@ -420,7 +456,7 @@ Exception trace:
                     }
                 }
 
-                $this->importXmlString(file_get_contents($pathResFile), $querySelector, $deleteDbOnly, $resource, $resourceFile, $resourceTypes, $entries[$resourceFile->Name], $entriesDbOnly[$resourceFile->Name], $entryStrings, $result);
+                $this->importXmlString(file_get_contents($pathResFile), $querySelector, $deleteDbOnly, $resource, $resourceFile, $resourceTypes, $entries[$resourceFile->Name], $entriesDbOnly[$resourceFile->Name], $entryCommons, $entryStrings, $result);
             }
         }
 
