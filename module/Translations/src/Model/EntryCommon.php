@@ -15,16 +15,13 @@
 namespace Translations\Model;
 
 use DomainException;
-use Zend\Filter\StringTrim;
-use Zend\Filter\StripTags;
 use Zend\Filter\ToInt;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\Stdlib\ArraySerializableInterface;
-use Zend\Validator\StringLength;
 
-class ResourceFileEntryString implements ArraySerializableInterface, InputFilterAwareInterface
+class EntryCommon implements ArraySerializableInterface, InputFilterAwareInterface
 {
     /**
      * @var null|int
@@ -40,11 +37,6 @@ class ResourceFileEntryString implements ArraySerializableInterface, InputFilter
      * @var null|int
      */
     private $resourceFileEntryId;
-
-    /**
-     * @var null|string
-     */
-    private $value;
 
     /**
      * @var null|int
@@ -148,23 +140,6 @@ class ResourceFileEntryString implements ArraySerializableInterface, InputFilter
     }
 
     /**
-     * @return null|string
-     */
-    public function getValue() {
-        return $this->value;
-    }
-
-    /**
-     * @param null|string $value
-     */
-    public function setValue($value) {
-        if (!is_null($value)) {
-            $value = (string) $value;
-        }
-        $this->value = $value;
-    }
-
-    /**
      * @return null|int
      */
     public function getLastChange() {
@@ -227,24 +202,6 @@ class ResourceFileEntryString implements ArraySerializableInterface, InputFilter
             ],
         ]);
         $inputFilter->add([
-            'name'     => 'value',
-            'required' => true,
-            'filters'  => [
-                ['name' => StripTags::class],
-                ['name' => StringTrim::class],
-            ],
-            'validators' => [
-                [
-                    'name'    => StringLength::class,
-                    'options' => [
-                        'encoding' => 'UTF-8',
-                        'min' => 0,
-                        'max' => 20480,
-                    ],
-                ],
-            ],
-        ]);
-        $inputFilter->add([
             'name'     => 'last_change',
             'required' => true,
             'filters'  => [
@@ -265,7 +222,6 @@ class ResourceFileEntryString implements ArraySerializableInterface, InputFilter
         $this->Id = !empty($array['id']) ? $array['id'] : null;
         $this->AppResourceId = !empty($array['app_resource_id']) ? $array['app_resource_id'] : null;
         $this->ResourceFileEntryId = !empty($array['resource_file_entry_id']) ? $array['resource_file_entry_id'] : null;
-        $this->Value = !empty($array['value']) ? $array['value'] : null;
         $this->LastChange = !empty($array['last_change']) ? $array['last_change'] : null;
     }
 
@@ -279,7 +235,6 @@ class ResourceFileEntryString implements ArraySerializableInterface, InputFilter
             'id' => $this->Id,
             'app_resource_id' => $this->AppResourceId,
             'resource_file_entry_id' => $this->ResourceFileEntryId,
-            'value' => $this->Value,
             'last_change' => $this->LastChange,
         ];
     }

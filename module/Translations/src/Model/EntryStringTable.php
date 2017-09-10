@@ -20,7 +20,7 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
-class ResourceFileEntryStringTable
+class EntryStringTable
 {
     /**
      * @var TableGateway
@@ -58,13 +58,13 @@ class ResourceFileEntryStringTable
     /**
      * Get entry
      *
-     * @param int $id
+     * @param int $entryCommonId
      * @throws RuntimeException
-     * @return ResourceFileEntryString
+     * @return \Translations\Model\EntryString
      */
-    public function getResourceFileEntryString(int $id)
+    public function getEntryString(int $entryCommonId)
     {
-        $rowset = $this->tableGateway->select(['id' => $id]);
+        $rowset = $this->tableGateway->select(['entry_common_id' => $entryCommonId]);
         $row = $rowset->current();
         if (! $row) {
             throw new RuntimeException(sprintf('Could not find row with identifier %d', $id));
@@ -74,55 +74,55 @@ class ResourceFileEntryStringTable
     }
 
     /**
-     * Resource file entry string save function
+     * Entry string save function
      *
-     * @param ResourceFileEntryString $resourceFileEntryString
+     * @param EntryString $entryString
      * @throws RuntimeException
-     * @return ResourceFileEntryString
+     * @return \Translations\Model\EntryString
      */
-    public function saveResourceFileEntryString(ResourceFileEntryString $resourceFileEntryString)
+    public function saveEntryString(EntryString $entryString)
     {
         $data = [
-            'app_resource_id' => $resourceFileEntryString->AppResourceId,
-            'resource_file_entry_id' => $resourceFileEntryString->ResourceFileEntryId,
-            'value'  => $resourceFileEntryString->Value,
-            'last_change' => $resourceFileEntryString->LastChange,
+            'value' => $entryString->Value,
         ];
 
-        $id = (int) $resourceFileEntryString->Id;
+        $entryCommonId = (int) $entryString->EntryCommonId;
 
-        if ($id === 0) {
+        if ($entryCommonId == 0) {
+            throw new RuntimeException('Cannot handle entry with invalid id');
+        }
+
+        try {
+            if ($this->getEntryString($entryCommonId)) {
+                $this->tableGateway->update($data, ['entry_common_id' => $entryCommonId]);
+            }
+        } catch (RuntimeException $e) {
+            $data['entry_common_id'] = $entryCommonId;
             $this->tableGateway->insert($data);
-            $resourceFileEntryString->Id = $this->tableGateway->getLastInsertValue();
-            return $resourceFileEntryString;
         }
 
-        if (!$this->getResourceFileEntryString($id)) {
-            throw new RuntimeException(sprintf('Cannot update resource file entry string with identifier %d; does not exist', $id));
-        }
-
-        $this->tableGateway->update($data, ['id' => $id]);
         return $resourceFileEntryString;
     }
 
     /**
-     * Resource file entry string delete function
+     * Entry string delete function
+     * It shouldn't be called directly and therefore commented out.
      *
-     * @param int $id
+     * @param int $entryCommonId
      */
-    public function deleteResourceFileEntryString(int $id)
+    /*public function deleteEntryString(int $entryCommonId)
     {
-        $this->tableGateway->delete(['id' => $id]);
-    }
+        $this->tableGateway->delete(['entry_common_id' => $entryCommonId]);
+    }*/
 
     /**
-    * Gets array of all strings for translation
-    *
-    * @param int $appId
-    * @param int $appResourceId
-    * @param int $entryId
-    * @return array
-    */
+     * Gets array of all strings for translation
+     *
+     * @param int $appId
+     * @param int $appResourceId
+     * @param int $entryId
+     * @return array
+     */
     public function getAllResourceFileEntryStringsForTranslations(int $appId, int $appResourceId, int $entryId)
     {
         try {

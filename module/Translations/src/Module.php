@@ -69,6 +69,27 @@ class Module implements ConfigProviderInterface, ServiceProviderInterface
                     $resultSetPrototype->setArrayObjectPrototype(new Model\AppResourceFile());
                     return new TableGateway('app_resource_file', $dbAdapter, null, $resultSetPrototype);
                 },
+                Model\EntryCommonTable::class => function ($container) {
+                    $tableGateway = $container->get(Model\EntryCommonTableGateway::class);
+                    return new Model\EntryCommonTable($tableGateway);
+                },
+                Model\EntryCommonTableGateway::class => function ($container) {
+                    $dbAdapter = $container->get(AdapterInterface::class);
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Model\EntryCommon());
+                    return new TableGateway('entry_common', $dbAdapter, null, $resultSetPrototype);
+                },
+                Model\EntryStringTable::class => function ($container) {
+                    $tableGateway = $container->get(Model\EntryStringTableGateway::class);
+                    $appResourceTable = $container->get(Model\AppResourceTable::class);
+                    return new Model\EntryStringTable($tableGateway, $appResourceTable);
+                },
+                Model\EntryStringTableGateway::class => function ($container) {
+                    $dbAdapter = $container->get(AdapterInterface::class);
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Model\EntryString());
+                    return new TableGateway('entry_string', $dbAdapter, null, $resultSetPrototype);
+                },
                 Model\ResourceFileEntryTable::class => function ($container) {
                     $tableGateway = $container->get(Model\ResourceFileEntryTableGateway::class);
                     return new Model\ResourceFileEntryTable($tableGateway);
@@ -78,17 +99,6 @@ class Module implements ConfigProviderInterface, ServiceProviderInterface
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\ResourceFileEntry());
                     return new TableGateway('resource_file_entry', $dbAdapter, null, $resultSetPrototype);
-                },
-                Model\ResourceFileEntryStringTable::class => function ($container) {
-                    $tableGateway = $container->get(Model\ResourceFileEntryStringTableGateway::class);
-                    $appResourceTable = $container->get(Model\AppResourceTable::class);
-                    return new Model\ResourceFileEntryStringTable($tableGateway, $appResourceTable);
-                },
-                Model\ResourceFileEntryStringTableGateway::class => function ($container) {
-                    $dbAdapter = $container->get(AdapterInterface::class);
-                    $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new Model\ResourceFileEntryString());
-                    return new TableGateway('resource_file_entry_string', $dbAdapter, null, $resultSetPrototype);
                 },
                 Model\ResourceFileEntryStringSuggestionTable::class => function ($container) {
                     $tableGateway = $container->get(Model\ResourceFileEntryStringSuggestionTableGateway::class);
