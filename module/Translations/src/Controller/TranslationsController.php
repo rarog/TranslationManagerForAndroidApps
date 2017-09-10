@@ -17,8 +17,8 @@ namespace Translations\Controller;
 use ArrayObject;
 use Translations\Model\AppResourceTable;
 use Translations\Model\AppTable;
+use Translations\Model\EntryStringTable;
 use Translations\Model\ResourceFileEntryStringSuggestionTable;
-use Translations\Model\ResourceFileEntryStringTable;
 use Translations\Model\ResourceFileEntryTable;
 use Translations\Model\ResourceTypeTable;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -50,9 +50,9 @@ class TranslationsController extends AbstractActionController
     private $resourceFileEntryTable;
 
     /**
-     * @var ResourceFileEntryStringTable
+     * @var EntryStringTable
      */
-    private $resourceFileEntryStringTable;
+    private $entryStringTable;
 
     /**
      * @var ResourceFileEntryStringSuggestionTable
@@ -169,18 +169,18 @@ class TranslationsController extends AbstractActionController
      * @param AppResourceTable $appResourceTable
      * @param ResourceTypeTable $resourceTypeTable
      * @param ResourceFileEntryTable $resourceFileEntryTable
-     * @param ResourceFileEntryStringTable $resourceFileEntryStringTable
+     * @param EntryStringTable $entryStringTable
      * @param ResourceFileEntryStringSuggestionTable $resourceFileEntryStringSuggestionsTable
      * @param Translator $translator
      * @param Renderer $renderer
      */
-    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, ResourceTypeTable $resourceTypeTable, ResourceFileEntryTable $resourceFileEntryTable, ResourceFileEntryStringTable $resourceFileEntryStringTable, ResourceFileEntryStringSuggestionTable $resourceFileEntryStringSuggestionsTable, Translator $translator, Renderer $renderer)
+    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, ResourceTypeTable $resourceTypeTable, ResourceFileEntryTable $resourceFileEntryTable, EntryStringTable $entryStringTable, ResourceFileEntryStringSuggestionTable $resourceFileEntryStringSuggestionsTable, Translator $translator, Renderer $renderer)
     {
         $this->appTable = $appTable;
         $this->appResourceTable = $appResourceTable;
         $this->resourceTypeTable = $resourceTypeTable;
         $this->resourceFileEntryTable = $resourceFileEntryTable;
-        $this->resourceFileEntryStringTable = $resourceFileEntryStringTable;
+        $this->entryStringTable = $entryStringTable;
         $this->resourceFileEntryStringSuggestionsTable = $resourceFileEntryStringSuggestionsTable;
         $this->translator = $translator;
         $this->renderer = $renderer;
@@ -223,7 +223,7 @@ class TranslationsController extends AbstractActionController
 
         switch ($type->Name) {
             case 'String':
-                $typedEntry = $this->resourceFileEntryStringTable->getAllResourceFileEntryStringsForTranslations($appId, $resourceId, $entryId);
+                $typedEntry = $this->entryStringTable->getAllResourceFileEntryStringsForTranslations($appId, $resourceId, $entryId);
                 break;
             default:
                 return new JsonModel();
@@ -325,7 +325,7 @@ class TranslationsController extends AbstractActionController
         }
 
         $output = [];
-        $entries = $this->resourceFileEntryStringTable->getAllResourceFileEntryStringsForTranslations($appId, $resourceId, $entryId);
+        $entries = $this->entryStringTable->getAllResourceFileEntryStringsForTranslations($appId, $resourceId, $entryId);
         foreach ($entries as $entry) {
             $viewModel = $this->getViewModel();
             $viewModel->setVariables([

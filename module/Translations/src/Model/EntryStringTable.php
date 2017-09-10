@@ -133,16 +133,23 @@ class EntryStringTable
 
         $select = new Select;
         $select->columns([
+            'defaultValue' => 'value',
+        ])->from(['default' => $this->tableGateway->table]);
+
+        $onDefaultEntryCommon = new Expression('? = ?', [
+            ['default_common.id' => Expression::TYPE_IDENTIFIER],
+            ['default.entry_common_id' => Expression::TYPE_IDENTIFIER],
+        ]);
+        $select->join(['default_common' => 'entry_common'], $onDefaultEntryCommon, [
             'defaultId' => 'id',
             'appResourceId'  => 'app_resource_id',
             'resourceFileEntryId' => 'resource_file_entry_id',
-            'defaultValue' => 'value',
             'defaultLastChange' => 'last_change',
-        ])->from(['default' => $this->tableGateway->table]);
+        ], Select::JOIN_LEFT);
 
         $onAppResource = new Expression('? = ? AND ? = ? AND ? = ?', [
             ['app_resource.id'  => Expression::TYPE_IDENTIFIER],
-            ['default.app_resource_id' => Expression::TYPE_IDENTIFIER],
+            ['default_common.app_resource_id' => Expression::TYPE_IDENTIFIER],
             ['app_resource.app_id' => Expression::TYPE_IDENTIFIER],
             [$appId => Expression::TYPE_VALUE],
             ['app_resource.name' => Expression::TYPE_IDENTIFIER],
@@ -153,7 +160,7 @@ class EntryStringTable
         if (($defaultAppResource === false) || ($defaultAppResource->Id !== $appResourceId)) {
             $onResourceFileEntry = new Expression('? = ? AND ? = ? AND ? = ?', [
                 ['resource_file_entry.id' => Expression::TYPE_IDENTIFIER],
-                ['default.resource_file_entry_id' => Expression::TYPE_IDENTIFIER],
+                ['default_common.resource_file_entry_id' => Expression::TYPE_IDENTIFIER],
                 ['resource_file_entry.deleted' => Expression::TYPE_IDENTIFIER],
                 [0 => Expression::TYPE_VALUE],
                 ['resource_file_entry.translatable' => Expression::TYPE_IDENTIFIER],
@@ -162,7 +169,7 @@ class EntryStringTable
         } else {
             $onResourceFileEntry = new Expression('? = ? AND ? = ?', [
                 ['resource_file_entry.id' => Expression::TYPE_IDENTIFIER],
-                ['default.resource_file_entry_id' => Expression::TYPE_IDENTIFIER],
+                ['default_common.resource_file_entry_id' => Expression::TYPE_IDENTIFIER],
                 ['resource_file_entry.deleted' => Expression::TYPE_IDENTIFIER],
                 [0 => Expression::TYPE_VALUE],
             ]);
@@ -186,34 +193,41 @@ class EntryStringTable
             'entryCount' => new Expression('count(distinct entry_count.id)'),
         ], $select::JOIN_LEFT);
 
-        $onResourceFileEntryString = new Expression('? = ? AND ? = ?', [
-            ['resource_file_entry_string.resource_file_entry_id' => Expression::TYPE_IDENTIFIER],
-            ['default.resource_file_entry_id'  => Expression::TYPE_IDENTIFIER],
-            ['resource_file_entry_string.app_resource_id' => Expression::TYPE_IDENTIFIER],
+        $onEntryCommon = new Expression('? = ? AND ? = ?', [
+            ['entry_common.resource_file_entry_id' => Expression::TYPE_IDENTIFIER],
+            ['default_common.resource_file_entry_id'  => Expression::TYPE_IDENTIFIER],
+            ['entry_common.app_resource_id' => Expression::TYPE_IDENTIFIER],
             [$appResourceId => Expression::TYPE_VALUE],
         ]);
-        $select->join('resource_file_entry_string', $onResourceFileEntryString, [
+        $select->join('entry_common', $onEntryCommon, [
             'id' => 'id',
-            'value' => 'value',
             'lastChange' => 'last_change',
         ], Select::JOIN_LEFT);
 
-        $select->join('resource_file_entry_string_suggestion', 'resource_file_entry_string_suggestion.resource_file_entry_string_id = resource_file_entry_string.id',[
-            'suggestionCount' => new Expression('count(distinct resource_file_entry_string_suggestion.id)'),
+        $onEntryString = new Expression('? = ?', [
+            ['entry_string.entry_common_id' => Expression::TYPE_IDENTIFIER],
+            ['entry_common.id' => Expression::TYPE_IDENTIFIER],
+        ]);
+        $select->join('entry_string', $onEntryString, [
+            'value' => 'value',
+        ], Select::JOIN_LEFT);
+
+        $select->join('suggestion', 'suggestion.entry_common_id = entry_common.id',[
+            'suggestionCount' => new Expression('count(distinct suggestion.id)'),
         ], $select::JOIN_LEFT);
 
         $select->group([
-            'default.id',
-            'default.app_resource_id',
-            'default.resource_file_entry_id',
             'default.value',
-            'default.last_change',
+            'default_common.id',
+            'default_common.app_resource_id',
+            'default_common.resource_file_entry_id',
+            'default_common.last_change',
             'resource_file_entry.name',
             'resource_file_entry.product',
             'resource_file_entry.description',
-            'resource_file_entry_string.id',
-            'resource_file_entry_string.value',
-            'resource_file_entry_string.last_change',
+            'entry_common.id',
+            'entry_common.last_change',
+            'entry_string.value',
         ]);
 
         if ($entryId > 0) {
@@ -222,7 +236,7 @@ class EntryStringTable
 
         $returnArray = [];
 
-        $sql = new Sql($this->tableGateway->adapter, $this->tableGateway->table);
+        $sql = new Sql($this->tableGateway->adapter, $this->tableGateway->table);//print_r($select->getSqlString($sql->getAdapter()->getPlatform()));
         $results = $sql->prepareStatementForSqlObject($select)->execute();
 
         foreach ($results as $result) {
