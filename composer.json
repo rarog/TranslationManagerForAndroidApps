@@ -47,6 +47,7 @@
 	"autoload-dev" : {
 		"psr-4" : {
 			"ApplicationTest\\" : "module/Application/test/",
+			"SetupTest\\" : "module/Setup/test/",
 			"TranslationsTest\\" : "module/Translations/test/"
 		}
 	},

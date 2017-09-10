@@ -71,6 +71,25 @@ class DatabaseHelper
 	const SETUPINCOMPLETE = 30;
 	const CURRENTSCHEMAISLATEST = 31;
 
+	/**
+	 * Generates installation schema RexEx
+	 * @throws \RuntimeException
+	 * @return string
+	 */
+	private function getInstallationSchemaRegex()
+	{
+	    $schemaNaming = $this->setupConfig->get('db_schema_naming');
+
+	    if (! array_key_exists($this->dbConfig['driver'], $schemaNaming)) {
+	        throw new \RuntimeException('Database config contains unsupported driver.');
+	    }
+
+	    return sprintf(
+	        '/schema\.%s\.(\d)\.sql/',
+	        $schemaNaming[$this->dbConfig['driver']]
+	    );
+	}
+
 
 	/**
 	 * Constructor
