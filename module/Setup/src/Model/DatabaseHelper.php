@@ -51,7 +51,12 @@ class DatabaseHelper
     /**
      * @var int
      */
-    private $lastStatus;
+    private $lastParsedSchemaVersion = 0;
+
+    /**
+     * @var int
+     */
+    private $lastStatus = 0;
 
 	/**
 	 * @var string
@@ -93,7 +98,7 @@ class DatabaseHelper
     	    }
 
     	    $this->installationSchemaRegex = sprintf(
-    	        '/schema\.%s\.(\d)\.sql/',
+    	        '/schema\.%s\.(\d+)\.sql/',
     	        $schemaNaming[$driver]
     	    );
 	    }
@@ -140,6 +145,16 @@ class DatabaseHelper
     }
 
     /**
+     * Helper function to return last status parsed schema version.
+     *
+     * @return int
+     */
+    public function getLastParsedSchemaVersion()
+    {
+        return $this->lastParsedSchemaVersion;
+    }
+
+    /**
      * Helper function to return last status.
      *
      * @return int
@@ -180,12 +195,28 @@ class DatabaseHelper
      */
     private function getSchemaInstallationFilepath()
     {
-        $filename = $this->normalizePath($this->setupConfig->get('db_schema_path'));
-        $filename .= sprintf(
-            '/schema.%s.sql',
-            $this->setupConfig->get('db_schema_naming')[$this->dbConfig['driver']]
-        );
-        return $filename;
+        $path = $this->normalizePath($this->setupConfig->get('db_schema_path'));
+        $pattern = $this->getInstallationSchemaRegex();
+
+        $max = 0;
+        $maxFilename = '';
+        foreach (scandir($path) as $file) {
+            if (preg_match($pattern, $file, $matches) == 1) {
+                $maxTemp = (int) $matches[1];
+                if ($maxTemp > $max) {
+                    $max = $maxTemp;
+                    $maxFilename = $file;
+                }
+            }
+        }
+
+        $this->lastParsedSchemaVersion = $max;
+
+        if ($max === 0) {
+            throw new \RuntimeException('No valid installation schema file found.');
+        }
+
+        return $path . '/' . $maxFilename;
     }
 
     /**
@@ -239,7 +270,7 @@ class DatabaseHelper
             $insert = $this->getSql()->insert($this->setupConfig->get('db_schema_version_table'));
             $insert->columns(['version', 'setupid', 'timestamp'])
                 ->values([
-                    'version' => 1,
+                    'version' => $this->lastParsedSchemaVersion,
                     'setupid' => $this->setupConfig->get('setup_id'),
                     'timestamp' => time(),
                 ]);

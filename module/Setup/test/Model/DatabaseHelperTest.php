@@ -15,6 +15,7 @@
 namespace TranslationsTest\Model;
 
 use PHPUnit\Framework\TestCase;
+use phpmock\MockBuilder;
 use Setup\Model\DatabaseHelper;
 
 class DatabaseHelperTest extends TestCase
@@ -38,7 +39,7 @@ class DatabaseHelperTest extends TestCase
     ];
 
     /**
-     * @return ResXmlParser
+     * @return DatabaseHelper
      */
     private function getDatabaseHelper(array $config)
     {
@@ -49,6 +50,30 @@ class DatabaseHelperTest extends TestCase
             $this->createMock(\Zend\Mvc\I18n\Translator::class),
             $this->createMock(\ZfcUser\Options\ModuleOptions::class)
         );
+    }
+
+    /**
+     * @return \phpmock\Mock
+     */
+    private function getMockScandirMysqlSchema()
+    {
+        $builder = new MockBuilder();
+        $builder->setNamespace('Setup\Model')
+                ->setName('scandir')
+                ->setFunction(
+                    function ($directory, $sorting_order = null, $context = null) {
+                        return [
+                            '.',
+                            '..',
+                            'schema.mysql.1.sql',
+                            'schema.mysql.10.sql',
+                            'schema.mysql.9.sql',
+                            'some.file',
+                        ];
+                    }
+                );
+
+        return $builder->build();
     }
 
     /**
@@ -87,7 +112,7 @@ class DatabaseHelperTest extends TestCase
     {
         $databaseHelper = $this->getDatabaseHelper($this->mysqlConfig);
         $result = $this->invokeMethod($databaseHelper, 'getInstallationSchemaRegex');
-        $this->assertEquals('/schema\.mysql\.(\d)\.sql/', $result);
+        $this->assertEquals('/schema\.mysql\.(\d+)\.sql/', $result);
     }
 
     /**
@@ -97,6 +122,43 @@ class DatabaseHelperTest extends TestCase
     {
         $databaseHelper = $this->getDatabaseHelper($this->sqliteConfig);
         $result = $this->invokeMethod($databaseHelper, 'getInstallationSchemaRegex');
-        $this->assertEquals('/schema\.sqlite\.(\d)\.sql/', $result);
+        $this->assertEquals('/schema\.sqlite\.(\d+)\.sql/', $result);
+    }
+
+    /**
+     * @covers \Setup\Model\DatabaseHelper::getSchemaInstallationFilepath
+     */
+    public function testGetSchemaInstallationFilepath()
+    {
+        $mock = $this->getMockScandirMysqlSchema();
+
+        $databaseHelper = $this->getDatabaseHelper($this->mysqlConfig);
+
+        $mock->enable();
+        $result = $this->invokeMethod($databaseHelper, 'getSchemaInstallationFilepath');
+        $mock->disable();
+        $maxVersion = $databaseHelper->getLastParsedSchemaVersion();
+
+        $this->assertEquals('data/schema/schema.mysql.10.sql', $result);
+        $this->assertEquals(10, $maxVersion);
+    }
+
+    /**
+     * @covers \Setup\Model\DatabaseHelper::getSchemaInstallationFilepath
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage No valid installation schema file found.
+     */
+    public function testGetSchemaInstallationFilepathException()
+    {
+        $mock = $this->getMockScandirMysqlSchema();
+
+        $databaseHelper = $this->getDatabaseHelper($this->sqliteConfig);
+
+        $mock->enable();
+        try {
+            $result = $this->invokeMethod($databaseHelper, 'getSchemaInstallationFilepath');
+        } finally {
+            $mock->disable();
+        }
     }
 }
