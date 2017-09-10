@@ -140,7 +140,7 @@ CREATE TABLE suggestion (
     id              INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     entry_common_id INTEGER NOT NULL,
     user_id         INTEGER NOT NULL,
-    created         INTEGER NOT NULL,
+    last_change     INTEGER NOT NULL,
     FOREIGN KEY (entry_common_id) REFERENCES entry_common (id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );

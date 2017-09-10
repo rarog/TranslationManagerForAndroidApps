@@ -15,8 +15,6 @@
 namespace Translations\Model;
 
 use RuntimeException;
-use Zend\Db\Sql\Select;
-use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
 class EntryCommonTable
@@ -88,7 +86,7 @@ class EntryCommonTable
             return $entryCommon;
         }
 
-        if (!$this->getEntryCommon($id)) {
+        if (! $this->getEntryCommon($id)) {
             throw new RuntimeException(sprintf('Cannot update row with identifier %d; does not exist', $id));
         }
 

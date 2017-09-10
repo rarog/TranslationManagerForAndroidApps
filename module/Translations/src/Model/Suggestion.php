@@ -15,16 +15,13 @@
 namespace Translations\Model;
 
 use DomainException;
-use Zend\Filter\StringTrim;
-use Zend\Filter\StripTags;
 use Zend\Filter\ToInt;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\Stdlib\ArraySerializableInterface;
-use Zend\Validator\StringLength;
 
-class ResourceFileEntryStringSuggestion implements ArraySerializableInterface, InputFilterAwareInterface
+class Suggestion implements ArraySerializableInterface, InputFilterAwareInterface
 {
     /**
      * @var null|int
@@ -34,7 +31,7 @@ class ResourceFileEntryStringSuggestion implements ArraySerializableInterface, I
     /**
      * @var null|int
      */
-    private $resourceFileEntryStringId;
+    private $entryCommonId;
 
     /**
      * @var null|int
@@ -42,14 +39,9 @@ class ResourceFileEntryStringSuggestion implements ArraySerializableInterface, I
     private $userId;
 
     /**
-     * @var null|string
-     */
-    private $value;
-
-    /**
      * @var null|int
      */
-    private $created;
+    private $lastChange;
 
     /**
      * @var InputFilter
@@ -76,7 +68,7 @@ class ResourceFileEntryStringSuggestion implements ArraySerializableInterface, I
     public function __get($name)
     {
         $method = 'get' . $name;
-        if (!method_exists($this, $method)) {
+        if (! method_exists($this, $method)) {
             throw new \Exception('Invalid property');
         }
         return $this->$method();
@@ -90,7 +82,7 @@ class ResourceFileEntryStringSuggestion implements ArraySerializableInterface, I
     public function __set($name, $value)
     {
         $method = 'set' . $name;
-        if (!method_exists($this, $method)) {
+        if (! method_exists($this, $method)) {
             throw new \Exception('Invalid property');
         }
         $this->$method($value);
@@ -107,7 +99,7 @@ class ResourceFileEntryStringSuggestion implements ArraySerializableInterface, I
      * @param null|int $id
      */
     public function setId($id) {
-        if (!is_null($id)) {
+        if (! is_null($id)) {
             $id = (int) $id;
         }
         $this->id = $id;
@@ -116,18 +108,18 @@ class ResourceFileEntryStringSuggestion implements ArraySerializableInterface, I
     /**
      * @return null|int
      */
-    public function getResourceFileEntryStringId() {
-        return $this->resourceFileEntryStringId;
+    public function getEntryCommonId() {
+        return $this->entryCommonId;
     }
 
     /**
-     * @param null|int $resourceFileEntryStringId
+     * @param null|int $entryCommonId
      */
-    public function setResourceFileEntryStringId($resourceFileEntryStringId) {
-        if (!is_null($resourceFileEntryStringId)) {
-            $resourceFileEntryStringId = (int) $resourceFileEntryStringId;
+    public function setEntryCommonId($entryCommonId) {
+        if (! is_null($entryCommonId)) {
+            $entryCommonId = (int) $entryCommonId;
         }
-        $this->resourceFileEntryStringId = $resourceFileEntryStringId;
+        $this->entryCommonId = $entryCommonId;
     }
 
     /**
@@ -141,7 +133,7 @@ class ResourceFileEntryStringSuggestion implements ArraySerializableInterface, I
      * @param null|int $userId
      */
     public function setUserId($userId) {
-        if (!is_null($userId)) {
+        if (! is_null($userId)) {
             $userId = (int) $userId;
         }
         $this->userId = $userId;
@@ -155,30 +147,20 @@ class ResourceFileEntryStringSuggestion implements ArraySerializableInterface, I
     }
 
     /**
-     * @param null|string $value
-     */
-    public function setValue($value) {
-        if (!is_null($value)) {
-            $value = (string) $value;
-        }
-        $this->value = $value;
-    }
-
-    /**
      * @return null|int
      */
-    public function getCreated() {
-        return $this->created;
+    public function getChange() {
+        return $this->lastChange;
     }
 
     /**
-     * @param null|int $created
+     * @param null|int $lastChange
      */
-    public function setCreated($created) {
-        if (!is_null($created)) {
-            $created = (int) $created;
+    public function setLastChange($lastChange) {
+        if (! is_null($lastChange)) {
+            $lastChange = (int) $lastChange;
         }
-        $this->created = $created;
+        $this->lastChange = $lastChange;
     }
 
     /**
@@ -227,25 +209,7 @@ class ResourceFileEntryStringSuggestion implements ArraySerializableInterface, I
             ],
         ]);
         $inputFilter->add([
-            'name'     => 'value',
-            'required' => true,
-            'filters'  => [
-                ['name' => StripTags::class],
-                ['name' => StringTrim::class],
-            ],
-            'validators' => [
-                [
-                    'name'    => StringLength::class,
-                    'options' => [
-                        'encoding' => 'UTF-8',
-                        'min' => 0,
-                        'max' => 20480,
-                    ],
-                ],
-            ],
-        ]);
-        $inputFilter->add([
-            'name'       => 'created',
+            'name'       => 'last_change',
             'required'   => true,
             'filters'  => [
                 ['name' => ToInt::class],
@@ -263,10 +227,9 @@ class ResourceFileEntryStringSuggestion implements ArraySerializableInterface, I
     public function exchangeArray(array $array)
     {
         $this->Id = !empty($array['id']) ? $array['id'] : null;
-        $this->ResourceFileEntryStringId = !empty($array['resource_file_entry_string_id']) ? $array['resource_file_entry_string_id'] : null;
+        $this->EntryCommonId = !empty($array['entry_common_id']) ? $array['entry_common_id'] : null;
         $this->UserId = !empty($array['user_id']) ? $array['user_id'] : null;
-        $this->Value = !empty($array['value']) ? $array['value'] : null;
-        $this->Created = !empty($array['created']) ? $array['created'] : null;
+        $this->LastChange = !empty($array['last_change']) ? $array['last_change'] : null;
     }
 
     /**
@@ -277,10 +240,9 @@ class ResourceFileEntryStringSuggestion implements ArraySerializableInterface, I
     {
         return [
             'id' => $this->Id,
-            'resource_file_entry_string_id' => $this->ResourceFileEntryStringId,
+            'entry_common_id' => $this->EntryCommonId,
             'user_id' => $this->UserId,
-            'value' => $this->Value,
-            'created' => $this->Created,
+            'last_change' => $this->LastChange,
         ];
     }
 }

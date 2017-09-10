@@ -17,7 +17,7 @@ namespace Translations\Model;
 use RuntimeException;
 use Zend\Db\TableGateway\TableGateway;
 
-class ResourceFileEntryStringSuggestionTable
+class SuggestionTable
 {
     /**
      * @var TableGateway
@@ -50,9 +50,9 @@ class ResourceFileEntryStringSuggestionTable
      *
      * @param int $id
      * @throws RuntimeException
-     * @return ResourceFileEntryStringSuggestion
+     * @return \Translations\Model\Suggestion
      */
-    public function getResourceFileEntryStringSuggestion(int $id)
+    public function getSuggestion(int $id)
     {
         $rowset = $this->tableGateway->select(['id' => $id]);
         $row = $rowset->current();
@@ -64,43 +64,42 @@ class ResourceFileEntryStringSuggestionTable
     }
 
     /**
-     * Resource file entry string suggestion save function
+     * Suggestion save function
      *
-     * @param ResourceFileEntryStringSuggestion $resourceFileEntryStringSuggestion
+     * @param Suggestion $suggestion
      * @throws RuntimeException
-     * @return ResourceFileEntryStringSuggestion
+     * @return \Translations\Model\Suggestion
      */
-    public function saveResourceFileEntryStringSuggestion(ResourceFileEntryStringSuggestion $resourceFileEntryStringSuggestion)
+    public function saveSuggestion(Suggestion $suggestion)
     {
         $data = [
-            'resource_file_entry_string_id' => $resourceFileEntryStringSuggestion->ResourceFileEntryStringId,
-            'user_id' => $resourceFileEntryStringSuggestion->UserId,
-            'value' => $resourceFileEntryStringSuggestion->Value,
-            'created' => $resourceFileEntryStringSuggestion->Created,
+            'entry_common_id' => $suggestion->EntryCommonId,
+            'user_id' => $suggestion->UserId,
+            'last_change' => $suggestion->LastChange,
         ];
 
-        $id = (int) $resourceFileEntryStringSuggestion->Id;
+        $id = (int) $suggestion->Id;
 
         if ($id === 0) {
             $this->tableGateway->insert($data);
-            $resourceFileEntryStringSuggestion->Id = $this->tableGateway->getLastInsertValue();
-            return $resourceFileEntryStringSuggestion;
+            $suggestion->Id = $this->tableGateway->getLastInsertValue();
+            return $suggestion;
         }
 
-        if (!$this->getResourceFileEntryStringSuggestion($id)) {
-            throw new RuntimeException(sprintf('Cannot update resource file entry string suggestion with identifier %d; does not exist', $id));
+        if (! $this->getSuggestion($id)) {
+            throw new RuntimeException(sprintf('Cannot update row with identifier %d; does not exist', $id));
         }
 
         $this->tableGateway->update($data, ['id' => $id]);
-        return $resourceFileEntryStringSuggestion;
+        return $suggestion;
     }
 
     /**
-     * Resource file entry string suggestion delete function
+     * Suggestion delete function
      *
      * @param int $id
      */
-    public function deleteResourceFileEntryStringSuggestion(int $id)
+    public function deleteSuggestion(int $id)
     {
         $this->tableGateway->delete(['id' => $id]);
     }

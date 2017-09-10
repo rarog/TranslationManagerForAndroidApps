@@ -146,7 +146,7 @@ CREATE TABLE `suggestion` (
     `id`              BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `entry_common_id` BIGINT(20) UNSIGNED NOT NULL,
     `user_id`         BIGINT(20) UNSIGNED NOT NULL,
-    `created`         BIGINT(20) NOT NULL,
+    `last_change      BIGINT(20) NOT NULL,
     INDEX `suggestion_ik1` (`created`),
     INDEX `suggestion_fk1` (`entry_common_id`),
     INDEX `suggestion_fk2` (`user_id`),

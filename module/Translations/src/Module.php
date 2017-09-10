@@ -100,16 +100,6 @@ class Module implements ConfigProviderInterface, ServiceProviderInterface
                     $resultSetPrototype->setArrayObjectPrototype(new Model\ResourceFileEntry());
                     return new TableGateway('resource_file_entry', $dbAdapter, null, $resultSetPrototype);
                 },
-                Model\ResourceFileEntryStringSuggestionTable::class => function ($container) {
-                    $tableGateway = $container->get(Model\ResourceFileEntryStringSuggestionTableGateway::class);
-                    return new Model\ResourceFileEntryStringSuggestionTable($tableGateway);
-                },
-                Model\ResourceFileEntryStringSuggestionTableGateway::class => function ($container) {
-                    $dbAdapter = $container->get(AdapterInterface::class);
-                    $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new Model\ResourceFileEntryStringSuggestion());
-                    return new TableGateway('resource_file_entry_string_suggestion', $dbAdapter, null, $resultSetPrototype);
-                },
                 Model\ResourceTypeTable::class => function ($container) {
                     $tableGateway = $container->get(Model\ResourceTypeTableGateway::class);
                     return new Model\ResourceTypeTable($tableGateway);
@@ -119,6 +109,26 @@ class Module implements ConfigProviderInterface, ServiceProviderInterface
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\ResourceType());
                     return new TableGateway('resource_type', $dbAdapter, null, $resultSetPrototype);
+                },
+                Model\SuggestionTable::class => function ($container) {
+                    $tableGateway = $container->get(Model\SuggestionTableGateway::class);
+                    return new Model\SuggestionTable($tableGateway);
+                },
+                Model\SuggestionTableGateway::class => function ($container) {
+                    $dbAdapter = $container->get(AdapterInterface::class);
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Model\Suggestion());
+                    return new TableGateway('suggestion', $dbAdapter, null, $resultSetPrototype);
+                },
+                Model\SuggestionStringTable::class => function ($container) {
+                    $tableGateway = $container->get(Model\SuggestionStringTableGateway::class);
+                    return new Model\SuggestionStringTable($tableGateway);
+                },
+                Model\SuggestionStringTableGateway::class => function ($container) {
+                    $dbAdapter = $container->get(AdapterInterface::class);
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Model\SuggestionString());
+                    return new TableGateway('suggestion_string', $dbAdapter, null, $resultSetPrototype);
                 },
                 Model\TeamTable::class => function ($container) {
                     $tableGateway = $container->get(Model\TeamTableGateway::class);

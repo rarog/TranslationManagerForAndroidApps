@@ -14,6 +14,7 @@
 
 namespace Translations\Model;
 
+use ArrayObject;
 use RuntimeException;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
@@ -88,7 +89,7 @@ class EntryStringTable
 
         $entryCommonId = (int) $entryString->EntryCommonId;
 
-        if ($entryCommonId == 0) {
+        if ($entryCommonId === 0) {
             throw new RuntimeException('Cannot handle entry with invalid id');
         }
 
@@ -121,9 +122,9 @@ class EntryStringTable
      * @param int $appId
      * @param int $appResourceId
      * @param int $entryId
-     * @return array
+     * @return \ArrayObject
      */
-    public function getAllResourceFileEntryStringsForTranslations(int $appId, int $appResourceId, int $entryId)
+    public function getAllEntryStringsForTranslations(int $appId, int $appResourceId, int $entryId)
     {
         try {
             $defaultAppResource = $this->appResourceTable->getAppResourceByAppIdAndName($appId, 'values');
@@ -145,7 +146,7 @@ class EntryStringTable
             'appResourceId'  => 'app_resource_id',
             'resourceFileEntryId' => 'resource_file_entry_id',
             'defaultLastChange' => 'last_change',
-        ], Select::JOIN_LEFT);
+        ], Select::JOIN_INNER);
 
         $onAppResource = new Expression('? = ? AND ? = ? AND ? = ?', [
             ['app_resource.id'  => Expression::TYPE_IDENTIFIER],
@@ -231,16 +232,16 @@ class EntryStringTable
         ]);
 
         if ($entryId > 0) {
-            $select->where(['default.id' => $entryId]);
+            $select->where(['default_common.id' => $entryId]);
         }
 
-        $returnArray = [];
+        $returnArray = new ArrayObject([], ArrayObject::ARRAY_AS_PROPS);
 
-        $sql = new Sql($this->tableGateway->adapter, $this->tableGateway->table);//print_r($select->getSqlString($sql->getAdapter()->getPlatform()));
+        $sql = new Sql($this->tableGateway->adapter, $this->tableGateway->table);
         $results = $sql->prepareStatementForSqlObject($select)->execute();
 
         foreach ($results as $result) {
-            $returnArray[] = $result;
+            $returnArray[] = new ArrayObject($result, ArrayObject::ARRAY_AS_PROPS);
         }
 
         return $returnArray;
