@@ -119,26 +119,36 @@ CREATE TABLE resource_file_entry (
 CREATE INDEX resource_file_entry_ik1 ON resource_file_entry (deleted);
 CREATE INDEX resource_file_entry_ik2 ON resource_file_entry (translatable);
 
-CREATE TABLE resource_file_entry_string (
+CREATE TABLE entry_common (
     id                     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     app_resource_id        INTEGER NOT NULL,
     resource_file_entry_id INTEGER NOT NULL,
-    value                  TEXT NOT NULL,
     last_change            INTEGER NOT NULL,
     FOREIGN KEY (app_resource_id) REFERENCES app_resource (id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (resource_file_entry_id) REFERENCES resource_file_entry (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE INDEX resource_file_entry_string_ik1 ON resource_file_entry_string (last_change);
+CREATE INDEX entry_common_ik1 ON resource_file_entry_string (last_change);
 
-CREATE TABLE resource_file_entry_string_suggestion (
-    id                            INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    resource_file_entry_string_id INTEGER NOT NULL,
-    user_id                       INTEGER NOT NULL,
-    value                         TEXT NOT NULL,
-    created                       INTEGER NOT NULL,
-    FOREIGN KEY (resource_file_entry_string_id) REFERENCES resource_file_entry_string (id) ON DELETE CASCADE ON UPDATE CASCADE,
+CREATE TABLE entry_string (
+    entry_common_id INTEGER NOT NULL,
+    value           TEXT NOT NULL,
+    FOREIGN KEY (entry_common_id) REFERENCES entry_common (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE suggestion (
+    id              INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    entry_common_id INTEGER NOT NULL,
+    user_id         INTEGER NOT NULL,
+    created         INTEGER NOT NULL,
+    FOREIGN KEY (entry_common_id) REFERENCES entry_common (id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE INDEX resource_file_entry_string_suggestion_ik1 ON resource_file_entry_string_suggestion (created);
+
+CREATE TABLE suggestion_string (
+    suggestion_id INTEGER NOT NULL,
+    value         TEXT NOT NULL,
+    FOREIGN KEY (suggestion_id) REFERENCES suggestion (id) ON DELETE CASCADE ON UPDATE CASCADE
+);

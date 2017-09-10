@@ -123,28 +123,40 @@ CREATE TABLE `resource_file_entry` (
     CONSTRAINT `resource_file_entry_fk2` FOREIGN KEY (`resource_type_id`) REFERENCES `resource_type` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `resource_file_entry_string` (
+CREATE TABLE `entry_common` (
     `id`                     BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `app_resource_id`        BIGINT(20) UNSIGNED NOT NULL,
     `resource_file_entry_id` BIGINT(20) UNSIGNED NOT NULL,
-    `value`                  VARCHAR(20480) NOT NULL,
     `last_change`            BIGINT(20) NOT NULL,
-    INDEX `resource_file_entry_string_ik1` (`last_change`),
-    INDEX `resource_file_entry_string_fk1` (`app_resource_id`),
-    INDEX `resource_file_entry_string_fk2` (`resource_file_entry_id`),
-    CONSTRAINT `resource_file_entry_string_fk1` FOREIGN KEY (`app_resource_id`) REFERENCES `app_resource` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT `resource_file_entry_string_fk2` FOREIGN KEY (`resource_file_entry_id`) REFERENCES `resource_file_entry` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+    INDEX `entry_common_ik1` (`last_change`),
+    INDEX `entry_common_fk1` (`app_resource_id`),
+    INDEX `entry_common_fk2` (`resource_file_entry_id`),
+    CONSTRAINT `entry_common_fk1` FOREIGN KEY (`app_resource_id`) REFERENCES `app_resource` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `entry_common_fk2` FOREIGN KEY (`resource_file_entry_id`) REFERENCES `resource_file_entry` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `resource_file_entry_string_suggestion` (
-    `id`                            BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `resource_file_entry_string_id` BIGINT(20) UNSIGNED NOT NULL,
-    `user_id`                       BIGINT(20) UNSIGNED NOT NULL,
-    `value`                         VARCHAR(20480) NOT NULL,
-    `created`                       BIGINT(20) NOT NULL,
-    INDEX `resource_file_entry_string_suggestion_ik1` (`created`),
-    INDEX `resource_file_entry_string_suggestion_fk1` (`resource_file_entry_string_id`),
-    INDEX `resource_file_entry_string_suggestion_fk2` (`user_id`),
-    CONSTRAINT `resource_file_entry_string_suggestion_fk1` FOREIGN KEY (`resource_file_entry_string_id`) REFERENCES `resource_file_entry_string` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT `resource_file_entry_string_suggestion_fk2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+CREATE TABLE `entry_string` (
+    `entry_common_id` BIGINT(20) UNSIGNED NOT NULL,
+    `value`           VARCHAR(20480) NOT NULL,
+    INDEX `entry_string_fk1` (`entry_common_id`),
+    CONSTRAINT `entry_string_fk1` FOREIGN KEY (`entry_common_id`) REFERENCES `entry_common` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `suggestion` (
+    `id`              BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `entry_common_id` BIGINT(20) UNSIGNED NOT NULL,
+    `user_id`         BIGINT(20) UNSIGNED NOT NULL,
+    `created`         BIGINT(20) NOT NULL,
+    INDEX `suggestion_ik1` (`created`),
+    INDEX `suggestion_fk1` (`entry_common_id`),
+    INDEX `suggestion_fk2` (`user_id`),
+    CONSTRAINT `suggestion_fk1` FOREIGN KEY (`entry_common_id`) REFERENCES `entry_common` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `suggestion_fk2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `suggestion_string` (
+    `suggestion_id` BIGINT(20) UNSIGNED NOT NULL,
+    `value`         VARCHAR(20480) NOT NULL,
+    INDEX `suggestion_string_fk1` (`suggestion_id`),
+    CONSTRAINT `suggestion_string_fk1` FOREIGN KEY (`suggestion_id`) REFERENCES `suggestion` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
