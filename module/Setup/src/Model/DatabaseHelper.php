@@ -72,24 +72,25 @@ class DatabaseHelper
 	const CURRENTSCHEMAISLATEST = 31;
 
 	/**
-	 * Generates installation schema RexEx
+	 * Generates installation schema regular expression.
+	 *
 	 * @throws \RuntimeException
 	 * @return string
 	 */
 	private function getInstallationSchemaRegex()
 	{
-	    $schemaNaming = $this->setupConfig->get('db_schema_naming');
+	    $schemaNaming = $this->setupConfig->get('db_schema_naming')->toArray();
+	    $driver = $this->dbConfig['driver'];
 
-	    if (! array_key_exists($this->dbConfig['driver'], $schemaNaming)) {
-	        throw new \RuntimeException('Database config contains unsupported driver.');
+	    if (! array_key_exists($driver, $schemaNaming)) {
+	        throw new \RuntimeException(sprintf('Database config contains unsupported driver "%s".', $driver));
 	    }
 
 	    return sprintf(
 	        '/schema\.%s\.(\d)\.sql/',
-	        $schemaNaming[$this->dbConfig['driver']]
+	        $schemaNaming[$driver]
 	    );
 	}
-
 
 	/**
 	 * Constructor
@@ -109,7 +110,7 @@ class DatabaseHelper
     }
 
     /**
-     * Helper function to test, if database connection can be established with provided credentials
+     * Helper function to test, if database connection can be established with provided credentials.
      *
      * @return boolean
      */

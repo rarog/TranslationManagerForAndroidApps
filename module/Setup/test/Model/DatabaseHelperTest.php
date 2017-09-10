@@ -70,11 +70,33 @@ class DatabaseHelperTest extends TestCase
 
     /**
      * @covers \Setup\Model\DatabaseHelper::getInstallationSchemaRegex
+     * @expectedException RuntimeException
+     * @expectedExceptionMessageRegExp /Database config contains unsupported driver "\w+"./
      */
-    public function testEmptyStringWithoutQuotes()
+    public function testGetInstallationSchemaRegexUnsupported()
+    {
+        $databaseHelper = $this->getDatabaseHelper($this->unsupportedConfig);
+        $result = $this->invokeMethod($databaseHelper, 'getInstallationSchemaRegex');
+        $this->assertEquals('/schema\.mysql\.(\d)\.sql/', $result);
+    }
+
+    /**
+     * @covers \Setup\Model\DatabaseHelper::getInstallationSchemaRegex
+     */
+    public function testGetInstallationSchemaRegexMysql()
     {
         $databaseHelper = $this->getDatabaseHelper($this->mysqlConfig);
         $result = $this->invokeMethod($databaseHelper, 'getInstallationSchemaRegex');
         $this->assertEquals('/schema\.mysql\.(\d)\.sql/', $result);
+    }
+
+    /**
+     * @covers \Setup\Model\DatabaseHelper::getInstallationSchemaRegex
+     */
+    public function testGetInstallationSchemaRegexSqlite()
+    {
+        $databaseHelper = $this->getDatabaseHelper($this->sqliteConfig);
+        $result = $this->invokeMethod($databaseHelper, 'getInstallationSchemaRegex');
+        $this->assertEquals('/schema\.sqlite\.(\d)\.sql/', $result);
     }
 }
