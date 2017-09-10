@@ -72,7 +72,7 @@ class GetAppIfAllowed extends AbstractPlugin
 
         if ($checkHasDefaultValues) {
             try {
-                $this->appResourceTable->getAppResourceByAppIdAndName($app->Id, 'values');throw new \RuntimeException();
+                $this->appResourceTable->getAppResourceByAppIdAndName($app->Id, 'values');
             } catch (\RuntimeException $e) {
                 return false;
             }
