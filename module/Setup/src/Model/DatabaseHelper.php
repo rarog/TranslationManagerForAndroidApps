@@ -44,6 +44,11 @@ class DatabaseHelper
     private $zuModuleOptions;
 
     /**
+     * @var string
+     */
+    private $installationSchemaRegex;
+
+    /**
      * @var int
      */
     private $lastStatus;
@@ -79,17 +84,21 @@ class DatabaseHelper
 	 */
 	private function getInstallationSchemaRegex()
 	{
-	    $schemaNaming = $this->setupConfig->get('db_schema_naming')->toArray();
-	    $driver = $this->dbConfig['driver'];
+	    if (is_null($this->installationSchemaRegex)) {
+    	    $schemaNaming = $this->setupConfig->get('db_schema_naming')->toArray();
+    	    $driver = $this->dbConfig['driver'];
 
-	    if (! array_key_exists($driver, $schemaNaming)) {
-	        throw new \RuntimeException(sprintf('Database config contains unsupported driver "%s".', $driver));
+    	    if (! array_key_exists($driver, $schemaNaming)) {
+    	        throw new \RuntimeException(sprintf('Database config contains unsupported driver "%s".', $driver));
+    	    }
+
+    	    $this->installationSchemaRegex = sprintf(
+    	        '/schema\.%s\.(\d)\.sql/',
+    	        $schemaNaming[$driver]
+    	    );
 	    }
 
-	    return sprintf(
-	        '/schema\.%s\.(\d)\.sql/',
-	        $schemaNaming[$driver]
-	    );
+	    return $this->installationSchemaRegex;
 	}
 
 	/**
