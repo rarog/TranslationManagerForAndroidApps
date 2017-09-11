@@ -128,7 +128,7 @@ CREATE TABLE entry_common (
     FOREIGN KEY (resource_file_entry_id) REFERENCES resource_file_entry (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE INDEX entry_common_ik1 ON resource_file_entry_string (last_change);
+CREATE INDEX entry_common_ik1 ON entry_common (last_change);
 
 CREATE TABLE entry_string (
     entry_common_id INTEGER NOT NULL,
@@ -145,7 +145,7 @@ CREATE TABLE suggestion (
     FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE INDEX resource_file_entry_string_suggestion_ik1 ON resource_file_entry_string_suggestion (created);
+CREATE INDEX suggestion_ik1 ON suggestion (last_change);
 
 CREATE TABLE suggestion_string (
     suggestion_id INTEGER NOT NULL,
