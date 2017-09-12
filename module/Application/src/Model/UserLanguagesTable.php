@@ -115,10 +115,8 @@ class UserLanguagesTable
      * @param int $userId
      * @param string $locale
      */
-    public function deleteUserLanguage($userId, $locale)
+    public function deleteUserLanguage(int $userId, string $locale)
     {
-        $userId = (int) $userId;
-        $locale = (string) $locale;
         $this->tableGateway->delete([
             'user_id' => $userId,
             'locale'  => $locale,
