@@ -160,3 +160,12 @@ CREATE TABLE `suggestion_string` (
     INDEX `suggestion_string_fk1` (`suggestion_id`),
     CONSTRAINT `suggestion_string_fk1` FOREIGN KEY (`suggestion_id`) REFERENCES `suggestion` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `suggestion_vote` (
+    `suggestion_id` BIGINT(20) UNSIGNED NOT NULL,
+    `user_id`       BIGINT(20) UNSIGNED NOT NULL,
+    INDEX `suggestion_vote_fk1` (`suggestion_id`),
+    INDEX `suggestion_vote_fk2` (`user_id`),
+    CONSTRAINT `suggestion_vote_fk1` FOREIGN KEY (`suggestion_id`) REFERENCES `suggestion` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `suggestion_vote_fk2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
