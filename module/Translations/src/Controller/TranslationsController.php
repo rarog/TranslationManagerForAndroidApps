@@ -332,12 +332,12 @@ class TranslationsController extends AbstractActionController
 
             $output[] = [
                 'defaultId' => $entry['defaultId'],
-                'name' => $this->renderTemplate($viewModel, 'partial/translations-name.phtml'),
-                'product' => $this->renderTemplate($viewModel, 'partial/translations-product.phtml'),
-                'nameView' => $this->renderTemplate($viewModel, 'partial/translations-nameView.phtml'),
-                'defaultValue' => $this->renderTemplate($viewModel, 'partial/translations-defaultValue.phtml'),
-                'translatedValue' => $this->renderTemplate($viewModel, 'partial/translations-translatedValue.phtml'),
-                'buttons' => $this->renderTemplate($viewModel, 'partial/translations-buttons.phtml'),
+                'name' => $this->renderTemplate($viewModel, 'translations/translations/partial/listtranslations-name.phtml'),
+                'product' => $this->renderTemplate($viewModel, 'translations/translations/partial/listtranslations-product.phtml'),
+                'nameView' => $this->renderTemplate($viewModel, 'translations/translations/partial/listtranslations-nameView.phtml'),
+                'defaultValue' => $this->renderTemplate($viewModel, 'translations/translations/partial/listtranslations-defaultValue.phtml'),
+                'translatedValue' => $this->renderTemplate($viewModel, 'translations/translations/partial/listtranslations-translatedValue.phtml'),
+                'buttons' => $this->renderTemplate($viewModel, 'translations/translations/partial/listtranslations-buttons.phtml'),
             ];
         }
         return new JsonModel($output);

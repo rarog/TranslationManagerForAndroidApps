@@ -41,22 +41,14 @@
                 </tr>
               </thead>
               <tbody>
-<?php foreach ($suggestions as $suggestion): ?>
-                <tr>
-                  <td>
-<?php if ($type == 'String'): ?>
-<?= nl2br($this->escapeHtml($suggestion->value)) ?>
-<?php endif; ?>
-                  </td>
-                  <td class="text-right">0</td>
-                  <td>
-                    <div class="btn-group" style="display:flex" role="group">
-                      <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="<?= $this->escapeHtmlAttr($this->translate('Accept')) ?>" role="button"><span class="glyphicon glyphicon-check" aria-hidden="true"></span></button>
-                      <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="<?= $this->escapeHtmlAttr($this->translate('Vote')) ?>" role="button"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span></button>
-                    </div>
-                  </td>
-                </tr>
-<?php endforeach; ?>
+<?php
+foreach ($suggestions as $suggestion) {
+    echo $this->partial('translations/translations/partial/details-suggestion.phtml', [
+        'suggestion' => $suggestion,
+        'type' => $type,
+    ]);
+}
+?>
               </tbody>
             </table>
           </div>
