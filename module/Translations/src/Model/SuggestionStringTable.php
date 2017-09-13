@@ -114,9 +114,10 @@ class SuggestionStringTable
      *
      * @param int $entryCommonId
      * @param int $userId
+     * @param int $suggestionId
      * @return \ArrayObject
      */
-    public function getAllSuggestionsForTranslations(int $entryCommonId, int $userId)
+    public function getAllSuggestionsForTranslations(int $entryCommonId, int $userId, int $suggestionId = 0)
     {
         $select = new Select;
         $select->columns([
@@ -161,6 +162,10 @@ class SuggestionStringTable
             'suggestion.user_id',
             'suggestion.last_change',
         ]);
+
+        if ($suggestionId > 0) {
+            $select->where(['suggestion.id' => $suggestionId]);
+        }
 
         $returnArray = new ArrayObject([], ArrayObject::ARRAY_AS_PROPS);
 
