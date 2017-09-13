@@ -237,7 +237,7 @@ class TranslationsController extends AbstractActionController
 
         switch ($type->Name) {
             case 'String':
-                $typedSuggestions = $this->suggestionsStringTable->getAllSuggestionsForTranslations($typedEntry['id']);
+                $typedSuggestions = $this->suggestionsStringTable->getAllSuggestionsForTranslations($typedEntry['id'], $this->zfcUserAuthentication()->getIdentity()->getId());
                 break;
         }
 

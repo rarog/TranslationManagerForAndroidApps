@@ -113,9 +113,10 @@ class SuggestionStringTable
      * Gets array of all suggestion strings for translation
      *
      * @param int $entryCommonId
+     * @param int $userId
      * @return \ArrayObject
      */
-    public function getAllSuggestionsForTranslations(int $entryCommonId)
+    public function getAllSuggestionsForTranslations(int $entryCommonId, int $userId)
     {
         $select = new Select;
         $select->columns([
@@ -134,6 +135,32 @@ class SuggestionStringTable
             'user_id',
             'last_change',
         ], Select::JOIN_INNER);
+
+        $onEntryCount = new Expression('? = ? AND ? = ?', [
+            ['vote_count.suggestion_id' => Expression::TYPE_IDENTIFIER],
+            ['suggestion.id' => Expression::TYPE_IDENTIFIER],
+            ['vote_count.user_id' => Expression::TYPE_IDENTIFIER],
+            [$userId=> Expression::TYPE_VALUE],
+        ]);
+        $select->join(['vote_count' => 'suggestion_vote'], $onEntryCount,[
+            'voteCount' => new Expression('count(distinct vote_count.user_id)'),
+        ], $select::JOIN_LEFT);
+
+        $onEntryCountAll = new Expression('? = ?', [
+            ['vote_count_all.suggestion_id' => Expression::TYPE_IDENTIFIER],
+            ['suggestion.id' => Expression::TYPE_IDENTIFIER],
+        ]);
+        $select->join(['vote_count_all' => 'suggestion_vote'], $onEntryCountAll,[
+            'voteCountAll' => new Expression('count(distinct vote_count_all.user_id)'),
+        ], $select::JOIN_LEFT);
+
+        $select->group([
+            'suggestion_string.value',
+            'suggestion.id',
+            'suggestion.entry_common_id',
+            'suggestion.user_id',
+            'suggestion.last_change',
+        ]);
 
         $returnArray = new ArrayObject([], ArrayObject::ARRAY_AS_PROPS);
 
