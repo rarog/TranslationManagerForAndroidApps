@@ -7,7 +7,6 @@ if ($suggestion->voteCount > 0) {
     $vote = 1;
 }
 ?>
-                <tr id="suggestion-<?= $suggestion->id?>">
                   <td>
 <?php if ($type == 'String'): ?>
 <?= nl2br($this->escapeHtml($suggestion->value)) ?>
@@ -17,7 +16,6 @@ if ($suggestion->voteCount > 0) {
                   <td>
                     <div class="btn-group" style="display:flex" role="group">
                       <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="<?= $this->escapeHtmlAttr($this->translate('Accept')) ?>" role="button"><span class="glyphicon glyphicon-check" aria-hidden="true"></span></button>
-                      <button type="button" class="btn <?= $btnClass ?>" data-toggle="tooltip" data-placement="bottom" data-entryid="<?= $suggestion->entryCommonId ?>" data-suggestionid="<?= $suggestion->id ?>" data-vote="<?= $vote ?>" title="<?= $this->escapeHtmlAttr($this->translate('Vote')) ?>" role="button"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span></button>
+                      <button type="button" class="btn <?= $btnClass ?> suggestionVote" data-toggle="tooltip" data-placement="bottom" data-entryid="<?= $entryId ?>" data-suggestionid="<?= $suggestion->id ?>" data-vote="<?= $vote ?>" title="<?= $this->escapeHtmlAttr($this->translate('Vote')) ?>" role="button"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span></button>
                     </div>
                   </td>
-                </tr>

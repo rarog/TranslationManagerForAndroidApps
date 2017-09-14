@@ -404,6 +404,16 @@ class TranslationsController extends AbstractActionController
             return new JsonModel();
         }
 
+        if ($vote) {
+            $suggestionVote = new SuggestionVote([
+                'suggestion_id' => $suggestionId,
+                'user_id' => $userId,
+            ]);
+            $this->suggestionVoteTable->saveSuggestionVote($suggestionVote);
+        } else {
+            $this->suggestionVoteTable->deleteSuggestionVote($suggestionId, $userId);
+        }
+
         switch ($type->Name) {
             case 'String':
                 $typedSuggestion = $this->suggestionStringTable->getAllSuggestionsForTranslations($typedEntry->id, $userId, $suggestionId);
@@ -416,18 +426,9 @@ class TranslationsController extends AbstractActionController
             return new JsonModel();
         }
 
-        if ($vote) {
-            $suggestionVote = new SuggestionVote([
-                'suggestion_id' => $suggestionId,
-                'user_id' => $userId,
-            ]);
-            $this->suggestionVoteTable->saveSuggestionVote($suggestionVote);
-        } else {
-            $this->suggestionVoteTable->deleteSuggestionVote($suggestionId, $userId);
-        }
-
         $viewModel = $this->getViewModel();
         $viewModel->setVariables([
+            'entryId' => $entryId,
             'suggestion' => $typedSuggestion,
             'type' => $type->Name,
         ]);

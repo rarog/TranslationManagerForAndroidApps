@@ -48,6 +48,15 @@ function showModalError() {
 	$('#modalError').modal();
 }
 
+function hideModalSpinner(hide) {
+    var node = $("#modalContainer > .modal-spinner");
+    if (hide) {
+    	node.css("z-index", -1);
+    } else {
+    	node.css("z-index", 1);
+    }
+}
+
 var curResources = resources;
 
 $("#showAll").on("change", function (event) {
@@ -133,5 +142,35 @@ $("#translations").on("click", ".translationDetails", function(event) {
     })
     .fail(function(jqXHR, textStatus, errorThrown) {
     	showModalError();
+    });
+});
+
+$("#modalContainer").on("click", ".suggestionVote", function(event) {
+    var app = $("#app").val();
+    var resource = $("#resource").val();
+    var entry = $(event.target).data("entryid");
+    var suggestion = $(event.target).data("suggestionid");
+    var vote = $(event.target).data("vote");
+
+    $(".tooltip").tooltip("hide"); // Hide all currently visible tooltips
+	hideModalSpinner(false);
+
+    $.ajax({
+        url: suggestionvotePath + "/app/" + app + "/resource/" + resource + "/entry/" + entry + "/suggestion/" + suggestion + "/vote/" + vote,
+        dataType: "json",
+        method: "GET"
+    })
+    .done(function(data) {
+        if ($.type(data) == 'object' && data['suggestion']) {
+            $("#modalContainer #suggestion-" + suggestion).html(data['suggestion']);
+            enableBootstrapTooltips();
+        } else {
+            showModalError();
+        }
+    	hideModalSpinner(true);
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {debugger;
+    	showModalError();
+    	hideModalSpinner(true);
     });
 });

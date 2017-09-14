@@ -13,3 +13,15 @@ div.container a.navbar-brand > img {
     margin-right: 4px;
     margin-top: -2px;
 }
+
+div.modal-spinner {
+	text-align: center;
+	background-color: rgba(0, 0, 0, 0.3);
+    height: 100%;
+	width: 100%;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	padding-top: 40%;
+	z-index: -1;
+}

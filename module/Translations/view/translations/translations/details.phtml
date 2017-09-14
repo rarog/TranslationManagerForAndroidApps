@@ -6,6 +6,9 @@
         <h4 class="modal-title" id="modalLabel"><?= $this->escapeHtml($this->translate('Translations details')) ?></h4>
       </div>
       <div class="modal-body">
+        <div class="modal-spinner">
+          <i class="fa fa-spinner fa-pulse fa-4x fa-fw" aria-hidden="true"></i>
+        </div>
         <div class="row">
           <div class="col-lg-3"><b><?= $this->escapeHtml($this->translate('Default value:')) ?></b></div>
           <div class="col-lg-9">
@@ -41,14 +44,17 @@
                 </tr>
               </thead>
               <tbody>
-<?php
-foreach ($suggestions as $suggestion) {
-    echo $this->partial('translations/translations/partial/details-suggestion.phtml', [
-        'suggestion' => $suggestion,
-        'type' => $type,
-    ]);
-}
+<?php foreach ($suggestions as $suggestion): ?>
+
+                <tr id="suggestion-<?= $suggestion->id?>">
+<?= $this->partial('translations/translations/partial/details-suggestion.phtml', [
+    'entryId' => $entry->defaultId,
+    'suggestion' => $suggestion,
+    'type' => $type,
+]);
 ?>
+                </tr>
+<?php endforeach; ?>
               </tbody>
             </table>
           </div>
