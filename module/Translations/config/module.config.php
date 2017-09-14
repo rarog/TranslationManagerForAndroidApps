@@ -179,6 +179,22 @@ return [
                             ],
                         ],
                     ],
+                    'suggestionvote' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => '/suggestionvote[/app/:appId/resource/:resourceId/entry/:entryId/suggestion/:suggestionId/vote/:vote]',
+                            'constraints' => [
+                                'appId' => '[0-9]+',
+                                'resourceId' => '[0-9]+',
+                                'entryId' => '[0-9]+',
+                                'suggestionId' => '[0-9]+',
+                                'vote' => '[01]',
+                            ],
+                            'defaults' => [
+                                'action' => 'suggestionvote',
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ],

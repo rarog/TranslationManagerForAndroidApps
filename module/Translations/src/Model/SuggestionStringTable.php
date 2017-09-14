@@ -131,10 +131,10 @@ class SuggestionStringTable
             [$entryCommonId => Expression::TYPE_VALUE],
         ]);
         $select->join('suggestion', $onSuggestions, [
-            'id',
-            'entry_common_id',
-            'user_id',
-            'last_change',
+            'id' => 'id',
+            'entryCommonId' => 'entry_common_id',
+            'userId' => 'user_id',
+            'lastChange' => 'last_change',
         ], Select::JOIN_INNER);
 
         $onEntryCount = new Expression('? = ? AND ? = ?', [

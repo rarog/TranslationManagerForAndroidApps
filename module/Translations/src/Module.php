@@ -130,6 +130,16 @@ class Module implements ConfigProviderInterface, ServiceProviderInterface
                     $resultSetPrototype->setArrayObjectPrototype(new Model\SuggestionString());
                     return new TableGateway('suggestion_string', $dbAdapter, null, $resultSetPrototype);
                 },
+                Model\SuggestionVoteTable::class => function ($container) {
+                    $tableGateway = $container->get(Model\SuggestionVoteTableGateway::class);
+                    return new Model\SuggestionVoteTable($tableGateway);
+                },
+                Model\SuggestionVoteTableGateway::class => function ($container) {
+                    $dbAdapter = $container->get(AdapterInterface::class);
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Model\SuggestionVote());
+                    return new TableGateway('suggestion_vote', $dbAdapter, null, $resultSetPrototype);
+                },
                 Model\TeamTable::class => function ($container) {
                     $tableGateway = $container->get(Model\TeamTableGateway::class);
                     return new Model\TeamTable($tableGateway);

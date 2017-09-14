@@ -113,7 +113,7 @@ class SuggestionVoteTable
      * @param int $suggestionId
      * @param int $userId
      */
-    public function deleteUserLanguage(int $suggestionId, int $userId = 0)
+    public function deleteSuggestionVote(int $suggestionId, int $userId = 0)
     {
         $deleteParams = ['suggestion_id' => $suggestionId];
 
