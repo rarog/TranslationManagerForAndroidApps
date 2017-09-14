@@ -404,6 +404,17 @@ class TranslationsController extends AbstractActionController
             return new JsonModel();
         }
 
+        // 1) Check if this is a valid suggestion.
+        switch ($type->Name) {
+            case 'String':
+                $typedSuggestion = $this->suggestionStringTable->getAllSuggestionsForTranslations($typedEntry->id, $userId, $suggestionId);
+                break;
+        }
+        if (count($typedSuggestion) != 1) {
+            return new JsonModel();
+        }
+
+        // 2) Cast or remove vote.
         if ($vote) {
             $suggestionVote = new SuggestionVote([
                 'suggestion_id' => $suggestionId,
@@ -414,6 +425,7 @@ class TranslationsController extends AbstractActionController
             $this->suggestionVoteTable->deleteSuggestionVote($suggestionId, $userId);
         }
 
+        // 3) Get new version of the suggestion with updated vote count.
         switch ($type->Name) {
             case 'String':
                 $typedSuggestion = $this->suggestionStringTable->getAllSuggestionsForTranslations($typedEntry->id, $userId, $suggestionId);
