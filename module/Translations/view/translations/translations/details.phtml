@@ -62,7 +62,9 @@
           <div class="col-lg-3"><b><?= $this->escapeHtml($this->translate('Suggestions:')) ?></b></div>
           <div class="col-lg-9"><?= $this->escapeHtml($this->translate('No entries available')) ?></div>
 <?php endif; ?>
+<?php if ($this->isGranted('suggestion.add')) : ?>
           <div class="col-lg-12"><button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Add new suggestion')) ?></button></div>
+<?php endif; ?>
         </div>
       </div>
       <div class="modal-footer">

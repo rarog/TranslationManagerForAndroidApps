@@ -272,10 +272,15 @@ return [
                 ],
                 'superuser' => [
                     'children'    => ['user'],
-                    'permissions' => [],
+                    'permissions' => [
+                        'suggestion.accept',
+                    ],
                 ],
                 'user'      => [
                     'permissions' => [
+                        'suggestion.add',
+                        'suggestion.edit',
+                        'suggestion.vote',
                         'translations.view',
                         'userBase',
                     ],
