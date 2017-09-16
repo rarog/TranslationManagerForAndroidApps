@@ -23,5 +23,6 @@ div.modal-spinner {
 	top: 0px;
 	left: 0px;
 	padding-top: 40%;
-	z-index: -1;
+	z-index: 2;
+	display: none;
 }

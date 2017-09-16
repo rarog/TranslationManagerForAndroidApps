@@ -49,11 +49,11 @@ function showModalError() {
 }
 
 function hideModalSpinner(hide) {
-    var node = $("#modalContainer > .modal-spinner");
+    var node = $("#modalContainer .modal-spinner");
     if (hide) {
-    	node.css("z-index", -1);
+    	node.css("display", "none");
     } else {
-    	node.css("z-index", 1);
+    	node.css("display", "block");
     }
 }
 
