@@ -340,7 +340,7 @@ class TranslationsController extends AbstractActionController
             ]);
 
             $output[] = [
-                'defaultId' => $entry['defaultId'],
+                'defaultId' => sprintf('translation-%d', $entry['defaultId']),
                 'name' => $this->renderTemplate($viewModel, 'translations/translations/partial/listtranslations-name.phtml'),
                 'product' => $this->renderTemplate($viewModel, 'translations/translations/partial/listtranslations-product.phtml'),
                 'nameView' => $this->renderTemplate($viewModel, 'translations/translations/partial/listtranslations-nameView.phtml'),
@@ -446,7 +446,12 @@ class TranslationsController extends AbstractActionController
         ]);
 
         return new JsonModel([
-            'suggestion' => $this->renderTemplate($viewModel, 'translations/translations/partial/details-suggestion.phtml'),
+            'suggestion' => [
+                'suggestionId' => sprintf('suggestion-%d', $typedSuggestion->id),
+                'suggestion' => $this->renderTemplate($viewModel, 'translations/translations/partial/details-suggestion-suggestion.phtml'),
+                'votes' => $typedSuggestion->voteCountAll,
+                'buttons' => $this->renderTemplate($viewModel, 'translations/translations/partial/details-suggestion-buttons.phtml'),
+            ],
         ]);
     }
 }

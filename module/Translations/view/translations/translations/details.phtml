@@ -7,7 +7,7 @@ foreach ($suggestions as $suggestion) {
         'type' => $type,
     ];
     $data[] = [
-        'suggestionId' => $suggestion->id,
+        'suggestionId' => sprintf('suggestion-%d', $suggestion->id),
         'suggestion' => $this->partial('translations/translations/partial/details-suggestion-suggestion.phtml', $partialData),
         'votes' => $suggestion->voteCountAll,
         'buttons' => $this->partial('translations/translations/partial/details-suggestion-buttons.phtml', $partialData),

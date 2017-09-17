@@ -136,12 +136,13 @@ $("#translations").on("click", ".translationDetails", function(event) {
             $("#modalContainer").html(data['modal']);
             $('#modalDetails').on('shown.bs.modal', function (e) {
             	initSuggestions();
-                $('#suggestions').DataTable()
-                    .rows.add(suggestionData)
+                $('#modalContainer #suggestions').DataTable()
+                    .rows
+                    .add(suggestionData)
                     .draw();
                 enableBootstrapTooltips();
             }).on('hidden.bs.modal', function (e) {
-            	$('#suggestions').DataTable().destroy();
+            	$('#modalContainer #suggestions').DataTable().destroy();
             }).modal();
         } else {
             showModalError();
@@ -169,14 +170,17 @@ $("#modalContainer").on("click", ".suggestionVote", function(event) {
     })
     .done(function(data) {
         if ($.type(data) == 'object' && data['suggestion']) {
-            $("#modalContainer #suggestion-" + suggestion).html(data['suggestion']);
+            $('#modalContainer #suggestions').DataTable()
+                .row('#suggestion-' + suggestion)
+                .data(data['suggestion'])
+                .draw();
             enableBootstrapTooltips();
         } else {
             showModalError();
         }
     	hideModalSpinner(true);
     })
-    .fail(function(jqXHR, textStatus, errorThrown) {debugger;
+    .fail(function(jqXHR, textStatus, errorThrown) {
     	showModalError();
     	hideModalSpinner(true);
     });
