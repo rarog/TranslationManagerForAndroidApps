@@ -1,0 +1,13 @@
+<?php
+$timestamp = $this->dateFormat(
+    $suggestion->lastChange,
+    IntlDateFormatter::MEDIUM,
+    IntlDateFormatter::MEDIUM
+);
+?>
+<div>
+  <div class="pull-right">
+    <span class="glyphicon glyphicon-time" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="<?= $this->escapeHtmlAttr($timestamp) ?>"></span>
+  </div>
+<?= $this->escapeHtml($suggestion->username) ?>
+</div>

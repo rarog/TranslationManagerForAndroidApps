@@ -137,6 +137,8 @@ class SuggestionStringTable
             'lastChange' => 'last_change',
         ], Select::JOIN_INNER);
 
+        $select->join('user', 'user.user_id = suggestion.user_id', 'username', $select::JOIN_LEFT);
+
         $onEntryCount = new Expression('? = ? AND ? = ?', [
             ['vote_count.suggestion_id' => Expression::TYPE_IDENTIFIER],
             ['suggestion.id' => Expression::TYPE_IDENTIFIER],
@@ -147,11 +149,7 @@ class SuggestionStringTable
             'voteCount' => new Expression('count(distinct vote_count.user_id)'),
         ], $select::JOIN_LEFT);
 
-        $onEntryCountAll = new Expression('? = ?', [
-            ['vote_count_all.suggestion_id' => Expression::TYPE_IDENTIFIER],
-            ['suggestion.id' => Expression::TYPE_IDENTIFIER],
-        ]);
-        $select->join(['vote_count_all' => 'suggestion_vote'], $onEntryCountAll,[
+        $select->join(['vote_count_all' => 'suggestion_vote'], 'vote_count_all.suggestion_id = suggestion.id',[
             'voteCountAll' => new Expression('count(distinct vote_count_all.user_id)'),
         ], $select::JOIN_LEFT);
 

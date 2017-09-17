@@ -449,7 +449,8 @@ class TranslationsController extends AbstractActionController
             'suggestion' => [
                 'suggestionId' => sprintf('suggestion-%d', $typedSuggestion->id),
                 'suggestion' => $this->renderTemplate($viewModel, 'translations/translations/partial/details-suggestion-suggestion.phtml'),
-                'votes' => $typedSuggestion->voteCountAll,
+                'username' => $this->renderTemplate($viewModel, 'translations/translations/partial/details-suggestion-username.phtml'),
+                'votes' => $this->renderTemplate($viewModel, 'translations/translations/partial/details-suggestion-vote.phtml'),
                 'buttons' => $this->renderTemplate($viewModel, 'translations/translations/partial/details-suggestion-buttons.phtml'),
             ],
         ]);

@@ -9,7 +9,8 @@ foreach ($suggestions as $suggestion) {
     $data[] = [
         'suggestionId' => sprintf('suggestion-%d', $suggestion->id),
         'suggestion' => $this->partial('translations/translations/partial/details-suggestion-suggestion.phtml', $partialData),
-        'votes' => $suggestion->voteCountAll,
+        'username' => $this->partial('translations/translations/partial/details-suggestion-username.phtml', $partialData),
+        'votes' => $this->partial('translations/translations/partial/details-suggestion-vote.phtml', $partialData),
         'buttons' => $this->partial('translations/translations/partial/details-suggestion-buttons.phtml', $partialData),
     ];
 }
@@ -54,6 +55,7 @@ foreach ($suggestions as $suggestion) {
               <thead>
                 <tr>
                   <th><?= $this->escapeHtml($this->translate('Value')) ?></th>
+                  <th><?= $this->escapeHtml($this->translate('By')) ?></th>
                   <th><?= $this->escapeHtml($this->translate('Votes')) ?></th>
                   <th></th>
                 </tr>
