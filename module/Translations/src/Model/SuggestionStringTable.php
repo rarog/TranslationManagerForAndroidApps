@@ -119,6 +119,39 @@ class SuggestionStringTable
      */
     public function getAllSuggestionsForTranslations(int $entryCommonId, int $userId, int $suggestionId = 0)
     {
+        // List of voters
+        $select = new Select;
+        $select->columns([])->from($this->tableGateway->table);
+
+        $onSuggestions = new Expression('? = ? AND ? = ?', [
+            ['suggestion.id' => Expression::TYPE_IDENTIFIER],
+            ['suggestion_string.suggestion_id' => Expression::TYPE_IDENTIFIER],
+            ['suggestion.entry_common_id' => Expression::TYPE_IDENTIFIER],
+            [$entryCommonId => Expression::TYPE_VALUE],
+        ]);
+        $select->join('suggestion', $onSuggestions, 'id', Select::JOIN_INNER);
+
+        $select->join('suggestion_vote', 'suggestion_vote.suggestion_id = suggestion.id',[], $select::JOIN_INNER);
+
+        $select->join('user', 'user.user_id = suggestion_vote.user_id', 'username', $select::JOIN_INNER);
+
+        if ($suggestionId > 0) {
+            $select->where(['suggestion.id' => $suggestionId]);
+        }
+
+        $votes = [];
+
+        $sql = new Sql($this->tableGateway->adapter, $this->tableGateway->table);
+        $results = $sql->prepareStatementForSqlObject($select)->execute();
+
+        foreach ($results as $result) {
+            if (! array_key_exists($result['id'], $votes)) {
+                $votes[$result['id']] = [];
+            }
+            $votes[$result['id']][] = $result['username'];
+        }
+
+        // Suggestions
         $select = new Select;
         $select->columns([
             'value',
@@ -171,6 +204,12 @@ class SuggestionStringTable
         $results = $sql->prepareStatementForSqlObject($select)->execute();
 
         foreach ($results as $result) {
+            if (array_key_exists($result['id'], $votes)) {
+                $result['votes'] = $votes[$result['id']];
+            } else {
+                $result['votes'] = [];
+            }
+
             $returnArray[] = new ArrayObject($result, ArrayObject::ARRAY_AS_PROPS);
         }
 
