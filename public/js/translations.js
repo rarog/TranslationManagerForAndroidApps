@@ -134,8 +134,15 @@ $("#translations").on("click", ".translationDetails", function(event) {
     .done(function(data) {
         if ($.type(data) == 'object' && data['modal']) {
             $("#modalContainer").html(data['modal']);
-            $('#modalDetails').modal();
-            enableBootstrapTooltips();
+            $('#modalDetails').on('shown.bs.modal', function (e) {
+            	initSuggestions();
+                $('#suggestions').DataTable()
+                    .rows.add(suggestionData)
+                    .draw();
+                enableBootstrapTooltips();
+            }).on('hidden.bs.modal', function (e) {
+            	$('#suggestions').DataTable().destroy();
+            }).modal();
         } else {
             showModalError();
         }

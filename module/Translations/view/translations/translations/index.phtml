@@ -57,6 +57,39 @@ $this->dataTablesInitHelper([
     ],
 ]);
 
+$this->dataTablesInitHelper([
+    'table'   => '#suggestions',
+    'options' => [
+        'columnDefs' => [
+            [
+                'data'       => 'suggestion',
+                'orderable'  => true,
+                'searchable' => true,
+                'targets'    => 0,
+                'visible'    => true,
+            ],
+            [
+                'data'       => 'votes',
+                'orderable'  => true,
+                'searchable' => true,
+                'targets'    => 1,
+                'visible'    => true,
+                'width'      => '10%'
+            ],
+            [
+                'data'       => 'buttons',
+                'orderable'  => false,
+                'searchable' => false,
+                'targets'    => 2,
+                'visible'    => true,
+                'width'      => '10%'
+            ],
+        ],
+        'rowId' => 'suggestionId',
+        'autoWidth' => true,
+    ],
+], 'initSuggestions');
+
 $min = ($this->useMinified()) ? '.min' : '';
 
 $this->inlineScript()->appendScript('var apps = ' . json_encode($apps) . ';

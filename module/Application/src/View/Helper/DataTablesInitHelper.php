@@ -47,8 +47,9 @@ class DataTablesInitHelper extends AbstractHelper
      * Injects JS and CSS for DataTables library.
      *
      * @param array $tablesToInit
+     * @param string $functionName If empty, DataTable is initialized, in $(document).ready(), else initialization will will happen on named function call
      */
-    public function __invoke(array $tablesToInit = null)
+    public function __invoke(array $tablesToInit = null, string $functionName = '')
     {
         $tablesToInit = $this->processArray($tablesToInit);
 
@@ -68,7 +69,17 @@ class DataTablesInitHelper extends AbstractHelper
                 ],
             ];
 
-            $initTable = '$(document).ready(function() {';
+            if ($functionName === '') {
+                $functionBegin = '$(document).ready(function() {';
+                $functionEnd = '} );';
+                $headScript = true;
+            } else {
+                $functionBegin= 'function ' . $functionName . '() {';
+                $functionEnd = '}';
+                $headScript = false;
+            }
+
+            $initTable = $functionBegin;
             foreach ($tablesToInit as $table) {
                 $tableConf = (array_key_exists('options', $table) && is_array($table['options'])) ? array_merge($initConf, $table['options']) : $initConf;
 
@@ -76,9 +87,13 @@ class DataTablesInitHelper extends AbstractHelper
 $("' . $table['table'] . '").DataTable(' . json_encode($tableConf) . ');';
             }
             $initTable .= '
-} );';
+' . $functionEnd;
 
-            $this->view->headScript()->appendScript($initTable);
+            if ($headScript) {
+                $this->view->headScript()->appendScript($initTable);
+            } else {
+                $this->view->inlineScript()->appendScript($initTable);
+            }
         }
     }
 }

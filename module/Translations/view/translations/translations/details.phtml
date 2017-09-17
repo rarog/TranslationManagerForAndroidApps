@@ -1,3 +1,19 @@
+<?php
+$data = [];
+foreach ($suggestions as $suggestion) {
+    $partialData = [
+        'entryId' => $entry->defaultId,
+        'suggestion' => $suggestion,
+        'type' => $type,
+    ];
+    $data[] = [
+        'suggestionId' => $suggestion->id,
+        'suggestion' => $this->partial('translations/translations/partial/details-suggestion-suggestion.phtml', $partialData),
+        'votes' => $suggestion->voteCountAll,
+        'buttons' => $this->partial('translations/translations/partial/details-suggestion-buttons.phtml', $partialData),
+    ];
+}
+?>
 <div class="modal fade" id="modalDetails" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -32,10 +48,9 @@
           <div class="col-lg-12"><hr></div>
         </div>
         <div class="row">
-<?php if ($entry->suggestionCount > 0): ?>
           <div class="col-lg-12">
             <b><?= $this->escapeHtml($this->translate('Suggestions:')) ?></b>
-            <table class="table table-condensed table-striped">
+            <table class="table table-condensed table-striped" id="suggestions">
               <thead>
                 <tr>
                   <th><?= $this->escapeHtml($this->translate('Value')) ?></th>
@@ -44,24 +59,9 @@
                 </tr>
               </thead>
               <tbody>
-<?php foreach ($suggestions as $suggestion): ?>
-
-                <tr id="suggestion-<?= $suggestion->id?>">
-<?= $this->partial('translations/translations/partial/details-suggestion.phtml', [
-    'entryId' => $entry->defaultId,
-    'suggestion' => $suggestion,
-    'type' => $type,
-]);
-?>
-                </tr>
-<?php endforeach; ?>
               </tbody>
             </table>
           </div>
-<?php else: ?>
-          <div class="col-lg-3"><b><?= $this->escapeHtml($this->translate('Suggestions:')) ?></b></div>
-          <div class="col-lg-9"><?= $this->escapeHtml($this->translate('No entries available')) ?></div>
-<?php endif; ?>
 <?php if ($this->isGranted('suggestion.add')) : ?>
           <div class="col-lg-12"><button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Add new suggestion')) ?></button></div>
 <?php endif; ?>
@@ -73,3 +73,8 @@
     </div>
   </div>
 </div>
+<script type="text/javascript">
+//<!--
+    var suggestionData = <?= json_encode($data) ?>;
+//-->
+</script>
