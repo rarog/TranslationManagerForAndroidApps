@@ -193,7 +193,23 @@ $("#modalContainer").on("click", ".suggestionVote", function(event) {
 $("#modalContainer").on("click", ".suggestionEdit", function(event) {
 	if ($(this).hasClass("disabled")) {
         return;
-    }
+    }debugger;
 
-	$('#suggestionAddEdit').collapse('show');
+	var edit = $('#modalContainer #suggestionAddEdit');
+	if (edit.hasClass("in")) {
+	    edit.one('hidden.bs.collapse', function () {
+	        showSuggestionAddEdit();
+	    }).collapse('hide');
+	} else {
+	    showSuggestionAddEdit();
+	}
 });
+
+function showSuggestionAddEdit() {
+    var edit = $('#modalContainer #suggestionAddEdit');
+
+    edit.collapse('show');
+    $('#modalDetails').animate({
+        scrollTop: edit.offset().top
+    });
+}

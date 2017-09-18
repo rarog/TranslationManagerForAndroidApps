@@ -51,7 +51,7 @@ foreach ($suggestions as $suggestion) {
         <div class="row">
           <div class="col-lg-12">
             <b><?= $this->escapeHtml($this->translate('Suggestions:')) ?></b>
-            <table class="table table-condensed table-striped" id="suggestions">
+            <table class="table table-condensed table-bordered table-striped" id="suggestions">
               <thead>
                 <tr>
                   <th><?= $this->escapeHtml($this->translate('Value')) ?></th>
@@ -65,13 +65,33 @@ foreach ($suggestions as $suggestion) {
             </table>
           </div>
 <?php if ($this->isGranted('suggestion.add')) : ?>
-          <div class="col-lg-12"><button type="button" class="btn btn-primary suggestionEdit"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Add new suggestion')) ?></button></div>
+          <div class="col-lg-12"><button type="button" class="btn btn-primary suggestionEdit" data-entryid="<?= $entry->defaultId ?>"><span class="fa fa-plus-circle" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Add new suggestion')) ?></button></div>
 <?php endif; ?>
 <?php if ($this->isGranted('suggestion.add') || $this->isGranted('suggestion.edit')) : ?>
-          <div class="collapse" id="suggestionAddEdit">
-            <div class="col-lg-12">
-              <textarea>...</textarea>
+          <div class="collapse modal-inset" id="suggestionAddEdit">
+            <div class="row">
+              <div class="col-lg-12">
+                <hr>
+              </div>
             </div>
+            <form class="form-horizontal">
+<?php if ($type == 'String'): ?>
+              <div class="form-group">
+                <label for="suggestionAddEditText" class="col-lg-3 control-label">Suggestion</label>
+                <div class="col-lg-9">
+                  <textarea class="form-control" id="suggestionAddEditText" placeholder="Email" rows="3" style="resize: vertical;">...</textarea>
+                </div>
+              </div>
+<?php endif; ?>
+              <div class="form-group">
+                <div class="col-lg-offset-3 col-lg-9">
+                  <div class="btn-group" role="group" aria-label="...">
+                    <button type="button" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Save')) ?></button>
+                    <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#suggestionAddEdit"><i class="fa fa-times" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Cancel')) ?></button>
+                  </div>
+                </div>
+              </div>
+            </form>
           </div>
 <?php endif; ?>
         </div>
@@ -84,6 +104,7 @@ foreach ($suggestions as $suggestion) {
 </div>
 <script type="text/javascript">
 //<!--
+    var suggestionType = "<?= $type ?>"
     var suggestionData = <?= json_encode($data) ?>;
 //-->
 </script>

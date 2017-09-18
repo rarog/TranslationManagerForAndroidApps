@@ -26,3 +26,12 @@ div.modal-spinner {
 	z-index: 2;
 	display: none;
 }
+
+div.modal-inset {
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+textarea.#suggestionAddEditText {
+	resize: vertical;
+}
