@@ -154,6 +154,10 @@ $("#translations").on("click", ".translationDetails", function(event) {
 });
 
 $("#modalContainer").on("click", ".suggestionVote", function(event) {
+	if ($(this).hasClass("disabled")) {
+        return;
+    }
+
     var app = $("#app").val();
     var resource = $("#resource").val();
     var entry = $(event.target).data("entryid");
@@ -184,4 +188,12 @@ $("#modalContainer").on("click", ".suggestionVote", function(event) {
     	showModalError();
     	hideModalSpinner(true);
     });
+});
+
+$("#modalContainer").on("click", ".suggestionEdit", function(event) {
+	if ($(this).hasClass("disabled")) {
+        return;
+    }
+
+	$('#suggestionAddEdit').collapse('show');
 });
