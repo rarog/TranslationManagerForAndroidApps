@@ -2,4 +2,4 @@
  * @link      https://github.com/rarog/TranslationManagerForAndroidApps for the canonical source repository
  * @copyright Copyright (c) 2017 Andrej Sinicyn
  * @license   https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License version 3 or later
- */body{padding-top:60px;padding-bottom:40px}div.container a.navbar-brand>img{display:inline;margin-right:4px;margin-top:-2px}div.modal-spinner{text-align:center;background-color:rgba(0,0,0,0.3);height:100%;width:100%;position:fixed;top:0;left:0;padding-top:40%;z-index:2;display:none}
+ */body{padding-top:60px;padding-bottom:40px}div.container a.navbar-brand>img{display:inline;margin-right:4px;margin-top:-2px}div.modal-spinner{text-align:center;background-color:rgba(0,0,0,0.3);height:100%;width:100%;position:fixed;top:0;left:0;padding-top:40%;z-index:2;display:none}div.modal-inset{padding-left:15px;padding-right:15px}textarea.#suggestionAddEditText{resize:vertical}

@@ -2,7 +2,6 @@
 $data = [];
 foreach ($suggestions as $suggestion) {
     $partialData = [
-        'entryId' => $entry->defaultId,
         'suggestion' => $suggestion,
         'type' => $type,
     ];
@@ -79,7 +78,7 @@ foreach ($suggestions as $suggestion) {
               <div class="form-group">
                 <label for="suggestionAddEditText" class="col-lg-3 control-label">Suggestion</label>
                 <div class="col-lg-9">
-                  <textarea class="form-control" id="suggestionAddEditText" placeholder="Email" rows="3" style="resize: vertical;">...</textarea>
+                  <textarea class="form-control" id="suggestionAddEditText" placeholder="<?= $this->escapeHtmlAttr($this->translate('Value')) ?>" rows="3" style="resize: vertical;">...</textarea>
                 </div>
               </div>
 <?php endif; ?>
@@ -104,7 +103,8 @@ foreach ($suggestions as $suggestion) {
 </div>
 <script type="text/javascript">
 //<!--
-    var suggestionType = "<?= $type ?>"
+    var suggestionType = "<?= $type ?>";
+    var suggestionEntryId = "<?= $entry->defaultId ?>";
     var suggestionData = <?= json_encode($data) ?>;
 //-->
 </script>

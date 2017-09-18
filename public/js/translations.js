@@ -57,6 +57,10 @@ function hideModalSpinner(hide) {
     }
 }
 
+function hideBootstrapTooltips() {
+    $(".tooltip").tooltip("hide"); // Hide all currently visible tooltips
+}
+
 var curResources = resources;
 
 $("#showAll").on("change", function (event) {
@@ -154,21 +158,22 @@ $("#translations").on("click", ".translationDetails", function(event) {
 });
 
 $("#modalContainer").on("click", ".suggestionVote", function(event) {
-	if ($(this).hasClass("disabled")) {
+    var button = $(this);
+
+	if (button.hasClass("disabled")) {
         return;
     }
 
     var app = $("#app").val();
     var resource = $("#resource").val();
-    var entry = $(event.target).data("entryid");
-    var suggestion = $(event.target).data("suggestionid");
-    var vote = $(event.target).data("vote");
+    var suggestion = button.data("suggestionid");
+    var vote = button.data("vote");
 
-    $(".tooltip").tooltip("hide"); // Hide all currently visible tooltips
+    hideBootstrapTooltips();
 	hideModalSpinner(false);
 
     $.ajax({
-        url: suggestionvotePath + "/app/" + app + "/resource/" + resource + "/entry/" + entry + "/suggestion/" + suggestion + "/vote/" + vote,
+        url: suggestionvotePath + "/app/" + app + "/resource/" + resource + "/entry/" + suggestionEntryId + "/suggestion/" + suggestion + "/vote/" + vote,
         dataType: "json",
         method: "GET"
     })
@@ -191,25 +196,53 @@ $("#modalContainer").on("click", ".suggestionVote", function(event) {
 });
 
 $("#modalContainer").on("click", ".suggestionEdit", function(event) {
-	if ($(this).hasClass("disabled")) {
+    var button = $(this);
+
+	if (button.hasClass("disabled")) {
         return;
-    }debugger;
+    }
+
+    var id = 0;
+    var suggestion = button.data("suggestion");
+    if ($.type(suggestion) === "object" && $.type(suggestion.id) === "number") {
+        id = suggestion.id;
+    } else {
+        suggestion = null;
+    }
+
+    hideBootstrapTooltips();
 
 	var edit = $('#modalContainer #suggestionAddEdit');
 	if (edit.hasClass("in")) {
 	    edit.one('hidden.bs.collapse', function () {
-	        showSuggestionAddEdit();
+	        showSuggestionAddEdit(id, suggestion);
 	    }).collapse('hide');
 	} else {
-	    showSuggestionAddEdit();
+	    showSuggestionAddEdit(id, suggestion);
 	}
 });
 
-function showSuggestionAddEdit() {
+function showSuggestionAddEdit(id, suggestion) {
     var edit = $('#modalContainer #suggestionAddEdit');
+    var focusElement = null;
+
+    if (suggestionType == 'String') {
+        var value = "";
+        if (($.type(suggestion) === "object") && ($.type(suggestion.value) === "string")) {
+            value = suggestion.value;
+        }
+
+        var textArea = $('#modalContainer #suggestionAddEditText');
+        textArea.val(value);
+        focusElement = textArea;
+    }
 
     edit.collapse('show');
     $('#modalDetails').animate({
         scrollTop: edit.offset().top
     });
+
+    if (focusElement !== null) {
+        focusElement.focus();
+    }
 }
