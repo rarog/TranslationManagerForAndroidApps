@@ -65,7 +65,7 @@ foreach ($suggestions as $suggestion) {
             </table>
           </div>
 <?php if ($this->isGranted('suggestion.add')) : ?>
-          <div class="col-lg-12"><button type="button" class="btn btn-primary suggestionEdit" data-entryid="<?= $entry->defaultId ?>"><span class="fa fa-plus-circle" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Add new suggestion')) ?></button></div>
+          <div class="col-lg-12"><button type="button" class="btn btn-primary suggestionEdit" data-entryid="<?= $entry->defaultId ?>"><i class="fa fa-plus-circle fa-fw" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Add new suggestion')) ?></button></div>
 <?php endif; ?>
 <?php if ($this->isGranted('suggestion.add') || $this->isGranted('suggestion.edit')) : ?>
           <div class="collapse modal-inset" id="suggestionAddEdit">
