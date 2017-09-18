@@ -94,7 +94,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
      */
     private function getRelativeAppResPath(App $app)
     {
-        $path = FileHelper::concatenatePath((string) $app->Id, $app->PathToResFolder);
+        $path = FileHelper::concatenatePath((string) $app->Id, (string) $app->PathToResFolder);
         return FileHelper::concatenatePath($path, 'res');
     }
 
