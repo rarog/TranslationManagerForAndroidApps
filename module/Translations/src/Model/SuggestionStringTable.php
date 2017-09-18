@@ -145,6 +145,8 @@ class SuggestionStringTable
         $results = $sql->prepareStatementForSqlObject($select)->execute();
 
         foreach ($results as $result) {
+            $result['id'] = (int) $result['id'];
+
             if (! array_key_exists($result['id'], $votes)) {
                 $votes[$result['id']] = [];
             }
@@ -204,6 +206,13 @@ class SuggestionStringTable
         $results = $sql->prepareStatementForSqlObject($select)->execute();
 
         foreach ($results as $result) {
+            $result['id'] = (int) $result['id'];
+            $result['entryCommonId'] = (int) $result['entryCommonId'];
+            $result['userId'] = (int) $result['userId'];
+            $result['lastChange'] = (int) $result['lastChange'];
+            $result['voteCount'] = (int) $result['voteCount'];
+            $result['voteCountAll'] = (int) $result['voteCountAll'];
+
             if (array_key_exists($result['id'], $votes)) {
                 $result['votes'] = $votes[$result['id']];
             } else {

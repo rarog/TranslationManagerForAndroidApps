@@ -241,6 +241,16 @@ class EntryStringTable
         $results = $sql->prepareStatementForSqlObject($select)->execute();
 
         foreach ($results as $result) {
+            $result['defaultId'] = (int) $result['defaultId'];
+            $result['appResourceId'] = (int) $result['appResourceId'];
+            $result['resourceFileEntryId'] = (int) $result['resourceFileEntryId'];
+            $result['defaultLastChange'] = (int) $result['defaultLastChange'];
+            $result['resourceTypeId'] = (int) $result['resourceTypeId'];
+            $result['entryCount'] = (int) $result['entryCount'];
+            $result['id'] = (int) $result['id'];
+            $result['lastChange'] = (int) $result['lastChange'];
+            $result['suggestionCount'] = (int) $result['suggestionCount'];
+
             $returnArray[] = new ArrayObject($result, ArrayObject::ARRAY_AS_PROPS);
         }
 
