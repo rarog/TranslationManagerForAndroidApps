@@ -13,7 +13,7 @@ foreach ($suggestion->votes as $vote) {
 ?>
 <div>
   <div class="pull-right"><?= $this->escapeHtml($suggestion->voteCountAll)?></div>
-  <button type="button" class="btn btn-default<?= $class ?>" data-toggle="collapse" data-target="#<?= $collapseName ?>" aria-expanded="false" aria-controls="<?= $collapseName ?>"><i class="fa fa-list" aria-hidden="true"></i></button>
+  <button type="button" class="btn btn-default<?= $class ?>" data-toggle="collapse" data-target="#<?= $collapseName ?>" aria-expanded="false" aria-controls="<?= $collapseName ?>"><i class="fa fa-list fa-fw" aria-hidden="true"></i></button>
   <div class="collapse" id="<?= $collapseName ?>">
     <div class="well"><?= implode(', ', $votes) ?></div>
   </div>

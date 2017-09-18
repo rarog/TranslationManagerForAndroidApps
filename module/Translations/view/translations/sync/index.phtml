@@ -15,7 +15,7 @@ function processForm(event) {
     $("#messages").append(data);
   })
   .fail( function (jqXHR, textStatus, errorThrown) {
-    $("#messages").append("<div class=\"alert alert-danger alert-dismissable\"><a href=\"#\" class=\"close\" data-dismiss=\"alert\" aria-label=\"close\">&times;</a><span class=\"glyphicon glyphicon-exclamation-sign\" aria-hidden=\"true\"></span><span class=\"sr-only\">' .  $this->translate('Error:') . '</span> " + errorThrown + "</div>");
+    $("#messages").append("<div class=\"alert alert-danger alert-dismissable\"><a href=\"#\" class=\"close\" data-dismiss=\"alert\" aria-label=\"close\">&times;</a><i class=\"fa fa-exclamation-circle fa-fw\" aria-hidden=\"true\"></i><span class=\"sr-only\">' .  $this->translate('Error:') . '</span> " + errorThrown + "</div>");
   })
   .always( function() {
     $("#processingModal").modal("hide");

@@ -11,7 +11,7 @@ $disable = !$hasDefaultValues;
   <a class="btn btn-default" href="<?= $this->url('appresource', [
     'appId'  => $app->Id,
     'action' => 'add',
-]) ?>"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Add new app resource')) ?></a>
+]) ?>"><i class="fa fa-plus-circle fa-fw" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Add new app resource')) ?></a>
 </p>
 <?php endif; ?>
 <table class="table table-bordered table-striped" id="appResources">
@@ -36,7 +36,7 @@ $disable = !$hasDefaultValues;
     'appId'      => $appResource->AppId,
     'action'     => 'edit',
     'resourceId' => $appResource->Id
-]) ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Edit')) ?></a>
+]) ?>"><i class="fa fa-pencil-square-o fa-fw" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Edit')) ?></a>
 <?php endif; ?>
 <?php $disableDelete = $disable || (($count > 1) && ($appResource->name == 'values')); ?>
 <?php if ($this->isGranted('appresource.delete')) : ?>
@@ -44,7 +44,7 @@ $disable = !$hasDefaultValues;
     'appId'      => $appResource->AppId,
     'action'     => 'delete',
     'resourceId' => $appResource->Id,
-]) ?>"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Delete')) ?></a>
+]) ?>"><i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Delete')) ?></a>
 <?php endif; ?>
         </div>
       </td>

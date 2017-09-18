@@ -186,7 +186,7 @@ class AppForm extends Form
             'name'       => 'submit',
             'options'    => [
                 'column-size' => 'sm-9 col-sm-offset-3',
-                'glyphicon'   => 'floppy-save',
+                'fontAwesome' => 'floppy-o fa-fw',
             ],
             'type'       => 'submit',
         ]);

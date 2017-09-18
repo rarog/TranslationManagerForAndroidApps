@@ -1,7 +1,7 @@
 <div>
 <?php if ($entry->defaultLastChange > $entry->lastChange): ?>
   <div class="pull-right text-warning">
-    <span class="glyphicon glyphicon-warning-sign" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="<?= $this->escapeHtmlAttr($this->translate('Default value is newer than translation. Please check.')) ?>"></span>
+    <i class="fa fa-exclamation-triangle fa-fw" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="<?= $this->escapeHtmlAttr($this->translate('Default value is newer than translation. Please check.')) ?>"></i>
   </div>
 <?php endif; ?>
 <?php if ($entry->resourceTypeId == array_search('string', $resourceTypes)): ?>

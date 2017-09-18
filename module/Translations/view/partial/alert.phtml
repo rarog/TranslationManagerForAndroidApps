@@ -6,16 +6,16 @@ $type = (in_array($type, ['success', 'info', 'warning', 'danger'])) ? $type : 'i
   <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 <?php endif; ?>
 <?php if ($type == 'success'): ?>
-  <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+  <i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>
   <span class="sr-only"><?= $this->translate('Success:') ?> </span>
 <?php elseif ($type == 'info'): ?>
-  <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+  <i class="fa fa-info-circle fa-fw" aria-hidden="true"></i>
   <span class="sr-only"><?= $this->translate('Info:') ?> </span>
 <?php elseif ($type == 'warning'): ?>
-  <span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
+  <i class="fa fa-exclamation-triangle fa-fw" aria-hidden="true"></i>
   <span class="sr-only"><?= $this->translate('Warning:') ?> </span>
 <?php elseif ($type == 'danger'): ?>
-  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+  <i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i>
   <span class="sr-only"><?= $this->translate('Error:') ?> </span>
 <?php endif; ?>
   <?= $message ?>

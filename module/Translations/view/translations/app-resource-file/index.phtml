@@ -10,7 +10,7 @@ $count = count($appResourceFiles);
   <a class="btn btn-default" href="<?= $this->url('appresourcefile', [
     'appId'  => $app->id,
     'action' => 'add',
-]) ?>"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Add new app resource file')) ?></a>
+]) ?>"><i class="fa fa-plus-circle fa-fw" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Add new app resource file')) ?></a>
 </p>
 <?php endif; ?>
 <table class="table table-bordered table-striped" id="appResourceFiles">
@@ -31,13 +31,13 @@ $count = count($appResourceFiles);
     'appId'          => $appResourceFile->AppId,
     'action'         => 'edit',
     'resourceFileId' => $appResourceFile->Id,
-]) ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Edit')) ?></a>
+]) ?>"><i class="fa fa-pencil-square-o fa-fw" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Edit')) ?></a>
 <?php endif; ?>
 <?php if ($this->isGranted('appresourcefile.delete')) : ?>
           <a class="btn btn-danger" href="<?= $this->url('appresourcefile', [
     'appId'          => $appResourceFile->AppId,
     'action'         => 'delete',
-    'resourceFileId' => $appResourceFile->Id]) ?>"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Delete')) ?></a>
+    'resourceFileId' => $appResourceFile->Id]) ?>"><i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Delete')) ?></a>
 <?php endif; ?>
         </div>
       </td>

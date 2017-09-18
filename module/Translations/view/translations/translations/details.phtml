@@ -86,8 +86,8 @@ foreach ($suggestions as $suggestion) {
               <div class="form-group">
                 <div class="col-lg-offset-3 col-lg-9">
                   <div class="btn-group" role="group" aria-label="...">
-                    <button type="button" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Save')) ?></button>
-                    <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#suggestionAddEdit"><i class="fa fa-times" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Cancel')) ?></button>
+                    <button type="button" class="btn btn-primary"><i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Save')) ?></button>
+                    <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#suggestionAddEdit"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Cancel')) ?></button>
                   </div>
                 </div>
               </div>
@@ -97,7 +97,7 @@ foreach ($suggestions as $suggestion) {
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-times" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Close')) ?></button>
+        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Close')) ?></button>
       </div>
     </div>
   </div>

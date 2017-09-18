@@ -54,7 +54,7 @@ class SyncImportForm extends Form
             'name'       => 'submit',
             'options'    => [
                 'column-size' => 'sm-12',
-                'glyphicon'   => 'import',
+                'fontAwesome' => 'download fa-fw',
             ],
             'type'       => 'submit',
         ]);

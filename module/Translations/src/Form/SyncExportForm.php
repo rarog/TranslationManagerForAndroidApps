@@ -54,7 +54,7 @@ class SyncExportForm extends Form
             'name'       => 'submit',
             'options'    => [
                 'column-size' => 'sm-12',
-                'glyphicon'   => 'export',
+                'fontAwesome' => 'upload fa-fw',
             ],
             'type'       => 'submit',
         ]);

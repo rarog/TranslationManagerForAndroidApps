@@ -46,7 +46,7 @@ class DeleteHelperForm extends Form
             'options'    => [
                 'column-size'  => 'sm-12',
                 'button-group' => 'group-1',
-                'glyphicon'    => 'ok',
+                'fontAwesome'  => 'check fa-fw',
                 'label'        => _('Yes'),
             ],
             'type'       => 'button',
@@ -61,7 +61,7 @@ class DeleteHelperForm extends Form
             'name'       => 'delno',
             'options'    => [
                 'button-group' => 'group-1',
-                'glyphicon'    => 'remove',
+                'fontAwesome'  => 'times fa-fw',
                 'label'        => _('No'),
             ],
             'type'       => 'button',

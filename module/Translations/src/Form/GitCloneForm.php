@@ -55,7 +55,7 @@ class GitCloneForm extends Form
             'name'       => 'back',
             'options'    => [
                 'button-group' => 'group-1',
-                'glyphicon'    => 'remove',
+                'fontAwesome'  => 'check fa-fw',
                 'label'        => _('Back'),
             ],
             'type'       => 'button',
@@ -71,7 +71,7 @@ class GitCloneForm extends Form
             'options'    => [
                 'column-size'  => 'sm-12',
                 'button-group' => 'group-1',
-                'glyphicon'    => 'ok',
+                'fontAwesome'  => 'times fa-fw',
                 'label'        => _('Clone'),
             ],
             'type'       => 'button',

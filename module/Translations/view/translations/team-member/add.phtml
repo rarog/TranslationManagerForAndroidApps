@@ -12,7 +12,7 @@ $form->setAttribute('action', $this->url('teammember', [
   <a class="btn btn-default" href="<?= $this->url('teammember', [
     'teamId' => $team->Id,
     'action' => 'index',
-]) ?>"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Back')) ?></a>
+]) ?>"><i class="fa fa-chevron-left fa-fw" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Back')) ?></a>
 </p>
 <?php endif; ?>
 <?php if ($this->isGranted('teammember.add')) : ?>

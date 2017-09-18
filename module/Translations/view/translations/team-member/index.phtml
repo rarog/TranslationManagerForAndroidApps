@@ -9,7 +9,7 @@ $this->dataTablesInitHelper(['table' => '#teamMembers']);
   <a class="btn btn-default" href="<?= $this->url('teammember', [
     'teamId' => $team->Id,
     'action' => 'add',
-]) ?>"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Add new team member')) ?></a>
+]) ?>"><i class="fa fa-plus-circle fa-fw" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Add new team member')) ?></a>
 </p>
 <?php endif; ?>
 <table class="table table-bordered table-striped" id="teamMembers">
@@ -34,7 +34,7 @@ $this->dataTablesInitHelper(['table' => '#teamMembers']);
     'teamId' => $teammember->TeamId,
     'action' => 'remove',
     'userId' => $teammember->UserId,
-]) ?>"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> <?= $this->escapeHtml($this->translate('Remove')) ?></a>
+]) ?>"><i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Remove')) ?></a>
 <?php endif; ?>
         </div>
       </td>

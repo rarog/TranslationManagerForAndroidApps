@@ -32,31 +32,31 @@ return [
             [
                 'label' => _('Home'),
                 'route' => 'home',
-                'icon' => 'glyphicon glyphicon-home',
+                'icon' => 'fa fa-home fa-fw',
                 'permission' => 'userBase',
             ],
             [
                 'label' => _('Dashboard'),
                 'route' => '#',
-                'icon' => 'glyphicon glyphicon-dashboard',
+                'icon' => 'fa fa-tachometer fa-fw',
                 'permission' => 'userBase',
                 'pages' => [
                     [
                         'label' => _('Teams'),
                         'route' => 'team',
-                        'icon' => 'fa fa-users',
+                        'icon' => 'fa fa-users fa-fw',
                         'permission' => 'team.view'
                     ],
                     [
                         'label' => _('Apps'),
                         'route' => 'app',
-                        'icon' => 'glyphicon glyphicon-phone',
+                        'icon' => 'fa fa-mobile fa-fw',
                         'permission' => 'app.view',
                     ],
                     [
                         'label' => _('Translations'),
                         'route' => 'translations',
-                        'icon' => 'fa fa-language',
+                        'icon' => 'fa fa-language fa-fw',
                         'permission' => 'translations.view',
                     ],
                 ],
@@ -64,19 +64,19 @@ return [
             [
                 'label' => '',
                 'route' => '#',
-                'icon' => 'glyphicon glyphicon-question-sign',
+                'icon' => 'fa fa-question-circle fa-fw',
                 'permission' => 'userBase',
                 'pages' => [
                     [
                         'label' => _('My user'),
                         'route' => 'zfcuser',
-                        'icon' => 'glyphicon glyphicon-user',
+                        'icon' => 'fa fa-user fa-fw',
                         'permission' => 'userBase',
                     ],
                     [
                         'label' => _('About...'),
                         'route' => 'application/about',
-                        'icon' => 'glyphicon glyphicon-info-sign',
+                        'icon' => 'fa fa-info-circle fa-fw',
                         'permission' => 'userBase',
                     ],
                     [
@@ -86,7 +86,7 @@ return [
                     [
                         'label' => _('Sign out'),
                         'route' => 'zfcuser/logout',
-                        'icon' => 'glyphicon glyphicon-off',
+                        'icon' => 'fa fa-sign-out fa-fw',
                         'permission' => 'userBase',
                     ],
                 ],

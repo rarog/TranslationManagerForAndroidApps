@@ -50,7 +50,7 @@ class TeamMemberForm extends Form
             ],
             'name'       => 'submit',
             'options' => [
-                'glyphicon' => 'plus-sign',
+                'fontAwesome' => 'plus-circle fa-fw',
             ],
             'type'       => 'submit',
         ]);

@@ -173,7 +173,7 @@ class AppResourceController extends AbstractActionController implements AdapterA
         }
 
         $folderSelectButton = new \Zend\Form\Element\Button('name-selection-button',[
-            'glyphicon' => 'folder-open',
+            'fontAwesome' => 'folder-open fa-fw',
         ]);
         $folderSelectButton->setAttributes([
             'data-toggle' => 'modal',
