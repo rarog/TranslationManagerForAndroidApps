@@ -226,6 +226,8 @@ function showSuggestionAddEdit(id, suggestion) {
     var edit = $('#modalContainer #suggestionAddEdit');
     var focusElement = null;
 
+    edit.data("suggestionid", id);
+    alert(edit.data("suggestionid"));
     if (suggestionType == 'String') {
         var value = "";
         if (($.type(suggestion) === "object") && ($.type(suggestion.value) === "string")) {
