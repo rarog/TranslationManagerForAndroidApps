@@ -200,6 +200,11 @@ return [
                         'appresourcefile.view',
                     ],
                 ],
+                'translations/suggestionaddedit' => [
+                    'permissions' => [
+                        'suggestion.addedit',
+                    ],
+                ],
                 'translations/suggestionvote' => [
                     'permissions' => [
                         'suggestion.vote',

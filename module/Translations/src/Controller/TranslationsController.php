@@ -21,6 +21,7 @@ use Translations\Model\EntryStringTable;
 use Translations\Model\ResourceFileEntryTable;
 use Translations\Model\ResourceTypeTable;
 use Translations\Model\SuggestionStringTable;
+use Translations\Model\SuggestionTable;
 use Translations\Model\SuggestionVote;
 use Translations\Model\SuggestionVoteTable;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -28,6 +29,7 @@ use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer as Renderer;
+use Translations\Model\Suggestion;
 
 class TranslationsController extends AbstractActionController
 {
@@ -55,6 +57,11 @@ class TranslationsController extends AbstractActionController
      * @var EntryStringTable
      */
     private $entryStringTable;
+
+    /**
+     * @var SuggestionTable
+     */
+    private $suggestionTable;
 
     /**
      * @var SuggestionStringTable
@@ -177,18 +184,20 @@ class TranslationsController extends AbstractActionController
      * @param ResourceTypeTable $resourceTypeTable
      * @param ResourceFileEntryTable $resourceFileEntryTable
      * @param EntryStringTable $entryStringTable
+     * @param SuggestionTable $suggestionTable
      * @param SuggestionStringTable $suggestionStringTable
      * @param SuggestionVoteTable $suggestionVoteTable
      * @param Translator $translator
      * @param Renderer $renderer
      */
-    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, ResourceTypeTable $resourceTypeTable, ResourceFileEntryTable $resourceFileEntryTable, EntryStringTable $entryStringTable, SuggestionStringTable $suggestionStringTable, SuggestionVoteTable $suggestionVoteTable, Translator $translator, Renderer $renderer)
+    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, ResourceTypeTable $resourceTypeTable, ResourceFileEntryTable $resourceFileEntryTable, EntryStringTable $entryStringTable, SuggestionTable $suggestionTable, SuggestionStringTable $suggestionStringTable, SuggestionVoteTable $suggestionVoteTable, Translator $translator, Renderer $renderer)
     {
         $this->appTable = $appTable;
         $this->appResourceTable = $appResourceTable;
         $this->resourceTypeTable = $resourceTypeTable;
         $this->resourceFileEntryTable = $resourceFileEntryTable;
         $this->entryStringTable = $entryStringTable;
+        $this->suggestionTable = $suggestionTable;
         $this->suggestionStringTable = $suggestionStringTable;
         $this->suggestionVoteTable = $suggestionVoteTable;
         $this->translator = $translator;
@@ -350,6 +359,89 @@ class TranslationsController extends AbstractActionController
             ];
         }
         return new JsonModel($output);
+    }
+
+    /**
+     * Translation suggestion add and edit action
+     *
+     * @return JsonModel
+     */
+    public function suggestionaddeditAction()
+    {
+        $appId = (int) $this->params()->fromRoute('appId', 0);
+        $resourceId = (int) $this->params()->fromRoute('resourceId', 0);
+        $entryId = (int) $this->params()->fromRoute('entryId', 0);
+        $suggestionId = (int) $this->params()->fromRoute('suggestionId', 0);
+        $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
+
+        $app = $this->getApp($appId);
+
+        if ($app === false) {
+            return new JsonModel();
+        }
+
+        $resource = $this->getResource($resourceId, $appId);
+
+        if ($resource === false) {
+            return new JsonModel();
+        }
+
+        try {
+            $entry = $this->resourceFileEntryTable->getResourceFileEntry($entryId);
+        } catch (\RuntimeException$e) {
+            return new JsonModel();
+        }
+
+        try {
+            $type = $this->resourceTypeTable->getResourceType($entry->ResourceTypeId);
+        } catch (\RuntimeException $e) {
+            return new JsonModel();
+        }
+
+        switch ($type->Name) {
+            case 'String':
+                $typedEntry = $this->entryStringTable->getAllEntryStringsForTranslations($appId, $resourceId, $entryId);
+                break;
+            default:
+                return new JsonModel();
+        }
+
+        if (count($typedEntry) == 1) {
+            $typedEntry = $typedEntry[0];
+        } else {
+            return new JsonModel();
+        }
+
+        if ($suggestionId !== 0) {
+            switch ($type->Name) {
+                case 'String':
+                    $typedSuggestion = $this->suggestionStringTable->getAllSuggestionsForTranslations($typedEntry->id, $userId, $suggestionId);
+                    break;
+            }
+            if (count($typedSuggestion) != 1) {
+                return new JsonModel();
+            }
+            if ($typedSuggestion->userId !== $userId) {
+                return new JsonModel();
+            }
+        }
+
+        switch ($type->Name) {
+            case 'String':
+                $value = trim($request->getPost('value', ''));
+                if (strlen($value) === 0) {
+                    return new JsonModel();
+                }
+                break;
+        }
+
+        if ($suggestionId === 0) {
+            $suggestion = new Suggestion([
+                'entry_common_id' => $entryId,
+                'user_id' => $userId,
+                'last_change' => time(),
+            ]);
+        }
     }
 
     /**

@@ -109,7 +109,8 @@ var appsAll = ' . json_encode($appsAll) . ';
 var resourcesAll = ' . json_encode($resourcesAll) . ';
 var translationsPath = "' . $this->url('translations/listtranslations'). '";
 var detailsPath = "' . $this->url('translations/details'). '";
-var suggestionvotePath = "' . $this->url('translations/suggestionvote'). '";')->appendFile($this->basePath('js/translations' . $min . '.js'));
+var suggestionvotePath = "' . $this->url('translations/suggestionvote'). '";
+var suggestionaddeditPath = "' . $this->url('translations/suggestionaddedit'). '";')->appendFile($this->basePath('js/translations' . $min . '.js'));
 ?>
 <div id="modalContainer"></div>
 <div class="modal fade" id="modalError" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
