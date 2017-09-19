@@ -64,7 +64,7 @@ function hideBootstrapTooltips() {
 function addModalAlertMessage() {
     var messages = $("#modalMessages");
     messages.append("<div class=\"alert alert-danger alert-dismissable\"><a href=\"#\" class=\"close\" data-dismiss=\"alert\" aria-label=\"close\">&times;</a><i class=\"fa fa-exclamation-circle fa-fw\" aria-hidden=\"true\"></i><span class=\"sr-only\">' .  $this->translate('Error:') . '</span> An unexpected error has occurred.</div>");
-    $('modal-body').animate({
+    $('#modalDetails').animate({
         scrollTop: messages.offset().top
     });
 }

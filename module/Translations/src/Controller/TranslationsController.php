@@ -419,9 +419,13 @@ class TranslationsController extends AbstractActionController
                     $typedSuggestion = $this->suggestionStringTable->getAllSuggestionsForTranslations($typedEntry->id, $userId, $suggestionId);
                     break;
             }
-            if (count($typedSuggestion) != 1) {
+
+            if (count($typedSuggestion) == 1) {
+                $typedSuggestion = $typedSuggestion[0];
+            } else {
                 return new JsonModel();
             }
+
             if ($typedSuggestion->userId !== $userId) {
                 return new JsonModel();
             }
@@ -442,7 +446,7 @@ class TranslationsController extends AbstractActionController
 
         if ($suggestionId === 0) {
             $suggestion = new Suggestion([
-                'entry_common_id' => $entryId,
+                'entry_common_id' => $typedEntry->id,
                 'user_id' => $userId,
                 'last_change' => time(),
             ]);
@@ -485,7 +489,9 @@ class TranslationsController extends AbstractActionController
             }
         }
 
-        if (is_null($typedSuggestion)) {
+        if (count($typedSuggestion) == 1) {
+            $typedSuggestion = $typedSuggestion[0];
+        } else {
             return new JsonModel();
         }
 

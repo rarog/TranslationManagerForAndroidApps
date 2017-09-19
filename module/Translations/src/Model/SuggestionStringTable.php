@@ -88,7 +88,7 @@ class SuggestionStringTable
 
         try {
             if ($this->getSuggestionString($suggestionId)) {
-                $this->tableGateway->update($data, ['suggestion_id' => $entryCommonId]);
+                $this->tableGateway->update($data, ['suggestion_id' => $suggestionId]);
             }
         } catch (RuntimeException $e) {
             $data['suggestion_id'] = $suggestionId;
