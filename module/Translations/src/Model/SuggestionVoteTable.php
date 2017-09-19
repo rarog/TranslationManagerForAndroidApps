@@ -118,7 +118,7 @@ class SuggestionVoteTable
         $deleteParams = ['suggestion_id' => $suggestionId];
 
         if ($userId > 0) {
-            $deleteParams = ['user_id' => $userId];
+            $deleteParams['user_id'] = $userId;
         }
 
         $this->tableGateway->delete($deleteParams);
