@@ -131,7 +131,7 @@ CREATE TABLE entry_common (
 CREATE INDEX entry_common_ik1 ON entry_common (last_change);
 
 CREATE TABLE entry_string (
-    entry_common_id INTEGER NOT NULL,
+    entry_common_id INTEGER NOT NULL UNIQUE,
     value           TEXT NOT NULL,
     FOREIGN KEY (entry_common_id) REFERENCES entry_common (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -148,7 +148,7 @@ CREATE TABLE suggestion (
 CREATE INDEX suggestion_ik1 ON suggestion (last_change);
 
 CREATE TABLE suggestion_string (
-    suggestion_id INTEGER NOT NULL,
+    suggestion_id INTEGER NOT NULL UNIQUE,
     value         TEXT NOT NULL,
     FOREIGN KEY (suggestion_id) REFERENCES suggestion (id) ON DELETE CASCADE ON UPDATE CASCADE
 );

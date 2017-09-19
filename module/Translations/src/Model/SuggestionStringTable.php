@@ -74,7 +74,7 @@ class SuggestionStringTable
      * @throws RuntimeException
      * @return \Translations\Model\SuggestionString
      */
-    public function saveResourceFileEntryStringSuggestion(SuggestionString $suggestionString)
+    public function saveSuggestionString(SuggestionString $suggestionString)
     {
         $data = [
             'value' => $suggestionString->Value,
@@ -91,7 +91,7 @@ class SuggestionStringTable
                 $this->tableGateway->update($data, ['suggestion_id' => $entryCommonId]);
             }
         } catch (RuntimeException $e) {
-            $data['entry_common_id'] = $suggestionId;
+            $data['suggestion_id'] = $suggestionId;
             $this->tableGateway->insert($data);
         }
 

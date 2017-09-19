@@ -20,6 +20,8 @@ use Translations\Model\AppTable;
 use Translations\Model\EntryStringTable;
 use Translations\Model\ResourceFileEntryTable;
 use Translations\Model\ResourceTypeTable;
+use Translations\Model\Suggestion;
+use Translations\Model\SuggestionString;
 use Translations\Model\SuggestionStringTable;
 use Translations\Model\SuggestionTable;
 use Translations\Model\SuggestionVote;
@@ -29,7 +31,6 @@ use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer as Renderer;
-use Translations\Model\Suggestion;
 
 class TranslationsController extends AbstractActionController
 {
@@ -426,6 +427,8 @@ class TranslationsController extends AbstractActionController
             }
         }
 
+        $request = $this->getRequest();
+
         switch ($type->Name) {
             case 'String':
                 $value = trim($request->getPost('value', ''));
@@ -435,13 +438,73 @@ class TranslationsController extends AbstractActionController
                 break;
         }
 
+        $typedSuggestion = null;
+
         if ($suggestionId === 0) {
             $suggestion = new Suggestion([
                 'entry_common_id' => $entryId,
                 'user_id' => $userId,
                 'last_change' => time(),
             ]);
+            $suggestion = $this->suggestionTable->saveSuggestion($suggestion);
+
+            switch ($type->Name) {
+                case 'String':
+                    $suggestionString = new SuggestionString([
+                        'suggestion_id' => $suggestion->Id,
+                        'value' => $value,
+                    ]);
+                    $this->suggestionStringTable->saveSuggestionString($suggestionString);
+
+                    $typedSuggestion = $this->suggestionStringTable->getAllSuggestionsForTranslations($typedEntry->id, $userId, $suggestion->Id);
+                    break;
+            }
+        } else {
+            try {
+                $suggestion = $this->suggestionTable->getSuggestion($suggestionId);
+            } catch (\RuntimeException $e) {
+                return new JsonModel();
+            }
+
+            $suggestion->LastChange = time();
+            $this->suggestionTable->saveSuggestion($suggestion);
+
+            switch ($type->Name) {
+                case 'String':
+                    try {
+                        $suggestionString = $this->suggestionStringTable->getSuggestionString($suggestionId);
+                    } catch (\RuntimeException $e) {
+                        return new JsonModel();
+                    }
+
+                    $suggestionString->Value = $value;
+                    $this->suggestionStringTable->saveSuggestionString($suggestionString);
+
+                    $typedSuggestion = $this->suggestionStringTable->getAllSuggestionsForTranslations($typedEntry->id, $userId, $suggestionId);
+                    break;
+            }
         }
+
+        if (is_null($typedSuggestion)) {
+            return new JsonModel();
+        }
+
+        $viewModel = $this->getViewModel();
+        $viewModel->setVariables([
+            'entryId' => $entryId,
+            'suggestion' => $typedSuggestion,
+            'type' => $type->Name,
+        ]);
+
+        return new JsonModel([
+            'suggestion' => [
+                'suggestionId' => sprintf('suggestion-%d', $typedSuggestion->id),
+                'suggestion' => $this->renderTemplate($viewModel, 'translations/translations/partial/details-suggestion-suggestion.phtml'),
+                'username' => $this->renderTemplate($viewModel, 'translations/translations/partial/details-suggestion-username.phtml'),
+                'votes' => $this->renderTemplate($viewModel, 'translations/translations/partial/details-suggestion-vote.phtml'),
+                'buttons' => $this->renderTemplate($viewModel, 'translations/translations/partial/details-suggestion-buttons.phtml'),
+            ],
+        ]);
     }
 
     /**

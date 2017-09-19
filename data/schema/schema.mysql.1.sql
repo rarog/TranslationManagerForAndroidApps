@@ -136,7 +136,7 @@ CREATE TABLE `entry_common` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `entry_string` (
-    `entry_common_id` BIGINT(20) UNSIGNED NOT NULL,
+    `entry_common_id` BIGINT(20) UNSIGNED NOT NULL UNIQUE,
     `value`           VARCHAR(20480) NOT NULL,
     INDEX `entry_string_fk1` (`entry_common_id`),
     CONSTRAINT `entry_string_fk1` FOREIGN KEY (`entry_common_id`) REFERENCES `entry_common` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -155,7 +155,7 @@ CREATE TABLE `suggestion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `suggestion_string` (
-    `suggestion_id` BIGINT(20) UNSIGNED NOT NULL,
+    `suggestion_id` BIGINT(20) UNSIGNED NOT NULL UNIQUE,
     `value`         VARCHAR(20480) NOT NULL,
     INDEX `suggestion_string_fk1` (`suggestion_id`),
     CONSTRAINT `suggestion_string_fk1` FOREIGN KEY (`suggestion_id`) REFERENCES `suggestion` (`id`) ON DELETE CASCADE ON UPDATE CASCADE

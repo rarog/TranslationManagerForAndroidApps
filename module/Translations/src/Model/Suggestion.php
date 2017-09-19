@@ -149,7 +149,7 @@ class Suggestion implements ArraySerializableInterface, InputFilterAwareInterfac
     /**
      * @return null|int
      */
-    public function getChange() {
+    public function getLastChange() {
         return $this->lastChange;
     }
 
