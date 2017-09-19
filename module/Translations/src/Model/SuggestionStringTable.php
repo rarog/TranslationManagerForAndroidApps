@@ -200,6 +200,11 @@ class SuggestionStringTable
             $select->where(['suggestion.id' => $suggestionId]);
         }
 
+        $select->order([
+            'voteCountAll DESC',
+            'suggestion.last_change ASC',
+        ]);
+
         $returnArray = new ArrayObject([], ArrayObject::ARRAY_AS_PROPS);
 
         $sql = new Sql($this->tableGateway->adapter, $this->tableGateway->table);
