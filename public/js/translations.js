@@ -3,6 +3,9 @@
  * @copyright Copyright (c) 2017 Andrej Sinicyn
  * @license   https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License version 3 or later
  */
+var curResources = resources;
+var refreshTranslation = false;
+
 function enableBootstrapTooltips() {
     $(function() {
         $('[data-toggle="tooltip"]').tooltip({container: 'body'});
@@ -69,7 +72,62 @@ function addModalAlertMessage() {
     });
 }
 
-var curResources = resources;
+function showSuggestionAddEdit(id, suggestion) {
+    var editArea = $('#modalContainer #suggestionAddEdit');
+    var button = $('#modalContainer #suggestionAddEdit');
+    var focusElement = null;
+
+    editArea.find(".suggestionAddEditSubmit").data("suggestionid", id);
+
+    if (suggestionType == 'String') {
+        var value = "";
+        if (($.type(suggestion) === "object") && ($.type(suggestion.value) === "string")) {
+            value = suggestion.value;
+        }
+
+        var textArea = $('#modalContainer #suggestionAddEditText');
+        textArea.val(value);
+        focusElement = textArea;
+    }
+
+    editArea.collapse('show');
+    $('#modalDetails').animate({
+        scrollTop: editArea.offset().top
+    });
+
+    if (focusElement !== null) {
+        focusElement.focus();
+    }
+}
+
+function refreshTranslationEntry(app, resource, entry) {
+    hideModalSpinner(false);
+
+    $.ajax({
+        url: translationsPath + "/app/" + app + "/resource/" + resource + '/entry/' + entry,
+        dataType: "json",
+        method: "GET"
+    })
+    .done(function(data) {
+        if ($.type(data) == 'array' && data.length == 1) {
+            var table = $('#translations').DataTable();
+
+            table.row('#translation-' + entry)
+                .data(data[0])
+                .draw();
+
+            hideModalSpinner(true);
+            enableBootstrapTooltips();
+        } else {
+            hideModalSpinner(true);
+            showModalError();
+        }
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        hideModalSpinner(true);
+        showModalError();
+    });
+}
 
 $("#showAll").on("change", function (event) {
 	var appSelect = $("#app");
@@ -153,8 +211,13 @@ $("#translations").on("click", ".translationDetails", function(event) {
                     .add(suggestionData)
                     .draw();
                 enableBootstrapTooltips();
+            }).on('show.bs.modal', function (e) {
+                refreshTranslation = false;
             }).on('hidden.bs.modal', function (e) {
             	$('#modalContainer #suggestions').DataTable().destroy();
+            	if (refreshTranslation) {
+            	    refreshTranslationEntry(app, resource, entry);
+            	}
             }).modal();
         } else {
             showModalError();
@@ -230,34 +293,6 @@ $("#modalContainer").on("click", ".suggestionEdit", function(event) {
 	}
 });
 
-function showSuggestionAddEdit(id, suggestion) {
-    var editArea = $('#modalContainer #suggestionAddEdit');
-    var button = $('#modalContainer #suggestionAddEdit');
-    var focusElement = null;
-
-    editArea.find(".suggestionAddEditSubmit").data("suggestionid", id);
-
-    if (suggestionType == 'String') {
-        var value = "";
-        if (($.type(suggestion) === "object") && ($.type(suggestion.value) === "string")) {
-            value = suggestion.value;
-        }
-
-        var textArea = $('#modalContainer #suggestionAddEditText');
-        textArea.val(value);
-        focusElement = textArea;
-    }
-
-    editArea.collapse('show');
-    $('#modalDetails').animate({
-        scrollTop: editArea.offset().top
-    });
-
-    if (focusElement !== null) {
-        focusElement.focus();
-    }
-}
-
 $("#modalContainer").on("click", ".suggestionAddEditSubmit", function(event) {
     var button = $(this);
 
@@ -297,6 +332,7 @@ $("#modalContainer").on("click", ".suggestionAddEditSubmit", function(event) {
 
             $('#modalContainer #suggestionAddEdit').collapse('hide');
             enableBootstrapTooltips();
+            refreshTranslation = true;
         } else {
             addModalAlertMessage();
         }
