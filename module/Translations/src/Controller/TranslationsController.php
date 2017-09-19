@@ -452,6 +452,12 @@ class TranslationsController extends AbstractActionController
             ]);
             $suggestion = $this->suggestionTable->saveSuggestion($suggestion);
 
+            $suggestionVote = new SuggestionVote([
+                'suggestion_id' => $suggestion->Id,
+                'user_id' => $userId,
+            ]);
+            $this->suggestionVoteTable->saveSuggestionVote($suggestionVote);
+
             switch ($type->Name) {
                 case 'String':
                     $suggestionString = new SuggestionString([
