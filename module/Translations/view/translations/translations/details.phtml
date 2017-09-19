@@ -22,9 +22,6 @@ foreach ($suggestions as $suggestion) {
         <h4 class="modal-title" id="modalLabel"><?= $this->escapeHtml($this->translate('Translations details')) ?></h4>
       </div>
       <div class="modal-body">
-        <div class="modal-spinner">
-          <i class="fa fa-spinner fa-pulse fa-4x fa-fw" aria-hidden="true"></i>
-        </div>
         <div class="row">
           <div class="col-lg-3"><b><?= $this->escapeHtml($this->translate('Default value:')) ?></b></div>
           <div class="col-lg-9">
@@ -76,14 +73,14 @@ foreach ($suggestions as $suggestion) {
               <div class="form-group">
                 <label for="suggestionAddEditText" class="col-lg-3 control-label">Suggestion</label>
                 <div class="col-lg-9">
-                  <textarea class="form-control" id="suggestionAddEditText" placeholder="<?= $this->escapeHtmlAttr($this->translate('Value')) ?>" rows="3" style="resize: vertical;">...</textarea>
+                  <textarea class="form-control" id="suggestionAddEditText" placeholder="<?= $this->escapeHtmlAttr($this->translate('Value')) ?>" rows="3">...</textarea>
                 </div>
               </div>
 <?php endif; ?>
               <div class="form-group">
                 <div class="col-lg-offset-3 col-lg-9">
                   <div class="btn-group" role="group" aria-label="...">
-                    <button type="button" class="btn btn-primary"><i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Save')) ?></button>
+                    <button type="button" class="btn btn-primary suggestionAddEditSubmit"><i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Save')) ?></button>
                     <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#suggestionAddEdit"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Cancel')) ?></button>
                   </div>
                 </div>

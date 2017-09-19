@@ -113,6 +113,9 @@ var suggestionvotePath = "' . $this->url('translations/suggestionvote'). '";
 var suggestionaddeditPath = "' . $this->url('translations/suggestionaddedit'). '";')->appendFile($this->basePath('js/translations' . $min . '.js'));
 ?>
 <div id="modalContainer"></div>
+<div id="modalSpinner">
+  <i class="fa fa-spinner fa-pulse fa-4x fa-fw" aria-hidden="true"></i>
+</div>
 <div class="modal fade" id="modalError" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">

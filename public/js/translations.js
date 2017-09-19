@@ -49,7 +49,7 @@ function showModalError() {
 }
 
 function hideModalSpinner(hide) {
-    var node = $("#modalContainer .modal-spinner");
+    var node = $("#modalSpinner");
     if (hide) {
     	node.css("display", "none");
     } else {
@@ -223,10 +223,11 @@ $("#modalContainer").on("click", ".suggestionEdit", function(event) {
 });
 
 function showSuggestionAddEdit(id, suggestion) {
-    var edit = $('#modalContainer #suggestionAddEdit');
+    var editArea = $('#modalContainer #suggestionAddEdit');
+    var button = $('#modalContainer #suggestionAddEdit');
     var focusElement = null;
 
-    edit.data("suggestionid", id);
+    editArea.find(".suggestionAddEditSubmit").data("suggestionid", id);
 
     if (suggestionType == 'String') {
         var value = "";
@@ -239,12 +240,62 @@ function showSuggestionAddEdit(id, suggestion) {
         focusElement = textArea;
     }
 
-    edit.collapse('show');
+    editArea.collapse('show');
     $('#modalDetails').animate({
-        scrollTop: edit.offset().top
+        scrollTop: editArea.offset().top
     });
 
     if (focusElement !== null) {
         focusElement.focus();
     }
 }
+
+$("#modalContainer").on("click", ".suggestionAddEditSubmit", function(event) {
+    var button = $(this);
+
+	if (button.hasClass("disabled")) {
+        return;
+    }
+
+    var app = $("#app").val();
+    var resource = $("#resource").val();
+    var suggestion = button.data("suggestionid");
+    var data = {};debugger;
+
+    if (suggestionType == 'String') {
+        data.value = $('#modalContainer #suggestionAddEditText').val();
+    }
+
+    hideBootstrapTooltips();
+	hideModalSpinner(false);
+
+    $.ajax({
+        url: suggestionaddeditPath + "/app/" + app + "/resource/" + resource + "/entry/" + suggestionEntryId + "/suggestion/" + suggestion,
+        data: data,
+        dataType: "json",
+        method: "POST"
+    })
+    .done(function(data) {debugger;
+        if ($.type(data) == 'object' && data['suggestion']) {
+            var table = $('#modalContainer #suggestions').DataTable();
+            if (suggestion == 0) {
+                table.row
+                	.add(data['suggestion']);
+            } else {
+                table.row('#suggestion-' + suggestion)
+                  .data(data['suggestion']);
+        	}
+            table.draw();
+
+            $('#modalContainer #suggestionAddEdit').collapse('hide');
+            enableBootstrapTooltips();
+        } else {
+            showModalError();
+        }
+    	hideModalSpinner(true);
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {debugger;
+    	showModalError();
+    	hideModalSpinner(true);
+    });
+});

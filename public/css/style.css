@@ -14,7 +14,7 @@ div.container a.navbar-brand > img {
     margin-top: -2px;
 }
 
-div.modal-spinner {
+div#modalSpinner {
 	text-align: center;
 	background-color: rgba(0, 0, 0, 0.3);
     height: 100%;
@@ -22,8 +22,8 @@ div.modal-spinner {
 	position: fixed;
 	top: 0px;
 	left: 0px;
-	padding-top: 40%;
-	z-index: 2;
+	padding-top: 20%;
+	z-index: 1051; /* Bootstrap modal default z-index is 1050 - show the spinner above it. */
 	display: none;
 }
 
@@ -32,6 +32,6 @@ div.modal-inset {
 	padding-right: 15px;
 }
 
-textarea.#suggestionAddEditText {
+textarea#suggestionAddEditText {
 	resize: vertical;
 }
