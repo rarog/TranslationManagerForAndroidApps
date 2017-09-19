@@ -61,6 +61,14 @@ function hideBootstrapTooltips() {
     $(".tooltip").tooltip("hide"); // Hide all currently visible tooltips
 }
 
+function addModalAlertMessage() {
+    var messages = $("#modalMessages");
+    messages.append("<div class=\"alert alert-danger alert-dismissable\"><a href=\"#\" class=\"close\" data-dismiss=\"alert\" aria-label=\"close\">&times;</a><i class=\"fa fa-exclamation-circle fa-fw\" aria-hidden=\"true\"></i><span class=\"sr-only\">' .  $this->translate('Error:') . '</span> An unexpected error has occurred.</div>");
+    $('modal-body').animate({
+        scrollTop: messages.offset().top
+    });
+}
+
 var curResources = resources;
 
 $("#showAll").on("change", function (event) {
@@ -185,12 +193,12 @@ $("#modalContainer").on("click", ".suggestionVote", function(event) {
                 .draw();
             enableBootstrapTooltips();
         } else {
-            showModalError();
+            addModalAlertMessage();
         }
     	hideModalSpinner(true);
     })
     .fail(function(jqXHR, textStatus, errorThrown) {
-    	showModalError();
+        addModalAlertMessage();
     	hideModalSpinner(true);
     });
 });
@@ -260,7 +268,7 @@ $("#modalContainer").on("click", ".suggestionAddEditSubmit", function(event) {
     var app = $("#app").val();
     var resource = $("#resource").val();
     var suggestion = button.data("suggestionid");
-    var data = {};debugger;
+    var data = {};
 
     if (suggestionType == 'String') {
         data.value = $('#modalContainer #suggestionAddEditText').val();
@@ -275,7 +283,7 @@ $("#modalContainer").on("click", ".suggestionAddEditSubmit", function(event) {
         dataType: "json",
         method: "POST"
     })
-    .done(function(data) {debugger;
+    .done(function(data) {
         if ($.type(data) == 'object' && data['suggestion']) {
             var table = $('#modalContainer #suggestions').DataTable();
             if (suggestion == 0) {
@@ -290,12 +298,12 @@ $("#modalContainer").on("click", ".suggestionAddEditSubmit", function(event) {
             $('#modalContainer #suggestionAddEdit').collapse('hide');
             enableBootstrapTooltips();
         } else {
-            showModalError();
+            addModalAlertMessage();
         }
     	hideModalSpinner(true);
     })
-    .fail(function(jqXHR, textStatus, errorThrown) {debugger;
-    	showModalError();
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        addModalAlertMessage();
     	hideModalSpinner(true);
     });
 });
