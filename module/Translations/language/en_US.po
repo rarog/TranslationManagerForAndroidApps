@@ -2,18 +2,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TranslationManagerForAndroidApps\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-31 07:09+0200\n"
-"PO-Revision-Date: 2017-05-31 07:17+0200\n"
+"POT-Creation-Date: 2017-09-20 18:07+0200\n"
+"PO-Revision-Date: 2017-09-20 18:07+0200\n"
 "Last-Translator: rarog <rarogit@gmail.com>\n"
 "Language-Team: \n"
 "Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-KeywordsList: translate;_\n"
+"X-Poedit-KeywordsList: translate;_;translatePlural:1,2\n"
 "X-Poedit-Basepath: ..\n"
-"X-Generator: Poedit 2.0.2\n"
+"X-Generator: Poedit 2.0.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: language/msgIds.php:8
@@ -26,11 +27,11 @@ msgid ""
 "\"values-\""
 msgstr ""
 
-#: src/Controller/AppController.php:207
-#: src/Controller/AppResourceController.php:355
-#: src/Controller/AppResourceFileController.php:314
-#: src/Controller/TeamController.php:114
-#: src/Controller/TeamMemberController.php:197
+#: src/Controller/AppController.php:232
+#: src/Controller/AppResourceController.php:331
+#: src/Controller/AppResourceFileController.php:271
+#: src/Controller/TeamController.php:121
+#: src/Controller/TeamMemberController.php:210
 msgid ""
 "Form data seems to be inconsistent. For security reasons the last input was "
 "corrected."
@@ -38,9 +39,9 @@ msgstr ""
 
 # Parameters
 # 1) Directory name
-#: src/Controller/AppResourceController.php:185
-#: src/Controller/AppResourceController.php:256
-#: src/Controller/AppResourceFileController.php:234
+#: src/Controller/AppResourceController.php:160
+#: src/Controller/AppResourceController.php:229
+#: src/Controller/AppResourceFileController.php:188
 #, php-format
 msgid ""
 "The app resource directory \"%s\" doesn't exist and couldn't be created."
@@ -48,82 +49,185 @@ msgstr ""
 
 # Parameters
 # 1) Directory name
-#: src/Controller/AppResourceFileController.php:172
+#: src/Controller/AppResourceFileController.php:128
 #, php-format
 msgid ""
 "The app resource default values directory \"%s\" doesn't exist and couldn't "
 "be created."
 msgstr ""
 
+#: src/Controller/GitController.php:190
+msgid "Git cloning successful"
+msgstr ""
+
+#: src/Controller/SyncController.php:148 src/Controller/SyncController.php:180
+msgid "Invalid request"
+msgstr ""
+
+#: src/Controller/SyncController.php:188
+msgid "Import successful"
+msgstr ""
+
+# Parameters
+# 1) Number of processed entries
+# 2) Number of updated entries
+#: src/Controller/SyncController.php:188
+#, php-format
+msgid "%d entries processed, %d updated"
+msgstr ""
+
+# Parameters
+# 1) Number of deleted entries
+#: src/Controller/SyncController.php:192
+#, php-format
+msgid "%d entries deleted from database"
+msgstr ""
+
+# Parameters
+# 1) Number of skipped entries
+#: src/Controller/SyncController.php:194
+#, php-format
+msgid "%d entries skipped (exist only in database)"
+msgstr ""
+
+# Parameters
+# 1) Number of skipped entries
+#: src/Controller/SyncController.php:198
+#, php-format
+msgid "%d entries skipped (not in default)"
+msgstr ""
+
 # Parameters
 # 1) Email of user
 # 2) Team name
-#: src/Controller/TeamMemberController.php:128
+#: src/Controller/TeamMemberController.php:137
 #, php-format
 msgid "User with email \"%s\" was added to team \"%s\"."
 msgstr ""
 
-#: src/Form/AppForm.php:33
+#: src/Form/AppForm.php:40
 msgid "It's strongly advised not to change this value in existing apps."
 msgstr ""
 
-#: src/Form/AppForm.php:34 view/translations/app/index.phtml:19
+#: src/Form/AppForm.php:41 view/translations/app/index.phtml:19
 msgid "Team"
 msgstr ""
 
-#: src/Form/AppForm.php:49 src/Form/AppResourceFileForm.php:39
-#: src/Form/AppResourceForm.php:38 src/Form/TeamForm.php:34
+#: src/Form/AppForm.php:56 src/Form/AppResourceFileForm.php:46
+#: src/Form/AppResourceForm.php:45 src/Form/TeamForm.php:41
 #: view/translations/app-resource-file/index.phtml:19
 #: view/translations/app-resource/index.phtml:20
 #: view/translations/app/index.phtml:21 view/translations/team/index.phtml:17
+#: view/translations/translations/index.phtml:189
 msgid "Name"
 msgstr ""
 
-#: src/Form/AppForm.php:64 view/translations/app/index.phtml:22
-msgid "Git repository"
-msgstr ""
-
-#: src/Form/AppForm.php:79 view/translations/app/index.phtml:23
+#: src/Form/AppForm.php:71 view/translations/app/index.phtml:22
 msgid "Path to \"res\" folder"
 msgstr ""
 
-#: src/Form/AppForm.php:97 src/Form/AppResourceFileForm.php:57
-#: src/Form/AppResourceForm.php:87 src/Form/TeamForm.php:52
+#: src/Form/AppForm.php:86 view/translations/app/index.phtml:23
+msgid "Git repository"
+msgstr ""
+
+#: src/Form/AppForm.php:101
+msgid "Username for git repository access"
+msgstr ""
+
+#: src/Form/AppForm.php:102
+msgid "Git username"
+msgstr ""
+
+#: src/Form/AppForm.php:118
+msgid "Password for git repository access. Leave empty to keep old value."
+msgstr ""
+
+#: src/Form/AppForm.php:119
+msgid "Git password"
+msgstr ""
+
+#: src/Form/AppForm.php:134
+msgid "Delete git password"
+msgstr ""
+
+#: src/Form/AppForm.php:148
+msgid "User for git commits"
+msgstr ""
+
+#: src/Form/AppForm.php:149
+msgid "Git user"
+msgstr ""
+
+#: src/Form/AppForm.php:164
+msgid "Email for git commits"
+msgstr ""
+
+#: src/Form/AppForm.php:165
+msgid "Git email"
+msgstr ""
+
+#: src/Form/AppForm.php:183 src/Form/AppResourceFileForm.php:64
+#: src/Form/AppResourceForm.php:96 src/Form/TeamForm.php:59
+#: view/translations/translations/details.phtml:84
 msgid "Save"
 msgstr ""
 
-#: src/Form/AppResourceFileForm.php:38
+#: src/Form/AppResourceFileForm.php:45
 msgid ""
 "It's strongly advised not to change this value in existing app resources."
 msgstr ""
 
-#: src/Form/AppResourceForm.php:52
+#: src/Form/AppResourceForm.php:61
 msgid "Please choose a locale"
 msgstr ""
 
-#: src/Form/AppResourceForm.php:53
-msgid "Default values should be universal like \"en\" or \"en_US\""
+#: src/Form/AppResourceForm.php:62
+msgid "Default values should be universal like \"en\" or \"en_US\"."
 msgstr ""
 
-#: src/Form/AppResourceForm.php:54
+#: src/Form/AppResourceForm.php:63
 #: view/translations/app-resource/index.phtml:21
 msgid "Locale"
 msgstr ""
 
-#: src/Form/AppResourceForm.php:69
+#: src/Form/AppResourceForm.php:78
 #: view/translations/app-resource/index.phtml:22
 msgid "Description"
 msgstr ""
 
-#: src/Form/DeleteHelperForm.php:43
+#: src/Form/DeleteHelperForm.php:50
 msgid "Yes"
 msgstr ""
 
-#: src/Form/DeleteHelperForm.php:58
+#: src/Form/DeleteHelperForm.php:65
 msgid "No"
 msgstr ""
 
-#: src/Form/TeamMemberForm.php:41
+#: src/Form/GitCloneForm.php:35
+msgid "Confirm deletion of all content inside the folder before cloning"
+msgstr ""
+
+#: src/Form/GitCloneForm.php:59 view/translations/team-member/add.phtml:15
+msgid "Back"
+msgstr ""
+
+#: src/Form/GitCloneForm.php:75 view/translations/git/index.phtml:11
+msgid "Clone"
+msgstr ""
+
+#: src/Form/SyncExportForm.php:34 src/Form/SyncImportForm.php:34
+msgid "Delete resources not present in set"
+msgstr ""
+
+#: src/Form/SyncExportForm.php:51
+msgid "Export"
+msgstr ""
+
+#: src/Form/SyncImportForm.php:51
+msgid "Import"
+msgstr ""
+
+#: src/Form/TeamMemberForm.php:48
 msgid "Add"
 msgstr ""
 
@@ -139,7 +243,7 @@ msgstr ""
 msgid "Warning:"
 msgstr ""
 
-#: view/partial/alert.phtml:19
+#: view/partial/alert.phtml:19 view/translations/sync/index.phtml:18
 msgid "Error:"
 msgstr ""
 
@@ -150,8 +254,10 @@ msgstr ""
 
 #: view/translations/app-resource-file/add.phtml:29
 #: view/translations/app-resource-file/add.phtml:40
-#: view/translations/app-resource/add.phtml:29
-#: view/translations/app-resource/add.phtml:40
+#: view/translations/app-resource/add.phtml:30
+#: view/translations/app-resource/add.phtml:41
+#: view/translations/translations/details.phtml:95
+#: view/translations/translations/index.phtml:130
 msgid "Close"
 msgstr ""
 
@@ -186,13 +292,14 @@ msgstr ""
 
 #: view/translations/app-resource-file/index.phtml:34
 #: view/translations/app-resource/index.phtml:39
-#: view/translations/app/index.phtml:54 view/translations/team/index.phtml:34
+#: view/translations/app/index.phtml:72 view/translations/team/index.phtml:34
+#: view/translations/translations/partial/details-suggestion-buttons.phtml:21
 msgid "Edit"
 msgstr ""
 
 #: view/translations/app-resource-file/index.phtml:40
-#: view/translations/app-resource/index.phtml:46
-#: view/translations/app/index.phtml:60 view/translations/team/index.phtml:40
+#: view/translations/app-resource/index.phtml:47
+#: view/translations/app/index.phtml:78 view/translations/team/index.phtml:40
 msgid "Delete"
 msgstr ""
 
@@ -203,7 +310,7 @@ msgstr ""
 msgid "Add new resource to app \"%s\""
 msgstr ""
 
-#: view/translations/app-resource/add.phtml:30
+#: view/translations/app-resource/add.phtml:31
 msgid "Select resource folder"
 msgstr ""
 
@@ -256,12 +363,47 @@ msgstr ""
 msgid "Apps"
 msgstr ""
 
-#: view/translations/app/index.phtml:41
+#: view/translations/app/index.phtml:39
+msgid "Tasks"
+msgstr ""
+
+#: view/translations/app/index.phtml:51
+msgid "Sync"
+msgstr ""
+
+#: view/translations/app/index.phtml:59
 msgid "Resources"
 msgstr ""
 
-#: view/translations/app/index.phtml:46
+#: view/translations/app/index.phtml:64
 msgid "Resource files"
+msgstr ""
+
+#: view/translations/git/clone.phtml:2
+#, php-format
+msgid "Cloning repository of app \"%s\""
+msgstr ""
+
+#: view/translations/git/index.phtml:2
+#, php-format
+msgid "Git of app \"%s\""
+msgstr ""
+
+#: view/translations/sync/index.phtml:2
+#, php-format
+msgid "Sync resources of app \"%s\""
+msgstr ""
+
+#: view/translations/sync/index.phtml:37
+msgid "Import resources"
+msgstr ""
+
+#: view/translations/sync/index.phtml:53
+msgid "Export resources"
+msgstr ""
+
+#: view/translations/sync/index.phtml:71
+msgid "Processing..."
 msgstr ""
 
 # Parameters
@@ -269,10 +411,6 @@ msgstr ""
 #: view/translations/team-member/add.phtml:2
 #, php-format
 msgid "Add members to team \"%s\""
-msgstr ""
-
-#: view/translations/team-member/add.phtml:15
-msgid "Back"
 msgstr ""
 
 #: view/translations/team-member/add.phtml:24
@@ -347,4 +485,107 @@ msgstr ""
 
 #: view/translations/team/index.phtml:30
 msgid "Members"
+msgstr ""
+
+#: view/translations/translations/details.phtml:22
+msgid "Translations details"
+msgstr ""
+
+#: view/translations/translations/details.phtml:27
+msgid "Default value:"
+msgstr ""
+
+#: view/translations/translations/details.phtml:38
+msgid "Current value:"
+msgstr ""
+
+#: view/translations/translations/details.phtml:50
+msgid "Suggestions:"
+msgstr ""
+
+#: view/translations/translations/details.phtml:54
+#: view/translations/translations/details.phtml:77
+msgid "Value"
+msgstr ""
+
+#: view/translations/translations/details.phtml:55
+msgid "By"
+msgstr ""
+
+#: view/translations/translations/details.phtml:56
+msgid "Votes"
+msgstr ""
+
+#: view/translations/translations/details.phtml:65
+msgid "Add new suggestion"
+msgstr ""
+
+#: view/translations/translations/details.phtml:85
+msgid "Cancel"
+msgstr ""
+
+#: view/translations/translations/index.phtml:2
+msgid "Translations"
+msgstr ""
+
+#: view/translations/translations/index.phtml:124
+msgid "Error"
+msgstr ""
+
+#: view/translations/translations/index.phtml:127
+msgid "An unexpected error has occurred while loading the translation details."
+msgstr ""
+
+#: view/translations/translations/index.phtml:146
+msgid "Show all"
+msgstr ""
+
+#: view/translations/translations/index.phtml:155
+msgid "App"
+msgstr ""
+
+#: view/translations/translations/index.phtml:165
+msgid "Resource"
+msgstr ""
+
+#: view/translations/translations/index.phtml:174
+msgid "Please select app and resource."
+msgstr ""
+
+#: view/translations/translations/index.phtml:190
+msgid "Default value"
+msgstr ""
+
+#: view/translations/translations/index.phtml:191
+msgid "Translation"
+msgstr ""
+
+#: view/translations/translations/partial/details-suggestion-buttons.phtml:18
+msgid "Accept"
+msgstr ""
+
+#: view/translations/translations/partial/details-suggestion-buttons.phtml:24
+msgid "Vote"
+msgstr ""
+
+#: view/translations/translations/partial/listtranslations-buttons.phtml:3
+#, php-format
+msgid "%d suggestion"
+msgid_plural "%d suggestions"
+msgstr[0] ""
+msgstr[1] ""
+
+#: view/translations/translations/partial/listtranslations-buttons.phtml:6
+msgid "Details"
+msgstr ""
+
+# Parameters
+# 1) Product name
+#: view/translations/translations/partial/listtranslations-nameView.phtml:10
+#, php-format
+msgid "Product: %s"
+msgstr ""
+
+#: view/translations/translations/partial/listtranslations-translatedValue.phtml:4
+msgid "Default value is newer than translation. Please check."
 msgstr ""

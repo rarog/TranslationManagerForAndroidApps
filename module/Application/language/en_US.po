@@ -2,53 +2,96 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TranslationManagerForAndroidApps\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-06 09:34+0200\n"
-"PO-Revision-Date: 2017-05-06 09:34+0200\n"
+"POT-Creation-Date: 2017-09-20 18:07+0200\n"
+"PO-Revision-Date: 2017-09-20 18:07+0200\n"
 "Last-Translator: rarog <rarogit@gmail.com>\n"
 "Language-Team: \n"
 "Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-KeywordsList: translate;_\n"
+"X-Poedit-KeywordsList: translate;_;translatePlural:1,2\n"
 "X-Poedit-Basepath: ..\n"
 "X-Generator: Poedit 2.0.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: config/module.config.php:26
+#: config/module.config.php:33
 msgid "Home"
 msgstr ""
 
-#: config/module.config.php:32
-msgid "Translations"
+#: config/module.config.php:39
+msgid "Dashboard"
 msgstr ""
 
-#: config/module.config.php:38
+#: config/module.config.php:45
+msgid "Teams"
+msgstr ""
+
+#: config/module.config.php:51
 msgid "Apps"
 msgstr ""
 
-#: config/module.config.php:52
+#: config/module.config.php:57
+msgid "Translations"
+msgstr ""
+
+#: config/module.config.php:71
 msgid "My user"
 msgstr ""
 
-#: config/module.config.php:62 view/zfc-user/user/index.phtml:7
+#: config/module.config.php:77
+msgid "About..."
+msgstr ""
+
+#: config/module.config.php:87 view/zfc-user/user/index.phtml:11
 msgid "Sign out"
 msgstr ""
 
-#: src/View/Helper/DataTablesInitHelper.php:46
+#: src/Controller/SettingsController.php:99
+msgid "The selected languages were saved successfully."
+msgstr ""
+
+#: src/Form/UserLanguagesForm.php:39
+msgid "Languages"
+msgstr ""
+
+#: src/Form/UserLanguagesForm.php:58
+msgid "Save"
+msgstr ""
+
+#: src/View/Helper/DataTablesInitHelper.php:68
 msgid "All"
 msgstr ""
 
-#: view/zfc-user/user/index.phtml:2
-msgid "Hello"
+#: view/application/index/about.phtml:10
+msgid "Libraries"
 msgstr ""
 
+#: view/application/index/about.phtml:14
+msgid "Name"
+msgstr ""
+
+#: view/application/index/about.phtml:15
+msgid "License"
+msgstr ""
+
+#: view/application/settings/userlanguages.phtml:2
 #: view/zfc-user/user/index.phtml:5
+msgid "My languages"
+msgstr ""
+
+#: view/zfc-user/user/index.phtml:2
+#, php-format
+msgid "Hello, %s!"
+msgstr ""
+
+#: view/zfc-user/user/index.phtml:9
 msgid "Change password"
 msgstr ""
 
-#: view/zfc-user/user/index.phtml:6
+#: view/zfc-user/user/index.phtml:10
 msgid "Change email"
 msgstr ""
 
@@ -56,10 +99,10 @@ msgstr ""
 msgid "Sign In"
 msgstr ""
 
-#: view/zfc-user/user/login.phtml:16
+#: view/zfc-user/user/login.phtml:15
 msgid "Not registered?"
 msgstr ""
 
-#: view/zfc-user/user/login.phtml:16
+#: view/zfc-user/user/login.phtml:15
 msgid "Sign up!"
 msgstr ""

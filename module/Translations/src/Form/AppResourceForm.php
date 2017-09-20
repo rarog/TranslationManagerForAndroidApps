@@ -59,7 +59,7 @@ class AppResourceForm extends Form
             'options'    => [
                 'column-size'      => 'sm-9',
                 'empty_option'     => _('Please choose a locale'),
-                'help-block'       => _('Default values should be universal like "en" or "en_US"'),
+                'help-block'       => _('Default values should be universal like "en" or "en_US".'),
                 'label'            => _('Locale'),
                 'label_attributes' => [
                     'class' => 'col-sm-3',

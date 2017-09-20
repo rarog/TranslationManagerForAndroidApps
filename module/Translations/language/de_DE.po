@@ -2,18 +2,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TranslationManagerForAndroidApps\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-31 07:09+0200\n"
-"PO-Revision-Date: 2017-05-31 07:19+0200\n"
+"POT-Creation-Date: 2017-09-20 18:07+0200\n"
+"PO-Revision-Date: 2017-09-20 18:08+0200\n"
 "Last-Translator: rarog <rarogit@gmail.com>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-KeywordsList: translate;_\n"
+"X-Poedit-KeywordsList: translate;_;translatePlural:1,2\n"
 "X-Poedit-Basepath: ..\n"
-"X-Generator: Poedit 2.0.2\n"
+"X-Generator: Poedit 2.0.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: language/msgIds.php:8
@@ -28,11 +29,11 @@ msgstr ""
 "Ordnername der Ressourcenwerte muss identisch mit \"values\" sein oder mit "
 "\"values-\" beginnen"
 
-#: src/Controller/AppController.php:207
-#: src/Controller/AppResourceController.php:355
-#: src/Controller/AppResourceFileController.php:314
-#: src/Controller/TeamController.php:114
-#: src/Controller/TeamMemberController.php:197
+#: src/Controller/AppController.php:232
+#: src/Controller/AppResourceController.php:331
+#: src/Controller/AppResourceFileController.php:271
+#: src/Controller/TeamController.php:121
+#: src/Controller/TeamMemberController.php:210
 msgid ""
 "Form data seems to be inconsistent. For security reasons the last input was "
 "corrected."
@@ -42,9 +43,9 @@ msgstr ""
 
 # Parameters
 # 1) Directory name
-#: src/Controller/AppResourceController.php:185
-#: src/Controller/AppResourceController.php:256
-#: src/Controller/AppResourceFileController.php:234
+#: src/Controller/AppResourceController.php:160
+#: src/Controller/AppResourceController.php:229
+#: src/Controller/AppResourceFileController.php:188
 #, php-format
 msgid ""
 "The app resource directory \"%s\" doesn't exist and couldn't be created."
@@ -54,88 +55,195 @@ msgstr ""
 
 # Parameters
 # 1) Directory name
-#: src/Controller/AppResourceFileController.php:172
+#: src/Controller/AppResourceFileController.php:128
 #, php-format
 msgid ""
 "The app resource default values directory \"%s\" doesn't exist and couldn't "
 "be created."
 msgstr ""
-"Das App-Ressourcenverzeichnis für Default-Werte \"%s\" existiert nicht und "
+"Das App-Ressourcenverzeichnis für Standardwerte \"%s\" existiert nicht und "
 "konnte nicht erstellt werden."
+
+#: src/Controller/GitController.php:190
+msgid "Git cloning successful"
+msgstr "Klonen von Git erfolgreich"
+
+#: src/Controller/SyncController.php:148 src/Controller/SyncController.php:180
+msgid "Invalid request"
+msgstr "Ungültige Anfrage"
+
+#: src/Controller/SyncController.php:188
+msgid "Import successful"
+msgstr "Import erfolgreich"
+
+# Parameters
+# 1) Number of processed entries
+# 2) Number of updated entries
+#: src/Controller/SyncController.php:188
+#, php-format
+msgid "%d entries processed, %d updated"
+msgstr "%d Einträge verarbeitet, %d aktualisiert"
+
+# Parameters
+# 1) Number of deleted entries
+#: src/Controller/SyncController.php:192
+#, php-format
+msgid "%d entries deleted from database"
+msgstr "%d Einträge aus der Datenbank gelöscht"
+
+# Parameters
+# 1) Number of skipped entries
+#: src/Controller/SyncController.php:194
+#, php-format
+msgid "%d entries skipped (exist only in database)"
+msgstr "%d Einträge übersprungen (nur in der Datenbank vorhanden)"
+
+# Parameters
+# 1) Number of skipped entries
+#: src/Controller/SyncController.php:198
+#, php-format
+msgid "%d entries skipped (not in default)"
+msgstr "%d Einträge übersprungenen (nicht im Standard)"
 
 # Parameters
 # 1) Email of user
 # 2) Team name
-#: src/Controller/TeamMemberController.php:128
+#: src/Controller/TeamMemberController.php:137
 #, php-format
 msgid "User with email \"%s\" was added to team \"%s\"."
 msgstr "Benutzer mit Email  \"%s\" wurde zum Team  \"%s\" hinzugefügt."
 
-#: src/Form/AppForm.php:33
+#: src/Form/AppForm.php:40
 msgid "It's strongly advised not to change this value in existing apps."
 msgstr ""
 "Es wird dringend empfohlen, diesen Wert in bereits existierenden Apps nicht "
 "zu ändern."
 
-#: src/Form/AppForm.php:34 view/translations/app/index.phtml:19
+#: src/Form/AppForm.php:41 view/translations/app/index.phtml:19
 msgid "Team"
 msgstr "Team"
 
-#: src/Form/AppForm.php:49 src/Form/AppResourceFileForm.php:39
-#: src/Form/AppResourceForm.php:38 src/Form/TeamForm.php:34
+#: src/Form/AppForm.php:56 src/Form/AppResourceFileForm.php:46
+#: src/Form/AppResourceForm.php:45 src/Form/TeamForm.php:41
 #: view/translations/app-resource-file/index.phtml:19
 #: view/translations/app-resource/index.phtml:20
 #: view/translations/app/index.phtml:21 view/translations/team/index.phtml:17
+#: view/translations/translations/index.phtml:189
 msgid "Name"
 msgstr "Name"
 
-#: src/Form/AppForm.php:64 view/translations/app/index.phtml:22
-msgid "Git repository"
-msgstr "Git-Quelle"
-
-#: src/Form/AppForm.php:79 view/translations/app/index.phtml:23
+#: src/Form/AppForm.php:71 view/translations/app/index.phtml:22
 msgid "Path to \"res\" folder"
 msgstr "Pfad zum \"res\"-Ordner"
 
-#: src/Form/AppForm.php:97 src/Form/AppResourceFileForm.php:57
-#: src/Form/AppResourceForm.php:87 src/Form/TeamForm.php:52
+#: src/Form/AppForm.php:86 view/translations/app/index.phtml:23
+msgid "Git repository"
+msgstr "Git-Quelle"
+
+#: src/Form/AppForm.php:101
+msgid "Username for git repository access"
+msgstr "Benutzername für den Zugriff auf das Git-Repository"
+
+#: src/Form/AppForm.php:102
+msgid "Git username"
+msgstr "Git-Benutzername"
+
+#: src/Form/AppForm.php:118
+msgid "Password for git repository access. Leave empty to keep old value."
+msgstr ""
+"Passwort für den Zugriff auf das Git-Repository. Lassen Sie das Feld leer, "
+"um den alten Wert beizubehalten."
+
+#: src/Form/AppForm.php:119
+msgid "Git password"
+msgstr "Git-Passwort"
+
+#: src/Form/AppForm.php:134
+msgid "Delete git password"
+msgstr "Git-Passwort löschen"
+
+#: src/Form/AppForm.php:148
+msgid "User for git commits"
+msgstr "Benutzer für Git-Commits"
+
+#: src/Form/AppForm.php:149
+msgid "Git user"
+msgstr "Git-Benutzer"
+
+#: src/Form/AppForm.php:164
+msgid "Email for git commits"
+msgstr "E-Mail für Git-Commits"
+
+#: src/Form/AppForm.php:165
+msgid "Git email"
+msgstr "Git-E-Mail"
+
+#: src/Form/AppForm.php:183 src/Form/AppResourceFileForm.php:64
+#: src/Form/AppResourceForm.php:96 src/Form/TeamForm.php:59
+#: view/translations/translations/details.phtml:84
 msgid "Save"
 msgstr "Speichern"
 
-#: src/Form/AppResourceFileForm.php:38
+#: src/Form/AppResourceFileForm.php:45
 msgid ""
 "It's strongly advised not to change this value in existing app resources."
 msgstr ""
 "Es wird dringend empfohlen, diesen Wert in bereits existierenden App-"
 "Ressourcen nicht zu ändern."
 
-#: src/Form/AppResourceForm.php:52
+#: src/Form/AppResourceForm.php:61
 msgid "Please choose a locale"
 msgstr "Bitte wählen Sie eine Locale"
 
-#: src/Form/AppResourceForm.php:53
-msgid "Default values should be universal like \"en\" or \"en_US\""
-msgstr "Defaultwerte sollten universell wie z.B. \"en\" oder \"en_US\" sein."
+#: src/Form/AppResourceForm.php:62
+msgid "Default values should be universal like \"en\" or \"en_US\"."
+msgstr "Standardwerte sollten universell wie z.B. \"en\" oder \"en_US\" sein."
 
-#: src/Form/AppResourceForm.php:54
+#: src/Form/AppResourceForm.php:63
 #: view/translations/app-resource/index.phtml:21
 msgid "Locale"
 msgstr "Locale"
 
-#: src/Form/AppResourceForm.php:69
+#: src/Form/AppResourceForm.php:78
 #: view/translations/app-resource/index.phtml:22
 msgid "Description"
 msgstr "Beschreibung"
 
-#: src/Form/DeleteHelperForm.php:43
+#: src/Form/DeleteHelperForm.php:50
 msgid "Yes"
 msgstr "Ja"
 
-#: src/Form/DeleteHelperForm.php:58
+#: src/Form/DeleteHelperForm.php:65
 msgid "No"
 msgstr "Nein"
 
-#: src/Form/TeamMemberForm.php:41
+#: src/Form/GitCloneForm.php:35
+msgid "Confirm deletion of all content inside the folder before cloning"
+msgstr ""
+"Bestätigen Sie die Löschung aller Inhalte innerhalb des Ordners vor dem "
+"Klonen"
+
+#: src/Form/GitCloneForm.php:59 view/translations/team-member/add.phtml:15
+msgid "Back"
+msgstr "Zurück"
+
+#: src/Form/GitCloneForm.php:75 view/translations/git/index.phtml:11
+msgid "Clone"
+msgstr "Klonen"
+
+#: src/Form/SyncExportForm.php:34 src/Form/SyncImportForm.php:34
+msgid "Delete resources not present in set"
+msgstr "Löschen nicht vorhandener Ressourcen im Set"
+
+#: src/Form/SyncExportForm.php:51
+msgid "Export"
+msgstr "Export"
+
+#: src/Form/SyncImportForm.php:51
+msgid "Import"
+msgstr "Import"
+
+#: src/Form/TeamMemberForm.php:48
 msgid "Add"
 msgstr "Hinzufügen"
 
@@ -151,7 +259,7 @@ msgstr "Info:"
 msgid "Warning:"
 msgstr "Warnung:"
 
-#: view/partial/alert.phtml:19
+#: view/partial/alert.phtml:19 view/translations/sync/index.phtml:18
 msgid "Error:"
 msgstr "Fehler:"
 
@@ -164,8 +272,10 @@ msgstr "Neue Ressourcendatei zur App \"%s\" hinzufügen"
 
 #: view/translations/app-resource-file/add.phtml:29
 #: view/translations/app-resource-file/add.phtml:40
-#: view/translations/app-resource/add.phtml:29
-#: view/translations/app-resource/add.phtml:40
+#: view/translations/app-resource/add.phtml:30
+#: view/translations/app-resource/add.phtml:41
+#: view/translations/translations/details.phtml:95
+#: view/translations/translations/index.phtml:130
 msgid "Close"
 msgstr "Schließen"
 
@@ -208,13 +318,14 @@ msgstr "Neue App-Ressourcendatei hinzufügen"
 
 #: view/translations/app-resource-file/index.phtml:34
 #: view/translations/app-resource/index.phtml:39
-#: view/translations/app/index.phtml:54 view/translations/team/index.phtml:34
+#: view/translations/app/index.phtml:72 view/translations/team/index.phtml:34
+#: view/translations/translations/partial/details-suggestion-buttons.phtml:21
 msgid "Edit"
 msgstr "Bearbeiten"
 
 #: view/translations/app-resource-file/index.phtml:40
-#: view/translations/app-resource/index.phtml:46
-#: view/translations/app/index.phtml:60 view/translations/team/index.phtml:40
+#: view/translations/app-resource/index.phtml:47
+#: view/translations/app/index.phtml:78 view/translations/team/index.phtml:40
 msgid "Delete"
 msgstr "Löschen"
 
@@ -225,7 +336,7 @@ msgstr "Löschen"
 msgid "Add new resource to app \"%s\""
 msgstr "Neue Ressource zur App \"%s\" hinzufügen"
 
-#: view/translations/app-resource/add.phtml:30
+#: view/translations/app-resource/add.phtml:31
 msgid "Select resource folder"
 msgstr "Ressourcenordner auswählen"
 
@@ -284,13 +395,54 @@ msgstr "App bearbeiten"
 msgid "Apps"
 msgstr "Apps"
 
-#: view/translations/app/index.phtml:41
+#: view/translations/app/index.phtml:39
+msgid "Tasks"
+msgstr "Aufgaben"
+
+#: view/translations/app/index.phtml:51
+msgid "Sync"
+msgstr "Synchronisieren"
+
+#: view/translations/app/index.phtml:59
 msgid "Resources"
 msgstr "Ressourcen"
 
-#: view/translations/app/index.phtml:46
+#: view/translations/app/index.phtml:64
 msgid "Resource files"
 msgstr "Ressourcendateien"
+
+# Parameters
+# 1) App name
+#: view/translations/git/clone.phtml:2
+#, php-format
+msgid "Cloning repository of app \"%s\""
+msgstr "Repository der App \"%s\" wird geklont"
+
+# Parameters
+# 1) App name
+#: view/translations/git/index.phtml:2
+#, php-format
+msgid "Git of app \"%s\""
+msgstr "Git der App \"%s\""
+
+# Parameters
+# 1) App name
+#: view/translations/sync/index.phtml:2
+#, php-format
+msgid "Sync resources of app \"%s\""
+msgstr "Ressourcen der App \"%s\" synchronisieren"
+
+#: view/translations/sync/index.phtml:37
+msgid "Import resources"
+msgstr "Ressourcen importieren"
+
+#: view/translations/sync/index.phtml:53
+msgid "Export resources"
+msgstr "Ressourcen exportieren"
+
+#: view/translations/sync/index.phtml:71
+msgid "Processing..."
+msgstr "Wird verarbeitet..."
 
 # Parameters
 # 1) Team name
@@ -298,10 +450,6 @@ msgstr "Ressourcendateien"
 #, php-format
 msgid "Add members to team \"%s\""
 msgstr "Neue Mitglieder zum Team \"%s\" hinzufügen"
-
-#: view/translations/team-member/add.phtml:15
-msgid "Back"
-msgstr "Zurück"
 
 #: view/translations/team-member/add.phtml:24
 #: view/translations/team-member/index.phtml:18
@@ -379,147 +527,106 @@ msgstr "Teams"
 msgid "Members"
 msgstr "Mitglieder"
 
-#~ msgid "Translation projects"
-#~ msgstr "Übersetzungsprojekte"
+#: view/translations/translations/details.phtml:22
+msgid "Translations details"
+msgstr "Übersetzungsdetails"
 
-#~ msgid "<strong>Error:</strong> Invalid POST data was provided."
-#~ msgstr ""
-#~ "<strong>Fehler:</strong> Es wurden ungültige POST-Daten übermittelt."
+#: view/translations/translations/details.phtml:27
+msgid "Default value:"
+msgstr "Standardwert:"
 
-#~ msgid "A user is already in the database. This step will be skipped."
-#~ msgstr ""
-#~ "Ein Benutzer existiert bereits in der Datenbank. Dieser Schritt wird "
-#~ "übersprungen."
+#: view/translations/translations/details.phtml:38
+msgid "Current value:"
+msgstr "Aktueller Wert:"
 
-#~ msgid "Please create your user."
-#~ msgstr "Bitte erstellen Sie ihren Benutzer"
+#: view/translations/translations/details.phtml:50
+msgid "Suggestions:"
+msgstr "Vorschläge:"
 
-#~ msgid "The user has been sucessfully created."
-#~ msgstr "Der Benutzer wurde erfolgreich erstellt."
+#: view/translations/translations/details.phtml:54
+#: view/translations/translations/details.phtml:77
+msgid "Value"
+msgstr "Wert"
 
-#~ msgid "The user couldn't be created. Please check the entries."
-#~ msgstr ""
-#~ "Der Benutzer konnte nicht erstellt werden. Bitte überprüfen Sie die "
-#~ "Eingaben."
+#: view/translations/translations/details.phtml:55
+msgid "By"
+msgstr "Von"
 
-#~ msgid "Setup language"
-#~ msgstr "Setup-Sprache"
+#: view/translations/translations/details.phtml:56
+msgid "Votes"
+msgstr "Stimmen"
 
-#~ msgid "Next"
-#~ msgstr "Weiter"
+#: view/translations/translations/details.phtml:65
+msgid "Add new suggestion"
+msgstr "Neuen Vorschlag hinzufügen"
 
-#~ msgid "Database driver"
-#~ msgstr "Datenbanktreiber"
+#: view/translations/translations/details.phtml:85
+msgid "Cancel"
+msgstr "Abbrechen"
 
-#~ msgid "Database name"
-#~ msgstr "Datenbankname"
+#: view/translations/translations/index.phtml:2
+msgid "Translations"
+msgstr "Übersetzungen"
 
-#~ msgid "Password"
-#~ msgstr "Passwort"
+#: view/translations/translations/index.phtml:124
+msgid "Error"
+msgstr "Fehler"
 
-#~ msgid "Hostname"
-#~ msgstr "Hostname"
+#: view/translations/translations/index.phtml:127
+msgid "An unexpected error has occurred while loading the translation details."
+msgstr ""
+"Beim Laden der Übersetzungsdetails ist ein unerwarteter Fehler aufgetreten."
 
-#~ msgid "Port"
-#~ msgstr "Port"
+#: view/translations/translations/index.phtml:146
+msgid "Show all"
+msgstr "Alle anzeigen"
 
-#~ msgid "Charset"
-#~ msgstr "Zeichensatz"
+#: view/translations/translations/index.phtml:155
+msgid "App"
+msgstr "App"
 
-#~ msgid "Test connection"
-#~ msgstr "Verbindung testen"
+#: view/translations/translations/index.phtml:165
+msgid "Resource"
+msgstr "Ressource"
 
-#~ msgid "Installation output"
-#~ msgstr "Installationsausgabe"
+#: view/translations/translations/index.phtml:174
+msgid "Please select app and resource."
+msgstr "Bitte wählen Sie App und Ressource."
 
-#~ msgid "Install schema"
-#~ msgstr "Schema installieren"
+#: view/translations/translations/index.phtml:190
+msgid "Default value"
+msgstr "Standardwert"
 
-#~ msgid "Repeat Password"
-#~ msgstr "Passwort wiederholen"
+#: view/translations/translations/index.phtml:191
+msgid "Translation"
+msgstr "Übersetzung"
 
-#~ msgid "Create user"
-#~ msgstr "Benutzer erstellen"
+#: view/translations/translations/partial/details-suggestion-buttons.phtml:18
+msgid "Accept"
+msgstr "Übernehmen"
 
-#~ msgid "Database connection successfully established."
-#~ msgstr "Datenbankverbindung wurde erfolgreich hergestellt."
+#: view/translations/translations/partial/details-suggestion-buttons.phtml:24
+msgid "Vote"
+msgstr "Abstimmen"
 
-#~ msgid "Could not establish database connection."
-#~ msgstr "Datenbankverbindung konnte nicht hergestellt werden."
+#: view/translations/translations/partial/listtranslations-buttons.phtml:3
+#, php-format
+msgid "%d suggestion"
+msgid_plural "%d suggestions"
+msgstr[0] "%d Vorschlag"
+msgstr[1] "%d Vorschläge"
 
-#~ msgid "Database connection can't be established."
-#~ msgstr "Datenbankverbindung kann nicht hergestellt werden."
+#: view/translations/translations/partial/listtranslations-buttons.phtml:6
+msgid "Details"
+msgstr "Details"
 
-#~ msgid "The database version table exists but is empty."
-#~ msgstr "Die Datenbankversionstabelle existiert, ist jedoch leer."
+# Parameters
+# 1) Product name
+#: view/translations/translations/partial/listtranslations-nameView.phtml:10
+#, php-format
+msgid "Product: %s"
+msgstr "Produkt: %s"
 
-#~ msgid "The database version table exists but has wrong structure."
-#~ msgstr ""
-#~ "Die Datenbankversionstabelle existiert, hat jedoch die falsche Struktur."
-
-#~ msgid ""
-#~ "The database version exists but contains wrong setup id. This means, that "
-#~ "another application is installed in this database."
-#~ msgstr ""
-#~ "Die Datenbankversionstabelle existiert, enthält jedoch eine falsche Setup-"
-#~ "ID. Das bedeutet, dass eine andere Applikation in dieser Datenbank "
-#~ "installiert ist."
-
-#~ msgid ""
-#~ "Database schema seems to be installed correctly. Proceed with the next "
-#~ "step."
-#~ msgstr ""
-#~ "Das Datenbankschema scheint korrekt installiert zu sein. Bitte fahren Sie "
-#~ "mit dem nächsten Schritt fort."
-
-#~ msgid "Database schema seems to not be installed yet."
-#~ msgstr ""
-#~ "Es sieht so aus, als wäre das Datenbankschema noch nicht installiert."
-
-#~ msgid "A user already exists in the database. Proceed with next step."
-#~ msgstr ""
-#~ "Ein Benutzer existiert bereits in der Datenbank. Bitte fahren Sie mit dem "
-#~ "nächsten Schritt fort."
-
-#~ msgid "No user exists yet, please create one."
-#~ msgstr "Es gibt noch keinen Benutzer, bitte erstellen Sie einen."
-
-#~ msgid ""
-#~ "Something is wrong with the user table, setup can't proceed. Error "
-#~ "message: %s"
-#~ msgstr ""
-#~ "Etwas stimmt nicht mit der Benutzertabelle, das Setup kann nicht "
-#~ "fortfahren. Fehlermeldung: %s"
-
-#~ msgid "Setup"
-#~ msgstr "Setup"
-
-#~ msgid "Step %d"
-#~ msgstr "Schritt %d"
-
-#~ msgid "Language"
-#~ msgstr "Sprache"
-
-#~ msgid "Database"
-#~ msgstr "Datenbank"
-
-#~ msgid "Database schema"
-#~ msgstr "Datenbankschema"
-
-#~ msgid "User creation"
-#~ msgstr "Benutzererstellung"
-
-#~ msgid "Welcome to the setup routine."
-#~ msgstr "Willkommen bei der Setup-Routine."
-
-#~ msgid "An error occured during AJAX request."
-#~ msgstr "Ein Fehler trat während des AJAX-Requests auf."
-
-#~ msgid "Database setup"
-#~ msgstr "Datenbank-Setup"
-
-#~ msgid "Database schema installation"
-#~ msgstr "Installation des Datenbankschemas"
-
-#~ msgid "User Creation"
-#~ msgstr "Benutzererstellung"
+#: view/translations/translations/partial/listtranslations-translatedValue.phtml:4
+msgid "Default value is newer than translation. Please check."
+msgstr "Standardwert ist neuer als Übersetzung. Bitte überprüfen."

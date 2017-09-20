@@ -2,53 +2,96 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TranslationManagerForAndroidApps\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-06 09:34+0200\n"
-"PO-Revision-Date: 2017-05-06 09:34+0200\n"
+"POT-Creation-Date: 2017-09-20 18:07+0200\n"
+"PO-Revision-Date: 2017-09-20 18:07+0200\n"
 "Last-Translator: rarog <rarogit@gmail.com>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-KeywordsList: translate;_\n"
+"X-Poedit-KeywordsList: translate;_;translatePlural:1,2\n"
 "X-Poedit-Basepath: ..\n"
 "X-Generator: Poedit 2.0.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: config/module.config.php:26
+#: config/module.config.php:33
 msgid "Home"
 msgstr "Home"
 
-#: config/module.config.php:32
-msgid "Translations"
-msgstr "Übersetzungen"
+#: config/module.config.php:39
+msgid "Dashboard"
+msgstr "Dashboard"
 
-#: config/module.config.php:38
+#: config/module.config.php:45
+msgid "Teams"
+msgstr "Teams"
+
+#: config/module.config.php:51
 msgid "Apps"
 msgstr "Apps"
 
-#: config/module.config.php:52
+#: config/module.config.php:57
+msgid "Translations"
+msgstr "Übersetzungen"
+
+#: config/module.config.php:71
 msgid "My user"
 msgstr "Mein Benutzer"
 
-#: config/module.config.php:62 view/zfc-user/user/index.phtml:7
+#: config/module.config.php:77
+msgid "About..."
+msgstr "Über..."
+
+#: config/module.config.php:87 view/zfc-user/user/index.phtml:11
 msgid "Sign out"
 msgstr "Ausloggen"
 
-#: src/View/Helper/DataTablesInitHelper.php:46
+#: src/Controller/SettingsController.php:99
+msgid "The selected languages were saved successfully."
+msgstr "Die gewählten Sprachen wurden erfolgreich gespeichert."
+
+#: src/Form/UserLanguagesForm.php:39
+msgid "Languages"
+msgstr "Sprachen"
+
+#: src/Form/UserLanguagesForm.php:58
+msgid "Save"
+msgstr "Speichern"
+
+#: src/View/Helper/DataTablesInitHelper.php:68
 msgid "All"
 msgstr "Alle"
 
-#: view/zfc-user/user/index.phtml:2
-msgid "Hello"
-msgstr "Hallo"
+#: view/application/index/about.phtml:10
+msgid "Libraries"
+msgstr "Bibliotheken"
 
+#: view/application/index/about.phtml:14
+msgid "Name"
+msgstr "Name"
+
+#: view/application/index/about.phtml:15
+msgid "License"
+msgstr "Lizenz"
+
+#: view/application/settings/userlanguages.phtml:2
 #: view/zfc-user/user/index.phtml:5
+msgid "My languages"
+msgstr "Meine Sprachen"
+
+#: view/zfc-user/user/index.phtml:2
+#, php-format
+msgid "Hello, %s!"
+msgstr "Hallo, %s!"
+
+#: view/zfc-user/user/index.phtml:9
 msgid "Change password"
 msgstr "Passwort ändern"
 
-#: view/zfc-user/user/index.phtml:6
+#: view/zfc-user/user/index.phtml:10
 msgid "Change email"
 msgstr "E-Mail ändern"
 
@@ -56,139 +99,10 @@ msgstr "E-Mail ändern"
 msgid "Sign In"
 msgstr "Einloggen"
 
-#: view/zfc-user/user/login.phtml:16
+#: view/zfc-user/user/login.phtml:15
 msgid "Not registered?"
 msgstr "Nicht registriert?"
 
-#: view/zfc-user/user/login.phtml:16
+#: view/zfc-user/user/login.phtml:15
 msgid "Sign up!"
 msgstr "Registrieren!"
-
-#~ msgid "<strong>Error:</strong> Invalid POST data was provided."
-#~ msgstr "<strong>Fehler:</strong> Es wurden ungültige POST-Daten übermittelt."
-
-#~ msgid "A user is already in the database. This step will be skipped."
-#~ msgstr "Ein Benutzer existiert bereits in der Datenbank. Dieser Schritt wird übersprungen."
-
-#~ msgid "Please create your user."
-#~ msgstr "Bitte erstellen Sie ihren Benutzer"
-
-#~ msgid "The user has been sucessfully created."
-#~ msgstr "Der Benutzer wurde erfolgreich erstellt."
-
-#~ msgid "The user couldn't be created. Please check the entries."
-#~ msgstr "Der Benutzer konnte nicht erstellt werden. Bitte überprüfen Sie die Eingaben."
-
-#~ msgid "Setup language"
-#~ msgstr "Setup-Sprache"
-
-#~ msgid "Back"
-#~ msgstr "Zurück"
-
-#~ msgid "Next"
-#~ msgstr "Weiter"
-
-#~ msgid "Database driver"
-#~ msgstr "Datenbanktreiber"
-
-#~ msgid "Database name"
-#~ msgstr "Datenbankname"
-
-#~ msgid "Username"
-#~ msgstr "Benutzername"
-
-#~ msgid "Hostname"
-#~ msgstr "Hostname"
-
-#~ msgid "Port"
-#~ msgstr "Port"
-
-#~ msgid "Charset"
-#~ msgstr "Zeichensatz"
-
-#~ msgid "Test connection"
-#~ msgstr "Verbindung testen"
-
-#~ msgid "Installation output"
-#~ msgstr "Installationsausgabe"
-
-#~ msgid "Install schema"
-#~ msgstr "Schema installieren"
-
-#~ msgid "Email"
-#~ msgstr "E-Mail"
-
-#~ msgid "Display name"
-#~ msgstr "Anzeigename"
-
-#~ msgid "Repeat Password"
-#~ msgstr "Passwort wiederholen"
-
-#~ msgid "Create user"
-#~ msgstr "Benutzer erstellen"
-
-#~ msgid "Database connection successfully established."
-#~ msgstr "Datenbankverbindung wurde erfolgreich hergestellt."
-
-#~ msgid "Could not establish database connection."
-#~ msgstr "Datenbankverbindung konnte nicht hergestellt werden."
-
-#~ msgid "Database connection can't be established."
-#~ msgstr "Datenbankverbindung kann nicht hergestellt werden."
-
-#~ msgid "The database version table exists but is empty."
-#~ msgstr "Die Datenbankversionstabelle existiert, ist jedoch leer."
-
-#~ msgid "The database version table exists but has wrong structure."
-#~ msgstr "Die Datenbankversionstabelle existiert, hat jedoch die falsche Struktur."
-
-#~ msgid "The database version exists but contains wrong setup id. This means, that another application is installed in this database."
-#~ msgstr "Die Datenbankversionstabelle existiert, enthält jedoch eine falsche Setup-ID. Das bedeutet, dass eine andere Applikation in dieser Datenbank installiert ist."
-
-#~ msgid "Database schema seems to be installed correctly. Proceed with the next step."
-#~ msgstr "Das Datenbankschema scheint korrekt installiert zu sein. Bitte fahren Sie mit dem nächsten Schritt fort."
-
-#~ msgid "Database schema seems to not be installed yet."
-#~ msgstr "Es sieht so aus, als wäre das Datenbankschema noch nicht installiert."
-
-#~ msgid "A user already exists in the database. Proceed with next step."
-#~ msgstr "Ein Benutzer existiert bereits in der Datenbank. Bitte fahren Sie mit dem nächsten Schritt fort."
-
-#~ msgid "No user exists yet, please create one."
-#~ msgstr "Es gibt noch keinen Benutzer, bitte erstellen Sie einen."
-
-#~ msgid "Something is wrong with the user table, setup can't proceed. Error message: %s"
-#~ msgstr "Etwas stimmt nicht mit der Benutzertabelle, das Setup kann nicht fortfahren. Fehlermeldung: %s"
-
-#~ msgid "Setup"
-#~ msgstr "Setup"
-
-#~ msgid "Step %d"
-#~ msgstr "Schritt %d"
-
-#~ msgid "Language"
-#~ msgstr "Sprache"
-
-#~ msgid "Database"
-#~ msgstr "Datenbank"
-
-#~ msgid "Database schema"
-#~ msgstr "Datenbankschema"
-
-#~ msgid "User creation"
-#~ msgstr "Benutzererstellung"
-
-#~ msgid "Welcome to the setup routine."
-#~ msgstr "Willkommen bei der Setup-Routine."
-
-#~ msgid "An error occured during AJAX request."
-#~ msgstr "Ein Fehler trat während des AJAX-Requests auf."
-
-#~ msgid "Database setup"
-#~ msgstr "Datenbank-Setup"
-
-#~ msgid "Database schema installation"
-#~ msgstr "Installation des Datenbankschemas"
-
-#~ msgid "User Creation"
-#~ msgstr "Benutzererstellung"
