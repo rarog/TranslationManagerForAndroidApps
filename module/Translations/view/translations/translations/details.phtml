@@ -35,8 +35,15 @@ foreach ($suggestions as $suggestion) {
           <div class="col-lg-12"><hr></div>
         </div>
         <div class="row">
-          <div class="col-lg-3"><b><?= $this->escapeHtml($this->translate('Current value:')) ?></b></div>
+          <div class="col-lg-3">
+            <b><?= $this->escapeHtml($this->translate('Current value:')) ?></b>
+          </div>
           <div class="col-lg-9">
+<?php if ($this->isGranted('suggestion.accept')) : ?>
+            <div class="pull-right">
+              <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" data-suggestionid="0" title="<?= $this->escapeHtmlAttr($this->translate('Reject all suggestions and confirm the current value')) ?>" role="button"><i class="fa fa-check-square-o fa-fw" aria-hidden="true"></i></button>
+            </div>
+<?php endif; ?>
 <?php if ($type == 'String'): ?>
 <?= nl2br($this->escapeHtml($entry->value)) ?>
 <?php endif; ?>
