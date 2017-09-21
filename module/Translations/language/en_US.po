@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TranslationManagerForAndroidApps\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-20 18:07+0200\n"
-"PO-Revision-Date: 2017-09-20 18:07+0200\n"
+"POT-Creation-Date: 2017-09-21 08:47+0200\n"
+"PO-Revision-Date: 2017-09-21 08:47+0200\n"
 "Last-Translator: rarog <rarogit@gmail.com>\n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -168,7 +168,7 @@ msgstr ""
 
 #: src/Form/AppForm.php:183 src/Form/AppResourceFileForm.php:64
 #: src/Form/AppResourceForm.php:96 src/Form/TeamForm.php:59
-#: view/translations/translations/details.phtml:84
+#: view/translations/translations/details.phtml:91
 msgid "Save"
 msgstr ""
 
@@ -256,7 +256,7 @@ msgstr ""
 #: view/translations/app-resource-file/add.phtml:40
 #: view/translations/app-resource/add.phtml:30
 #: view/translations/app-resource/add.phtml:41
-#: view/translations/translations/details.phtml:95
+#: view/translations/translations/details.phtml:102
 #: view/translations/translations/index.phtml:130
 msgid "Close"
 msgstr ""
@@ -495,32 +495,36 @@ msgstr ""
 msgid "Default value:"
 msgstr ""
 
-#: view/translations/translations/details.phtml:38
+#: view/translations/translations/details.phtml:39
 msgid "Current value:"
 msgstr ""
 
-#: view/translations/translations/details.phtml:50
+#: view/translations/translations/details.phtml:44
+msgid "Reject all suggestions and confirm the current value"
+msgstr ""
+
+#: view/translations/translations/details.phtml:57
 msgid "Suggestions:"
 msgstr ""
 
-#: view/translations/translations/details.phtml:54
-#: view/translations/translations/details.phtml:77
+#: view/translations/translations/details.phtml:61
+#: view/translations/translations/details.phtml:84
 msgid "Value"
 msgstr ""
 
-#: view/translations/translations/details.phtml:55
+#: view/translations/translations/details.phtml:62
 msgid "By"
 msgstr ""
 
-#: view/translations/translations/details.phtml:56
+#: view/translations/translations/details.phtml:63
 msgid "Votes"
 msgstr ""
 
-#: view/translations/translations/details.phtml:65
+#: view/translations/translations/details.phtml:72
 msgid "Add new suggestion"
 msgstr ""
 
-#: view/translations/translations/details.phtml:85
+#: view/translations/translations/details.phtml:92
 msgid "Cancel"
 msgstr ""
 
@@ -561,7 +565,7 @@ msgid "Translation"
 msgstr ""
 
 #: view/translations/translations/partial/details-suggestion-buttons.phtml:18
-msgid "Accept"
+msgid "Accept this suggestion"
 msgstr ""
 
 #: view/translations/translations/partial/details-suggestion-buttons.phtml:24

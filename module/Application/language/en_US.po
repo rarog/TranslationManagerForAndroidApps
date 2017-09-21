@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TranslationManagerForAndroidApps\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-20 18:07+0200\n"
-"PO-Revision-Date: 2017-09-20 18:07+0200\n"
+"POT-Creation-Date: 2017-09-21 08:46+0200\n"
+"PO-Revision-Date: 2017-09-21 08:46+0200\n"
 "Last-Translator: rarog <rarogit@gmail.com>\n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -49,15 +49,19 @@ msgstr ""
 msgid "Sign out"
 msgstr ""
 
-#: src/Controller/SettingsController.php:99
+#: src/Controller/SettingsController.php:136
 msgid "The selected languages were saved successfully."
 msgstr ""
 
-#: src/Form/UserLanguagesForm.php:39
-msgid "Languages"
+#: src/Form/UserLanguagesForm.php:37
+msgid "Interface language"
 msgstr ""
 
-#: src/Form/UserLanguagesForm.php:58
+#: src/Form/UserLanguagesForm.php:55
+msgid "Translation languages"
+msgstr ""
+
+#: src/Form/UserLanguagesForm.php:74
 msgid "Save"
 msgstr ""
 
