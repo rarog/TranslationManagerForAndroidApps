@@ -28,6 +28,22 @@ class UserLanguagesForm extends Form
         // Creating the form elements.
         $this->add([
             'attributes' => [
+                'class' => 'selectpicker',
+                'id'    => 'interfacelanguage',
+            ],
+            'name'       => 'interfacelanguage',
+            'options'    => [
+                'column-size'      => 'sm-9',
+                'label'            => _('Interface language'),
+                'label_attributes' => [
+                    'class' => 'col-sm-3',
+                ],
+                'value' => null,
+            ],
+            'type'       => 'select',
+        ]);
+        $this->add([
+            'attributes' => [
                 'class'            => 'selectpicker',
                 'data-live-search' => 'true',
                 'id'               => 'languages',
@@ -36,7 +52,7 @@ class UserLanguagesForm extends Form
             'name'       => 'languages',
             'options'    => [
                 'column-size'      => 'sm-9',
-                'label'            => _('Languages'),
+                'label'            => _('Translation languages'),
                 'label_attributes' => [
                     'class' => 'col-sm-3',
                 ],

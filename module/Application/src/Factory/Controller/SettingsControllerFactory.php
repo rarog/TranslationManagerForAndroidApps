@@ -27,6 +27,7 @@ class SettingsControllerFactory implements FactoryInterface
     {
         return new \Application\Controller\SettingsController(
             $container->get(\Application\Model\UserLanguagesTable::class),
+            $container->get(\Application\Model\UserSettingsTable::class),
             $container->get(\Zend\Mvc\I18n\Translator::class)
         );
     }
