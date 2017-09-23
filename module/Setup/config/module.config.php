@@ -56,6 +56,7 @@ return [
     ],
     'service_manager' => [
         'factories' => [
+            Command\PrintSchema::class => Factory\Command\PrintSchemaFactory::class,
             Command\UpdateSchema::class => Factory\Command\UpdateSchemaFactory::class,
             Model\DatabaseHelper::class => Factory\Model\DatabaseHelperFactory::class,
         ],

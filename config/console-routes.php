@@ -20,6 +20,20 @@ return [
         'handler' => \Application\Command\CleanCache::class,
     ],
     [
+        'name' => 'printschema',
+        'route' => '<schemafile> [--sql=]',
+        'description' => 'Prints schema installation or update file in SQL format.',
+        'short_description' => 'Prints schema installation or update file in SQL format.',
+        'options_descriptions' => [
+            '<schemafile>' => 'Schema filename',
+            '--sql'  => 'Name of SQL platform, must be one of mysql, mariadb, pgsql, sqlite, sql92',
+        ],
+        'defaults' => [
+            'sql' => 'sql92',
+        ],
+        'handler' => \Setup\Command\PrintSchema::class,
+    ],
+    [
         'name' => 'updateschema',
         'description' => 'Updates database schema version, if a valid datababse schema is installed already and schema updates are detected.',
         'short_description' => 'Updates database schema version',
