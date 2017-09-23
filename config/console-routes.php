@@ -31,6 +31,9 @@ return [
         'defaults' => [
             'sql' => 'sql92',
         ],
+        'validators' => [
+            'sql' => \Setup\Validator\PrintSchemaSql::class,
+        ],
         'handler' => \Setup\Command\PrintSchema::class,
     ],
     [

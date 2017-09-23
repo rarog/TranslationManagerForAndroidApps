@@ -28,7 +28,7 @@ class PrintSchemaSql extends AbstractValidator
         'mariadb',
         'pgsql',
         'sqlite',
-        'sql92,'
+        'sql92',
     ];
 
     /**
@@ -44,15 +44,10 @@ class PrintSchemaSql extends AbstractValidator
      */
     public function isValid($value)
     {
-        $this->setValue($value);
-
-        $isValid = true;
-
         if (! in_array($value, $this->supportedSqlPlatforms, true)) {
             $this->error(self::SQLPLATTFORM);
             return false;
         }
-
 
         return true;
     }

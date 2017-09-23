@@ -45,20 +45,16 @@ class PrintSchema
      */
     public function __invoke(Route $route, AdapterInterface $console)
     {
-        $this->databaseHelper->updateSchema();
+        $result = $this->databaseHelper->printSchema($route->getMatchedParam('schemafile'), $route->getMatchedParam('sql'));
 
-        switch ($this->databaseHelper->getLastStatus()) {
-            case $this->databaseHelper::SETUPINCOMPLETE:
-                $msg = 'Setup is incomplete.';
-                break;
-            case $this->databaseHelper::CURRENTSCHEMAISLATEST:
-                $msg = 'Latest schema is already installed in the database.';
-                break;
-            default:
-                $msg = 'Unknown status';
+        if ($result === false) {
+            $console->writeLine('File does not exist or is invalid.', ColorInterface::RED);
+            return 1;
         }
 
-        $console->writeLine($msg, ColorInterface::NORMAL);
+        $console->writeLine('----------', ColorInterface::NORMAL);
+        $console->writeLine($result, ColorInterface::NORMAL);
+        $console->writeLine('----------', ColorInterface::NORMAL);
         return 0;
     }
 }
