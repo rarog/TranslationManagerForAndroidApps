@@ -28,7 +28,6 @@ class PrintSchemaSql extends AbstractValidator
         'mariadb',
         'pgsql',
         'sqlite',
-        'sql92',
     ];
 
     /**

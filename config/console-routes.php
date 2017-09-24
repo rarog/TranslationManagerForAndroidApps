@@ -26,10 +26,10 @@ return [
         'short_description' => 'Prints schema installation or update file in SQL format.',
         'options_descriptions' => [
             '<schemafile>' => 'Schema filename',
-            '--sql'  => 'Name of SQL platform, must be one of mysql, mariadb, pgsql, sqlite, sql92',
+            '--sql'  => 'Name of SQL platform, must be one of mysql, mariadb, pgsql, sqlite',
         ],
         'defaults' => [
-            'sql' => 'sql92',
+            'sql' => 'mariadb',
         ],
         'validators' => [
             'sql' => \Setup\Validator\PrintSchemaSql::class,

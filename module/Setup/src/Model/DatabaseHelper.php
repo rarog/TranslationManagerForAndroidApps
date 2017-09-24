@@ -15,6 +15,15 @@ use Zend\Db\Sql\Ddl\Constraint;
 use Zend\Db\Sql\Sql;
 use Zend\Mvc\I18n\Translator;
 use ZfcUser\Options\ModuleOptions as ZUModuleOptions;
+use Zend\Db\Sql\Ddl\CreateTable;
+use Zend\Db\Sql\Ddl\Column\BigInteger;
+use Zend\Db\Sql\Ddl\Column\Varchar;
+use Zend\Db\Sql\Ddl\Column\AbstractLengthColumn;
+use Zend\Db\Sql\Ddl\Column\Integer;
+use Zend\Db\Sql\Ddl\Column\Text;
+use Zend\Db\Sql\Ddl\Constraint\PrimaryKey;
+use Zend\Db\Sql\Ddl\Index\Index;
+use Zend\Db\Sql\SqlInterface;
 
 class DatabaseHelper
 {
@@ -58,62 +67,62 @@ class DatabaseHelper
      */
     private $lastStatus = 0;
 
-	/**
-	 * @var string
-	 */
-	private $lastMessage;
+    /**
+     * @var string
+     */
+    private $lastMessage;
 
-	/**
-	 * @var Sql
-	 */
-	private $sql;
+    /**
+     * @var Sql
+     */
+    private $sql;
 
-	const NODBCONNECTION = 0;
-	const DBNOTINSTALLEDORTABLENOTPRESENT = 1;
-	const TABLEEXISTSBUTISEMPTY = 2;
-	const TABLEEXISTSBUTHASWRONGSTRUCTURE = 3;
-	const TABLEEXISTSBUTHASWRONGSETUPID = 4;
-	const DBSCHEMASEEMSTOBEINSTALLED = 10;
+    const NODBCONNECTION = 0;
+    const DBNOTINSTALLEDORTABLENOTPRESENT = 1;
+    const TABLEEXISTSBUTISEMPTY = 2;
+    const TABLEEXISTSBUTHASWRONGSTRUCTURE = 3;
+    const TABLEEXISTSBUTHASWRONGSETUPID = 4;
+    const DBSCHEMASEEMSTOBEINSTALLED = 10;
 
-	const SOMETHINGISWRONGWITHWITHUSERTABLE = 20;
-	const USERTABLESEEMSTOBEOK = 21;
+    const SOMETHINGISWRONGWITHWITHUSERTABLE = 20;
+    const USERTABLESEEMSTOBEOK = 21;
 
-	const SETUPINCOMPLETE = 30;
-	const CURRENTSCHEMAISLATEST = 31;
+    const SETUPINCOMPLETE = 30;
+    const CURRENTSCHEMAISLATEST = 31;
 
-	/**
-	 * Generates installation schema regular expression.
-	 *
-	 * @throws \RuntimeException
-	 * @return string
-	 */
-	private function getInstallationSchemaRegex()
-	{
-	    if (is_null($this->installationSchemaRegex)) {
-    	    $schemaNaming = $this->setupConfig->get('db_schema_naming')->toArray();
-    	    $driver = $this->dbConfig['driver'];
+    /**
+     * Generates installation schema regular expression.
+     *
+     * @throws \RuntimeException
+     * @return string
+     */
+    private function getInstallationSchemaRegex()
+    {
+        if (is_null($this->installationSchemaRegex)) {
+            $schemaNaming = $this->setupConfig->get('db_schema_naming')->toArray();
+            $driver = $this->dbConfig['driver'];
 
-    	    if (! array_key_exists($driver, $schemaNaming)) {
-    	        throw new \RuntimeException(sprintf('Database config contains unsupported driver "%s".', $driver));
-    	    }
+            if (! array_key_exists($driver, $schemaNaming)) {
+                throw new \RuntimeException(sprintf('Database config contains unsupported driver "%s".', $driver));
+            }
 
-    	    $this->installationSchemaRegex = sprintf(
-    	        '/schema\.%s\.(\d+)\.sql/',
-    	        $schemaNaming[$driver]
-    	    );
-	    }
+            $this->installationSchemaRegex = sprintf(
+                '/schema\.%s\.(\d+)\.sql/',
+                $schemaNaming[$driver]
+                );
+        }
 
-	    return $this->installationSchemaRegex;
-	}
+        return $this->installationSchemaRegex;
+    }
 
-	/**
-	 * Constructor
-	 *
-	 * @param Config $config
-	 * @param Translator $translator
-	 * @param ZUModuleOptions $zuModuleOptions
-	 */
-	public function __construct(Config $config, Translator $translator, ZUModuleOptions $zuModuleOptions)
+    /**
+     * Constructor
+     *
+     * @param Config $config
+     * @param Translator $translator
+     * @param ZUModuleOptions $zuModuleOptions
+     */
+    public function __construct(Config $config, Translator $translator, ZUModuleOptions $zuModuleOptions)
     {
         $dbConfig = $config->db;
 
@@ -234,10 +243,137 @@ class DatabaseHelper
             throw new \Exception(sprintf(
                 'Function executeSqlStatement was called with unsupport parameter of type "%s".',
                 (is_object($sql)) ? get_class($sql) : gettype($sql)
-            ));
+                ));
         }
 
         $this->dbAdapter->query($sqlString, Adapter::QUERY_MODE_EXECUTE);
+    }
+
+    /**
+     * Parses schema file with array of abstract commands into series of prepared SqlInterface commands.
+     *
+     * @param string $schemaFilenamePath
+     * @return boolean|\Zend\Db\Sql\SqlInterface[]
+     */
+    private function parseSchemaFile(string $schemaFilenamePath) {
+        if (! file_exists($schemaFilenamePath)) {
+            return false;
+        }
+
+        // Catch any possible unwanted output during during inclusion.
+        ob_start();
+        $schema = include $schemaFilenamePath;
+        ob_end_clean();
+
+        if (! is_array($schema)) {
+            return false;
+        }
+
+        $supportedCommands = [
+            'CreateTable',
+        ];
+        $supportedColumns = [
+            'BigInteger' => BigInteger::class,
+            'Integer' => Integer::class,
+            'Text' => Text::class,
+            'Varchar' => Varchar::class,
+        ];
+        $supportedConstraints = [
+            'PrimaryKey' => PrimaryKey::class,
+            'Index' => Index::class,
+        ];
+
+        $processedCommands = [];
+
+        foreach ($schema as $commandName => $command) {
+            $sql = null;
+
+            if (! in_array($commandName, $supportedCommands, true)) {
+                continue;
+            }
+
+            if ($commandName === 'CreateTable') {
+                if (! array_key_exists('tableName', $command) ||
+                    ! is_string($command['tableName']) ||
+                    ! array_key_exists('addColumn', $command) ||
+                    ! is_array($command['addColumn'])) {
+                    continue;
+                }
+
+                $sql = new CreateTable($command['tableName']);
+
+                foreach ($command['addColumn'] as $col) {
+                    if (! array_key_exists('type', $col) ||
+                        ! array_key_exists($col['type'], $supportedColumns) ||
+                        ! array_key_exists('name', $col) ||
+                        ! is_string($col['name'])) {
+                        continue;
+                    }
+
+                    $sqlCol = new $supportedColumns[$col['type']]($col['name']);
+
+                    if ($sqlCol instanceof AbstractLengthColumn &&
+                        array_key_exists('length', $col) &&
+                        is_int($col['length'])) {
+                        $sqlCol->setLength($col['length']);
+                    }
+                    if (array_key_exists('nullable', $col) &&
+                        is_bool($col['nullable'])) {
+                        $sqlCol->setNullable($col['nullable']);
+                    }
+                    if (array_key_exists('default', $col)) {
+                        $sqlCol->setDefault($col['default']);
+                    }
+                    if (array_key_exists('options', $col) &&
+                        is_array($col['options'])) {
+                        $sqlCol->setOptions($col['options']);
+                    }
+
+                    $sql->addColumn($sqlCol);
+                }
+
+                if (array_key_exists('addConstraint', $command) &&
+                    is_array($command['addConstraint'])) {
+                    foreach ($command['addConstraint'] as $constr) {
+                        if (! array_key_exists('type', $constr) ||
+                            ! array_key_exists($constr['type'], $supportedConstraints) ||
+                            ! array_key_exists('columns', $constr) ||
+                            ! (is_string($constr['columns']) || is_array($constr['columns']))) {
+                            continue;
+                        }
+
+                        $name = null;
+                        if (array_key_exists('name', $constr) &&
+                            is_string($constr['name'])) {
+                            $name = $constr['name'];
+                        }
+
+                        if ($constr['type'] === 'Index') {
+                            $lengths = [];
+                            if (array_key_exists('lengths', $constr) &&
+                                is_array($constr['lengths'])) {
+                                $lengths = $constr['lengths'];
+                            }
+                            $sqlConstr = new $supportedConstraints[$constr['type']]($constr['columns'], $name, $lengths);
+                        } else {
+                            $sqlConstr = new $supportedConstraints[$constr['type']]($constr['columns'], $name);
+                        }
+
+                        $sql->addConstraint($sqlConstr);
+                    }
+                }
+            }
+
+            if ($sql instanceof SqlInterface) {
+                $processedCommands[] = $sql;
+            }
+        }
+
+        if (empty($processedCommands)) {
+            return false;
+        }
+
+        return $processedCommands;
     }
 
     /**
@@ -251,37 +387,37 @@ class DatabaseHelper
     {
         if (!$this->isSchemaInstalled() &&
             ($this->lastStatus = self::DBNOTINSTALLEDORTABLENOTPRESENT)) {
-            // Creating version table.
-            $table = new Ddl\CreateTable($this->setupConfig->get('db_schema_version_table'));
-            $table->addColumn(new Column\BigInteger('version'))
-                ->addColumn(new Column\Varchar('setupid', 32))
-                ->addColumn(new Column\BigInteger('timestamp'))
-                ->addConstraint(new Constraint\PrimaryKey('version'));
-            $this->executeSqlStatement($table);
+                // Creating version table.
+                $table = new Ddl\CreateTable($this->setupConfig->get('db_schema_version_table'));
+                $table->addColumn(new Column\BigInteger('version'))
+                    ->addColumn(new Column\Varchar('setupid', 32))
+                    ->addColumn(new Column\BigInteger('timestamp'))
+                    ->addConstraint(new Constraint\PrimaryKey('version'));
+                $this->executeSqlStatement($table);
 
-            // Installing the custom application database schema script.
-            $schemaFile = $this->getSchemaInstallationFilepath();
-            if (file_exists($schemaFile)) {
-                $schema = file_get_contents($schemaFile);
-                $this->executeSqlStatement($schema);
-            }
+                // Installing the custom application database schema script.
+                $schemaFile = $this->getSchemaInstallationFilepath();
+                if (file_exists($schemaFile)) {
+                    $schema = file_get_contents($schemaFile);
+                    $this->executeSqlStatement($schema);
+                }
 
-            // Inserting version information.
-            $insert = $this->getSql()->insert($this->setupConfig->get('db_schema_version_table'));
-            $insert->columns(['version', 'setupid', 'timestamp'])
+                // Inserting version information.
+                $insert = $this->getSql()->insert($this->setupConfig->get('db_schema_version_table'));
+                $insert->columns(['version', 'setupid', 'timestamp'])
                 ->values([
                     'version' => $this->lastParsedSchemaVersion,
                     'setupid' => $this->setupConfig->get('setup_id'),
                     'timestamp' => time(),
                 ]);
-            $this->executeSqlStatement($insert);
-            if ($this->setupConfig->get('db_schema_init_version') > 1){
-                $insert->values([
-                    'version' => $this->setupConfig->get('db_schema_init_version'),
-                ], $insert::VALUES_MERGE);
                 $this->executeSqlStatement($insert);
+                if ($this->setupConfig->get('db_schema_init_version') > 1){
+                    $insert->values([
+                        'version' => $this->setupConfig->get('db_schema_init_version'),
+                    ], $insert::VALUES_MERGE);
+                    $this->executeSqlStatement($insert);
+                }
             }
-        }
     }
 
     /**
@@ -336,8 +472,8 @@ class DatabaseHelper
     {
         if ($this->isSchemaInstalled()) {
             $select = $this->getSql()
-                ->select($this->zuModuleOptions->getTableName())
-                ->columns(array('count' => new \Zend\Db\Sql\Expression('count(*)')));
+            ->select($this->zuModuleOptions->getTableName())
+            ->columns(array('count' => new \Zend\Db\Sql\Expression('count(*)')));
             $statement = $this->getSql()->prepareStatementForSqlObject($select);
 
             try {
@@ -357,7 +493,7 @@ class DatabaseHelper
                 $this->lastMessage = sprintf(
                     $this->translator->translate('Something is wrong with the user table, setup can\'t proceed. Error message: %s'),
                     $e->getMessage()
-                );
+                    );
                 return false;
             }
         } else {
@@ -402,5 +538,49 @@ class DatabaseHelper
 
         $this->lastStatus = self::CURRENTSCHEMAISLATEST;
         return;
+
+    }
+
+    public function printSchema(string $filename, string $sqlType) {
+        $path = $this->normalizePath($this->setupConfig->get('db_schema_path'));
+        $schemaFile = $path . '/' . $filename;
+
+        $driver = null;
+        switch ($sqlType) {
+            case 'mysql':
+            case 'mariadb':
+                $driver = [
+                    'driver' => 'Pdo_Mysql',
+                ];
+                break;
+            case 'pgsql':
+                $driver = [
+                    'driver' => 'Pdo_Pgsql',
+                ];
+                break;
+            case 'sqlite':
+                $driver = [
+                    'driver' => 'Pdo_Sqlite',
+                ];
+                break;
+            default:
+                return false;
+        }
+
+        if (is_null($driver)) {
+            return false;
+        }
+
+        $processedSchema = $this->parseSchemaFile($schemaFile);
+
+        if ($processedSchema === false) {
+            return false;
+        }
+
+        $sqlString = '';
+        foreach ($processedSchema as $sqlCommand) {
+            $sqlString .= $this->getSql()->buildSqlString($sqlCommand, new Adapter($driver)) . ";\n";
+        }
+        return $sqlString;
     }
 }
