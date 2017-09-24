@@ -10,20 +10,18 @@ namespace Setup\Model;
 use Zend\Config\Config;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Ddl;
-use Zend\Db\Sql\Ddl\Column;
-use Zend\Db\Sql\Ddl\Constraint;
 use Zend\Db\Sql\Sql;
-use Zend\Mvc\I18n\Translator;
-use ZfcUser\Options\ModuleOptions as ZUModuleOptions;
+use Zend\Db\Sql\SqlInterface;
 use Zend\Db\Sql\Ddl\CreateTable;
-use Zend\Db\Sql\Ddl\Column\BigInteger;
-use Zend\Db\Sql\Ddl\Column\Varchar;
 use Zend\Db\Sql\Ddl\Column\AbstractLengthColumn;
+use Zend\Db\Sql\Ddl\Column\BigInteger;
 use Zend\Db\Sql\Ddl\Column\Integer;
 use Zend\Db\Sql\Ddl\Column\Text;
+use Zend\Db\Sql\Ddl\Column\Varchar;
 use Zend\Db\Sql\Ddl\Constraint\PrimaryKey;
 use Zend\Db\Sql\Ddl\Index\Index;
-use Zend\Db\Sql\SqlInterface;
+use Zend\Mvc\I18n\Translator;
+use ZfcUser\Options\ModuleOptions as ZUModuleOptions;
 
 class DatabaseHelper
 {
@@ -389,10 +387,10 @@ class DatabaseHelper
             ($this->lastStatus = self::DBNOTINSTALLEDORTABLENOTPRESENT)) {
                 // Creating version table.
                 $table = new Ddl\CreateTable($this->setupConfig->get('db_schema_version_table'));
-                $table->addColumn(new Column\BigInteger('version'))
-                    ->addColumn(new Column\Varchar('setupid', 32))
-                    ->addColumn(new Column\BigInteger('timestamp'))
-                    ->addConstraint(new Constraint\PrimaryKey('version'));
+                $table->addColumn(new BigInteger('version'))
+                    ->addColumn(new Varchar('setupid', 32))
+                    ->addColumn(new BigInteger('timestamp'))
+                    ->addConstraint(new PrimaryKey('version'));
                 $this->executeSqlStatement($table);
 
                 // Installing the custom application database schema script.
