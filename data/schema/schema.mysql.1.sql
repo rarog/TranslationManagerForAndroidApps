@@ -20,7 +20,7 @@ CREATE TABLE `user` (
     `email`        VARCHAR(255) DEFAULT NULL UNIQUE,
     `display_name` VARCHAR(50) DEFAULT NULL,
     `password`     VARCHAR(128) NOT NULL,
-    `state`        SMALLINT(5) UNSIGNED DEFAULT NULL
+    `state`        SMALLINT(5) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `user_role_linker` (

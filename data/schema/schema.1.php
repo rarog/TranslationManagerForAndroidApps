@@ -61,7 +61,7 @@ return [
                 'nullable' => true,
             ],
             [
-                'type' => 'Integer',
+                'type' => 'BigInteger',
                 'name' => 'line',
                 'nullable' => true,
             ],
