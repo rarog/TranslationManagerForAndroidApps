@@ -15,7 +15,7 @@ CREATE TABLE `log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `user` (
-    `user_id`      BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `user_id`      BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `username`     VARCHAR(255) DEFAULT NULL UNIQUE,
     `email`        VARCHAR(255) DEFAULT NULL UNIQUE,
     `display_name` VARCHAR(50) DEFAULT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `user_role_linker` (
-    `user_id` BIGINT(20) UNSIGNED NOT NULL,
+    `user_id` BIGINT(20) NOT NULL,
     `role_id` VARCHAR(45) NOT NULL,
     PRIMARY KEY (`user_id`,`role_id`),
     INDEX `user_role_linker_fk1` (`user_id`),
@@ -37,7 +37,7 @@ CREATE TABLE `team` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `user_settings` (
-    `user_id` BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY,
+    `user_id` BIGINT(20) NOT NULL PRIMARY KEY,
     `locale`  VARCHAR(20) NOT NULL, -- Currently known max length is 11 char.
     `team_id` BIGINT(20) UNSIGNED DEFAULT NULL,
     CONSTRAINT `user_settings_fk1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -45,7 +45,7 @@ CREATE TABLE `user_settings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `user_languages` (
-    `user_id` BIGINT(20) UNSIGNED NOT NULL,
+    `user_id` BIGINT(20) NOT NULL,
     `locale`  VARCHAR(20) NOT NULL, -- Currently known max length for primary locale is 3 char.
     PRIMARY KEY (`user_id`,`locale`),
     INDEX `user_languages_fk1` (`user_id`),
@@ -53,7 +53,7 @@ CREATE TABLE `user_languages` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `team_member` (
-    `user_id` BIGINT(20) UNSIGNED NOT NULL,
+    `user_id` BIGINT(20) NOT NULL,
     `team_id` BIGINT(20) UNSIGNED NOT NULL,
     PRIMARY KEY (`user_id`,`team_id`),
     INDEX `team_member_fk1` (`user_id`),
@@ -145,7 +145,7 @@ CREATE TABLE `entry_string` (
 CREATE TABLE `suggestion` (
     `id`              BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `entry_common_id` BIGINT(20) UNSIGNED NOT NULL,
-    `user_id`         BIGINT(20) UNSIGNED NOT NULL,
+    `user_id`         BIGINT(20) NOT NULL,
     `last_change`     BIGINT(20) NOT NULL,
     INDEX `suggestion_ik1` (`last_change`),
     INDEX `suggestion_fk1` (`entry_common_id`),
@@ -163,7 +163,7 @@ CREATE TABLE `suggestion_string` (
 
 CREATE TABLE `suggestion_vote` (
     `suggestion_id` BIGINT(20) UNSIGNED NOT NULL,
-    `user_id`       BIGINT(20) UNSIGNED NOT NULL,
+    `user_id`       BIGINT(20) NOT NULL,
     PRIMARY KEY (`suggestion_id`,`user_id`),
     INDEX `suggestion_vote_fk1` (`suggestion_id`),
     INDEX `suggestion_vote_fk2` (`user_id`),
