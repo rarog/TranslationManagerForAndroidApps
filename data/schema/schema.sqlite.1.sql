@@ -4,7 +4,7 @@ CREATE TABLE log (
     priority`         INTEGER NOT NULL,
     priority_name`    TEXT NOT NULL,
     message`          TEXT NOT NULL,
-    message_extended` TEXT NULL,
+    message_extended` TEXT DEFAULT NULL,
     file              TEXT DEFAULT NULL,
     class             TEXT DEFAULT NULL,
     line              INTEGER DEFAULT NULL,

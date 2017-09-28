@@ -13,8 +13,8 @@
 */
 
 return [
-    // log
-    'CreateTable' => [
+    'log' => [
+        'commandName' => 'CreateTable',
         'tableName' => 'log',
         'addColumn' => [
             [
@@ -91,6 +91,61 @@ return [
                 'type' => 'Index',
                 'columns' => 'function',
                 'name' => 'log_ik3',
+            ],
+        ],
+    ],
+    'user' => [
+        'commandName' => 'CreateTable',
+        'tableName' => 'user',
+        'addColumn' => [
+            [
+                'type' => 'BigInteger',
+                'name' => 'user_id',
+                'options' => [
+                    'autoincrement' => true,
+                ],
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'username',
+                'length' => 255,
+                'nullable' => true,
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'email',
+                'length' => 255,
+                'nullable' => true,
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'display_name',
+                'length' => 50,
+                'nullable' => true,
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'password',
+                'length' => 128,
+            ],
+            [
+                'type' => 'Integer',
+                'name' => 'state',
+                'nullable' => true,
+            ],
+        ],
+        'addConstraint' =>[
+            [
+                'type' => 'PrimaryKey',
+                'columns' => 'user_id',
+            ],
+            [
+                'type' => 'UniqueKey',
+                'columns' => 'username',
+            ],
+            [
+                'type' => 'UniqueKey',
+                'columns' => 'email',
             ],
         ],
     ],

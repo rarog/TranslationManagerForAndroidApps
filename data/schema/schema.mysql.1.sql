@@ -1,10 +1,10 @@
 CREATE TABLE `log` (
-    `id`               BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `id`               BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `timestamp`        VARCHAR(25) NOT NULL,
-    `priority`         TINYINT(4) NOT NULL,
+    `priority`         SMALLINT(5) NOT NULL,
     `priority_name`    VARCHAR(10) NOT NULL,
     `message`          VARCHAR(4096) NOT NULL,
-    `message_extended` TEXT NULL,
+    `message_extended` TEXT DEFAULT NULL,
     `file`             VARCHAR(1024) DEFAULT NULL,
     `class`            VARCHAR(1024) DEFAULT NULL,
     `line`             BIGINT(20) DEFAULT NULL,

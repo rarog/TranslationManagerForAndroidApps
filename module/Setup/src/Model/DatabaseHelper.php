@@ -19,6 +19,7 @@ use Zend\Db\Sql\Ddl\Column\Integer;
 use Zend\Db\Sql\Ddl\Column\Text;
 use Zend\Db\Sql\Ddl\Column\Varchar;
 use Zend\Db\Sql\Ddl\Constraint\PrimaryKey;
+use Zend\Db\Sql\Ddl\Constraint\UniqueKey;
 use Zend\Db\Sql\Ddl\Index\Index;
 use Zend\Mvc\I18n\Translator;
 use ZfcUser\Options\ModuleOptions as ZUModuleOptions;
@@ -277,18 +278,22 @@ class DatabaseHelper
             'Varchar' => Varchar::class,
         ];
         $supportedConstraints = [
-            'PrimaryKey' => PrimaryKey::class,
             'Index' => Index::class,
+            'PrimaryKey' => PrimaryKey::class,
+            'UniqueKey' => UniqueKey::class,
         ];
 
         $processedCommands = [];
 
-        foreach ($schema as $commandName => $command) {
+        foreach ($schema as $command) {
             $sql = null;
 
-            if (! in_array($commandName, $supportedCommands, true)) {
+            if (! array_key_exists('commandName', $command) ||
+                ! in_array($command['commandName'], $supportedCommands, true)) {
                 continue;
             }
+
+            $commandName = $command['commandName'];
 
             if ($commandName === 'CreateTable') {
                 if (! array_key_exists('tableName', $command) ||
@@ -577,7 +582,11 @@ class DatabaseHelper
 
         $sqlString = '';
         foreach ($processedSchema as $sqlCommand) {
-            $sqlString .= $this->getSql()->buildSqlString($sqlCommand, new Adapter($driver)) . ";\n";
+            $sqlString .= $this->getSql()->buildSqlString($sqlCommand, new Adapter($driver));
+            if (mb_substr($sqlString, -1) !== ';') {
+                $sqlString .= ';';
+            }
+            $sqlString .= "\n";
         }
         return $sqlString;
     }
