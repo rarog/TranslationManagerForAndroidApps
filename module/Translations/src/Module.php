@@ -14,6 +14,7 @@
 
 namespace Translations;
 
+use Interop\Container\ContainerInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
@@ -39,122 +40,122 @@ class Module implements ConfigProviderInterface, ServiceProviderInterface
     {
         return [
             'factories' => [
-                Model\AppTable::class => function ($container) {
+                Model\AppTable::class => function (ContainerInterface $container) {
                     $tableGateway = $container->get(Model\AppTableGateway::class);
                     return new Model\AppTable($tableGateway);
                 },
-                Model\AppTableGateway::class => function ($container) {
+                Model\AppTableGateway::class => function (ContainerInterface $container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\App());
                     return new TableGateway('app', $dbAdapter, null, $resultSetPrototype);
                 },
-                Model\AppResourceTable::class => function ($container) {
+                Model\AppResourceTable::class => function (ContainerInterface $container) {
                     $tableGateway = $container->get(Model\AppResourceTableGateway::class);
                     return new Model\AppResourceTable($tableGateway);
                 },
-                Model\AppResourceTableGateway::class => function ($container) {
+                Model\AppResourceTableGateway::class => function (ContainerInterface $container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\AppResource());
                     return new TableGateway('app_resource', $dbAdapter, null, $resultSetPrototype);
                 },
-                Model\AppResourceFileTable::class => function ($container) {
+                Model\AppResourceFileTable::class => function (ContainerInterface $container) {
                     $tableGateway = $container->get(Model\AppResourceFileTableGateway::class);
                     return new Model\AppResourceFileTable($tableGateway);
                 },
-                Model\AppResourceFileTableGateway::class => function ($container) {
+                Model\AppResourceFileTableGateway::class => function (ContainerInterface $container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\AppResourceFile());
                     return new TableGateway('app_resource_file', $dbAdapter, null, $resultSetPrototype);
                 },
-                Model\EntryCommonTable::class => function ($container) {
+                Model\EntryCommonTable::class => function (ContainerInterface $container) {
                     $tableGateway = $container->get(Model\EntryCommonTableGateway::class);
                     return new Model\EntryCommonTable($tableGateway);
                 },
-                Model\EntryCommonTableGateway::class => function ($container) {
+                Model\EntryCommonTableGateway::class => function (ContainerInterface $container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\EntryCommon());
                     return new TableGateway('entry_common', $dbAdapter, null, $resultSetPrototype);
                 },
-                Model\EntryStringTable::class => function ($container) {
+                Model\EntryStringTable::class => function (ContainerInterface $container) {
                     $tableGateway = $container->get(Model\EntryStringTableGateway::class);
                     $appResourceTable = $container->get(Model\AppResourceTable::class);
                     return new Model\EntryStringTable($tableGateway, $appResourceTable);
                 },
-                Model\EntryStringTableGateway::class => function ($container) {
+                Model\EntryStringTableGateway::class => function (ContainerInterface $container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\EntryString());
                     return new TableGateway('entry_string', $dbAdapter, null, $resultSetPrototype);
                 },
-                Model\ResourceFileEntryTable::class => function ($container) {
+                Model\ResourceFileEntryTable::class => function (ContainerInterface $container) {
                     $tableGateway = $container->get(Model\ResourceFileEntryTableGateway::class);
                     return new Model\ResourceFileEntryTable($tableGateway);
                 },
-                Model\ResourceFileEntryTableGateway::class => function ($container) {
+                Model\ResourceFileEntryTableGateway::class => function (ContainerInterface $container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\ResourceFileEntry());
                     return new TableGateway('resource_file_entry', $dbAdapter, null, $resultSetPrototype);
                 },
-                Model\ResourceTypeTable::class => function ($container) {
+                Model\ResourceTypeTable::class => function (ContainerInterface $container) {
                     $tableGateway = $container->get(Model\ResourceTypeTableGateway::class);
                     return new Model\ResourceTypeTable($tableGateway);
                 },
-                Model\ResourceTypeTableGateway::class => function ($container) {
+                Model\ResourceTypeTableGateway::class => function (ContainerInterface $container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\ResourceType());
                     return new TableGateway('resource_type', $dbAdapter, null, $resultSetPrototype);
                 },
-                Model\SuggestionTable::class => function ($container) {
+                Model\SuggestionTable::class => function (ContainerInterface $container) {
                     $tableGateway = $container->get(Model\SuggestionTableGateway::class);
                     return new Model\SuggestionTable($tableGateway);
                 },
-                Model\SuggestionTableGateway::class => function ($container) {
+                Model\SuggestionTableGateway::class => function (ContainerInterface $container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\Suggestion());
                     return new TableGateway('suggestion', $dbAdapter, null, $resultSetPrototype);
                 },
-                Model\SuggestionStringTable::class => function ($container) {
+                Model\SuggestionStringTable::class => function (ContainerInterface $container) {
                     $tableGateway = $container->get(Model\SuggestionStringTableGateway::class);
                     return new Model\SuggestionStringTable($tableGateway);
                 },
-                Model\SuggestionStringTableGateway::class => function ($container) {
+                Model\SuggestionStringTableGateway::class => function (ContainerInterface $container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\SuggestionString());
                     return new TableGateway('suggestion_string', $dbAdapter, null, $resultSetPrototype);
                 },
-                Model\SuggestionVoteTable::class => function ($container) {
+                Model\SuggestionVoteTable::class => function (ContainerInterface $container) {
                     $tableGateway = $container->get(Model\SuggestionVoteTableGateway::class);
                     return new Model\SuggestionVoteTable($tableGateway);
                 },
-                Model\SuggestionVoteTableGateway::class => function ($container) {
+                Model\SuggestionVoteTableGateway::class => function (ContainerInterface $container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\SuggestionVote());
                     return new TableGateway('suggestion_vote', $dbAdapter, null, $resultSetPrototype);
                 },
-                Model\TeamTable::class => function ($container) {
+                Model\TeamTable::class => function (ContainerInterface $container) {
                     $tableGateway = $container->get(Model\TeamTableGateway::class);
                     return new Model\TeamTable($tableGateway);
                 },
-                Model\TeamTableGateway::class => function ($container) {
+                Model\TeamTableGateway::class => function (ContainerInterface $container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\Team());
                     return new TableGateway('team', $dbAdapter, null, $resultSetPrototype);
                 },
-                Model\TeamMemberTable::class => function ($container) {
+                Model\TeamMemberTable::class => function (ContainerInterface $container) {
                     $tableGateway = $container->get(Model\TeamMemberTableGateway::class);
                     return new Model\TeamMemberTable($tableGateway);
                 },
-                Model\TeamMemberTableGateway::class => function ($container) {
+                Model\TeamMemberTableGateway::class => function (ContainerInterface $container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\TeamMember());

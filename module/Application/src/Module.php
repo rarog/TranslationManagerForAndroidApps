@@ -14,6 +14,7 @@
 
 namespace Application;
 
+use Interop\Container\ContainerInterface;
 use Zend\Console\Console;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\ResultSet\ResultSet;
@@ -207,38 +208,38 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
     {
         return [
             'factories' => [
-                Model\UserTable::class => function ($container) {
+                Model\UserTable::class => function (ContainerInterface $container) {
                     $tableGateway = $container->get(Model\UserTableGateway::class);
                     $userMapper = $container->get('zfcuser_user_mapper');
                     return new Model\UserTable($tableGateway, $userMapper);
                 },
-                Model\UserTableGateway::class => function ($container) {
+                Model\UserTableGateway::class => function (ContainerInterface $container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\User);
                     return new TableGateway('user', $dbAdapter, null, $resultSetPrototype);
                 },
-                Model\UserLanguagesTable::class => function ($container) {
+                Model\UserLanguagesTable::class => function (ContainerInterface $container) {
                     $tableGateway = $container->get(Model\UserLanguagesTableGateway::class);
                     return new Model\UserLanguagesTable($tableGateway);
                 },
-                Model\UserLanguagesTableGateway::class => function ($container) {
+                Model\UserLanguagesTableGateway::class => function (ContainerInterface $container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\UserLanguages);
                     return new TableGateway('user_languages', $dbAdapter, null, $resultSetPrototype);
                 },
-                Model\UserSettingsTable::class => function ($container) {
+                Model\UserSettingsTable::class => function (ContainerInterface $container) {
                     $tableGateway = $container->get(Model\UserSettingsTableGateway::class);
                     return new Model\UserSettingsTable($tableGateway);
                 },
-                Model\UserSettingsTableGateway::class => function ($container) {
+                Model\UserSettingsTableGateway::class => function (ContainerInterface $container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\UserSettings());
                     return new TableGateway('user_settings', $dbAdapter, null, $resultSetPrototype);
                 },
-                SessionManager::class => function ($container) {
+                SessionManager::class => function (ContainerInterface $container) {
                     $config = $container->get('config');
                     if (! isset($config['session'])) {
                         $sessionManager = new SessionManager();
