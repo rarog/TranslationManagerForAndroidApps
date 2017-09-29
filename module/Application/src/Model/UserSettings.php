@@ -18,7 +18,6 @@ use DomainException;
 use Zend\Filter\StringTrim;
 use Zend\Filter\StripTags;
 use Zend\Filter\ToInt;
-use Zend\Filter\ToNull;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
@@ -36,11 +35,6 @@ class UserSettings implements ArraySerializableInterface, InputFilterAwareInterf
      * @var null|string
      */
     private $locale;
-
-    /**
-     * @var null|int
-     */
-    private $teamId;
 
     /**
      * @var InputFilter
@@ -122,23 +116,6 @@ class UserSettings implements ArraySerializableInterface, InputFilterAwareInterf
     }
 
     /**
-     * @return null|int
-     */
-    public function getTeamId() {
-        return $this->teamId;
-    }
-
-    /**
-     * @param null|int $teamId
-     */
-    public function setTeamId($teamId) {
-        if (!is_null($teamId)) {
-            $teamId = (int) $teamId;
-        }
-        $this->teamId = $teamId;
-    }
-
-    /**
      * {@inheritDoc}
      * @see \Zend\InputFilter\InputFilterAwareInterface::setInputFilter()
      */
@@ -187,18 +164,6 @@ class UserSettings implements ArraySerializableInterface, InputFilterAwareInterf
                 ],
             ],
         ]);
-        $inputFilter->add([
-            'name'     => 'team_id',
-            'required' => false,
-            'filters'  => [
-                [
-                    'name'    => ToNull::class,
-                    'options' => [
-                        'type' => ToNull::TYPE_INTEGER,
-                    ],
-                ],
-            ],
-        ]);
 
         $this->inputFilter = $inputFilter;
         return $this->inputFilter;
@@ -212,7 +177,6 @@ class UserSettings implements ArraySerializableInterface, InputFilterAwareInterf
     {
         $this->userId = !empty($array['user_id']) ? $array['user_id'] : null;
         $this->locale = !empty($array['locale']) ? $array['locale'] : null;
-        $this->teamId = !empty($array['team_id']) ? $array['team_id'] : null;
     }
 
     /**

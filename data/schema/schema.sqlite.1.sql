@@ -39,17 +39,11 @@ CREATE TABLE "user_role_linker"
 
 CREATE INDEX "user_role_linker_ik1" ON "user_role_linker" ("user_id");
 
-CREATE TABLE team (
-    id   INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    name TEXT DEFAULT NULL
-);
-
-CREATE TABLE user_settings (
-    user_id INTEGER NOT NULL PRIMARY KEY,
-    locale  TEXT NOT NULL, -- Currently known max length is 11 char.
-    team_id INTEGER DEFAULT NULL,
-    FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (team_id) REFERENCES team (id) ON DELETE SET NULL ON UPDATE CASCADE
+CREATE TABLE "user_settings" (
+    "user_id" INTEGER NOT NULL,
+    "locale" TEXT NOT NULL, -- Currently known max length is 11 char.
+    CONSTRAINT "user_settings_pk" PRIMARY KEY ("user_id"),
+    CONSTRAINT "user_settings_fk1" FOREIGN KEY ("user_id") REFERENCES "user" ("user_id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE user_languages (
@@ -57,6 +51,11 @@ CREATE TABLE user_languages (
     locale  TEXT NOT NULL, -- Currently known max length for primary locale is 3 char.
     PRIMARY KEY (user_id,locale),
     FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE team (
+    id   INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name TEXT DEFAULT NULL
 );
 
 CREATE TABLE team_member (

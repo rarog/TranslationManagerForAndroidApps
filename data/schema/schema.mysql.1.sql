@@ -13,16 +13,19 @@ CREATE TABLE `log` (
     INDEX `log_ik1` (`priority`),
     INDEX `log_ik2` (`class`),
     INDEX `log_ik3` (`function`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 
 CREATE TABLE `user` (
-    `user_id`      BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `user_id`      BIGINT(20) NOT NULL AUTO_INCREMENT,
     `username`     VARCHAR(255) DEFAULT NULL UNIQUE,
     `email`        VARCHAR(255) DEFAULT NULL UNIQUE,
     `display_name` VARCHAR(50) DEFAULT NULL,
     `password`     VARCHAR(128) NOT NULL,
-    `state`        SMALLINT(5) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    `state`        SMALLINT(5) DEFAULT NULL,
+    CONSTRAINT `user_pk` PRIMARY KEY (`user_id`),
+    CONSTRAINT `user_uk1` UNIQUE (`username`),
+    CONSTRAINT `user_uk2` UNIQUE (`email`)
+);
 
 CREATE TABLE `user_role_linker` (
     `user_id` BIGINT(20) NOT NULL,
@@ -30,20 +33,14 @@ CREATE TABLE `user_role_linker` (
     CONSTRAINT `user_role_linker_pk` PRIMARY KEY (`user_id`, `role_id`),
     INDEX `user_role_linker_ik1`(`user_id`),
     CONSTRAINT `user_role_linker_fk1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `team` (
-    `id`   BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `name` VARCHAR(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 
 CREATE TABLE `user_settings` (
-    `user_id` BIGINT(20) NOT NULL PRIMARY KEY,
-    `locale`  VARCHAR(20) NOT NULL, -- Currently known max length is 11 char.
-    `team_id` BIGINT(20) UNSIGNED DEFAULT NULL,
-    CONSTRAINT `user_settings_fk1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT `user_settings_fk2` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    `user_id` BIGINT(20) NOT NULL,
+    `locale`  VARCHAR(20) NOT NULL, -- Currently known max length is 11 char. 
+    CONSTRAINT `user_settings_pk` PRIMARY KEY (`user_id`),
+    CONSTRAINT `user_settings_fk1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 CREATE TABLE `user_languages` (
     `user_id` BIGINT(20) NOT NULL,
@@ -51,7 +48,12 @@ CREATE TABLE `user_languages` (
     PRIMARY KEY (`user_id`,`locale`),
     INDEX `user_languages_fk1` (`user_id`),
     CONSTRAINT `user_languages_fk1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
+
+CREATE TABLE `team` (
+    `id`   BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `name` VARCHAR(255) DEFAULT NULL
+);
 
 CREATE TABLE `team_member` (
     `user_id` BIGINT(20) NOT NULL,

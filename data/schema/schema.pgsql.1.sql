@@ -36,3 +36,10 @@ CREATE TABLE "user_role_linker" (
 );
 
 CREATE INDEX "user_role_linker_ik1" ON "user_role_linker" ("user_id");
+
+CREATE TABLE "user_settings" (
+    "user_id" BIGINT NOT NULL,
+    "locale" VARCHAR(20) NOT NULL,
+    CONSTRAINT "user_settings_pk" PRIMARY KEY ("user_id"),
+    CONSTRAINT "user_settings_fk1" FOREIGN KEY ("user_id") REFERENCES "user" ("user_id") ON DELETE CASCADE ON UPDATE CASCADE
+);

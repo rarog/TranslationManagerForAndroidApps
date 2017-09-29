@@ -77,7 +77,6 @@ class UserSettingsTable
     {
         $data = [
             'locale' => $userSettings->Locale,
-            'team_id' => $userSettings->TeamId,
         ];
 
         $userId = (int) $userSettings->UserId;

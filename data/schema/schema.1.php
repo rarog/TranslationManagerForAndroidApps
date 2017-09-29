@@ -192,4 +192,35 @@ return [
             ],
         ],
     ],
+    'user_settings' => [
+        'commandName' => 'CreateTable',
+        'tableName' => 'user_settings',
+        'addColumn' => [
+            [
+                'type' => 'BigInteger',
+                'name' => 'user_id',
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'locale',
+                'length' => 20,
+            ],
+        ],
+        'addConstraint' =>[
+            [
+                'type' => 'PrimaryKey',
+                'column' => 'user_id',
+                'name' => 'user_settings_pk',
+            ],
+            [
+                'type' => 'ForeignKey',
+                'column' => 'user_id',
+                'name' => 'user_settings_fk1',
+                'referenceTable' => 'user',
+                'referenceColumn' => 'user_id',
+                'onDelete' => 'cascade',
+                'onUpdate' => 'cascade',
+            ],
+        ],
+    ],
 ];
