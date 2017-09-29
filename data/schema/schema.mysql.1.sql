@@ -31,8 +31,8 @@ CREATE TABLE `user_role_linker` (
     `user_id` BIGINT(20) NOT NULL,
     `role_id` VARCHAR(45) NOT NULL,
     CONSTRAINT `user_role_linker_pk` PRIMARY KEY (`user_id`, `role_id`),
-    INDEX `user_role_linker_ik1`(`user_id`),
-    CONSTRAINT `user_role_linker_fk1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT `user_role_linker_fk1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    INDEX `user_role_linker_ik1`(`user_id`)
 );
 
 CREATE TABLE `user_settings` (
@@ -45,9 +45,9 @@ CREATE TABLE `user_settings` (
 CREATE TABLE `user_languages` (
     `user_id` BIGINT(20) NOT NULL,
     `locale`  VARCHAR(20) NOT NULL, -- Currently known max length for primary locale is 3 char.
-    PRIMARY KEY (`user_id`,`locale`),
-    INDEX `user_languages_fk1` (`user_id`),
-    CONSTRAINT `user_languages_fk1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT `user_languages_pk` PRIMARY KEY (`user_id`, `locale`),
+    CONSTRAINT `user_languages_fk1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    INDEX `user_languages_ik1`(`user_id`) 
 );
 
 CREATE TABLE `team` (

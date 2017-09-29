@@ -177,11 +177,6 @@ return [
                 'name' => 'user_role_linker_pk',
             ],
             [
-                'type' => 'Index',
-                'column' => 'user_id',
-                'name' => 'user_role_linker_ik1',
-            ],
-            [
                 'type' => 'ForeignKey',
                 'column' => 'user_id',
                 'name' => 'user_role_linker_fk1',
@@ -189,6 +184,11 @@ return [
                 'referenceColumn' => 'user_id',
                 'onDelete' => 'cascade',
                 'onUpdate' => 'cascade',
+            ],
+            [
+                'type' => 'Index',
+                'column' => 'user_id',
+                'name' => 'user_role_linker_ik1',
             ],
         ],
     ],
@@ -220,6 +220,45 @@ return [
                 'referenceColumn' => 'user_id',
                 'onDelete' => 'cascade',
                 'onUpdate' => 'cascade',
+            ],
+        ],
+    ],
+    'user_languages' => [
+        'commandName' => 'CreateTable',
+        'tableName' => 'user_languages',
+        'addColumn' => [
+            [
+                'type' => 'BigInteger',
+                'name' => 'user_id',
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'locale',
+                'length' => 20,
+            ],
+        ],
+        'addConstraint' =>[
+            [
+                'type' => 'PrimaryKey',
+                'column' => [
+                    'user_id',
+                    'locale',
+                ],
+                'name' => 'user_languages_pk',
+            ],
+            [
+                'type' => 'ForeignKey',
+                'column' => 'user_id',
+                'name' => 'user_languages_fk1',
+                'referenceTable' => 'user',
+                'referenceColumn' => 'user_id',
+                'onDelete' => 'cascade',
+                'onUpdate' => 'cascade',
+            ],
+            [
+                'type' => 'Index',
+                'column' => 'user_id',
+                'name' => 'user_languages_ik1',
             ],
         ],
     ],
