@@ -18,6 +18,7 @@ use Zend\Db\Sql\Ddl\Column\BigInteger;
 use Zend\Db\Sql\Ddl\Column\Integer;
 use Zend\Db\Sql\Ddl\Column\Text;
 use Zend\Db\Sql\Ddl\Column\Varchar;
+use Zend\Db\Sql\Ddl\Constraint\ForeignKey;
 use Zend\Db\Sql\Ddl\Constraint\PrimaryKey;
 use Zend\Db\Sql\Ddl\Constraint\UniqueKey;
 use Zend\Db\Sql\Ddl\Index\Index;
@@ -279,8 +280,16 @@ class DatabaseHelper
         ];
         $supportedConstraints = [
             'Index' => Index::class,
+            'ForeignKey' => ForeignKey::class,
             'PrimaryKey' => PrimaryKey::class,
             'UniqueKey' => UniqueKey::class,
+        ];
+        $supportedForeignKeyRules = [
+            'cascade' => 'CASCADE',
+            'noAction' => 'NO ACTION',
+            'restrict' => 'RESTRICT',
+            'setDefault' => 'SET DEFAULT',
+            'setNull' => 'SET NULL',
         ];
 
         $processedCommands = [];
@@ -340,8 +349,8 @@ class DatabaseHelper
                     foreach ($command['addConstraint'] as $constr) {
                         if (! array_key_exists('type', $constr) ||
                             ! array_key_exists($constr['type'], $supportedConstraints) ||
-                            ! array_key_exists('columns', $constr) ||
-                            ! (is_string($constr['columns']) || is_array($constr['columns']))) {
+                            ! array_key_exists('column', $constr) ||
+                            ! (is_string($constr['column']) || is_array($constr['column']))) {
                             continue;
                         }
 
@@ -357,9 +366,30 @@ class DatabaseHelper
                                 is_array($constr['lengths'])) {
                                 $lengths = $constr['lengths'];
                             }
-                            $sqlConstr = new $supportedConstraints[$constr['type']]($constr['columns'], $name, $lengths);
+                            $sqlConstr = new $supportedConstraints[$constr['type']]($constr['column'], $name, $lengths);
+                        } elseif ($constr['type'] === 'ForeignKey') {
+                            if (! array_key_exists('referenceTable', $constr) ||
+                                ! is_string($constr['referenceTable']) ||
+                                ! array_key_exists('referenceColumn', $constr) ||
+                                ! is_string($constr['referenceColumn'])) {
+                                continue;
+                            }
+
+                            $onDelete = null;
+                            if (array_key_exists('onDelete', $constr) &&
+                                is_string($constr['onDelete']) &&
+                                array_key_exists($constr['onDelete'], $supportedForeignKeyRules)) {
+                                $onDelete = $supportedForeignKeyRules[$constr['onDelete']];
+                            }
+                            $onUpdate = null;
+                            if (array_key_exists('onUpdate', $constr) &&
+                                is_string($constr['onUpdate']) &&
+                                array_key_exists($constr['onUpdate'], $supportedForeignKeyRules)) {
+                                $onUpdate = $supportedForeignKeyRules[$constr['onUpdate']];
+                            }
+                            $sqlConstr = new $supportedConstraints[$constr['type']]($name, $constr['column'], $constr['referenceTable'], $constr['referenceColumn'], $onDelete, $onUpdate);
                         } else {
-                            $sqlConstr = new $supportedConstraints[$constr['type']]($constr['columns'], $name);
+                            $sqlConstr = new $supportedConstraints[$constr['type']]($constr['column'], $name);
                         }
 
                         $sql->addConstraint($sqlConstr);

@@ -1,5 +1,5 @@
 CREATE TABLE `log` (
-    `id`               BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `id`               BIGINT(20) NOT NULL AUTO_INCREMENT,
     `timestamp`        VARCHAR(25) NOT NULL,
     `priority`         SMALLINT(5) NOT NULL,
     `priority_name`    VARCHAR(10) NOT NULL,
@@ -9,6 +9,7 @@ CREATE TABLE `log` (
     `class`            VARCHAR(1024) DEFAULT NULL,
     `line`             BIGINT(20) DEFAULT NULL,
     `function`         VARCHAR(1024) DEFAULT NULL,
+    CONSTRAINT `log_pk` PRIMARY KEY (`id`),
     INDEX `log_ik1` (`priority`),
     INDEX `log_ik2` (`class`),
     INDEX `log_ik3` (`function`)
@@ -26,8 +27,8 @@ CREATE TABLE `user` (
 CREATE TABLE `user_role_linker` (
     `user_id` BIGINT(20) NOT NULL,
     `role_id` VARCHAR(45) NOT NULL,
-    PRIMARY KEY (`user_id`,`role_id`),
-    INDEX `user_role_linker_fk1` (`user_id`),
+    CONSTRAINT `user_role_linker_pk` PRIMARY KEY (`user_id`, `role_id`),
+    INDEX `user_role_linker_ik1`(`user_id`),
     CONSTRAINT `user_role_linker_fk1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

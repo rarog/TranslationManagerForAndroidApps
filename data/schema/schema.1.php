@@ -75,21 +75,22 @@ return [
         'addConstraint' =>[
             [
                 'type' => 'PrimaryKey',
-                'columns' => 'id',
+                'column' => 'id',
+                'name' => 'log_pk',
             ],
             [
                 'type' => 'Index',
-                'columns' => 'priority',
+                'column' => 'priority',
                 'name' => 'log_ik1',
             ],
             [
                 'type' => 'Index',
-                'columns' => 'class',
+                'column' => 'class',
                 'name' => 'log_ik2',
             ],
             [
                 'type' => 'Index',
-                'columns' => 'function',
+                'column' => 'function',
                 'name' => 'log_ik3',
             ],
         ],
@@ -137,15 +138,57 @@ return [
         'addConstraint' =>[
             [
                 'type' => 'PrimaryKey',
-                'columns' => 'user_id',
+                'column' => 'user_id',
+                'name' => 'user_pk',
             ],
             [
                 'type' => 'UniqueKey',
-                'columns' => 'username',
+                'column' => 'username',
+                'name' => 'user_uk1',
             ],
             [
                 'type' => 'UniqueKey',
-                'columns' => 'email',
+                'column' => 'email',
+                'name' => 'user_uk2',
+            ],
+        ],
+    ],
+    'user_role_linker' => [
+        'commandName' => 'CreateTable',
+        'tableName' => 'user_role_linker',
+        'addColumn' => [
+            [
+                'type' => 'BigInteger',
+                'name' => 'user_id',
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'role_id',
+                'length' => 45,
+            ],
+        ],
+        'addConstraint' =>[
+            [
+                'type' => 'PrimaryKey',
+                'column' => [
+                    'user_id',
+                    'role_id',
+                ],
+                'name' => 'user_role_linker_pk',
+            ],
+            [
+                'type' => 'Index',
+                'column' => 'user_id',
+                'name' => 'user_role_linker_ik1',
+            ],
+            [
+                'type' => 'ForeignKey',
+                'column' => 'user_id',
+                'name' => 'user_role_linker_fk1',
+                'referenceTable' => 'user',
+                'referenceColumn' => 'user_id',
+                'onDelete' => 'cascade',
+                'onUpdate' => 'cascade',
             ],
         ],
     ],

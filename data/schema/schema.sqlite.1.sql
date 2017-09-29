@@ -1,37 +1,43 @@
-CREATE TABLE log (
-    id                INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    timestamp         TEXT NOT NULL,
-    priority`         INTEGER NOT NULL,
-    priority_name`    TEXT NOT NULL,
-    message`          TEXT NOT NULL,
-    message_extended` TEXT DEFAULT NULL,
-    file              TEXT DEFAULT NULL,
-    class             TEXT DEFAULT NULL,
-    line              INTEGER DEFAULT NULL,
-    function          TEXT DEFAULT NULL
+CREATE TABLE "log" (
+    "id"               INTEGER NOT NULL,
+    "timestamp"        TEXT NOT NULL,
+    "priority"         INTEGER NOT NULL,
+    "priority_name"    TEXT NOT NULL,
+    "message"          TEXT NOT NULL,
+    "message_extended" TEXT DEFAULT NULL,
+    "file"             TEXT DEFAULT NULL,
+    "class"            TEXT DEFAULT NULL,
+    "line"             INTEGER DEFAULT NULL,
+    "function"         TEXT DEFAULT NULL,
+    CONSTRAINT "log_pk" PRIMARY KEY ("id")
 );
 
-CREATE INDEX log_ik1 ON log (priority);
-CREATE INDEX log_ik2 ON log (class);
-CREATE INDEX log_ik3 ON log (function);
+CREATE INDEX "log_ik1" ON "log" ("priority");
+CREATE INDEX "log_ik2" ON "log" ("class");
+CREATE INDEX "log_ik3" ON "log" ("function");
 
-CREATE TABLE user
+CREATE TABLE "user"
 (
-    user_id      INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    username     TEXT DEFAULT NULL UNIQUE,
-    email        TEXT DEFAULT NULL UNIQUE,
-    display_name TEXT DEFAULT NULL,
-    password     TEXT NOT NULL,
-    state        INTEGER DEFAULT NULL
+    "user_id"      INTEGER NOT NULL,
+    "username"     TEXT DEFAULT NULL UNIQUE,
+    "email"        TEXT DEFAULT NULL UNIQUE,
+    "display_name" TEXT DEFAULT NULL,
+    "password"     TEXT NOT NULL,
+    "state"        INTEGER DEFAULT NULL,
+    CONSTRAINT "user_pk" PRIMARY KEY ("user_id"),
+    CONSTRAINT "user_uk1" UNIQUE ("username"),
+    CONSTRAINT "user_uk2" UNIQUE ("email")
 );
 
-CREATE TABLE user_role_linker
+CREATE TABLE "user_role_linker"
 (
-    user_id INTEGER NOT NULL,
-    role_id TEXT NOT NULL,
-    PRIMARY KEY (user_id,role_id),
-    FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE
+    "user_id" INTEGER NOT NULL,
+    "role_id" TEXT NOT NULL,
+    CONSTRAINT "user_role_linker_pk" PRIMARY KEY ("user_id", "role_id"),
+    CONSTRAINT "user_role_linker_fk1" FOREIGN KEY ("user_id") REFERENCES "user" ("user_id") ON DELETE CASCADE ON UPDATE CASCADE 
 );
+
+CREATE INDEX "user_role_linker_ik1" ON "user_role_linker" ("user_id");
 
 CREATE TABLE team (
     id   INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
