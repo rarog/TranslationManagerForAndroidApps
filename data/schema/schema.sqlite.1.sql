@@ -68,18 +68,20 @@ CREATE TABLE "team_member" (
 CREATE INDEX "team_member_ik1" ON "team_member" ("user_id");
 CREATE INDEX "team_member_ik2" ON "team_member" ("team_id");
 
-CREATE TABLE app (
-    id                 INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    team_id            INTEGER DEFAULT NULL,
-    name               TEXT DEFAULT NULL,
-    path_to_res_folder TEXT DEFAULT NULL,
-    git_repository     TEXT DEFAULT NULL,
-    git_username       TEXT DEFAULT NULL,
-    git_password       TEXT DEFAULT NULL,
-    git_user           TEXT DEFAULT NULL,
-    git_email          TEXT DEFAULT NULL,
-    FOREIGN KEY (team_id) REFERENCES team (id) ON DELETE SET NULL ON UPDATE CASCADE
+CREATE TABLE "app" (
+    "id"                 INTEGER NOT NULL PRIMARY KEY,
+    "team_id"            INTEGER DEFAULT NULL,
+    "name"               TEXT DEFAULT NULL,
+    "path_to_res_folder" TEXT DEFAULT NULL,
+    "git_repository"     TEXT DEFAULT NULL,
+    "git_username"       TEXT DEFAULT NULL,
+    "git_password"       TEXT DEFAULT NULL,
+    "git_user"           TEXT DEFAULT NULL,
+    "git_email"          TEXT DEFAULT NULL,
+    CONSTRAINT "app_pk" PRIMARY KEY ("id"),
+    CONSTRAINT "app_fk1" FOREIGN KEY ("team_id") REFERENCES "team" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
+CREATE INDEX "app_ik1" ON "app" ("team_id");
 
 CREATE TABLE app_resource (
     id             INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,

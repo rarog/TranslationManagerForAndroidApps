@@ -37,21 +37,21 @@ CREATE INDEX "user_role_linker_ik1" ON "user_role_linker" ("user_id");
 
 CREATE TABLE "user_settings" (
     "user_id" BIGINT NOT NULL,
-    "locale" VARCHAR(20) NOT NULL, -- Currently known max length is 11 char.
+    "locale"  VARCHAR(20) NOT NULL, -- Currently known max length is 11 char.
     CONSTRAINT "user_settings_pk" PRIMARY KEY ("user_id"),
     CONSTRAINT "user_settings_fk1" FOREIGN KEY ("user_id") REFERENCES "user" ("user_id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE "user_languages" ( 
     "user_id" BIGINT NOT NULL,
-    "locale" VARCHAR(20) NOT NULL, -- Currently known max length for primary locale is 3 char.
+    "locale"  VARCHAR(20) NOT NULL, -- Currently known max length for primary locale is 3 char.
     CONSTRAINT "user_languages_pk" PRIMARY KEY ("user_id", "locale"),
     CONSTRAINT "user_languages_fk1" FOREIGN KEY ("user_id") REFERENCES "user" ("user_id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE INDEX "user_languages_ik1" ON "user_languages" ("user_id");
 
 CREATE TABLE "team" (
-    "id" BIGSERIAL,
+    "id"     BIGSERIAL,
     "locale" VARCHAR(255),
     CONSTRAINT "team_pk" PRIMARY KEY ("id")
 );
@@ -65,3 +65,18 @@ CREATE TABLE "team_member" (
 );
 CREATE INDEX "team_member_ik1" ON "team_member" ("user_id");
 CREATE INDEX "team_member_ik2" ON "team_member" ("team_id");
+
+CREATE TABLE "app" (
+    "id"                 BIGSERIAL,
+    "team_id"            BIGINT,
+    "name"               VARCHAR(255),
+    "path_to_res_folder" VARCHAR(4096),
+    "git_repository"     VARCHAR(4096),
+    "git_username"       VARCHAR(255),
+    "git_password"       VARCHAR(1024),
+    "git_user"           VARCHAR(255),
+    "git_email"          VARCHAR(255),
+    CONSTRAINT "app_pk" PRIMARY KEY ("id"),
+    CONSTRAINT "app_fk1" FOREIGN KEY ("team_id") REFERENCES "team" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+CREATE INDEX "app_ik1" ON "app" ("team_id");

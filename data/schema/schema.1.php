@@ -340,4 +340,85 @@ return [
             ],
         ],
     ],
+    'app' => [
+        'commandName' => 'CreateTable',
+        'tableName' => 'app',
+        'addColumn' => [
+            [
+                'type' => 'BigInteger',
+                'name' => 'id',
+                'options' => [
+                    'autoincrement' => true,
+                ],
+            ],
+            [
+                'type' => 'BigInteger',
+                'name' => 'team_id',
+                'nullable' => true,
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'name',
+                'length' => 255,
+                'nullable' => true,
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'path_to_res_folder',
+                'length' => 4096,
+                'nullable' => true,
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'git_repository',
+                'length' => 4096,
+                'nullable' => true,
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'git_username',
+                'length' => 255,
+                'nullable' => true,
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'git_password',
+                'length' => 1024,
+                'nullable' => true,
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'git_user',
+                'length' => 255,
+                'nullable' => true,
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'git_email',
+                'length' => 255,
+                'nullable' => true,
+            ],
+        ],
+        'addConstraint' =>[
+            [
+                'type' => 'PrimaryKey',
+                'column' => 'id',
+                'name' => 'app_pk',
+            ],
+            [
+                'type' => 'ForeignKey',
+                'column' => 'team_id',
+                'name' => 'app_fk1',
+                'referenceTable' => 'team',
+                'referenceColumn' => 'id',
+                'onDelete' => 'setNull',
+                'onUpdate' => 'cascade',
+            ],
+            [
+                'type' => 'Index',
+                'column' => 'team_id',
+                'name' => 'app_ik1',
+            ],
+        ],
+    ],
 ];

@@ -32,7 +32,7 @@ CREATE TABLE `user_role_linker` (
     `role_id` VARCHAR(45) NOT NULL,
     CONSTRAINT `user_role_linker_pk` PRIMARY KEY (`user_id`, `role_id`),
     CONSTRAINT `user_role_linker_fk1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    INDEX `user_role_linker_ik1`(`user_id`)
+    INDEX `user_role_linker_ik1` (`user_id`)
 );
 
 CREATE TABLE `user_settings` (
@@ -47,7 +47,7 @@ CREATE TABLE `user_languages` (
     `locale`  VARCHAR(20) NOT NULL, -- Currently known max length for primary locale is 3 char.
     CONSTRAINT `user_languages_pk` PRIMARY KEY (`user_id`, `locale`),
     CONSTRAINT `user_languages_fk1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    INDEX `user_languages_ik1`(`user_id`) 
+    INDEX `user_languages_ik1` (`user_id`) 
 );
 
 CREATE TABLE `team` (
@@ -62,12 +62,12 @@ CREATE TABLE `team_member` (
     CONSTRAINT `team_member_pk` PRIMARY KEY (`user_id`, `team_id`),
     CONSTRAINT `team_member_fk1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `team_member_fk2` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    INDEX `team_member_ik1`(`user_id`),
-    INDEX `team_member_ik2`(`team_id`)
+    INDEX `team_member_ik1` (`user_id`),
+    INDEX `team_member_ik2` (`team_id`)
 );
 
 CREATE TABLE `app` (
-    `id`                 BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `id`                 BIGINT(20) NOT NULL AUTO_INCREMENT,
     `team_id`            BIGINT(20) DEFAULT NULL,
     `name`               VARCHAR(255) DEFAULT NULL,
     `path_to_res_folder` VARCHAR(4096) DEFAULT NULL,
@@ -76,13 +76,14 @@ CREATE TABLE `app` (
     `git_password`       VARCHAR(1024) DEFAULT NULL,
     `git_user`           VARCHAR(255) DEFAULT NULL,
     `git_email`          VARCHAR(255) DEFAULT NULL,
-    INDEX `app_fk1` (`team_id`),
-    CONSTRAINT `app_fk1` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    CONSTRAINT `app_pk` PRIMARY KEY (`id`),
+    CONSTRAINT `app_fk1` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    INDEX `app_ik1` (`team_id`)
+);
 
 CREATE TABLE `app_resource` (
     `id`             BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `app_id`         BIGINT(20) UNSIGNED NOT NULL,
+    `app_id`         BIGINT(20) NOT NULL,
     `name`           VARCHAR(255) NOT NULL,
     `locale`         VARCHAR(20) NOT NULL,
     `primary_locale` VARCHAR(20) NOT NULL, -- Currently known max length for primary locale is 3 char. Field isn't available in model.
@@ -95,7 +96,7 @@ CREATE TABLE `app_resource` (
 
 CREATE TABLE `app_resource_file` (
     `id`     BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `app_id` BIGINT(20) UNSIGNED NOT NULL,
+    `app_id` BIGINT(20) NOT NULL,
     `name`   VARCHAR(255) NOT NULL,
     INDEX `app_resource_file_fk1` (`app_id`),
     UNIQUE INDEX `app_resource_file_uk1` (`app_id`, `name`),
