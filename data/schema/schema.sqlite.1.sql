@@ -11,7 +11,6 @@ CREATE TABLE "log" (
     "function"         TEXT DEFAULT NULL,
     CONSTRAINT "log_pk" PRIMARY KEY ("id")
 );
-
 CREATE INDEX "log_ik1" ON "log" ("priority");
 CREATE INDEX "log_ik2" ON "log" ("class");
 CREATE INDEX "log_ik3" ON "log" ("function");
@@ -36,7 +35,6 @@ CREATE TABLE "user_role_linker"
     CONSTRAINT "user_role_linker_pk" PRIMARY KEY ("user_id", "role_id"),
     CONSTRAINT "user_role_linker_fk1" FOREIGN KEY ("user_id") REFERENCES "user" ("user_id") ON DELETE CASCADE ON UPDATE CASCADE 
 );
-
 CREATE INDEX "user_role_linker_ik1" ON "user_role_linker" ("user_id");
 
 CREATE TABLE "user_settings" (
@@ -52,7 +50,6 @@ CREATE TABLE "user_languages" (
     CONSTRAINT "user_languages_pk" PRIMARY KEY ("user_id", "locale"),
     CONSTRAINT "user_languages_fk1" FOREIGN KEY ("user_id") REFERENCES "user" ("user_id") ON DELETE CASCADE ON UPDATE CASCADE
 );
-
 CREATE INDEX "user_languages_ik1" ON "user_languages" ("user_id");
 
 CREATE TABLE "team" (
@@ -61,13 +58,15 @@ CREATE TABLE "team" (
     CONSTRAINT "team_pk" PRIMARY KEY ("id")
 );
 
-CREATE TABLE team_member (
-    user_id INTEGER NOT NULL,
-    team_id INTEGER NOT NULL,
-    PRIMARY KEY (user_id,team_id),
-    FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (team_id) REFERENCES team (id) ON DELETE SET NULL ON UPDATE CASCADE
+CREATE TABLE "team_member" (
+    "user_id" INTEGER NOT NULL,
+    "team_id" INTEGER NOT NULL,
+    CONSTRAINT "team_member_pk" PRIMARY KEY ("user_id", "team_id"),
+    CONSTRAINT "team_member_fk1" FOREIGN KEY ("user_id") REFERENCES "user" ("user_id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "team_member_fk2" FOREIGN KEY ("team_id") REFERENCES "team" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
+CREATE INDEX "team_member_ik1" ON "team_member" ("user_id");
+CREATE INDEX "team_member_ik2" ON "team_member" ("team_id");
 
 CREATE TABLE app (
     id                 INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,

@@ -57,14 +57,14 @@ CREATE TABLE `team` (
 );
 
 CREATE TABLE `team_member` (
-    `user_id` BIGINT(20) NOT NULL,
-    `team_id` BIGINT(20) NOT NULL,
-    PRIMARY KEY (`user_id`,`team_id`),
-    INDEX `team_member_fk1` (`user_id`),
-    INDEX `team_member_fk2` (`team_id`),
+    `user_id` BIGINT NOT NULL,
+    `team_id` BIGINT NOT NULL,
+    CONSTRAINT `team_member_pk` PRIMARY KEY (`user_id`, `team_id`),
     CONSTRAINT `team_member_fk1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT `team_member_fk2` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    CONSTRAINT `team_member_fk2` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    INDEX `team_member_ik1`(`user_id`),
+    INDEX `team_member_ik1`(`team_id`)
+);
 
 CREATE TABLE `app` (
     `id`                 BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,

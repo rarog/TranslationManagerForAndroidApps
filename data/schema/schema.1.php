@@ -288,4 +288,56 @@ return [
             ],
         ],
     ],
+    'team_member' => [
+        'commandName' => 'CreateTable',
+        'tableName' => 'team_member',
+        'addColumn' => [
+            [
+                'type' => 'BigInteger',
+                'name' => 'user_id',
+            ],
+            [
+                'type' => 'BigInteger',
+                'name' => 'team_id',
+            ],
+        ],
+        'addConstraint' =>[
+            [
+                'type' => 'PrimaryKey',
+                'column' => [
+                    'user_id',
+                    'team_id',
+                ],
+                'name' => 'team_member_pk',
+            ],
+            [
+                'type' => 'ForeignKey',
+                'column' => 'user_id',
+                'name' => 'team_member_fk1',
+                'referenceTable' => 'user',
+                'referenceColumn' => 'user_id',
+                'onDelete' => 'cascade',
+                'onUpdate' => 'cascade',
+            ],
+            [
+                'type' => 'ForeignKey',
+                'column' => 'team_id',
+                'name' => 'team_member_fk2',
+                'referenceTable' => 'team',
+                'referenceColumn' => 'id',
+                'onDelete' => 'cascade',
+                'onUpdate' => 'cascade',
+            ],
+            [
+                'type' => 'Index',
+                'column' => 'user_id',
+                'name' => 'team_member_ik1',
+            ],
+            [
+                'type' => 'Index',
+                'column' => 'team_id',
+                'name' => 'team_member_ik1',
+            ],
+        ],
+    ],
 ];
