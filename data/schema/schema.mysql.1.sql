@@ -63,7 +63,7 @@ CREATE TABLE `team_member` (
     CONSTRAINT `team_member_fk1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `team_member_fk2` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     INDEX `team_member_ik1`(`user_id`),
-    INDEX `team_member_ik1`(`team_id`)
+    INDEX `team_member_ik2`(`team_id`)
 );
 
 CREATE TABLE `app` (
