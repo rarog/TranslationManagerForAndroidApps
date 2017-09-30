@@ -17,8 +17,8 @@ CREATE INDEX "log_ik3" ON "log" ("function");
 
 CREATE TABLE "user" (
     "user_id"      BIGSERIAL,
-    "username"     VARCHAR(255) DEFAULT NULL UNIQUE,
-    "email"        VARCHAR(255) DEFAULT NULL UNIQUE,
+    "username"     VARCHAR(255) DEFAULT NULL,
+    "email"        VARCHAR(255) DEFAULT NULL,
     "display_name" VARCHAR(50) DEFAULT NULL,
     "password"     VARCHAR(128) NOT NULL,
     "state"        SMALLINT DEFAULT NULL,

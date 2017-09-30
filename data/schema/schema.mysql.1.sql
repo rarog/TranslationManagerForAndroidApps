@@ -17,8 +17,8 @@ CREATE TABLE `log` (
 
 CREATE TABLE `user` (
     `user_id`      BIGINT NOT NULL AUTO_INCREMENT,
-    `username`     VARCHAR(255) DEFAULT NULL UNIQUE,
-    `email`        VARCHAR(255) DEFAULT NULL UNIQUE,
+    `username`     VARCHAR(255) DEFAULT NULL,
+    `email`        VARCHAR(255) DEFAULT NULL,
     `display_name` VARCHAR(50) DEFAULT NULL,
     `password`     VARCHAR(128) NOT NULL,
     `state`        SMALLINT DEFAULT NULL,

@@ -18,8 +18,8 @@ CREATE INDEX "log_ik3" ON "log" ("function");
 CREATE TABLE "user"
 (
     "user_id"      INTEGER NOT NULL,
-    "username"     TEXT DEFAULT NULL UNIQUE,
-    "email"        TEXT DEFAULT NULL UNIQUE,
+    "username"     TEXT DEFAULT NULL,
+    "email"        TEXT DEFAULT NULL,
     "display_name" TEXT DEFAULT NULL,
     "password"     TEXT NOT NULL,
     "state"        INTEGER DEFAULT NULL,
