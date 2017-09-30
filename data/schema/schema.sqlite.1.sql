@@ -69,7 +69,7 @@ CREATE INDEX "team_member_ik1" ON "team_member" ("user_id");
 CREATE INDEX "team_member_ik2" ON "team_member" ("team_id");
 
 CREATE TABLE "app" (
-    "id"                 INTEGER NOT NULL PRIMARY KEY,
+    "id"                 INTEGER NOT NULL,
     "team_id"            INTEGER DEFAULT NULL,
     "name"               TEXT DEFAULT NULL,
     "path_to_res_folder" TEXT DEFAULT NULL,
