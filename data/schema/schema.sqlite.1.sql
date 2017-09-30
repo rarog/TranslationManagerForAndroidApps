@@ -55,9 +55,10 @@ CREATE TABLE "user_languages" (
 
 CREATE INDEX "user_languages_ik1" ON "user_languages" ("user_id");
 
-CREATE TABLE team (
-    id   INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    name TEXT DEFAULT NULL
+CREATE TABLE "team" (
+    "id"   INTEGER NOT NULL,
+    "name" TEXT DEFAULT NULL,
+    CONSTRAINT "team_pk" PRIMARY KEY ("id")
 );
 
 CREATE TABLE team_member (

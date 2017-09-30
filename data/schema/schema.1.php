@@ -262,4 +262,30 @@ return [
             ],
         ],
     ],
+    'team' => [
+        'commandName' => 'CreateTable',
+        'tableName' => 'team',
+        'addColumn' => [
+            [
+                'type' => 'BigInteger',
+                'name' => 'id',
+                'options' => [
+                    'autoincrement' => true,
+                ],
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'locale',
+                'length' => 255,
+                'nullable' => true,
+            ],
+        ],
+        'addConstraint' =>[
+            [
+                'type' => 'PrimaryKey',
+                'column' => 'id',
+                'name' => 'team_pk',
+            ],
+        ],
+    ],
 ];

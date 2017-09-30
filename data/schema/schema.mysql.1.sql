@@ -1,13 +1,13 @@
 CREATE TABLE `log` (
-    `id`               BIGINT(20) NOT NULL AUTO_INCREMENT,
+    `id`               BIGINT NOT NULL AUTO_INCREMENT,
     `timestamp`        VARCHAR(25) NOT NULL,
-    `priority`         SMALLINT(5) NOT NULL,
+    `priority`         SMALLINT NOT NULL,
     `priority_name`    VARCHAR(10) NOT NULL,
     `message`          VARCHAR(4096) NOT NULL,
     `message_extended` TEXT DEFAULT NULL,
     `file`             VARCHAR(1024) DEFAULT NULL,
     `class`            VARCHAR(1024) DEFAULT NULL,
-    `line`             BIGINT(20) DEFAULT NULL,
+    `line`             BIGINT DEFAULT NULL,
     `function`         VARCHAR(1024) DEFAULT NULL,
     CONSTRAINT `log_pk` PRIMARY KEY (`id`),
     INDEX `log_ik1` (`priority`),
@@ -16,19 +16,19 @@ CREATE TABLE `log` (
 );
 
 CREATE TABLE `user` (
-    `user_id`      BIGINT(20) NOT NULL AUTO_INCREMENT,
+    `user_id`      BIGINT NOT NULL AUTO_INCREMENT,
     `username`     VARCHAR(255) DEFAULT NULL UNIQUE,
     `email`        VARCHAR(255) DEFAULT NULL UNIQUE,
     `display_name` VARCHAR(50) DEFAULT NULL,
     `password`     VARCHAR(128) NOT NULL,
-    `state`        SMALLINT(5) DEFAULT NULL,
+    `state`        SMALLINT DEFAULT NULL,
     CONSTRAINT `user_pk` PRIMARY KEY (`user_id`),
     CONSTRAINT `user_uk1` UNIQUE (`username`),
     CONSTRAINT `user_uk2` UNIQUE (`email`)
 );
 
 CREATE TABLE `user_role_linker` (
-    `user_id` BIGINT(20) NOT NULL,
+    `user_id` BIGINT NOT NULL,
     `role_id` VARCHAR(45) NOT NULL,
     CONSTRAINT `user_role_linker_pk` PRIMARY KEY (`user_id`, `role_id`),
     CONSTRAINT `user_role_linker_fk1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -36,14 +36,14 @@ CREATE TABLE `user_role_linker` (
 );
 
 CREATE TABLE `user_settings` (
-    `user_id` BIGINT(20) NOT NULL,
+    `user_id` BIGINT NOT NULL,
     `locale`  VARCHAR(20) NOT NULL, -- Currently known max length is 11 char. 
     CONSTRAINT `user_settings_pk` PRIMARY KEY (`user_id`),
     CONSTRAINT `user_settings_fk1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE `user_languages` (
-    `user_id` BIGINT(20) NOT NULL,
+    `user_id` BIGINT NOT NULL,
     `locale`  VARCHAR(20) NOT NULL, -- Currently known max length for primary locale is 3 char.
     CONSTRAINT `user_languages_pk` PRIMARY KEY (`user_id`, `locale`),
     CONSTRAINT `user_languages_fk1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -51,13 +51,14 @@ CREATE TABLE `user_languages` (
 );
 
 CREATE TABLE `team` (
-    `id`   BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `name` VARCHAR(255) DEFAULT NULL
+    `id`   BIGINT NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(255) DEFAULT NULL,
+    CONSTRAINT `team_pk` PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `team_member` (
     `user_id` BIGINT(20) NOT NULL,
-    `team_id` BIGINT(20) UNSIGNED NOT NULL,
+    `team_id` BIGINT(20) NOT NULL,
     PRIMARY KEY (`user_id`,`team_id`),
     INDEX `team_member_fk1` (`user_id`),
     INDEX `team_member_fk2` (`team_id`),
@@ -67,7 +68,7 @@ CREATE TABLE `team_member` (
 
 CREATE TABLE `app` (
     `id`                 BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `team_id`            BIGINT(20) UNSIGNED DEFAULT NULL,
+    `team_id`            BIGINT(20) DEFAULT NULL,
     `name`               VARCHAR(255) DEFAULT NULL,
     `path_to_res_folder` VARCHAR(4096) DEFAULT NULL,
     `git_repository`     VARCHAR(4096) DEFAULT NULL,
