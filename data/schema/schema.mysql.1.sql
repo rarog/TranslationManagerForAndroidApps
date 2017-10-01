@@ -96,13 +96,14 @@ CREATE TABLE `app_resource` (
 );
 
 CREATE TABLE `app_resource_file` (
-    `id`     BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `app_id` BIGINT(20) NOT NULL,
+    `id`     BIGINT NOT NULL AUTO_INCREMENT,
+    `app_id` BIGINT NOT NULL,
     `name`   VARCHAR(255) NOT NULL,
-    INDEX `app_resource_file_fk1` (`app_id`),
-    UNIQUE INDEX `app_resource_file_uk1` (`app_id`, `name`),
-    CONSTRAINT `app_resource_file_fk1` FOREIGN KEY (`app_id`) REFERENCES `app` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    CONSTRAINT `app_resource_file_pk` PRIMARY KEY (`id`),
+    CONSTRAINT `app_resource_file_fk1` FOREIGN KEY (`app_id`) REFERENCES `app` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `app_resource_file_uk1` UNIQUE (`app_id`, `name`),
+    INDEX `app_resource_file_ik1` (`app_id`)
+);
 
 CREATE TABLE `resource_type` (
     `id`        BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -114,7 +115,7 @@ INSERT INTO `resource_type` (`id`, `name`, `node_name`) VALUES (1, 'String', 'st
 
 CREATE TABLE `resource_file_entry` (
     `id`                   BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `app_resource_file_id` BIGINT(20) UNSIGNED NOT NULL,
+    `app_resource_file_id` BIGINT(20) NOT NULL,
     `resource_type_id`     BIGINT(20) UNSIGNED NOT NULL,
     `name`                 VARCHAR(255) NOT NULL,
     `product`              VARCHAR(255) NOT NULL,

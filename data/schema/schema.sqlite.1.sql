@@ -97,13 +97,15 @@ CREATE TABLE "app_resource" (
 CREATE INDEX "app_resource_ik1" ON "app_resource" ("app_id");
 CREATE INDEX "app_resource_ik2" ON "app_resource" ("primary_locale");
 
-CREATE TABLE app_resource_file (
-    id     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    app_id INTEGER NOT NULL,
-    name   TEXT NOT NULL,
-    UNIQUE (app_id,name),
-    FOREIGN KEY (app_id) REFERENCES app (id) ON DELETE CASCADE ON UPDATE CASCADE
+CREATE TABLE "app_resource_file" (
+    "id"     INTEGER NOT NULL PRIMARY KEY,
+    "app_id" INTEGER NOT NULL,
+    "name"   TEXT NOT NULL,
+    CONSTRAINT "app_resource_file_pk" PRIMARY KEY ("id"),
+    CONSTRAINT "app_resource_file_fk1" FOREIGN KEY ("app_id") REFERENCES "app" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "app_resource_file_uk1" UNIQUE ("app_id", "name")
 );
+CREATE INDEX "app_resource_file_ik1" ON "app_resource_file" ("app_id");
 
 CREATE TABLE resource_type (
     id        INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,

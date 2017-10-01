@@ -201,6 +201,7 @@ return [
                 'name' => 'user_id',
             ],
             [
+                // Currently known max length is 11 char.
                 'type' => 'Varchar',
                 'name' => 'locale',
                 'length' => 20,
@@ -232,6 +233,7 @@ return [
                 'name' => 'user_id',
             ],
             [
+                // Currently known max length for primary locale is 3 char.
                 'type' => 'Varchar',
                 'name' => 'locale',
                 'length' => 20,
@@ -491,6 +493,57 @@ return [
                 'type' => 'Index',
                 'column' => 'primary_locale',
                 'name' => 'app_resource_ik2',
+            ],
+        ],
+    ],
+    'app_resource_file' => [
+        'commandName' => 'CreateTable',
+        'tableName' => 'app_resource_file',
+        'addColumn' => [
+            [
+                'type' => 'BigInteger',
+                'name' => 'id',
+                'options' => [
+                    'autoincrement' => true,
+                ],
+            ],
+            [
+                'type' => 'BigInteger',
+                'name' => 'app_id',
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'name',
+                'length' => 255,
+            ],
+        ],
+        'addConstraint' =>[
+            [
+                'type' => 'PrimaryKey',
+                'column' => 'id',
+                'name' => 'app_resource_file_pk',
+            ],
+            [
+                'type' => 'ForeignKey',
+                'column' => 'app_id',
+                'name' => 'app_resource_file_fk1',
+                'referenceTable' => 'app',
+                'referenceColumn' => 'id',
+                'onDelete' => 'cascade',
+                'onUpdate' => 'cascade',
+            ],
+            [
+                'type' => 'UniqueKey',
+                'column' => [
+                    'app_id',
+                    'name',
+                ],
+                'name' => 'app_resource_file_uk1',
+            ],
+            [
+                'type' => 'Index',
+                'column' => 'app_id',
+                'name' => 'app_resource_file_ik1',
             ],
         ],
     ],
