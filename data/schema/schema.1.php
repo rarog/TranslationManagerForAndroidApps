@@ -421,4 +421,77 @@ return [
             ],
         ],
     ],
+    'app_resource' => [
+        'commandName' => 'CreateTable',
+        'tableName' => 'app_resource',
+        'addColumn' => [
+            [
+                'type' => 'BigInteger',
+                'name' => 'id',
+                'options' => [
+                    'autoincrement' => true,
+                ],
+            ],
+            [
+                'type' => 'BigInteger',
+                'name' => 'app_id',
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'name',
+                'length' => 255,
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'locale',
+                'length' => 20,
+            ],
+            [
+                // Currently known max length for primary locale is 3 char. Field isn't available in model.
+                'type' => 'Varchar',
+                'name' => 'primary_locale',
+                'length' => 20,
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'description',
+                'length' => 255,
+                'nullable' => true,
+            ],
+        ],
+        'addConstraint' =>[
+            [
+                'type' => 'PrimaryKey',
+                'column' => 'id',
+                'name' => 'app_resource_pk',
+            ],
+            [
+                'type' => 'ForeignKey',
+                'column' => 'app_id',
+                'name' => 'app_resource_fk1',
+                'referenceTable' => 'app',
+                'referenceColumn' => 'id',
+                'onDelete' => 'cascade',
+                'onUpdate' => 'cascade',
+            ],
+            [
+                'type' => 'UniqueKey',
+                'column' => [
+                    'app_id',
+                    'name',
+                ],
+                'name' => 'app_resource_uk1',
+            ],
+            [
+                'type' => 'Index',
+                'column' => 'app_id',
+                'name' => 'app_resource_ik1',
+            ],
+            [
+                'type' => 'Index',
+                'column' => 'primary_locale',
+                'name' => 'app_resource_ik2',
+            ],
+        ],
+    ],
 ];

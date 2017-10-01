@@ -67,8 +67,8 @@ CREATE TABLE `team_member` (
 );
 
 CREATE TABLE `app` (
-    `id`                 BIGINT(20) NOT NULL AUTO_INCREMENT,
-    `team_id`            BIGINT(20) DEFAULT NULL,
+    `id`                 BIGINT NOT NULL AUTO_INCREMENT,
+    `team_id`            BIGINT DEFAULT NULL,
     `name`               VARCHAR(255) DEFAULT NULL,
     `path_to_res_folder` VARCHAR(4096) DEFAULT NULL,
     `git_repository`     VARCHAR(4096) DEFAULT NULL,
@@ -82,17 +82,18 @@ CREATE TABLE `app` (
 );
 
 CREATE TABLE `app_resource` (
-    `id`             BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `app_id`         BIGINT(20) NOT NULL,
+    `id`             BIGINT NOT NULL AUTO_INCREMENT,
+    `app_id`         BIGINT NOT NULL,
     `name`           VARCHAR(255) NOT NULL,
     `locale`         VARCHAR(20) NOT NULL,
     `primary_locale` VARCHAR(20) NOT NULL, -- Currently known max length for primary locale is 3 char. Field isn't available in model.
-    `description`    VARCHAR(255) DEFAULT NULL,
-    INDEX `app_resource_fk1` (`app_id`),
-    INDEX `app_resource_ik1` (`primary_locale`),
-    UNIQUE INDEX `app_resource_uk1` (`app_id`, `name`),
-    CONSTRAINT `app_resource_fk1` FOREIGN KEY (`app_id`) REFERENCES `app` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    `description`    VARCHAR(255),
+    CONSTRAINT `app_resource_pk` PRIMARY KEY (`id`),
+    CONSTRAINT `app_resource_fk1` FOREIGN KEY (`app_id`) REFERENCES `app` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `app_resource_uk1` UNIQUE (`app_id`, `name`),
+    INDEX `app_resource_ik1` (`app_id`),
+    INDEX `app_resource_ik2` (`primary_locale`)
+);
 
 CREATE TABLE `app_resource_file` (
     `id`     BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -130,7 +131,7 @@ CREATE TABLE `resource_file_entry` (
 
 CREATE TABLE `entry_common` (
     `id`                     BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `app_resource_id`        BIGINT(20) UNSIGNED NOT NULL,
+    `app_resource_id`        BIGINT(20) NOT NULL,
     `resource_file_entry_id` BIGINT(20) UNSIGNED NOT NULL,
     `last_change`            BIGINT(20) NOT NULL,
     INDEX `entry_common_ik1` (`last_change`),

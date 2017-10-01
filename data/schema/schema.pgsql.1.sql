@@ -80,3 +80,17 @@ CREATE TABLE "app" (
     CONSTRAINT "app_fk1" FOREIGN KEY ("team_id") REFERENCES "team" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 CREATE INDEX "app_ik1" ON "app" ("team_id");
+
+CREATE TABLE "app_resource" (
+    "id"             BIGSERIAL,
+    "app_id"         BIGINT NOT NULL,
+    "name"           VARCHAR(255) NOT NULL,
+    "locale"         VARCHAR(20) NOT NULL,
+    "primary_locale" VARCHAR(20) NOT NULL, -- Currently known max length for primary locale is 3 char. Field isn't available in model.
+    "description"    VARCHAR(255),
+    CONSTRAINT "app_resource_pk" PRIMARY KEY ("id"),
+    CONSTRAINT "app_resource_fk1" FOREIGN KEY ("app_id") REFERENCES "app" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "app_resource_uk1" UNIQUE ("app_id", "name")
+);
+CREATE INDEX "app_resource_ik1" ON "app_resource" ("app_id");
+CREATE INDEX "app_resource_ik2" ON "app_resource" ("primary_locale");
