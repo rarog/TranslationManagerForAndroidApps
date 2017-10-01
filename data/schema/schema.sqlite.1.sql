@@ -84,7 +84,7 @@ CREATE TABLE "app" (
 CREATE INDEX "app_ik1" ON "app" ("team_id");
 
 CREATE TABLE "app_resource" (
-    "id"             INTEGER NOT NULL PRIMARY KEY,
+    "id"             INTEGER NOT NULL,
     "app_id"         INTEGER NOT NULL,
     "name"           TEXT NOT NULL,
     "locale"         TEXT NOT NULL,
@@ -98,7 +98,7 @@ CREATE INDEX "app_resource_ik1" ON "app_resource" ("app_id");
 CREATE INDEX "app_resource_ik2" ON "app_resource" ("primary_locale");
 
 CREATE TABLE "app_resource_file" (
-    "id"     INTEGER NOT NULL PRIMARY KEY,
+    "id"     INTEGER NOT NULL,
     "app_id" INTEGER NOT NULL,
     "name"   TEXT NOT NULL,
     CONSTRAINT "app_resource_file_pk" PRIMARY KEY ("id"),

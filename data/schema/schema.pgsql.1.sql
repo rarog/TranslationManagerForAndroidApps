@@ -68,14 +68,14 @@ CREATE INDEX "team_member_ik2" ON "team_member" ("team_id");
 
 CREATE TABLE "app" (
     "id"                 BIGSERIAL,
-    "team_id"            BIGINT,
-    "name"               VARCHAR(255),
-    "path_to_res_folder" VARCHAR(4096),
-    "git_repository"     VARCHAR(4096),
-    "git_username"       VARCHAR(255),
-    "git_password"       VARCHAR(1024),
-    "git_user"           VARCHAR(255),
-    "git_email"          VARCHAR(255),
+    "team_id"            BIGINT DEFAULT NULL,
+    "name"               VARCHAR(255) DEFAULT NULL,
+    "path_to_res_folder" VARCHAR(4096) DEFAULT NULL,
+    "git_repository"     VARCHAR(4096) DEFAULT NULL,
+    "git_username"       VARCHAR(255) DEFAULT NULL,
+    "git_password"       VARCHAR(1024) DEFAULT NULL,
+    "git_user"           VARCHAR(255) DEFAULT NULL,
+    "git_email"          VARCHAR(255) DEFAULT NULL,
     CONSTRAINT "app_pk" PRIMARY KEY ("id"),
     CONSTRAINT "app_fk1" FOREIGN KEY ("team_id") REFERENCES "team" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
@@ -87,7 +87,7 @@ CREATE TABLE "app_resource" (
     "name"           VARCHAR(255) NOT NULL,
     "locale"         VARCHAR(20) NOT NULL,
     "primary_locale" VARCHAR(20) NOT NULL, -- Currently known max length for primary locale is 3 char. Field isn't available in model.
-    "description"    VARCHAR(255),
+    "description"    VARCHAR(255) DEFAULT NULL,
     CONSTRAINT "app_resource_pk" PRIMARY KEY ("id"),
     CONSTRAINT "app_resource_fk1" FOREIGN KEY ("app_id") REFERENCES "app" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT "app_resource_uk1" UNIQUE ("app_id", "name")
@@ -96,9 +96,9 @@ CREATE INDEX "app_resource_ik1" ON "app_resource" ("app_id");
 CREATE INDEX "app_resource_ik2" ON "app_resource" ("primary_locale");
 
 CREATE TABLE "app_resource_file" (
-    "id" BIGINT NOT NULL,
+    "id"     BIGSERIAL,
     "app_id" BIGINT NOT NULL,
-    "name" VARCHAR(255) NOT NULL,
+    "name"   VARCHAR(255) NOT NULL,
     CONSTRAINT "app_resource_file_pk" PRIMARY KEY ("id"),
     CONSTRAINT "app_resource_file_fk1" FOREIGN KEY ("app_id") REFERENCES "app" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT "app_resource_file_uk1" UNIQUE ("app_id", "name")
