@@ -9,7 +9,8 @@ namespace Setup\Model;
 
 use Zend\Config\Config;
 use Zend\Db\Adapter\Adapter;
-use Zend\Db\Sql\Ddl;
+use Zend\Db\Sql\AbstractPreparableSql;
+use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\SqlInterface;
 use Zend\Db\Sql\Ddl\CreateTable;
@@ -271,6 +272,7 @@ class DatabaseHelper
 
         $supportedCommands = [
             'CreateTable',
+            'Insert',
         ];
         $supportedColumns = [
             'BigInteger' => BigInteger::class,
@@ -298,16 +300,16 @@ class DatabaseHelper
             $sql = null;
 
             if (! array_key_exists('commandName', $command) ||
-                ! in_array($command['commandName'], $supportedCommands, true)) {
+                ! in_array($command['commandName'], $supportedCommands, true) ||
+                ! array_key_exists('tableName', $command) ||
+                ! is_string($command['tableName'])) {
                 continue;
             }
 
             $commandName = $command['commandName'];
 
             if ($commandName === 'CreateTable') {
-                if (! array_key_exists('tableName', $command) ||
-                    ! is_string($command['tableName']) ||
-                    ! array_key_exists('addColumn', $command) ||
+                if (! array_key_exists('addColumn', $command) ||
                     ! is_array($command['addColumn'])) {
                     continue;
                 }
@@ -395,6 +397,19 @@ class DatabaseHelper
                         $sql->addConstraint($sqlConstr);
                     }
                 }
+            } elseif ($commandName === 'Insert') {
+                if (! array_key_exists('columns', $command) ||
+                    ! is_array($command['columns']) ||
+                    ! array_key_exists('values', $command) ||
+                    ! is_array($command['values']) ||
+                    count($command['columns']) === 0 ||
+                    count($command['columns']) !== count($command['values'])) {
+                    continue;
+                }
+
+                $sql = new Insert($command['tableName']);
+                $sql->columns($command['columns'])
+                    ->values($command['values']);
             }
 
             if ($sql instanceof SqlInterface) {
@@ -421,7 +436,7 @@ class DatabaseHelper
         if (!$this->isSchemaInstalled() &&
             ($this->lastStatus = self::DBNOTINSTALLEDORTABLENOTPRESENT)) {
                 // Creating version table.
-                $table = new Ddl\CreateTable($this->setupConfig->get('db_schema_version_table'));
+                $table = new CreateTable($this->setupConfig->get('db_schema_version_table'));
                 $table->addColumn(new BigInteger('version'))
                     ->addColumn(new Varchar('setupid', 32))
                     ->addColumn(new BigInteger('timestamp'))
@@ -438,11 +453,11 @@ class DatabaseHelper
                 // Inserting version information.
                 $insert = $this->getSql()->insert($this->setupConfig->get('db_schema_version_table'));
                 $insert->columns(['version', 'setupid', 'timestamp'])
-                ->values([
-                    'version' => $this->lastParsedSchemaVersion,
-                    'setupid' => $this->setupConfig->get('setup_id'),
-                    'timestamp' => time(),
-                ]);
+                    ->values([
+                        'version' => $this->lastParsedSchemaVersion,
+                        'setupid' => $this->setupConfig->get('setup_id'),
+                        'timestamp' => time(),
+                    ]);
                 $this->executeSqlStatement($insert);
                 if ($this->setupConfig->get('db_schema_init_version') > 1){
                     $insert->values([
@@ -610,9 +625,27 @@ class DatabaseHelper
             return false;
         }
 
+        $typedAdapter = new Adapter($driver);
+        $fallbackAdapter = new Adapter([
+            'driver' => 'Pdo',
+        ]);
+        // AbstractPlatform::quoteValue is throwing errors. This function will suppress them.
+        $suppressError = function($errno, $errstr, $errfile, $errline, $errcontext){};
+
         $sqlString = '';
         foreach ($processedSchema as $sqlCommand) {
-            $sqlString .= $this->getSql()->buildSqlString($sqlCommand, new Adapter($driver));
+            $tempAdapter = $typedAdapter;
+            if ($sqlCommand instanceof AbstractPreparableSql) {
+                $tempAdapter = $fallbackAdapter;
+                set_error_handler($suppressError);
+            }
+
+            $sqlString .= $this->getSql()->buildSqlString($sqlCommand, $tempAdapter);
+
+            if ($sqlCommand instanceof AbstractPreparableSql) {
+                restore_error_handler();
+            }
+
             if (mb_substr($sqlString, -1) !== ';') {
                 $sqlString .= ';';
             }
