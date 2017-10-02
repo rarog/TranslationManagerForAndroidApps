@@ -107,13 +107,15 @@ CREATE TABLE "app_resource_file" (
 );
 CREATE INDEX "app_resource_file_ik1" ON "app_resource_file" ("app_id");
 
-CREATE TABLE resource_type (
-    id        INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    name      TEXT NOT NULL,
-    node_name TEXT NOT NULL
+CREATE TABLE "resource_type" (
+    "id"        INTEGER NOT NULL,
+    "name"      TEXT NOT NULL,
+    "node_name" TEXT NOT NULL,
+    CONSTRAINT "resource_type_pk" PRIMARY KEY ("id")
 );
-
-INSERT INTO resource_type (id, name, node_name) VALUES (1, 'String', 'string');
+CREATE INDEX "resource_type_ik1" ON "resource_type" ("name");
+CREATE INDEX "resource_type_ik2" ON "resource_type" ("node_name");
+INSERT INTO "resource_type" ("id", "name", "node_name") VALUES (1, 'String', 'string');
 
 CREATE TABLE resource_file_entry (
     id                   INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,

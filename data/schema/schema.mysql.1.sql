@@ -106,17 +106,19 @@ CREATE TABLE `app_resource_file` (
 );
 
 CREATE TABLE `resource_type` (
-    `id`        BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `id`        BIGINT NOT NULL AUTO_INCREMENT,
     `name`      VARCHAR(255) NOT NULL,
-    `node_name` VARCHAR(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+    `node_name` VARCHAR(255) NOT NULL,
+    CONSTRAINT `resource_type_pk` PRIMARY KEY (`id`),
+    INDEX `resource_type_ik1` (`name`),
+    INDEX `resource_type_ik2` (`node_name`)
+);
 INSERT INTO `resource_type` (`id`, `name`, `node_name`) VALUES (1, 'String', 'string');
 
 CREATE TABLE `resource_file_entry` (
     `id`                   BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `app_resource_file_id` BIGINT(20) NOT NULL,
-    `resource_type_id`     BIGINT(20) UNSIGNED NOT NULL,
+    `resource_type_id`     BIGINT(20) NOT NULL,
     `name`                 VARCHAR(255) NOT NULL,
     `product`              VARCHAR(255) NOT NULL,
     `description`          VARCHAR(4096) DEFAULT NULL,

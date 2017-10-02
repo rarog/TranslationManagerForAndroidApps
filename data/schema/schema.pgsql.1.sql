@@ -104,3 +104,13 @@ CREATE TABLE "app_resource_file" (
     CONSTRAINT "app_resource_file_uk1" UNIQUE ("app_id", "name")
 );
 CREATE INDEX "app_resource_file_ik1" ON "app_resource_file" ("app_id");
+
+CREATE TABLE "resource_type" ( 
+    "id"        BIGSERIAL,
+    "name"      VARCHAR(255) NOT NULL,
+    "node_name" VARCHAR(255) NOT NULL , 
+    CONSTRAINT "resource_type_pk" PRIMARY KEY ("id")
+);
+CREATE INDEX "resource_type_ik1" ON "resource_type" ("name");
+CREATE INDEX "resource_type_ik2" ON "resource_type" ("node_name");
+INSERT INTO "resource_type" ("id", "name", "node_name") VALUES (1, 'String', 'string');

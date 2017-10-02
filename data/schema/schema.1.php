@@ -547,4 +547,58 @@ return [
             ],
         ],
     ],
+    'resource_type' => [
+        'commandName' => 'CreateTable',
+        'tableName' => 'resource_type',
+        'addColumn' => [
+            [
+                'type' => 'BigInteger',
+                'name' => 'id',
+                'options' => [
+                    'autoincrement' => true,
+                ],
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'name',
+                'length' => 255,
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'node_name',
+                'length' => 255,
+            ],
+        ],
+        'addConstraint' =>[
+            [
+                'type' => 'PrimaryKey',
+                'column' => 'id',
+                'name' => 'resource_type_pk',
+            ],
+            [
+                'type' => 'Index',
+                'column' => 'name',
+                'name' => 'resource_type_ik1',
+            ],
+            [
+                'type' => 'Index',
+                'column' => 'node_name',
+                'name' => 'resource_type_ik2',
+            ],
+        ],
+    ],
+    'resource_type-insert1' => [
+        'commandName' => 'Insert',
+        'tableName' => 'resource_type',
+        'columns' => [
+            'id',
+            'name',
+            'node_name',
+        ],
+        'values' =>[
+            1,
+            'String',
+            'string',
+        ],
+    ],
 ];
