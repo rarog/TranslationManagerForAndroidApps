@@ -601,4 +601,94 @@ return [
             'string',
         ],
     ],
+    'resource_file_entry' => [
+        'commandName' => 'CreateTable',
+        'tableName' => 'resource_file_entry',
+        'addColumn' => [
+            [
+                'type' => 'BigInteger',
+                'name' => 'id',
+                'options' => [
+                    'autoincrement' => true,
+                ],
+            ],
+            [
+                'type' => 'BigInteger',
+                'name' => 'app_resource_file_id',
+            ],
+            [
+                'type' => 'BigInteger',
+                'name' => 'resource_type_id',
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'name',
+                'length' => 255,
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'product',
+                'length' => 255,
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'description',
+                'length' => 4096,
+                'nullable' => true,
+            ],
+            [
+                'type' => 'Integer',
+                'name' => 'deleted',
+            ],
+            [
+                'type' => 'Integer',
+                'name' => 'translatable',
+            ],
+        ],
+        'addConstraint' =>[
+            [
+                'type' => 'PrimaryKey',
+                'column' => 'id',
+                'name' => 'resource_file_entry_pk',
+            ],
+            [
+                'type' => 'ForeignKey',
+                'column' => 'app_resource_file_id',
+                'name' => 'resource_file_entry_fk1',
+                'referenceTable' => 'app_resource_file',
+                'referenceColumn' => 'id',
+                'onDelete' => 'cascade',
+                'onUpdate' => 'cascade',
+            ],
+            [
+                'type' => 'ForeignKey',
+                'column' => 'resource_type_id',
+                'name' => 'resource_file_entry_fk2',
+                'referenceTable' => 'resource_type',
+                'referenceColumn' => 'id',
+                'onDelete' => 'restrict',
+                'onUpdate' => 'cascade',
+            ],
+            [
+                'type' => 'Index',
+                'column' => 'app_resource_file_id',
+                'name' => 'resource_file_entry_ik1',
+            ],
+            [
+                'type' => 'Index',
+                'column' => 'resource_type_id',
+                'name' => 'resource_file_entry_ik2',
+            ],
+            [
+                'type' => 'Index',
+                'column' => 'deleted',
+                'name' => 'resource_file_entry_ik3',
+            ],
+            [
+                'type' => 'Index',
+                'column' => 'translatable',
+                'name' => 'resource_file_entry_ik4',
+            ],
+        ],
+    ],
 ];

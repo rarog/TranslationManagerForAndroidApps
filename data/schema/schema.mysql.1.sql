@@ -116,26 +116,27 @@ CREATE TABLE `resource_type` (
 INSERT INTO `resource_type` (`id`, `name`, `node_name`) VALUES (1, 'String', 'string');
 
 CREATE TABLE `resource_file_entry` (
-    `id`                   BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `app_resource_file_id` BIGINT(20) NOT NULL,
-    `resource_type_id`     BIGINT(20) NOT NULL,
+    `id`                   BIGINT NOT NULL AUTO_INCREMENT,
+    `app_resource_file_id` BIGINT NOT NULL,
+    `resource_type_id`     BIGINT NOT NULL,
     `name`                 VARCHAR(255) NOT NULL,
     `product`              VARCHAR(255) NOT NULL,
     `description`          VARCHAR(4096) DEFAULT NULL,
-    `deleted`              TINYINT(1) NOT NULL,
-    `translatable`         TINYINT(1) NOT NULL,
-    INDEX `resource_file_entry_fk1` (`app_resource_file_id`),
-    INDEX `resource_file_entry_fk2` (`resource_type_id`),
-    INDEX `resource_file_entry_ik1` (`deleted`),
-    INDEX `resource_file_entry_ik2` (`translatable`),
+    `deleted`              SMALLINT NOT NULL,
+    `translatable`         SMALLINT NOT NULL,
+    CONSTRAINT `resource_file_entry_pk` PRIMARY KEY (`id`),
     CONSTRAINT `resource_file_entry_fk1` FOREIGN KEY (`app_resource_file_id`) REFERENCES `app_resource_file` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT `resource_file_entry_fk2` FOREIGN KEY (`resource_type_id`) REFERENCES `resource_type` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    CONSTRAINT `resource_file_entry_fk2` FOREIGN KEY (`resource_type_id`) REFERENCES `resource_type` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    INDEX `resource_file_entry_ik1` (`app_resource_file_id`),
+    INDEX `resource_file_entry_ik2` (`resource_type_id`),
+    INDEX `resource_file_entry_ik3` (`deleted`),
+    INDEX `resource_file_entry_ik4` (`translatable`)
+);
 
 CREATE TABLE `entry_common` (
     `id`                     BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `app_resource_id`        BIGINT(20) NOT NULL,
-    `resource_file_entry_id` BIGINT(20) UNSIGNED NOT NULL,
+    `resource_file_entry_id` BIGINT(20) NOT NULL,
     `last_change`            BIGINT(20) NOT NULL,
     INDEX `entry_common_ik1` (`last_change`),
     INDEX `entry_common_fk1` (`app_resource_id`),

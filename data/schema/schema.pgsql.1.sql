@@ -114,3 +114,21 @@ CREATE TABLE "resource_type" (
 CREATE INDEX "resource_type_ik1" ON "resource_type" ("name");
 CREATE INDEX "resource_type_ik2" ON "resource_type" ("node_name");
 INSERT INTO "resource_type" ("id", "name", "node_name") VALUES (1, 'String', 'string');
+
+CREATE TABLE "resource_file_entry" (
+    "id"                   BIGSERIAL,
+    "app_resource_file_id" BIGINT NOT NULL,
+    "resource_type_id"     BIGINT NOT NULL,
+    "name"                 VARCHAR(255) NOT NULL,
+    "product"              VARCHAR(255) NOT NULL,
+    "description"          VARCHAR(4096) DEFAULT NULL,
+    "deleted"              SMALLINT NOT NULL,
+    "translatable"         SMALLINT NOT NULL,
+    CONSTRAINT "resource_file_entry_pk" PRIMARY KEY ("id"),
+    CONSTRAINT "resource_file_entry_fk1" FOREIGN KEY ("app_resource_file_id") REFERENCES "app_resource_file" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "resource_file_entry_fk2" FOREIGN KEY ("resource_type_id") REFERENCES "resource_type" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+CREATE INDEX "resource_file_entry_ik1" ON "resource_file_entry" ("app_resource_file_id");
+CREATE INDEX "resource_file_entry_ik2" ON "resource_file_entry" ("resource_type_id");
+CREATE INDEX "resource_file_entry_ik3" ON "resource_file_entry" ("deleted");
+CREATE INDEX "resource_file_entry_ik4" ON "resource_file_entry" ("translatable");
