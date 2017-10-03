@@ -134,19 +134,20 @@ CREATE TABLE `resource_file_entry` (
 );
 
 CREATE TABLE `entry_common` (
-    `id`                     BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `app_resource_id`        BIGINT(20) NOT NULL,
-    `resource_file_entry_id` BIGINT(20) NOT NULL,
-    `last_change`            BIGINT(20) NOT NULL,
-    INDEX `entry_common_ik1` (`last_change`),
-    INDEX `entry_common_fk1` (`app_resource_id`),
-    INDEX `entry_common_fk2` (`resource_file_entry_id`),
+    `id`                     BIGINT NOT NULL AUTO_INCREMENT,
+    `app_resource_id`        BIGINT NOT NULL,
+    `resource_file_entry_id` BIGINT NOT NULL,
+    `last_change`            BIGINT NOT NULL,
+    CONSTRAINT `entry_common_pk` PRIMARY KEY (`id`),
     CONSTRAINT `entry_common_fk1` FOREIGN KEY (`app_resource_id`) REFERENCES `app_resource` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT `entry_common_fk2` FOREIGN KEY (`resource_file_entry_id`) REFERENCES `resource_file_entry` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    CONSTRAINT `entry_common_fk2` FOREIGN KEY (`resource_file_entry_id`) REFERENCES `resource_file_entry` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    INDEX `entry_common_ik1` (`app_resource_id`),
+    INDEX `entry_common_ik2` (`resource_file_entry_id`),
+    INDEX `entry_common_ik3` (`last_change`)
+);
 
 CREATE TABLE `entry_string` (
-    `entry_common_id` BIGINT(20) UNSIGNED NOT NULL UNIQUE,
+    `entry_common_id` BIGINT(20) NOT NULL UNIQUE,
     `value`           VARCHAR(20480) NOT NULL,
     INDEX `entry_string_fk1` (`entry_common_id`),
     CONSTRAINT `entry_string_fk1` FOREIGN KEY (`entry_common_id`) REFERENCES `entry_common` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -154,7 +155,7 @@ CREATE TABLE `entry_string` (
 
 CREATE TABLE `suggestion` (
     `id`              BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `entry_common_id` BIGINT(20) UNSIGNED NOT NULL,
+    `entry_common_id` BIGINT(20) NOT NULL,
     `user_id`         BIGINT(20) NOT NULL,
     `last_change`     BIGINT(20) NOT NULL,
     INDEX `suggestion_ik1` (`last_change`),

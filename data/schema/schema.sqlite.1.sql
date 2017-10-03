@@ -135,16 +135,18 @@ CREATE INDEX "resource_file_entry_ik2" ON "resource_file_entry" ("resource_type_
 CREATE INDEX "resource_file_entry_ik3" ON "resource_file_entry" ("deleted");
 CREATE INDEX "resource_file_entry_ik4" ON "resource_file_entry" ("translatable");
 
-CREATE TABLE entry_common (
-    id                     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    app_resource_id        INTEGER NOT NULL,
-    resource_file_entry_id INTEGER NOT NULL,
-    last_change            INTEGER NOT NULL,
-    FOREIGN KEY (app_resource_id) REFERENCES app_resource (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (resource_file_entry_id) REFERENCES resource_file_entry (id) ON DELETE CASCADE ON UPDATE CASCADE
+CREATE TABLE "entry_common" (
+    "id"                     INTEGER NOT NULL,
+    "app_resource_id"        INTEGER NOT NULL,
+    "resource_file_entry_id" INTEGER NOT NULL,
+    "last_change"            INTEGER NOT NULL,
+    CONSTRAINT "entry_common_pk" PRIMARY KEY ("id"),
+    CONSTRAINT "entry_common_fk1" FOREIGN KEY ("app_resource_id") REFERENCES "app_resource" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "entry_common_fk2" FOREIGN KEY ("resource_file_entry_id") REFERENCES "resource_file_entry" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
-
-CREATE INDEX entry_common_ik1 ON entry_common (last_change);
+CREATE INDEX "entry_common_ik1" ON "entry_common" ("app_resource_id");
+CREATE INDEX "entry_common_ik2" ON "entry_common" ("resource_file_entry_id");
+CREATE INDEX "entry_common_ik3" ON "entry_common" ("last_change");
 
 CREATE TABLE entry_string (
     entry_common_id INTEGER NOT NULL UNIQUE,

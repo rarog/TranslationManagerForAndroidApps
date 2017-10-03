@@ -691,4 +691,69 @@ return [
             ],
         ],
     ],
+    'entry_common' => [
+        'commandName' => 'CreateTable',
+        'tableName' => 'entry_common',
+        'addColumn' => [
+            [
+                'type' => 'BigInteger',
+                'name' => 'id',
+                'options' => [
+                    'autoincrement' => true,
+                ],
+            ],
+            [
+                'type' => 'BigInteger',
+                'name' => 'app_resource_id',
+            ],
+            [
+                'type' => 'BigInteger',
+                'name' => 'resource_file_entry_id',
+            ],
+            [
+                'type' => 'BigInteger',
+                'name' => 'last_change',
+            ],
+        ],
+        'addConstraint' =>[
+            [
+                'type' => 'PrimaryKey',
+                'column' => 'id',
+                'name' => 'entry_common_pk',
+            ],
+            [
+                'type' => 'ForeignKey',
+                'column' => 'app_resource_id',
+                'name' => 'entry_common_fk1',
+                'referenceTable' => 'app_resource',
+                'referenceColumn' => 'id',
+                'onDelete' => 'cascade',
+                'onUpdate' => 'cascade',
+            ],
+            [
+                'type' => 'ForeignKey',
+                'column' => 'resource_file_entry_id',
+                'name' => 'entry_common_fk2',
+                'referenceTable' => 'resource_file_entry',
+                'referenceColumn' => 'id',
+                'onDelete' => 'cascade',
+                'onUpdate' => 'cascade',
+            ],
+            [
+                'type' => 'Index',
+                'column' => 'app_resource_id',
+                'name' => 'entry_common_ik1',
+            ],
+            [
+                'type' => 'Index',
+                'column' => 'resource_file_entry_id',
+                'name' => 'entry_common_ik2',
+            ],
+            [
+                'type' => 'Index',
+                'column' => 'last_change',
+                'name' => 'entry_common_ik3',
+            ],
+        ],
+    ],
 ];
