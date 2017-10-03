@@ -756,4 +756,35 @@ return [
             ],
         ],
     ],
+    'entry_string' => [
+        'commandName' => 'CreateTable',
+        'tableName' => 'entry_string',
+        'addColumn' => [
+            [
+                'type' => 'BigInteger',
+                'name' => 'entry_common_id',
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'value',
+                'length' => 20480,
+            ],
+        ],
+        'addConstraint' =>[
+            [
+                'type' => 'PrimaryKey',
+                'column' => 'entry_common_id',
+                'name' => 'entry_string_pk',
+            ],
+            [
+                'type' => 'ForeignKey',
+                'column' => 'entry_common_id',
+                'name' => 'entry_string_fk1',
+                'referenceTable' => 'entry_common',
+                'referenceColumn' => 'id',
+                'onDelete' => 'cascade',
+                'onUpdate' => 'cascade',
+            ],
+        ],
+    ],
 ];

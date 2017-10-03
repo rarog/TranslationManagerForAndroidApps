@@ -145,3 +145,10 @@ CREATE TABLE "entry_common" (
 CREATE INDEX "entry_common_ik1" ON "entry_common" ("app_resource_id");
 CREATE INDEX "entry_common_ik2" ON "entry_common" ("resource_file_entry_id");
 CREATE INDEX "entry_common_ik3" ON "entry_common" ("last_change");
+
+CREATE TABLE "entry_string" (
+    "entry_common_id" BIGINT NOT NULL,
+    "value"           VARCHAR(20480) NOT NULL,
+    CONSTRAINT "entry_string_pk" PRIMARY KEY ("entry_common_id"),
+    CONSTRAINT "entry_string_fk1" FOREIGN KEY ("entry_common_id") REFERENCES "entry_common" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);

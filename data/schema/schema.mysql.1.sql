@@ -147,11 +147,11 @@ CREATE TABLE `entry_common` (
 );
 
 CREATE TABLE `entry_string` (
-    `entry_common_id` BIGINT(20) NOT NULL UNIQUE,
+    `entry_common_id` BIGINT(20) NOT NULL,
     `value`           VARCHAR(20480) NOT NULL,
-    INDEX `entry_string_fk1` (`entry_common_id`),
+    CONSTRAINT `entry_string_pk` PRIMARY KEY (`entry_common_id`),
     CONSTRAINT `entry_string_fk1` FOREIGN KEY (`entry_common_id`) REFERENCES `entry_common` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 
 CREATE TABLE `suggestion` (
     `id`              BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
