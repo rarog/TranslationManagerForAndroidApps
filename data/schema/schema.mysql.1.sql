@@ -176,9 +176,9 @@ CREATE TABLE `suggestion_string` (
 CREATE TABLE `suggestion_vote` (
     `suggestion_id` BIGINT(20) NOT NULL,
     `user_id`       BIGINT(20) NOT NULL,
-    PRIMARY KEY (`suggestion_id`,`user_id`),
-    INDEX `suggestion_vote_fk1` (`suggestion_id`),
-    INDEX `suggestion_vote_fk2` (`user_id`),
+    CONSTRAINT `suggestion_vote_pk` PRIMARY KEY (`suggestion_id`, `user_id`),
     CONSTRAINT `suggestion_vote_fk1` FOREIGN KEY (`suggestion_id`) REFERENCES `suggestion` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT `suggestion_vote_fk2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    CONSTRAINT `suggestion_vote_fk2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    INDEX `suggestion_vote_ik1` (`suggestion_id`),
+    INDEX `suggestion_vote_ik2` (`user_id`)
+);

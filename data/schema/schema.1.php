@@ -883,4 +883,56 @@ return [
             ],
         ],
     ],
+    'suggestion_vote' => [
+        'commandName' => 'CreateTable',
+        'tableName' => 'suggestion_vote',
+        'addColumn' => [
+            [
+                'type' => 'BigInteger',
+                'name' => 'suggestion_id',
+            ],
+            [
+                'type' => 'BigInteger',
+                'name' => 'user_id',
+            ],
+        ],
+        'addConstraint' =>[
+            [
+                'type' => 'PrimaryKey',
+                'column' => [
+                    'suggestion_id',
+                    'user_id',
+                ],
+                'name' => 'suggestion_vote_pk',
+            ],
+            [
+                'type' => 'ForeignKey',
+                'column' => 'suggestion_id',
+                'name' => 'suggestion_vote_fk1',
+                'referenceTable' => 'suggestion',
+                'referenceColumn' => 'id',
+                'onDelete' => 'cascade',
+                'onUpdate' => 'cascade',
+            ],
+            [
+                'type' => 'ForeignKey',
+                'column' => 'user_id',
+                'name' => 'suggestion_vote_fk2',
+                'referenceTable' => 'user',
+                'referenceColumn' => 'user_id',
+                'onDelete' => 'cascade',
+                'onUpdate' => 'cascade',
+            ],
+            [
+                'type' => 'Index',
+                'column' => 'suggestion_id',
+                'name' => 'suggestion_vote_ik1',
+            ],
+            [
+                'type' => 'Index',
+                'column' => 'user_id',
+                'name' => 'suggestion_vote_ik2',
+            ],
+        ],
+    ],
 ];

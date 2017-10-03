@@ -175,13 +175,12 @@ CREATE TABLE "suggestion_string" (
     CONSTRAINT "suggestion_string_fk1" FOREIGN KEY ("suggestion_id") REFERENCES "suggestion" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE suggestion_vote (
-    suggestion_id INTEGER NOT NULL,
-    user_id       INTEGER NOT NULL,
-    PRIMARY KEY (suggestion_id,user_id),
-    CONSTRAINT suggestion_vote_fk1 FOREIGN KEY (suggestion_id) REFERENCES suggestion (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT suggestion_vote_fk2 FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE INDEX suggestion_vote_fk1 ON suggestion (suggestion_id);
-CREATE INDEX suggestion_vote_fk2 ON suggestion (user_id);
+CREATE TABLE "suggestion_vote" (
+    "suggestion_id" INTEGER NOT NULL,
+    "user_id"       INTEGER NOT NULL,
+    CONSTRAINT "suggestion_vote_pk" PRIMARY KEY ("suggestion_id", "user_id"),
+    CONSTRAINT "suggestion_vote_fk1" FOREIGN KEY ("suggestion_id") REFERENCES "suggestion" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "suggestion_vote_fk2" FOREIGN KEY ("user_id") REFERENCES "user" ("user_id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE INDEX "suggestion_vote_ik1" ON "suggestion_vote" ("suggestion_id");
+CREATE INDEX "suggestion_vote_ik2" ON "suggestion_vote" ("user_id");
