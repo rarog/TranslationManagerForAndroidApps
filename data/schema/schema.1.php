@@ -787,4 +787,69 @@ return [
             ],
         ],
     ],
+    'suggestion' => [
+        'commandName' => 'CreateTable',
+        'tableName' => 'suggestion',
+        'addColumn' => [
+            [
+                'type' => 'BigInteger',
+                'name' => 'id',
+                'options' => [
+                    'autoincrement' => true,
+                ],
+            ],
+            [
+                'type' => 'BigInteger',
+                'name' => 'entry_common_id',
+            ],
+            [
+                'type' => 'BigInteger',
+                'name' => 'user_id',
+            ],
+            [
+                'type' => 'BigInteger',
+                'name' => 'last_change',
+            ],
+        ],
+        'addConstraint' =>[
+            [
+                'type' => 'PrimaryKey',
+                'column' => 'id',
+                'name' => 'suggestion_pk',
+            ],
+            [
+                'type' => 'ForeignKey',
+                'column' => 'entry_common_id',
+                'name' => 'suggestion_fk1',
+                'referenceTable' => 'entry_common',
+                'referenceColumn' => 'id',
+                'onDelete' => 'cascade',
+                'onUpdate' => 'cascade',
+            ],
+            [
+                'type' => 'ForeignKey',
+                'column' => 'user_id',
+                'name' => 'suggestion_fk2',
+                'referenceTable' => 'user',
+                'referenceColumn' => 'user_id',
+                'onDelete' => 'cascade',
+                'onUpdate' => 'cascade',
+            ],
+            [
+                'type' => 'Index',
+                'column' => 'entry_common_id',
+                'name' => 'suggestion_ik1',
+            ],
+            [
+                'type' => 'Index',
+                'column' => 'user_id',
+                'name' => 'suggestion_ik2',
+            ],
+            [
+                'type' => 'Index',
+                'column' => 'last_change',
+                'name' => 'suggestion_ik3',
+            ],
+        ],
+    ],
 ];

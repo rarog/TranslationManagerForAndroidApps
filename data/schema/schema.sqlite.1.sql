@@ -155,16 +155,18 @@ CREATE TABLE "entry_string" (
     CONSTRAINT "entry_string_fk1" FOREIGN KEY ("entry_common_id") REFERENCES "entry_common" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE suggestion (
-    id              INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    entry_common_id INTEGER NOT NULL,
-    user_id         INTEGER NOT NULL,
-    last_change     INTEGER NOT NULL,
-    FOREIGN KEY (entry_common_id) REFERENCES entry_common (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE
+CREATE TABLE "suggestion" (
+    "id"              INTEGER NOT NULL,
+    "entry_common_id" INTEGER NOT NULL,
+    "user_id"         INTEGER NOT NULL,
+    "last_change"     INTEGER NOT NULL,
+    CONSTRAINT "suggestion_pk" PRIMARY KEY ("id"),
+    CONSTRAINT "suggestion_fk1" FOREIGN KEY ("entry_common_id") REFERENCES "entry_common" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "suggestion_fk2" FOREIGN KEY ("user_id") REFERENCES "user" ("user_id") ON DELETE CASCADE ON UPDATE CASCADE
 );
-
-CREATE INDEX suggestion_ik1 ON suggestion (last_change);
+CREATE INDEX "suggestion_ik1" ON "suggestion" ("entry_common_id");
+CREATE INDEX "suggestion_ik2" ON "suggestion" ("user_id");
+CREATE INDEX "suggestion_ik3" ON "suggestion" ("last_change");
 
 CREATE TABLE suggestion_string (
     suggestion_id INTEGER NOT NULL UNIQUE,

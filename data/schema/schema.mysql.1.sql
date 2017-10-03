@@ -154,26 +154,27 @@ CREATE TABLE `entry_string` (
 );
 
 CREATE TABLE `suggestion` (
-    `id`              BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `id`              BIGINT(20) NOT NULL AUTO_INCREMENT,
     `entry_common_id` BIGINT(20) NOT NULL,
     `user_id`         BIGINT(20) NOT NULL,
     `last_change`     BIGINT(20) NOT NULL,
-    INDEX `suggestion_ik1` (`last_change`),
-    INDEX `suggestion_fk1` (`entry_common_id`),
-    INDEX `suggestion_fk2` (`user_id`),
+    CONSTRAINT `suggestion_pk` PRIMARY KEY (`id`),
     CONSTRAINT `suggestion_fk1` FOREIGN KEY (`entry_common_id`) REFERENCES `entry_common` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT `suggestion_fk2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    CONSTRAINT `suggestion_fk2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    INDEX `suggestion_ik1` (`entry_common_id`),
+    INDEX `suggestion_ik2` (`user_id`),
+    INDEX `suggestion_ik3` (`last_change`)
+);
 
 CREATE TABLE `suggestion_string` (
-    `suggestion_id` BIGINT(20) UNSIGNED NOT NULL UNIQUE,
+    `suggestion_id` BIGINT(20) NOT NULL UNIQUE,
     `value`         VARCHAR(20480) NOT NULL,
     INDEX `suggestion_string_fk1` (`suggestion_id`),
     CONSTRAINT `suggestion_string_fk1` FOREIGN KEY (`suggestion_id`) REFERENCES `suggestion` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `suggestion_vote` (
-    `suggestion_id` BIGINT(20) UNSIGNED NOT NULL,
+    `suggestion_id` BIGINT(20) NOT NULL,
     `user_id`       BIGINT(20) NOT NULL,
     PRIMARY KEY (`suggestion_id`,`user_id`),
     INDEX `suggestion_vote_fk1` (`suggestion_id`),
