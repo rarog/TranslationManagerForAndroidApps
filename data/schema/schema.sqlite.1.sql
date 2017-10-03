@@ -168,10 +168,11 @@ CREATE INDEX "suggestion_ik1" ON "suggestion" ("entry_common_id");
 CREATE INDEX "suggestion_ik2" ON "suggestion" ("user_id");
 CREATE INDEX "suggestion_ik3" ON "suggestion" ("last_change");
 
-CREATE TABLE suggestion_string (
-    suggestion_id INTEGER NOT NULL UNIQUE,
-    value         TEXT NOT NULL,
-    FOREIGN KEY (suggestion_id) REFERENCES suggestion (id) ON DELETE CASCADE ON UPDATE CASCADE
+CREATE TABLE "suggestion_string" (
+    "suggestion_id" INTEGER NOT NULL,
+    "value"         TEXT NOT NULL,
+    CONSTRAINT "suggestion_string_pk" PRIMARY KEY ("suggestion_id"),
+    CONSTRAINT "suggestion_string_fk1" FOREIGN KEY ("suggestion_id") REFERENCES "suggestion" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE suggestion_vote (

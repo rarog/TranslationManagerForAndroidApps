@@ -167,11 +167,11 @@ CREATE TABLE `suggestion` (
 );
 
 CREATE TABLE `suggestion_string` (
-    `suggestion_id` BIGINT(20) NOT NULL UNIQUE,
+    `suggestion_id` BIGINT NOT NULL,
     `value`         VARCHAR(20480) NOT NULL,
-    INDEX `suggestion_string_fk1` (`suggestion_id`),
+    CONSTRAINT `suggestion_string_pk` PRIMARY KEY (`suggestion_id`),
     CONSTRAINT `suggestion_string_fk1` FOREIGN KEY (`suggestion_id`) REFERENCES `suggestion` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 
 CREATE TABLE `suggestion_vote` (
     `suggestion_id` BIGINT(20) NOT NULL,

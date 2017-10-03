@@ -852,4 +852,35 @@ return [
             ],
         ],
     ],
+    'suggestion_string' => [
+        'commandName' => 'CreateTable',
+        'tableName' => 'suggestion_string',
+        'addColumn' => [
+            [
+                'type' => 'BigInteger',
+                'name' => 'suggestion_id',
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'value',
+                'length' => 20480,
+            ],
+        ],
+        'addConstraint' =>[
+            [
+                'type' => 'PrimaryKey',
+                'column' => 'suggestion_id',
+                'name' => 'suggestion_string_pk',
+            ],
+            [
+                'type' => 'ForeignKey',
+                'column' => 'suggestion_id',
+                'name' => 'suggestion_string_fk1',
+                'referenceTable' => 'suggestion',
+                'referenceColumn' => 'id',
+                'onDelete' => 'cascade',
+                'onUpdate' => 'cascade',
+            ],
+        ],
+    ],
 ];
