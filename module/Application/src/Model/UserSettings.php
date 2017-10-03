@@ -188,7 +188,6 @@ class UserSettings implements ArraySerializableInterface, InputFilterAwareInterf
         return [
             'user_id' => $this->userId,
             'locale' => $this->locale,
-            'team_id' => $this->teamId,
         ];
     }
 }
