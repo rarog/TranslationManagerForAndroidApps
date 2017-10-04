@@ -34,6 +34,7 @@ $settings = [
     */
     'drivers' => [
         'Pdo_Mysql'  => 'MySQL/MariaDB',
+        'Pdo_Pgsql'  => 'PostgreSQL',
         'Pdo_Sqlite' => 'SQLite',
     ],
 
