@@ -41,7 +41,7 @@ foreach ($suggestions as $suggestion) {
           <div class="col-lg-9">
 <?php if ($this->isGranted('suggestion.accept')) : ?>
             <div class="pull-right">
-              <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" data-suggestionid="0" title="<?= $this->escapeHtmlAttr($this->translate('Reject all suggestions and confirm the current value')) ?>" role="button"><i class="fa fa-check-square-o fa-fw" aria-hidden="true"></i></button>
+              <button type="button" class="btn btn-default suggestionAccept" data-toggle="tooltip" data-placement="bottom" data-suggestionid="0" title="<?= $this->escapeHtmlAttr($this->translate('Reject all suggestions and confirm the current value')) ?>" role="button"><i class="fa fa-check-square-o fa-fw" aria-hidden="true"></i></button>
             </div>
 <?php endif; ?>
 <?php if ($type == 'String'): ?>
