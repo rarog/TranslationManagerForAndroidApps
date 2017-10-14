@@ -103,4 +103,14 @@ class SuggestionTable
     {
         $this->tableGateway->delete(['id' => $id]);
     }
+
+    /**
+     * Suggestion delete function - deletes by entry common id
+     *
+     * @param int $entryCommonId
+     */
+    public function deleteSuggestionByEntryCommonId(int $entryCommonId)
+    {
+        $this->tableGateway->delete(['entry_common_id' => $entryCommonId]);
+    }
 }
