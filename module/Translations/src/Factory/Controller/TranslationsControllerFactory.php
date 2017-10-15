@@ -30,6 +30,7 @@ class TranslationsControllerFactory implements FactoryInterface
             $container->get(\Translations\Model\AppResourceTable::class),
             $container->get(\Translations\Model\ResourceTypeTable::class),
             $container->get(\Translations\Model\ResourceFileEntryTable::class),
+            $container->get(\Translations\Model\EntryCommonTable::class),
             $container->get(\Translations\Model\EntryStringTable::class),
             $container->get(\Translations\Model\SuggestionTable::class),
             $container->get(\Translations\Model\SuggestionStringTable::class),

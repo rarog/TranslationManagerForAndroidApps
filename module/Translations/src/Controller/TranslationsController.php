@@ -17,6 +17,7 @@ namespace Translations\Controller;
 use ArrayObject;
 use Translations\Model\AppResourceTable;
 use Translations\Model\AppTable;
+use Translations\Model\EntryCommonTable;
 use Translations\Model\EntryStringTable;
 use Translations\Model\ResourceFileEntryTable;
 use Translations\Model\ResourceTypeTable;
@@ -31,6 +32,7 @@ use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer as Renderer;
+use Translations\Model\EntryString;
 
 class TranslationsController extends AbstractActionController
 {
@@ -53,6 +55,11 @@ class TranslationsController extends AbstractActionController
      * @var ResourceFileEntryTable
      */
     private $resourceFileEntryTable;
+
+    /**
+     * @var EntryCommonTable
+     */
+    private $entryCommonTable;
 
     /**
      * @var EntryStringTable
@@ -184,6 +191,7 @@ class TranslationsController extends AbstractActionController
      * @param AppResourceTable $appResourceTable
      * @param ResourceTypeTable $resourceTypeTable
      * @param ResourceFileEntryTable $resourceFileEntryTable
+     * @param EntryCommonTable $entryCommonTable
      * @param EntryStringTable $entryStringTable
      * @param SuggestionTable $suggestionTable
      * @param SuggestionStringTable $suggestionStringTable
@@ -191,12 +199,13 @@ class TranslationsController extends AbstractActionController
      * @param Translator $translator
      * @param Renderer $renderer
      */
-    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, ResourceTypeTable $resourceTypeTable, ResourceFileEntryTable $resourceFileEntryTable, EntryStringTable $entryStringTable, SuggestionTable $suggestionTable, SuggestionStringTable $suggestionStringTable, SuggestionVoteTable $suggestionVoteTable, Translator $translator, Renderer $renderer)
+    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, ResourceTypeTable $resourceTypeTable, ResourceFileEntryTable $resourceFileEntryTable, EntryCommonTable $entryCommonTable, EntryStringTable $entryStringTable, SuggestionTable $suggestionTable, SuggestionStringTable $suggestionStringTable, SuggestionVoteTable $suggestionVoteTable, Translator $translator, Renderer $renderer)
     {
         $this->appTable = $appTable;
         $this->appResourceTable = $appResourceTable;
         $this->resourceTypeTable = $resourceTypeTable;
         $this->resourceFileEntryTable = $resourceFileEntryTable;
+        $this->entryCommonTable = $entryCommonTable;
         $this->entryStringTable = $entryStringTable;
         $this->suggestionTable = $suggestionTable;
         $this->suggestionStringTable = $suggestionStringTable;
@@ -360,6 +369,81 @@ class TranslationsController extends AbstractActionController
             ];
         }
         return new JsonModel($output);
+    }
+
+    /**
+     * Translation suggestion accept action
+     *
+     * @return JsonModel
+     */
+    public function suggestionacceptAction()
+    {
+        $appId = (int) $this->params()->fromRoute('appId', 0);
+        $resourceId = (int) $this->params()->fromRoute('resourceId', 0);
+        $entryId = (int) $this->params()->fromRoute('entryId', 0);
+        $suggestionId = (int) $this->params()->fromRoute('suggestionId', 0);
+
+        $app = $this->getApp($appId);
+
+        if ($app === false) {
+            return new JsonModel(['accepted' => false]);
+        }
+
+        $resource = $this->getResource($resourceId, $appId);
+
+        if ($resource === false) {
+            return new JsonModel(['accepted' => false]);
+        }
+
+        try {
+            $entry = $this->resourceFileEntryTable->getResourceFileEntry($entryId);
+        } catch (\RuntimeException$e) {
+            return new JsonModel(['accepted' => false]);
+        }
+
+        try {
+            $type = $this->resourceTypeTable->getResourceType($entry->ResourceTypeId);
+        } catch (\RuntimeException $e) {
+            return new JsonModel(['accepted' => false]);
+        }
+
+        if ($suggestionId !== 0) {
+            try {
+                $entryCommon = $this->entryCommonTable->getEntryCommon($entryId);
+            } catch (\RuntimeException $e) {
+                return new JsonModel(['accepted' => false]);
+            }
+
+            switch ($type->Name) {
+                case 'String':
+                    try {
+                        $suggestionString = $this->suggestionStringTable->getSuggestionString($suggestionId);
+                    } catch (\RuntimeException $e) {
+                        return new JsonModel(['accepted' => false]);
+                    }
+
+                    try {
+                        $entryString = $this->entryStringTable->getEntryString($entryId);
+                    } catch (\RuntimeException $e) {
+                        $entryString = new EntryString([
+                            'entry_common_id' => $entryId,
+                        ]);
+                    }
+
+                    $entryString->Value = $suggestionString->Value;
+                    $this->entryStringTable->saveEntryString($entryString);
+                default:
+                    return new JsonModel(['accepted' => false]);
+            }
+
+            $entryCommon->LastChange = time();
+            $this->entryCommonTable->saveEntryCommon($entryCommon);
+
+        }
+
+        $this->suggestionTable->deleteSuggestionByEntryCommonId($entryId);
+
+        return new JsonModel(['accepted' => true]);
     }
 
     /**
