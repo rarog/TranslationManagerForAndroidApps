@@ -343,3 +343,35 @@ $("#modalContainer").on("click", ".suggestionAddEditSubmit", function(event) {
     	hideModalSpinner(true);
     });
 });
+
+$("#modalContainer").on("click", ".suggestionAccept", function(event) {
+    var app = $("#app").val();
+    var resource = $("#resource").val();
+    var suggestion = button.data("suggestionid");
+
+    hideBootstrapTooltips();
+    hideModalSpinner(false);
+
+    $.ajax({
+        url: suggestionacceptPath + "/app/" + app + "/resource/" + resource + "/entry/" + suggestionEntryId + "/suggestion/" + suggestion,
+        dataType: "json",
+        method: "GET"
+    })
+    .done(function(data) {
+        if ($.type(data) == 'object' && data['accepted']) {
+            if (data['accepted']) {
+                refreshTranslation = true;
+            }
+
+            $('#modalDetails').modal('hide');
+            enableBootstrapTooltips();
+        } else {
+            addModalAlertMessage();
+        }
+        hideModalSpinner(true);
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        addModalAlertMessage();
+        hideModalSpinner(true);
+    });
+});
