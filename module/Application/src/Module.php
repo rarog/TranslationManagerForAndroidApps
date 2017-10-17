@@ -30,7 +30,7 @@ use Zend\Session\Validator;
 
 class Module implements BootstrapListenerInterface, ConfigProviderInterface, ServiceProviderInterface
 {
-    const VERSION = '0.3';
+    const VERSION = '0.4-dev';
 
     /**
      * @var Container
