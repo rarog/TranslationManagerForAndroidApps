@@ -407,9 +407,23 @@ class TranslationsController extends AbstractActionController
             return new JsonModel(['accepted' => false]);
         }
 
+        switch ($type->Name) {
+            case 'String':
+                $typedEntry = $this->entryStringTable->getAllEntryStringsForTranslations($appId, $resourceId, $entryId);
+                break;
+            default:
+                return new JsonModel(['accepted' => false]);
+        }
+
+        if (count($typedEntry) == 1) {
+            $typedEntry = $typedEntry[0];
+        } else {
+            return new JsonModel(['accepted' => false]);
+        }
+
         if ($suggestionId !== 0) {
             try {
-                $entryCommon = $this->entryCommonTable->getEntryCommon($entryId);
+                $entryCommon = $this->entryCommonTable->getEntryCommon($typedEntry->id);
             } catch (\RuntimeException $e) {
                 return new JsonModel(['accepted' => false]);
             }
@@ -423,15 +437,16 @@ class TranslationsController extends AbstractActionController
                     }
 
                     try {
-                        $entryString = $this->entryStringTable->getEntryString($entryId);
+                        $entryString = $this->entryStringTable->getEntryString($typedEntry->id);
                     } catch (\RuntimeException $e) {
                         $entryString = new EntryString([
-                            'entry_common_id' => $entryId,
+                            'entry_common_id' => $typedEntry->id,
                         ]);
                     }
 
                     $entryString->Value = $suggestionString->Value;
                     $this->entryStringTable->saveEntryString($entryString);
+                    break;
                 default:
                     return new JsonModel(['accepted' => false]);
             }
@@ -441,7 +456,7 @@ class TranslationsController extends AbstractActionController
 
         }
 
-        $this->suggestionTable->deleteSuggestionByEntryCommonId($entryId);
+        $this->suggestionTable->deleteSuggestionByEntryCommonId($typedEntry->id);
 
         return new JsonModel(['accepted' => true]);
     }

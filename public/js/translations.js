@@ -218,6 +218,7 @@ $("#translations").on("click", ".translationDetails", function(event) {
             	if (refreshTranslation) {
             	    refreshTranslationEntry(app, resource, entry);
             	}
+                enableBootstrapTooltips();
             }).modal();
         } else {
             showModalError();
@@ -347,7 +348,7 @@ $("#modalContainer").on("click", ".suggestionAddEditSubmit", function(event) {
 $("#modalContainer").on("click", ".suggestionAccept", function(event) {
     var app = $("#app").val();
     var resource = $("#resource").val();
-    var suggestion = button.data("suggestionid");
+    var suggestion = $(this).data("suggestionid");
 
     hideBootstrapTooltips();
     hideModalSpinner(false);
@@ -362,9 +363,7 @@ $("#modalContainer").on("click", ".suggestionAccept", function(event) {
             if (data['accepted']) {
                 refreshTranslation = true;
             }
-
             $('#modalDetails').modal('hide');
-            enableBootstrapTooltips();
         } else {
             addModalAlertMessage();
         }
