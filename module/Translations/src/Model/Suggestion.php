@@ -14,14 +14,13 @@
 
 namespace Translations\Model;
 
-use DomainException;
+use Common\Model\AbstractDbTableEntry;
 use Zend\Filter\ToInt;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
-use Zend\InputFilter\InputFilterInterface;
 use Zend\Stdlib\ArraySerializableInterface;
 
-class Suggestion implements ArraySerializableInterface, InputFilterAwareInterface
+class Suggestion extends AbstractDbTableEntry implements ArraySerializableInterface, InputFilterAwareInterface
 {
     /**
      * @var null|int
@@ -47,46 +46,6 @@ class Suggestion implements ArraySerializableInterface, InputFilterAwareInterfac
      * @var InputFilter
      */
     private $inputFilter;
-
-    /**
-     * Constructor
-     *
-     * @param array $data
-     */
-    public function __construct(array $data = null)
-    {
-        if ($data) {
-            $this->exchangeArray($data);
-        }
-    }
-
-    /**
-     * @param mixed $name
-     * @throws \Exception
-     * @return mixed
-     */
-    public function __get($name)
-    {
-        $method = 'get' . $name;
-        if (! method_exists($this, $method)) {
-            throw new \Exception('Invalid property');
-        }
-        return $this->$method();
-    }
-
-    /**
-     * @param mixed $name
-     * @param mixed $value
-     * @throws \Exception
-     */
-    public function __set($name, $value)
-    {
-        $method = 'set' . $name;
-        if (! method_exists($this, $method)) {
-            throw new \Exception('Invalid property');
-        }
-        $this->$method($value);
-    }
 
     /**
      * @return null|int
@@ -161,18 +120,6 @@ class Suggestion implements ArraySerializableInterface, InputFilterAwareInterfac
             $lastChange = (int) $lastChange;
         }
         $this->lastChange = $lastChange;
-    }
-
-    /**
-     * {@inheritDoc}
-     * @see \Zend\InputFilter\InputFilterAwareInterface::setInputFilter()
-     */
-    public function setInputFilter(InputFilterInterface $inputFilter)
-    {
-        throw new DomainException(sprintf(
-            '%s does not allow injection of an alternate input filter',
-            __CLASS__
-        ));
     }
 
     /**

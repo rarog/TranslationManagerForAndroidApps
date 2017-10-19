@@ -38,6 +38,7 @@ return [
     'TwbBundle',
     'ZfcUser',
     'Setup',
+    'Common',
     'Translations',
     'Application',
     'ZfcRbac',
