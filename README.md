@@ -13,6 +13,7 @@ A project to help managing [translation ressources](https://developer.android.co
 ### v0.3
 * Support import of strings from xml files
 * Support for standard Strings (`<string>`)
+* Support translation suggestions management
 
 ### v0.4
 * Support export of strings into xml files
@@ -21,10 +22,11 @@ A project to help managing [translation ressources](https://developer.android.co
 * Support for advanced user settings and creation of new users with different roles
 
 ### v0.6
-* Support translation suggestions management
+* Support descriptional images for translations
 
 ### v0.7
 * git support for managed apps
+* Support for importing and exporting of XMLs via ZIP
 
 ### v0.8
 * Support for String Arrays (`<string-array>`)
