@@ -144,6 +144,33 @@ class ResXmlParser implements AppHelperInterface
     }
 
     /**
+     * Handles parsing and export of XML
+     *
+     * @param string $xmlString
+     * @param string $querySelector
+     * @param bool $deleteDbOnly
+     * @param AppResource $resource
+     * @param AppResourceFile $resourceFile
+     * @param array $resourceTypes
+     * @param ArrayObject $entries
+     * @param ArrayObject $entriesDbOnly
+     * @param ArrayObject $entryCommons
+     * @param ArrayObject $entryStrings
+     * @param ResXmlParserResult $result
+     * @return string|null
+     */
+    private function exportXmlString(string $xmlString, string $querySelector, bool $deleteDbOnly, AppResource $resource, AppResourceFile $resourceFile, array $resourceTypes, ArrayObject $entries, ArrayObject $entriesDbOnly, ArrayObject $entryCommons, ArrayObject $entryStrings, ResXmlParserResult $result)
+    {
+        $dom = new Document($xmlString);
+        $query = new Query();
+        $nodes = $query->execute($querySelector, $dom);
+
+        // TODO: Implement export
+
+        return $dom->getStringDocument();
+    }
+
+    /**
      * Handles parsing and import of XML
      *
      * @param string $xmlString
@@ -360,7 +387,7 @@ Exception trace:
     public function exportResourcesOfApp(App $app, bool $confirmDeletion) {
         $result = new ResXmlParserResult();
 
-        $path = $this->getAbsoluteAppResValuesPath($app);
+        $path = $this->getAbsoluteAppResPath($app);
 
         $resources = $this->appResourceTable->fetchAll(['app_id' => $app->Id]);
         $resources->buffer();
@@ -371,15 +398,59 @@ Exception trace:
             $resourceTypes[$resourceType->Id] = $resourceType->NodeName;
         }
 
+        if (count($resourceTypes) == 0) {
+            return $result;
+        }
+
+        $querySelectors = [];
+        foreach ($resourceTypes as $resourceType) {
+            $querySelectors[] = '/resources/' . $resourceType;
+        };
+        $querySelector = implode('|', $querySelectors);
+
+        $entries = new ArrayObject();
+        $entriesDbOnly = new ArrayObject();
+
         foreach ($resources as $resource) {
             $pathRes = FileHelper::concatenatePath($path, $resource->Name);
 
+            $entryIds = [];
+            $entryCommons = new ArrayObject();
+            foreach ($this->entryCommonTable->fetchAll(['app_resource_id' => $resource->Id]) as $entryCommon) {
+                $entryIds[] = $entryCommon->Id;
+                $entryCommons[$entryCommon->ResourceFileEntryId] = $entryCommon;
+            }
+
+            // If empty, make sure there is a valid SQL that returns no results.
+            if (count($entryIds) == 0) {
+                $entryIds = 0;
+            }
+
+            $entryStrings = new ArrayObject();
+            foreach ($this->entryStringTable->fetchAll(['entry_common_id' => $entryIds]) as $entryString) {
+                $entryStrings[$entryString->EntryCommonId] = $entryString;
+            }
+
             foreach ($resourceFiles as $resourceFile) {
                 $pathResFile = FileHelper::concatenatePath($pathRes, $resourceFile->Name);
+
+                if (!FileHelper::isFileValidResource($pathResFile) || !FileHelper::createEmptyValidResourceFile($pathResFile)) {
+                    continue;
+                }
+
+                if (!array_key_exists($resourceFile->Name, $entries)) {
+                    $entries[$resourceFile->Name] = new ArrayObject();
+                    $entriesDbOnly[$resourceFile->Name] = new ArrayObject();
+                    foreach ($this->resourceFileEntryTable->fetchAll(['app_resource_file_id' => $resourceFile->Id, 'deleted' => 0]) as $entry) {
+                        $combinedKey = $entry->Name . "\n" . $entry->Product;
+                        $entries[$resourceFile->Name][$combinedKey] = $entry;
+                        $entriesDbOnly[$resourceFile->Name][$combinedKey] = $entry;
+                    }
+                }
+
+                $xmlString = $this->exportXmlString(file_get_contents($pathResFile), $querySelector, $deleteDbOnly, $resource, $resourceFile, $resourceTypes, $entries[$resourceFile->Name], $entriesDbOnly[$resourceFile->Name], $entryCommons, $entryStrings, $result);
             }
         }
-
-        // TODO: Implement export
 
         return $result;
     }

@@ -16,6 +16,10 @@ namespace Translations\Model\Helper;
 
 class FileHelper
 {
+    const EMPTY_RES_XML = '<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+</resources>';
+
     /**
      * Concatenates 2 paths together
      *
@@ -34,6 +38,22 @@ class FileHelper
         return $path1;
     }
 
+    /**
+     * Tries to create an empty valid XML file with root node <resources>
+     *
+     * @param  string $filePath
+     * @return boolean
+     */
+    public static function createEmptyValidResourceFile(string $filePath)
+    {
+        if (file_exists($filePath) && is_dir($filePath)) {
+            self::rmdirRecursive($filePath);
+        }
+
+        $bytesWritten = file_put_contents($filePath, self::EMPTY_RES_XML, LOCK_EX);
+
+        return $bytesWritten !== false;
+    }
 
     /**
      * Checks if file is valid XML file with root node <resources>
