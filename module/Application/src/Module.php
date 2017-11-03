@@ -19,14 +19,15 @@ use Zend\Console\Console;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\TableGateway\Feature\SequenceFeature;
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
-use Zend\Session\Config\SessionConfig;
 use Zend\Session\Container;
 use Zend\Session\SessionManager;
 use Zend\Session\Validator;
+use Zend\Session\Config\SessionConfig;
 
 class Module implements BootstrapListenerInterface, ConfigProviderInterface, ServiceProviderInterface
 {
@@ -215,9 +216,10 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
                 },
                 Model\UserTableGateway::class => function (ContainerInterface $container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
+                    $feature = new SequenceFeature('id', 'user_user_id_seq');
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\User);
-                    return new TableGateway('user', $dbAdapter, null, $resultSetPrototype);
+                    return new TableGateway('user', $dbAdapter, $feature, $resultSetPrototype);
                 },
                 Model\UserLanguagesTable::class => function (ContainerInterface $container) {
                     $tableGateway = $container->get(Model\UserLanguagesTableGateway::class);
