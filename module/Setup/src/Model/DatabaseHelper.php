@@ -238,16 +238,16 @@ class DatabaseHelper
     {
         if ($sql instanceof \Zend\Db\Sql\SqlInterface) {
             $sqlString = $this->getSql()->buildSqlString($sql, $this->dbAdapter);
+            $this->dbAdapter->query($sqlString, Adapter::QUERY_MODE_EXECUTE);
         } else if (is_string($sql)) {
             $sqlString = trim($sql);
+            $this->dbAdapter->getDriver()->getConnection()->getResource()->exec($sqlString);
         } else {
             throw new \Exception(sprintf(
                 'Function executeSqlStatement was called with unsupport parameter of type "%s".',
                 (is_object($sql)) ? get_class($sql) : gettype($sql)
-                ));
+            ));
         }
-
-        $this->dbAdapter->query($sqlString, Adapter::QUERY_MODE_EXECUTE);
     }
 
     /**
