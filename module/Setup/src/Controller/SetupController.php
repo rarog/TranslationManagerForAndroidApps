@@ -144,10 +144,10 @@ class SetupController extends AbstractActionController
     {
         if (!is_null($this->container->currentLanguage) &&
             array_key_exists($this->container->currentLanguage, $this->getAvailableLanguages())) {
-            $this->translator
+                $this->translator
                 ->setLocale($this->container->currentLanguage)
                 ->setFallbackLocale(\Locale::getPrimaryLanguage($this->container->currentLanguage));
-        }
+            }
     }
 
     /**
@@ -269,7 +269,7 @@ class SetupController extends AbstractActionController
             $config[$key] = $value;
         }
         $this->getConfigWriter()
-            ->toFile($file, new \Zend\Config\Config($config, false));
+        ->toFile($file, new \Zend\Config\Config($config, false));
     }
 
     /**
@@ -324,30 +324,30 @@ class SetupController extends AbstractActionController
 
             if ($request->isPost() &&
                 ($postData = $request->getPost()->toArray())) {
-                $dbHelper = $this->databaseHelper;
-                $dbHelper->setDbConfigArray($postData);
-                $type = ($dbHelper->canConnect()) ? 'success' : 'danger';
-                $message = $dbHelper->getLastMessage();
-            } else {
-                $type = 'danger';
-                $message = $this->translator->translate('<strong>Error:</strong> Invalid POST data was provided.');
-            }
+                    $dbHelper = $this->databaseHelper;
+                    $dbHelper->setDbConfigArray($postData);
+                    $type = ($dbHelper->canConnect()) ? 'success' : 'danger';
+                    $message = $dbHelper->getLastMessage();
+                } else {
+                    $type = 'danger';
+                    $message = $this->translator->translate('<strong>Error:</strong> Invalid POST data was provided.');
+                }
 
-            $viewModel = new ViewModel([
-                'type'     => $type,
-                'message'  => $message,
-                'canClose' => true,
-            ]);
-            $viewModel->setTemplate('partial/alert.phtml')
+                $viewModel = new ViewModel([
+                    'type'     => $type,
+                    'message'  => $message,
+                    'canClose' => true,
+                ]);
+                $viewModel->setTemplate('partial/alert.phtml')
                 ->setTerminal(true);
-            $htmlOutput = $this->renderer->render($viewModel);
+                $htmlOutput = $this->renderer->render($viewModel);
 
-            $jsonModel = new JsonModel([
-                'html' => $htmlOutput,
-            ]);
-            $jsonModel->setTerminal(true);
+                $jsonModel = new JsonModel([
+                    'html' => $htmlOutput,
+                ]);
+                $jsonModel->setTerminal(true);
 
-            return $jsonModel;
+                return $jsonModel;
         } else {
             return $this->throw403();
         }
@@ -411,11 +411,11 @@ class SetupController extends AbstractActionController
             $formStep1->setData($request->getPost());
             if ($formStep1->isValid() &&
                 array_key_exists($setupLanguage->SetupLanguage, $this->getAvailableLanguages())) {
-                $this->container->currentLanguage = $setupLanguage->SetupLanguage;
+                    $this->container->currentLanguage = $setupLanguage->SetupLanguage;
 
-                $this->setLastStep(2);
-                return $this->redirect()->toRoute('setup', ['action' => 'step2']);
-            }
+                    $this->setLastStep(2);
+                    return $this->redirect()->toRoute('setup', ['action' => 'step2']);
+                }
         }
 
         return new ViewModel([
@@ -445,7 +445,7 @@ class SetupController extends AbstractActionController
 
         $database = new \Setup\Model\Database(
             ($this->configHelp()->db) ? $this->configHelp()->db->toArray() : []
-        );
+            );
         $security = ($this->configHelp()->security) ? $this->configHelp()->security->toArray(): '';
         $masterKey = (is_array($security)) ? (string) $security['master_key'] : '';
         if ($masterKey == '') {
@@ -474,17 +474,17 @@ class SetupController extends AbstractActionController
                 // Replacing content of config cache if enabled
                 if ($this->listenerOptions->getConfigCacheEnabled() &&
                     file_exists($this->listenerOptions->getConfigCacheFile())) {
-                    $this->replaceConfigInFile($this->listenerOptions->getConfigCacheFile(), $config);
-                }
+                        $this->replaceConfigInFile($this->listenerOptions->getConfigCacheFile(), $config);
+                    }
 
-                $this->setLastStep(3);
-                return $this->redirect()->toRoute('setup', ['action' => 'step3']);
+                    $this->setLastStep(3);
+                    return $this->redirect()->toRoute('setup', ['action' => 'step3']);
             }
         }
 
-    	return new ViewModel([
+        return new ViewModel([
             'formStep2' => $formStep2,
-    	]);
+        ]);
     }
 
     /**
@@ -507,8 +507,8 @@ class SetupController extends AbstractActionController
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-             $this->setLastStep(4);
-             return $this->redirect()->toRoute('setup', ['action' => 'step4']);
+            $this->setLastStep(4);
+            return $this->redirect()->toRoute('setup', ['action' => 'step4']);
         }
 
         // Disable buttons if needed.
@@ -520,9 +520,9 @@ class SetupController extends AbstractActionController
             $this->disableFormElement($formStep3->get('install_schema'));
         }
 
-    	return new ViewModel([
+        return new ViewModel([
             'formStep3' => $formStep3,
-    	]);
+        ]);
     }
 
     /**
@@ -534,7 +534,7 @@ class SetupController extends AbstractActionController
         $this->checkSetupStep(4);
 
         $userExists = $this->databaseHelper
-            ->isSetupComplete();
+        ->isSetupComplete();
         if ($userExists) {
             $type = 'success';
             $message = $this->translator->translate('A user is already in the database. This step will be skipped.');
@@ -565,6 +565,9 @@ class SetupController extends AbstractActionController
                 $formStep4->setInputFilter($userCreation->getInputFilter());
                 $formStep4->setData($request->getPost());
                 if ($formStep4->isValid() && ($zuUser = $service->register($userCreation->getArrayCopy()))) {
+                    // Workaround for ZfcUser with Pdo_Pgsql, where generatedValue remains empty.
+                    $zuUser = $service->getUserMapper()->findByEmail($zuUser->getEmail());
+
                     $this->getEventManager()->trigger('userCreated', null, ['user' => $zuUser]);
                     $userExists = true;
 
@@ -593,12 +596,12 @@ class SetupController extends AbstractActionController
             'canClose' => false,
         ]);
         $viewModel->setTemplate('partial/alert.phtml')
-            ->setTerminal(true);
+        ->setTerminal(true);
         $infoArea = $this->renderer->render($viewModel);
 
-    	return new ViewModel([
-    	    'infoArea'  => $infoArea,
+        return new ViewModel([
+            'infoArea'  => $infoArea,
             'formStep4' => $formStep4,
-    	]);
+        ]);
     }
 }
