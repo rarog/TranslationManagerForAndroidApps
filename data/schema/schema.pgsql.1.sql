@@ -51,8 +51,8 @@ CREATE TABLE "user_languages" (
 CREATE INDEX "user_languages_ik1" ON "user_languages" ("user_id");
 
 CREATE TABLE "team" (
-    "id"     BIGSERIAL,
-    "locale" VARCHAR(255),
+    "id"   BIGSERIAL,
+    "name" VARCHAR(255),
     CONSTRAINT "team_pk" PRIMARY KEY ("id")
 );
 
