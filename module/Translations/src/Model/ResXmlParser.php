@@ -82,6 +82,11 @@ class ResXmlParser implements AppHelperInterface
     private $logger;
 
     /**
+     * @var array
+     */
+    private $resourceTypes;
+
+    /**
      * Decodes the translation into readable form
      *
      * @param string $translationString
@@ -148,10 +153,9 @@ class ResXmlParser implements AppHelperInterface
      *
      * @param string $xmlString
      * @param string $querySelector
-     * @param bool $deleteDbOnly
+     * @param bool $deleteNotInDb
      * @param AppResource $resource
      * @param AppResourceFile $resourceFile
-     * @param array $resourceTypes
      * @param ArrayObject $entries
      * @param ArrayObject $entriesDbOnly
      * @param ArrayObject $entryCommons
@@ -159,15 +163,54 @@ class ResXmlParser implements AppHelperInterface
      * @param ResXmlParserResult $result
      * @return string|null
      */
-    private function exportXmlString(string $xmlString, string $querySelector, bool $deleteDbOnly, AppResource $resource, AppResourceFile $resourceFile, array $resourceTypes, ArrayObject $entries, ArrayObject $entriesDbOnly, ArrayObject $entryCommons, ArrayObject $entryStrings, ResXmlParserResult $result)
+    private function exportXmlString(string $xmlString, string $querySelector, bool $deleteNotInDb, AppResource $resource, AppResourceFile $resourceFile, ArrayObject $entries, ArrayObject $entriesDbOnly, ArrayObject $entryCommons, ArrayObject $entryStrings, ResXmlParserResult $result)
     {
         $dom = new Document($xmlString);
         $query = new Query();
         $nodes = $query->execute($querySelector, $dom);
+        $resourceTypes = $this->getResourceTypes();
 
         // TODO: Implement export
 
         return $dom->getStringDocument();
+    }
+
+    /**
+     * Generates an XML node selector with supported resource types
+     *
+     * @return boolean|string
+     */
+    private function getNodeSelector()
+    {
+        $resourceTypes = $this->getResourceTypes();
+
+        if (count($resourceTypes) == 0) {
+            return false;
+        }
+
+        $querySelectors = [];
+        foreach ($resourceTypes as $resourceType) {
+            $querySelectors[] = '/resources/' . $resourceType;
+        };
+
+        return implode('|', $querySelectors);
+    }
+
+    /**
+     * Generates array with supported resource types
+     *
+     * @return array
+     */
+    private function getResourceTypes()
+    {
+        if (!is_array($this->resourceTypes)) {
+            $this->resourceTypes = [];
+            foreach ($this->resourceTypeTable->fetchAll() as $resourceType) {
+                $this->resourceTypes[$resourceType->Id] = $resourceType->NodeName;
+            }
+        }
+
+        return $this->resourceTypes;
     }
 
     /**
@@ -178,18 +221,18 @@ class ResXmlParser implements AppHelperInterface
      * @param bool $deleteDbOnly
      * @param AppResource $resource
      * @param AppResourceFile $resourceFile
-     * @param array $resourceTypes
      * @param ArrayObject $entries
      * @param ArrayObject $entriesDbOnly
      * @param ArrayObject $entryCommons
      * @param ArrayObject $entryStrings
      * @param ResXmlParserResult $result
      */
-    private function importXmlString(string $xmlString, string $querySelector, bool $deleteDbOnly, AppResource $resource, AppResourceFile $resourceFile, array $resourceTypes, ArrayObject $entries, ArrayObject $entriesDbOnly, ArrayObject $entryCommons, ArrayObject $entryStrings, ResXmlParserResult $result)
+    private function importXmlString(string $xmlString, string $querySelector, bool $deleteDbOnly, AppResource $resource, AppResourceFile $resourceFile, ArrayObject $entries, ArrayObject $entriesDbOnly, ArrayObject $entryCommons, ArrayObject $entryStrings, ResXmlParserResult $result)
     {
         $dom = new Document($xmlString);
         $query = new Query();
         $nodes = $query->execute($querySelector, $dom);
+        $resourceTypes = $this->getResourceTypes();
 
         foreach ($nodes as $node) {
             /**
@@ -380,12 +423,17 @@ Exception trace:
      * Export resources to XML files
      *
      * @param App $app
-     * @param bool $confirmDeletion
+     * @param bool $deleteNotInDb
      * @return \Translations\Model\ResXmlParserResult
      * @codeCoverageIgnore
      */
-    public function exportResourcesOfApp(App $app, bool $confirmDeletion) {
+    public function exportResourcesOfApp(App $app, bool $deleteNotInDb) {
         $result = new ResXmlParserResult();
+
+        $querySelector = $this->getNodeSelector();
+        if ($querySelector === false) {
+            return $result;
+        }
 
         $path = $this->getAbsoluteAppResPath($app);
 
@@ -393,20 +441,6 @@ Exception trace:
         $resources->buffer();
         $resourceFiles = $this->appResourceFileTable->fetchAll(['app_id' => $app->Id]);
         $resourceFiles->buffer();
-        $resourceTypes = [];
-        foreach ($this->resourceTypeTable->fetchAll() as $resourceType) {
-            $resourceTypes[$resourceType->Id] = $resourceType->NodeName;
-        }
-
-        if (count($resourceTypes) == 0) {
-            return $result;
-        }
-
-        $querySelectors = [];
-        foreach ($resourceTypes as $resourceType) {
-            $querySelectors[] = '/resources/' . $resourceType;
-        };
-        $querySelector = implode('|', $querySelectors);
 
         $entries = new ArrayObject();
         $entriesDbOnly = new ArrayObject();
@@ -434,7 +468,7 @@ Exception trace:
             foreach ($resourceFiles as $resourceFile) {
                 $pathResFile = FileHelper::concatenatePath($pathRes, $resourceFile->Name);
 
-                if (!FileHelper::isFileValidResource($pathResFile) || !FileHelper::createEmptyValidResourceFile($pathResFile)) {
+                if (!FileHelper::isFileValidResource($pathResFile) && !FileHelper::createEmptyValidResourceFile($pathResFile)) {//echo 'xxxxxxxxxx'.exit;
                     continue;
                 }
 
@@ -448,7 +482,7 @@ Exception trace:
                     }
                 }
 
-                $xmlString = $this->exportXmlString(file_get_contents($pathResFile), $querySelector, $deleteDbOnly, $resource, $resourceFile, $resourceTypes, $entries[$resourceFile->Name], $entriesDbOnly[$resourceFile->Name], $entryCommons, $entryStrings, $result);
+                $xmlString = $this->exportXmlString(file_get_contents($pathResFile), $querySelector, $deleteNotInDb, $resource, $resourceFile, $entries[$resourceFile->Name], $entriesDbOnly[$resourceFile->Name], $entryCommons, $entryStrings, $result);
             }
         }
 
@@ -466,26 +500,17 @@ Exception trace:
     public function importResourcesOfApp(App $app, bool $deleteDbOnly) {
         $result = new ResXmlParserResult();
 
+        $querySelector = $this->getNodeSelector();
+        if ($querySelector === false) {
+            return $result;
+        }
+
         $path = $this->getAbsoluteAppResPath($app);
 
         $resources = $this->appResourceTable->fetchAll(['app_id' => $app->Id]);
         $resources->buffer();
         $resourceFiles = $this->appResourceFileTable->fetchAll(['app_id' => $app->Id]);
         $resourceFiles->buffer();
-        $resourceTypes = [];
-        foreach ($this->resourceTypeTable->fetchAll() as $resourceType) {
-            $resourceTypes[$resourceType->Id] = $resourceType->NodeName;
-        }
-
-        if (count($resourceTypes) == 0) {
-            return $result;
-        }
-
-        $querySelectors = [];
-        foreach ($resourceTypes as $resourceType) {
-            $querySelectors[] = '/resources/' . $resourceType;
-        };
-        $querySelector = implode('|', $querySelectors);
 
         $entries = new ArrayObject();
         $entriesDbOnly = new ArrayObject();
@@ -527,7 +552,7 @@ Exception trace:
                     }
                 }
 
-                $this->importXmlString(file_get_contents($pathResFile), $querySelector, $deleteDbOnly, $resource, $resourceFile, $resourceTypes, $entries[$resourceFile->Name], $entriesDbOnly[$resourceFile->Name], $entryCommons, $entryStrings, $result);
+                $this->importXmlString(file_get_contents($pathResFile), $querySelector, $deleteDbOnly, $resource, $resourceFile, $entries[$resourceFile->Name], $entriesDbOnly[$resourceFile->Name], $entryCommons, $entryStrings, $result);
             }
         }
 
