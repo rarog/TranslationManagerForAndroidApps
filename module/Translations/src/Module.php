@@ -18,6 +18,7 @@ use Interop\Container\ContainerInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\TableGateway\Feature\SequenceFeature;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
 
@@ -46,9 +47,10 @@ class Module implements ConfigProviderInterface, ServiceProviderInterface
                 },
                 Model\AppTableGateway::class => function (ContainerInterface $container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
+                    $feature = new SequenceFeature('id', 'app_id_seq');
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\App());
-                    return new TableGateway('app', $dbAdapter, null, $resultSetPrototype);
+                    return new TableGateway('app', $dbAdapter, $feature, $resultSetPrototype);
                 },
                 Model\AppResourceTable::class => function (ContainerInterface $container) {
                     $tableGateway = $container->get(Model\AppResourceTableGateway::class);
@@ -56,9 +58,10 @@ class Module implements ConfigProviderInterface, ServiceProviderInterface
                 },
                 Model\AppResourceTableGateway::class => function (ContainerInterface $container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
+                    $feature = new SequenceFeature('id', 'app_resource_id_seq');
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\AppResource());
-                    return new TableGateway('app_resource', $dbAdapter, null, $resultSetPrototype);
+                    return new TableGateway('app_resource', $dbAdapter, $feature, $resultSetPrototype);
                 },
                 Model\AppResourceFileTable::class => function (ContainerInterface $container) {
                     $tableGateway = $container->get(Model\AppResourceFileTableGateway::class);
@@ -66,9 +69,10 @@ class Module implements ConfigProviderInterface, ServiceProviderInterface
                 },
                 Model\AppResourceFileTableGateway::class => function (ContainerInterface $container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
+                    $feature = new SequenceFeature('id', 'app_resource_file_id_seq');
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\AppResourceFile());
-                    return new TableGateway('app_resource_file', $dbAdapter, null, $resultSetPrototype);
+                    return new TableGateway('app_resource_file', $dbAdapter, $feature, $resultSetPrototype);
                 },
                 Model\EntryCommonTable::class => function (ContainerInterface $container) {
                     $tableGateway = $container->get(Model\EntryCommonTableGateway::class);
@@ -76,9 +80,10 @@ class Module implements ConfigProviderInterface, ServiceProviderInterface
                 },
                 Model\EntryCommonTableGateway::class => function (ContainerInterface $container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
+                    $feature = new SequenceFeature('id', 'entry_common_id_seq');
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\EntryCommon());
-                    return new TableGateway('entry_common', $dbAdapter, null, $resultSetPrototype);
+                    return new TableGateway('entry_common', $dbAdapter, $feature, $resultSetPrototype);
                 },
                 Model\EntryStringTable::class => function (ContainerInterface $container) {
                     $tableGateway = $container->get(Model\EntryStringTableGateway::class);
@@ -97,9 +102,10 @@ class Module implements ConfigProviderInterface, ServiceProviderInterface
                 },
                 Model\ResourceFileEntryTableGateway::class => function (ContainerInterface $container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
+                    $feature = new SequenceFeature('id', 'resource_file_entry_id_seq');
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\ResourceFileEntry());
-                    return new TableGateway('resource_file_entry', $dbAdapter, null, $resultSetPrototype);
+                    return new TableGateway('resource_file_entry', $dbAdapter, $feature, $resultSetPrototype);
                 },
                 Model\ResourceTypeTable::class => function (ContainerInterface $container) {
                     $tableGateway = $container->get(Model\ResourceTypeTableGateway::class);
@@ -107,9 +113,10 @@ class Module implements ConfigProviderInterface, ServiceProviderInterface
                 },
                 Model\ResourceTypeTableGateway::class => function (ContainerInterface $container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
+                    $feature = new SequenceFeature('id', 'resource_type_id_seq');
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\ResourceType());
-                    return new TableGateway('resource_type', $dbAdapter, null, $resultSetPrototype);
+                    return new TableGateway('resource_type', $dbAdapter, $feature, $resultSetPrototype);
                 },
                 Model\SuggestionTable::class => function (ContainerInterface $container) {
                     $tableGateway = $container->get(Model\SuggestionTableGateway::class);
@@ -117,9 +124,10 @@ class Module implements ConfigProviderInterface, ServiceProviderInterface
                 },
                 Model\SuggestionTableGateway::class => function (ContainerInterface $container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
+                    $feature = new SequenceFeature('id', 'suggestion_id_seq');
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\Suggestion());
-                    return new TableGateway('suggestion', $dbAdapter, null, $resultSetPrototype);
+                    return new TableGateway('suggestion', $dbAdapter, $feature, $resultSetPrototype);
                 },
                 Model\SuggestionStringTable::class => function (ContainerInterface $container) {
                     $tableGateway = $container->get(Model\SuggestionStringTableGateway::class);
@@ -147,9 +155,10 @@ class Module implements ConfigProviderInterface, ServiceProviderInterface
                 },
                 Model\TeamTableGateway::class => function (ContainerInterface $container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
+                    $feature = new SequenceFeature('id', 'team_id_seq');
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\Team());
-                    return new TableGateway('team', $dbAdapter, null, $resultSetPrototype);
+                    return new TableGateway('team', $dbAdapter, $feature, $resultSetPrototype);
                 },
                 Model\TeamMemberTable::class => function (ContainerInterface $container) {
                     $tableGateway = $container->get(Model\TeamMemberTableGateway::class);
