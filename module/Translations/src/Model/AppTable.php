@@ -35,6 +35,13 @@ class AppTable
     private $columns = ['id', 'team_id', 'name', 'path_to_res_folder', 'git_repository', 'git_username', 'git_password', 'git_user', 'git_email'];
 
     /**
+     * Prefixed columns of the app table
+     *
+     * @var array
+     */
+    private $columnsPrefixed = ['app.id', 'app.team_id', 'app.name', 'app.path_to_res_folder', 'app.git_repository', 'app.git_username', 'app.git_password', 'app.git_user', 'app.git_email'];
+
+    /**
      * Constructor
      *
      * @param TableGateway $tableGateway
@@ -57,7 +64,7 @@ class AppTable
                 $select->columns($this->columns)
                     ->join('app_resource', 'app_resource.app_id = app.id', ['resource_count' => new Expression('count(distinct app_resource.id)')], $select::JOIN_LEFT)
                     ->join('app_resource_file', 'app_resource_file.app_id = app.id', ['resource_file_count' => new Expression('count(distinct app_resource_file.id)')], $select::JOIN_LEFT)
-                    ->group($this->columns);
+                    ->group($this->columnsPrefixed);
 
                 if ($where) {
                     $select->where($where);
@@ -85,7 +92,7 @@ class AppTable
                     ->join('team_member', $onTeamMember, [], Select::JOIN_INNER)
                     ->join('app_resource', 'app_resource.app_id = app.id', ['resource_count' => new Expression('count(app_resource.app_id)')], $select::JOIN_LEFT)
                     ->join('app_resource_file', 'app_resource_file.app_id = app.id', ['resource_file_count' => new Expression('count(app_resource_file.app_id)')], $select::JOIN_LEFT)
-                    ->group($this->columns);
+                    ->group($this->columnsPrefixed);
             }
         );
     }
