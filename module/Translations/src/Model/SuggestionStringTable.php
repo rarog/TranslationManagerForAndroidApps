@@ -194,6 +194,7 @@ class SuggestionStringTable
             'suggestion.entry_common_id',
             'suggestion.user_id',
             'suggestion.last_change',
+            'user.username',
         ]);
 
         if ($suggestionId > 0) {
