@@ -29,6 +29,7 @@
 		"zendframework/zend-math" : "^3.0",
 		"zendframework/zend-i18n-resources" : "^2.5",
 		"zendframework/zend-navigation" : "^2.8",
+		"zendframework/zend-dom": "^2.6",
 		"neilime/zf2-twb-bundle" : "^3.1",
 		"tasmaniski/zend-config-helper" : "^2.0",
 		"zf-commons/zfc-user" : "^3.0",
