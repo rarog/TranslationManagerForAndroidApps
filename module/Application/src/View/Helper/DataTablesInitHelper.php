@@ -59,14 +59,15 @@ class DataTablesInitHelper extends AbstractHelper
             $this->view->headLink()->prependStylesheet($this->view->basePath('/css/dataTables.bootstrap.min.css'));
 
             $initConf = [
-                'autoWidth'  => false,
-                'language'   => [
+                'autoWidth' => false,
+                'language' => [
                     'url' => $this->view->basePath('/js/dataTables.' . $this->view->plugin('translate')->getTranslator()->getFallbackLocale() . '.json'),
                 ],
                 'lengthMenu' => [
                     [25, 50, 100, -1],
                     [25, 50, 100, $this->view->translate('All')],
                 ],
+                'stateSave' => true,
             ];
 
             if ($functionName === '') {
