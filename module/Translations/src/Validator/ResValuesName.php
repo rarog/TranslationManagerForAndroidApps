@@ -25,12 +25,14 @@ class ResValuesName extends AbstractValidator implements AdapterAwareInterface
     use AdapterAwareTrait;
 
     const VALUESNAME = 'valuesname';
+    const INVALIDDATA = 'invaliddata';
 
     /**
      * @var array
      */
     protected $messageTemplates = [
         self::VALUESNAME => 'Resource values folder name must be equal to "values" or begin with "values-"',
+        self::INVALIDDATA => 'Invalid data was passed',
     ];
 
     /**
@@ -54,10 +56,26 @@ class ResValuesName extends AbstractValidator implements AdapterAwareInterface
             return false;
         }
 
+        if (!is_array($context)) {
+            $this->error(self::INVALIDDATA);
+            return false;
+        }
+
+        $appId = (isset($context['app_id'])) ? (int) $context['app_id'] : 0;
+        if ($appId <= 0) {
+            $this->error(self::INVALIDDATA);
+            return false;
+        }
+
+        $id = (isset($context['id'])) ? (int) $context['id'] : 0;
+
         $select = new Select('app_resource');
         $select->where->equalTo('name', $value)
-            ->where->equalTo('app_id', $context['app_id'])
-            ->where->notEqualTo('id', $context['id']);
+            ->where->equalTo('app_id', $appId);
+
+        if ($id > 0) {
+            $select->where->notEqualTo('id', $id);
+        }
 
         $validator = new NoRecordExists($select);
         $validator->setAdapter($this->adapter);
