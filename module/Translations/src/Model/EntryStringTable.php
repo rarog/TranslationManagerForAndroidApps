@@ -223,6 +223,7 @@ class EntryStringTable
             'default_common.app_resource_id',
             'default_common.resource_file_entry_id',
             'default_common.last_change',
+            'resource_file_entry.resource_type_id',
             'resource_file_entry.name',
             'resource_file_entry.product',
             'resource_file_entry.description',
