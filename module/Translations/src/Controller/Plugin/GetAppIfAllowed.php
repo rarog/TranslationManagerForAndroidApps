@@ -66,7 +66,7 @@ class GetAppIfAllowed extends AbstractPlugin
             return false;
         }
 
-        if (! $this->authorizationService->isGranted('app.viewAll') && ! $this->appTable->hasUserPermissionForApp($this->zfcUserAuthentication()->getIdentity()->getId(), $app->Id)) {
+        if (! $this->authorizationService->isGranted('app.viewAll') && ! $this->appTable->hasUserPermissionForApp($this->getController()->zfcUserAuthentication()->getIdentity()->getId(), $app->Id)) {
             return false;
         }
 
