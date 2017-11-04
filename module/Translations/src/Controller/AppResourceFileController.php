@@ -179,19 +179,6 @@ class AppResourceFileController extends AbstractActionController implements Adap
             return $viewData;
         }
 
-        $path = FileHelper::concatenatePath($path, 'values');
-
-        if (!is_dir($path) &&
-            !mkdir($path, 0775, true)) {
-            $viewData['messages'][] = [
-                'canClose' => true,
-                'message' => sprintf($this->translator->translate('The app resource directory "%s" doesn\'t exist and couldn\'t be created.'), $resValuesName),
-                'type' => 'danger',
-            ];
-
-            return $viewData;
-        }
-
         $appResourceFile->exchangeArray($form->getData());
         $appResourceFile = $this->appResourceFileTable->saveAppResourceFile($appResourceFile);
 
