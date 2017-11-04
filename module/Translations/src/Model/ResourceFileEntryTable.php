@@ -78,8 +78,8 @@ class ResourceFileEntryTable
             'name' => $resourceFileEntry->Name,
             'product' => $resourceFileEntry->Product,
             'description' => $resourceFileEntry->Description,
-            'deleted' => $resourceFileEntry->Deleted,
-            'translatable' => $resourceFileEntry->Translatable,
+            'deleted' => (int) $resourceFileEntry->Deleted,
+            'translatable' => (int) $resourceFileEntry->Translatable,
         ];
 
         $id = (int) $resourceFileEntry->Id;

@@ -178,6 +178,9 @@ class ResourceFileEntry extends AbstractDbTableEntry implements ArraySerializabl
      * @return null|boolean
      */
     public function getDeleted() {
+        if (is_null($this->deleted)) {
+            $this->deleted = false;
+        }
         return $this->deleted;
     }
 
@@ -194,6 +197,9 @@ class ResourceFileEntry extends AbstractDbTableEntry implements ArraySerializabl
      * @return null|boolean
      */
     public function getTranslatable() {
+        if (is_null($this->translatable)) {
+            $this->translatable = false;
+        }
         return $this->translatable;
     }
 
