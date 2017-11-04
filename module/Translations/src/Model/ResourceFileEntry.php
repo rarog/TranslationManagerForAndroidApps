@@ -227,6 +227,9 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
      * @return null|boolean
      */
     public function getDeleted() {
+        if (is_null($this->deleted)) {
+            $this->deleted = false;
+        }
         return $this->deleted;
     }
 
@@ -243,6 +246,9 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
      * @return null|boolean
      */
     public function getTranslatable() {
+        if (is_null($this->translatable)) {
+            $this->translatable = false;
+        }
         return $this->translatable;
     }
 
@@ -388,8 +394,8 @@ class ResourceFileEntry implements ArraySerializableInterface, InputFilterAwareI
         $this->Name = !empty($array['name']) ? $array['name'] : null;
         $this->Product = !empty($array['product']) ? $array['product'] : null;
         $this->Description = !empty($array['description']) ? $array['description'] : null;
-        $this->Deleted = !empty($array['deleted']) ? $array['deleted'] : null;
-        $this->Translatable = !empty($array['translatable']) ? $array['translatable'] : null;
+        $this->Deleted = !empty($array['deleted']) ? $array['deleted'] : 0;
+        $this->Translatable = !empty($array['translatable']) ? $array['translatable'] : 0;
     }
 
     /**
