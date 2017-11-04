@@ -31,7 +31,7 @@ use Zend\Session\Config\SessionConfig;
 
 class Module implements BootstrapListenerInterface, ConfigProviderInterface, ServiceProviderInterface
 {
-    const VERSION = '0.3.1';
+    const VERSION = '0.3.2';
 
     /**
      * @var Container
