@@ -8,7 +8,7 @@ var refreshTranslation = false;
 
 function enableBootstrapTooltips() {
     $(function() {
-        $('[data-toggle="tooltip"]').tooltip({container: 'body'});
+        $('[data-toggle="tooltip"]').tooltip({container: "body"});
     });
 }
 
@@ -37,7 +37,7 @@ function hideTranslationRow(hide) {
         $("translationTableBody").empty();
     } else {
         node.removeClass("hidden");
-        var table = $('#translations').DataTable();
+        var table = $("#translations").DataTable();
     }
 }
 
@@ -48,7 +48,7 @@ function setSelectionNeededState() {
 }
 
 function showModalError() {
-	$('#modalError').modal();
+	$("#modalError").modal();
 }
 
 function hideModalSpinner(hide) {
@@ -67,37 +67,38 @@ function hideBootstrapTooltips() {
 function addModalAlertMessage() {
     var messages = $("#modalMessages");
     messages.append("<div class=\"alert alert-danger alert-dismissable\"><a href=\"#\" class=\"close\" data-dismiss=\"alert\" aria-label=\"close\">&times;</a><i class=\"fa fa-exclamation-circle fa-fw\" aria-hidden=\"true\"></i><span class=\"sr-only\">' .  $this->translate('Error:') . '</span> An unexpected error has occurred.</div>");
-    $('#modalDetails').animate({
+    $("#modalDetails").animate({
         scrollTop: messages.offset().top
     });
 }
 
 function showSuggestionAddEdit(id, suggestion) {
-    var editArea = $('#modalContainer #suggestionAddEdit');
-    var button = $('#modalContainer #suggestionAddEdit');
-    var suggestionDeleteButton = $('#modalContainer #suggestionAddEdit #suggestionDeleteButton');
+    var editArea = $("#modalContainer #suggestionAddEdit");
+    var button = $("#modalContainer #suggestionAddEdit");
+    var suggestionDeleteButton = $("#modalContainer #suggestionAddEdit #suggestionDeleteButton");
     var focusElement = null;
 
     editArea.find(".suggestionAddEditSubmit").data("suggestionid", id);
+    editArea.find(".suggestionDelete").data("suggestionid", id);
     if ($.type(suggestion) === "object") {
         suggestionDeleteButton.removeClass("disabled");
     } else {
     	suggestionDeleteButton.addClass("disabled");
     }
 
-    if (suggestionType == 'String') {
+    if (suggestionType == "String") {
         var value = "";
         if (($.type(suggestion) === "object") && ($.type(suggestion.value) === "string")) {
             value = suggestion.value;
         }
 
-        var textArea = $('#modalContainer #suggestionAddEditText');
+        var textArea = $("#modalContainer #suggestionAddEditText");
         textArea.val(value);
         focusElement = textArea;
     }
 
-    editArea.collapse('show');
-    $('#modalDetails').animate({
+    editArea.collapse("show");
+    $("#modalDetails").animate({
         scrollTop: editArea.offset().top
     });
 
@@ -110,15 +111,15 @@ function refreshTranslationEntry(app, resource, entry) {
     hideModalSpinner(false);
 
     $.ajax({
-        url: translationsPath + "/app/" + app + "/resource/" + resource + '/entry/' + entry,
+        url: translationsPath + "/app/" + app + "/resource/" + resource + "/entry/" + entry,
         dataType: "json",
         method: "GET"
     })
     .done(function(data) {
-        if ($.type(data) == 'array' && data.length == 1) {
-            var table = $('#translations').DataTable();
+        if ($.type(data) == "array" && data.length == 1) {
+            var table = $("#translations").DataTable();
 
-            table.row('#translation-' + entry)
+            table.row("#translation-" + entry)
                 .data(data[0])
                 .draw();
 
@@ -137,7 +138,7 @@ function refreshTranslationEntry(app, resource, entry) {
 
 $("#showAll").on("change", function (event) {
 	var appSelect = $("#app");
-	appSelect.selectpicker('deselectAll');
+	appSelect.selectpicker("deselectAll");
     $("option", appSelect).remove();
 
     curApps = (event.target.checked) ? appsAll : apps;
@@ -179,7 +180,7 @@ $("#resource").on("changed.bs.select", function(event, clickedIndex, newValue, o
             method: "GET"
         })
         .done(function(data) {
-            var table = $('#translations').DataTable();
+            var table = $("#translations").DataTable();
 
             table.clear()
                 .rows.add(data)
@@ -208,19 +209,19 @@ $("#translations").on("click", ".translationDetails", function(event) {
         method: "GET"
     })
     .done(function(data) {
-        if ($.type(data) == 'object' && data['modal']) {
-            $("#modalContainer").html(data['modal']);
-            $('#modalDetails').on('shown.bs.modal', function (e) {
+        if ($.type(data) == "object" && data["modal"]) {
+            $("#modalContainer").html(data["modal"]);
+            $("#modalDetails").on("shown.bs.modal", function (e) {
             	initSuggestions();
-                $('#modalContainer #suggestions').DataTable()
+                $("#modalContainer #suggestions").DataTable()
                     .rows
                     .add(suggestionData)
                     .draw();
                 enableBootstrapTooltips();
-            }).on('show.bs.modal', function (e) {
+            }).on("show.bs.modal", function (e) {
                 refreshTranslation = false;
-            }).on('hidden.bs.modal', function (e) {
-            	$('#modalContainer #suggestions').DataTable().destroy();
+            }).on("hidden.bs.modal", function (e) {
+            	$("#modalContainer #suggestions").DataTable().destroy();
             	if (refreshTranslation) {
             	    refreshTranslationEntry(app, resource, entry);
             	}
@@ -256,10 +257,10 @@ $("#modalContainer").on("click", ".suggestionVote", function(event) {
         method: "GET"
     })
     .done(function(data) {
-        if ($.type(data) == 'object' && data['suggestion']) {
-            $('#modalContainer #suggestions').DataTable()
-                .row('#suggestion-' + suggestion)
-                .data(data['suggestion'])
+        if ($.type(data) == "object" && data["suggestion"]) {
+            $("#modalContainer #suggestions").DataTable()
+                .row("#suggestion-" + suggestion)
+                .data(data["suggestion"])
                 .draw();
             enableBootstrapTooltips();
         } else {
@@ -290,11 +291,11 @@ $("#modalContainer").on("click", ".suggestionEdit", function(event) {
 
     hideBootstrapTooltips();
 
-	var edit = $('#modalContainer #suggestionAddEdit');
+	var edit = $("#modalContainer #suggestionAddEdit");
 	if (edit.hasClass("in")) {
-	    edit.one('hidden.bs.collapse', function () {
+	    edit.one("hidden.bs.collapse", function () {
 	        showSuggestionAddEdit(id, suggestion);
-	    }).collapse('hide');
+	    }).collapse("hide");
 	} else {
 	    showSuggestionAddEdit(id, suggestion);
 	}
@@ -312,8 +313,8 @@ $("#modalContainer").on("click", ".suggestionAddEditSubmit", function(event) {
     var suggestion = button.data("suggestionid");
     var data = {};
 
-    if (suggestionType == 'String') {
-        data.value = $('#modalContainer #suggestionAddEditText').val();
+    if (suggestionType == "String") {
+        data.value = $("#modalContainer #suggestionAddEditText").val();
     }
 
     hideBootstrapTooltips();
@@ -326,18 +327,18 @@ $("#modalContainer").on("click", ".suggestionAddEditSubmit", function(event) {
         method: "POST"
     })
     .done(function(data) {
-        if ($.type(data) == 'object' && data['suggestion']) {
-            var table = $('#modalContainer #suggestions').DataTable();
+        if ($.type(data) == "object" && data["suggestion"]) {
+            var table = $("#modalContainer #suggestions").DataTable();
             if (suggestion == 0) {
                 table.row
-                	.add(data['suggestion']);
+                	.add(data["suggestion"]);
             } else {
-                table.row('#suggestion-' + suggestion)
-                  .data(data['suggestion']);
+                table.row("#suggestion-" + suggestion)
+                  .data(data["suggestion"]);
         	}
             table.draw();
 
-            $('#modalContainer #suggestionAddEdit').collapse('hide');
+            $("#modalContainer #suggestionAddEdit").collapse("hide");
             enableBootstrapTooltips();
             refreshTranslation = true;
         } else {
@@ -358,11 +359,13 @@ $("#modalContainer").on("click", ".suggestionDelete", function(event) {
         return;
     }
 
-	var suggestion = button.data("suggestionid")
+    var app = $("#app").val();
+    var resource = $("#resource").val();
+    var suggestion = $(this).data("suggestionid");
 
 	if (suggestion == 0) {
         return;
-    }return;
+    }
 
     hideBootstrapTooltips();
 	hideModalSpinner(false);
@@ -373,16 +376,15 @@ $("#modalContainer").on("click", ".suggestionDelete", function(event) {
         method: "GET"
     })
     .done(function(data) {
-        if ($.type(data) == 'object' && data['deleted']) {
-            if (data['deleted'] == true) {
-                var table = $('#modalContainer #suggestions').DataTable();
-                table.row('#suggestion-' + suggestion)
+        if (($.type(data) == "object") && ("deleted" in data)) {
+            if (data["deleted"]) {
+                var table = $("#modalContainer #suggestions").DataTable();
+                table.row("#suggestion-" + suggestion)
                   .remove();
                 table.draw();
         	}
 
-            $('#modalContainer #suggestionAddEdit').collapse('hide');
-            enableBootstrapTooltips();
+            $("#modalContainer #suggestionAddEdit").collapse("hide");
         } else {
             addModalAlertMessage();
         }
@@ -408,11 +410,11 @@ $("#modalContainer").on("click", ".suggestionAccept", function(event) {
         method: "GET"
     })
     .done(function(data) {
-        if ($.type(data) == 'object' && data['accepted']) {
-            if (data['accepted']) {
+        if (($.type(data) == "object") && ("accepted" in data)) {
+            if (data["accepted"]) {
                 refreshTranslation = true;
             }
-            $('#modalDetails').modal('hide');
+            $("#modalDetails").modal("hide");
         } else {
             addModalAlertMessage();
         }
