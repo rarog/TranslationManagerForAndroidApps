@@ -14,7 +14,6 @@
 
 namespace Translations\Model;
 
-use ArrayObject;
 use Translations\Model\Helper\AppHelperInterface;
 use Translations\Model\Helper\AppHelperTrait;
 use Translations\Model\Helper\FileHelper;
@@ -156,14 +155,14 @@ class ResXmlParser implements AppHelperInterface
      * @param bool $deleteNotInDb
      * @param AppResource $resource
      * @param AppResourceFile $resourceFile
-     * @param ArrayObject $entries
-     * @param ArrayObject $entriesDbOnly
-     * @param ArrayObject $entryCommons
-     * @param ArrayObject $entryStrings
+     * @param \ArrayObject $entries
+     * @param \ArrayObject $entriesDbOnly
+     * @param \ArrayObject $entryCommons
+     * @param \ArrayObject $entryStrings
      * @param ResXmlParserResult $result
      * @return string|null
      */
-    private function exportXmlString(string $xmlString, string $querySelector, bool $deleteNotInDb, AppResource $resource, AppResourceFile $resourceFile, ArrayObject $entries, ArrayObject $entriesDbOnly, ArrayObject $entryCommons, ArrayObject $entryStrings, ResXmlParserResult $result)
+    private function exportXmlString(string $xmlString, string $querySelector, bool $deleteNotInDb, AppResource $resource, AppResourceFile $resourceFile, \ArrayObject $entries, \ArrayObject $entriesDbOnly, \ArrayObject $entryCommons, \ArrayObject $entryStrings, ResXmlParserResult $result)
     {
         $dom = new Document($xmlString);
         $query = new Query();
@@ -221,13 +220,13 @@ class ResXmlParser implements AppHelperInterface
      * @param bool $deleteDbOnly
      * @param AppResource $resource
      * @param AppResourceFile $resourceFile
-     * @param ArrayObject $entries
-     * @param ArrayObject $entriesDbOnly
-     * @param ArrayObject $entryCommons
-     * @param ArrayObject $entryStrings
+     * @param \ArrayObject $entries
+     * @param \ArrayObject $entriesDbOnly
+     * @param \ArrayObject $entryCommons
+     * @param \ArrayObject $entryStrings
      * @param ResXmlParserResult $result
      */
-    private function importXmlString(string $xmlString, string $querySelector, bool $deleteDbOnly, AppResource $resource, AppResourceFile $resourceFile, ArrayObject $entries, ArrayObject $entriesDbOnly, ArrayObject $entryCommons, ArrayObject $entryStrings, ResXmlParserResult $result)
+    private function importXmlString(string $xmlString, string $querySelector, bool $deleteDbOnly, AppResource $resource, AppResourceFile $resourceFile, \ArrayObject $entries, \ArrayObject $entriesDbOnly, \ArrayObject $entryCommons, \ArrayObject $entryStrings, ResXmlParserResult $result)
     {
         $dom = new Document($xmlString);
         $query = new Query();
@@ -442,14 +441,14 @@ Exception trace:
         $resourceFiles = $this->appResourceFileTable->fetchAll(['app_id' => $app->Id]);
         $resourceFiles->buffer();
 
-        $entries = new ArrayObject();
-        $entriesDbOnly = new ArrayObject();
+        $entries = new \ArrayObject();
+        $entriesDbOnly = new \ArrayObject();
 
         foreach ($resources as $resource) {
             $pathRes = FileHelper::concatenatePath($path, $resource->Name);
 
             $entryIds = [];
-            $entryCommons = new ArrayObject();
+            $entryCommons = new \ArrayObject();
             foreach ($this->entryCommonTable->fetchAll(['app_resource_id' => $resource->Id]) as $entryCommon) {
                 $entryIds[] = $entryCommon->Id;
                 $entryCommons[$entryCommon->ResourceFileEntryId] = $entryCommon;
@@ -460,7 +459,7 @@ Exception trace:
                 $entryIds = 0;
             }
 
-            $entryStrings = new ArrayObject();
+            $entryStrings = new \ArrayObject();
             foreach ($this->entryStringTable->fetchAll(['entry_common_id' => $entryIds]) as $entryString) {
                 $entryStrings[$entryString->EntryCommonId] = $entryString;
             }
@@ -473,8 +472,8 @@ Exception trace:
                 }
 
                 if (!array_key_exists($resourceFile->Name, $entries)) {
-                    $entries[$resourceFile->Name] = new ArrayObject();
-                    $entriesDbOnly[$resourceFile->Name] = new ArrayObject();
+                    $entries[$resourceFile->Name] = new \ArrayObject();
+                    $entriesDbOnly[$resourceFile->Name] = new \ArrayObject();
                     foreach ($this->resourceFileEntryTable->fetchAll(['app_resource_file_id' => $resourceFile->Id, 'deleted' => 0]) as $entry) {
                         $combinedKey = $entry->Name . "\n" . $entry->Product;
                         $entries[$resourceFile->Name][$combinedKey] = $entry;
@@ -512,14 +511,14 @@ Exception trace:
         $resourceFiles = $this->appResourceFileTable->fetchAll(['app_id' => $app->Id]);
         $resourceFiles->buffer();
 
-        $entries = new ArrayObject();
-        $entriesDbOnly = new ArrayObject();
+        $entries = new \ArrayObject();
+        $entriesDbOnly = new \ArrayObject();
 
         foreach ($resources as $resource) {
             $pathRes = FileHelper::concatenatePath($path, $resource->Name);
 
             $entryIds = [];
-            $entryCommons = new ArrayObject();
+            $entryCommons = new \ArrayObject();
             foreach ($this->entryCommonTable->fetchAll(['app_resource_id' => $resource->Id]) as $entryCommon) {
                 $entryIds[] = $entryCommon->Id;
                 $entryCommons[$entryCommon->ResourceFileEntryId] = $entryCommon;
@@ -530,7 +529,7 @@ Exception trace:
                 $entryIds = 0;
             }
 
-            $entryStrings = new ArrayObject();
+            $entryStrings = new \ArrayObject();
             foreach ($this->entryStringTable->fetchAll(['entry_common_id' => $entryIds]) as $entryString) {
                 $entryStrings[$entryString->EntryCommonId] = $entryString;
             }
@@ -543,8 +542,8 @@ Exception trace:
                 }
 
                 if (!array_key_exists($resourceFile->Name, $entries)) {
-                    $entries[$resourceFile->Name] = new ArrayObject();
-                    $entriesDbOnly[$resourceFile->Name] = new ArrayObject();
+                    $entries[$resourceFile->Name] = new \ArrayObject();
+                    $entriesDbOnly[$resourceFile->Name] = new \ArrayObject();
                     foreach ($this->resourceFileEntryTable->fetchAll(['app_resource_file_id' => $resourceFile->Id, 'deleted' => 0]) as $entry) {
                         $combinedKey = $entry->Name . "\n" . $entry->Product;
                         $entries[$resourceFile->Name][$combinedKey] = $entry;
