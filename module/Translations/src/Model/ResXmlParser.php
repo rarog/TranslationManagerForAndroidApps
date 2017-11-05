@@ -27,6 +27,9 @@ use Zend\Log\Logger;
  */
 class ResXmlParserResult
 {
+    const EMPTY_RES_XML = '<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"/>';
+
     public $entriesProcessed;
     public $entriesUpdated;
     public $entriesSkippedExistOnlyInDb;
@@ -467,7 +470,7 @@ Exception trace:
             foreach ($resourceFiles as $resourceFile) {
                 $pathResFile = FileHelper::concatenatePath($pathRes, $resourceFile->Name);
 
-                if (!FileHelper::isFileValidResource($pathResFile) && !FileHelper::createEmptyValidResourceFile($pathResFile)) {//echo 'xxxxxxxxxx'.exit;
+                if (!FileHelper::isFileWritable($pathResFile)) {
                     continue;
                 }
 

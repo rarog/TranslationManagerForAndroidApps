@@ -16,12 +16,8 @@ namespace Translations\Model\Helper;
 
 class FileHelper
 {
-    const EMPTY_RES_XML = '<?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-</resources>';
-
     /**
-     * Concatenates 2 paths together
+     * Concatenates two path parts together
      *
      * @param  string $path1
      * @param  string $path2
@@ -39,20 +35,23 @@ class FileHelper
     }
 
     /**
-     * Tries to create an empty valid XML file with root node <resources>
+     * Checks if file is writable
      *
      * @param  string $filePath
      * @return boolean
      */
-    public static function createEmptyValidResourceFile(string $filePath)
+    public static function isFileWritable(string $filePath)
     {
+        // This case shouldn't happen, but it's better to check.
         if (file_exists($filePath) && is_dir($filePath)) {
             self::rmdirRecursive($filePath);
         }
 
-        $bytesWritten = file_put_contents($filePath, self::EMPTY_RES_XML, LOCK_EX);
-
-        return $bytesWritten !== false;
+        if (file_exists($filePath)) {
+            return is_file($filePath) && is_writable($filePath);
+        } else {
+            return (file_put_contents($filePath, '', LOCK_EX) !== false) && unlink($filePath);
+        }
     }
 
     /**
