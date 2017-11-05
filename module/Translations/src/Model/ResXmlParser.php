@@ -89,6 +89,11 @@ class ResXmlParser implements AppHelperInterface
     private $resourceTypes;
 
     /**
+     * @var boolean|string
+     */
+    private $nodeSelector;
+
+    /**
      * Decodes the translation into readable form
      *
      * @param string $translationString
@@ -154,7 +159,6 @@ class ResXmlParser implements AppHelperInterface
      * Handles parsing and export of XML
      *
      * @param string $xmlString
-     * @param string $querySelector
      * @param bool $deleteNotInDb
      * @param AppResource $resource
      * @param AppResourceFile $resourceFile
@@ -165,8 +169,13 @@ class ResXmlParser implements AppHelperInterface
      * @param ResXmlParserResult $result
      * @return string|null
      */
-    private function exportXmlString(string $xmlString, string $querySelector, bool $deleteNotInDb, AppResource $resource, AppResourceFile $resourceFile, \ArrayObject $entries, \ArrayObject $entriesDbOnly, \ArrayObject $entryCommons, \ArrayObject $entryStrings, ResXmlParserResult $result)
+    private function exportXmlString(string $xmlString, bool $deleteNotInDb, AppResource $resource, AppResourceFile $resourceFile, \ArrayObject $entries, \ArrayObject $entriesDbOnly, \ArrayObject $entryCommons, \ArrayObject $entryStrings, ResXmlParserResult $result)
     {
+        $querySelector = $this->getNodeSelector();
+        if ($querySelector === false) {
+            return;
+        }
+
         $dom = new Document($xmlString);
         $query = new Query();
         $nodes = $query->execute($querySelector, $dom);
@@ -184,18 +193,22 @@ class ResXmlParser implements AppHelperInterface
      */
     private function getNodeSelector()
     {
-        $resourceTypes = $this->getResourceTypes();
+        if (! is_bool($this->nodeSelector) || ! is_string($this->nodeSelector)) {
+            $resourceTypes = $this->getResourceTypes();
 
-        if (count($resourceTypes) == 0) {
-            return false;
+            if (count($resourceTypes) == 0) {
+                $this->nodeSelector = false;
+            } else {
+                $querySelectors = [];
+                foreach ($resourceTypes as $resourceType) {
+                    $querySelectors[] = '/resources/' . $resourceType;
+                };
+
+                $this->nodeSelector = implode('|', $querySelectors);
+            }
         }
 
-        $querySelectors = [];
-        foreach ($resourceTypes as $resourceType) {
-            $querySelectors[] = '/resources/' . $resourceType;
-        };
-
-        return implode('|', $querySelectors);
+        return $this->nodeSelector;
     }
 
     /**
@@ -205,7 +218,7 @@ class ResXmlParser implements AppHelperInterface
      */
     private function getResourceTypes()
     {
-        if (!is_array($this->resourceTypes)) {
+        if (! is_array($this->resourceTypes)) {
             $this->resourceTypes = [];
             foreach ($this->resourceTypeTable->fetchAll() as $resourceType) {
                 $this->resourceTypes[$resourceType->Id] = $resourceType->NodeName;
@@ -219,7 +232,6 @@ class ResXmlParser implements AppHelperInterface
      * Handles parsing and import of XML
      *
      * @param string $xmlString
-     * @param string $querySelector
      * @param bool $deleteDbOnly
      * @param AppResource $resource
      * @param AppResourceFile $resourceFile
@@ -229,8 +241,13 @@ class ResXmlParser implements AppHelperInterface
      * @param \ArrayObject $entryStrings
      * @param ResXmlParserResult $result
      */
-    private function importXmlString(string $xmlString, string $querySelector, bool $deleteDbOnly, AppResource $resource, AppResourceFile $resourceFile, \ArrayObject $entries, \ArrayObject $entriesDbOnly, \ArrayObject $entryCommons, \ArrayObject $entryStrings, ResXmlParserResult $result)
+    private function importXmlString(string $xmlString, bool $deleteDbOnly, AppResource $resource, AppResourceFile $resourceFile, \ArrayObject $entries, \ArrayObject $entriesDbOnly, \ArrayObject $entryCommons, \ArrayObject $entryStrings, ResXmlParserResult $result)
     {
+        $querySelector = $this->getNodeSelector();
+        if ($querySelector === false) {
+            return;
+        }
+
         $dom = new Document($xmlString);
         $query = new Query();
         $nodes = $query->execute($querySelector, $dom);
@@ -432,8 +449,7 @@ Exception trace:
     public function exportResourcesOfApp(App $app, bool $deleteNotInDb) {
         $result = new ResXmlParserResult();
 
-        $querySelector = $this->getNodeSelector();
-        if ($querySelector === false) {
+        if ($this->getNodeSelector() === false) {
             return $result;
         }
 
@@ -484,7 +500,7 @@ Exception trace:
                     }
                 }
 
-                $xmlString = $this->exportXmlString(file_get_contents($pathResFile), $querySelector, $deleteNotInDb, $resource, $resourceFile, $entries[$resourceFile->Name], $entriesDbOnly[$resourceFile->Name], $entryCommons, $entryStrings, $result);
+                $xmlString = $this->exportXmlString(file_get_contents($pathResFile), $deleteNotInDb, $resource, $resourceFile, $entries[$resourceFile->Name], $entriesDbOnly[$resourceFile->Name], $entryCommons, $entryStrings, $result);
             }
         }
 
@@ -502,8 +518,7 @@ Exception trace:
     public function importResourcesOfApp(App $app, bool $deleteDbOnly) {
         $result = new ResXmlParserResult();
 
-        $querySelector = $this->getNodeSelector();
-        if ($querySelector === false) {
+        if ($this->getNodeSelector() === false) {
             return $result;
         }
 
@@ -554,7 +569,7 @@ Exception trace:
                     }
                 }
 
-                $this->importXmlString(file_get_contents($pathResFile), $querySelector, $deleteDbOnly, $resource, $resourceFile, $entries[$resourceFile->Name], $entriesDbOnly[$resourceFile->Name], $entryCommons, $entryStrings, $result);
+                $this->importXmlString(file_get_contents($pathResFile), $deleteDbOnly, $resource, $resourceFile, $entries[$resourceFile->Name], $entriesDbOnly[$resourceFile->Name], $entryCommons, $entryStrings, $result);
             }
         }
 
