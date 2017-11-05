@@ -121,7 +121,7 @@ function refreshTranslationEntry(app, resource, entry) {
 
             table.row("#translation-" + entry)
                 .data(data[0])
-                .draw();
+                .draw(false);
 
             hideModalSpinner(true);
             enableBootstrapTooltips();
@@ -261,7 +261,7 @@ $("#modalContainer").on("click", ".suggestionVote", function(event) {
             $("#modalContainer #suggestions").DataTable()
                 .row("#suggestion-" + suggestion)
                 .data(data["suggestion"])
-                .draw();
+                .draw(false);
             enableBootstrapTooltips();
         } else {
             addModalAlertMessage();
@@ -336,7 +336,7 @@ $("#modalContainer").on("click", ".suggestionAddEditSubmit", function(event) {
                 table.row("#suggestion-" + suggestion)
                   .data(data["suggestion"]);
         	}
-            table.draw();
+            table.draw(false);
 
             $("#modalContainer #suggestionAddEdit").collapse("hide");
             enableBootstrapTooltips();
@@ -381,10 +381,11 @@ $("#modalContainer").on("click", ".suggestionDelete", function(event) {
                 var table = $("#modalContainer #suggestions").DataTable();
                 table.row("#suggestion-" + suggestion)
                   .remove();
-                table.draw();
+                table.draw(false);
         	}
 
             $("#modalContainer #suggestionAddEdit").collapse("hide");
+            refreshTranslation = true;
         } else {
             addModalAlertMessage();
         }
