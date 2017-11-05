@@ -66,7 +66,10 @@ class SuggestionVoteTable
      */
     public function getSuggestionVote(int $suggestionId, int $userId)
     {
-        $rowset = $this->tableGateway->select(['suggestion_id' => $suggestionId]);
+        $rowset = $this->tableGateway->select([
+            'suggestion_id' => $suggestionId,
+            'user_id' => $userId,
+        ]);
         $row = $rowset->current();
         if (! $row) {
             throw new RuntimeException(sprintf('Could not find row with identifiers %d,%d', $suggestionId, $userId));
@@ -84,11 +87,6 @@ class SuggestionVoteTable
      */
     public function saveSuggestionVote(SuggestionVote $suggestionVote)
     {
-        $data = [
-            'suggestion_id' => $suggestionVote->SuggestionId,
-            'user_id' => $suggestionVote->UserId,
-        ];
-
         $suggestionId = (int) $suggestionVote->SuggestionId;
         $userId = (int) $suggestionVote->UserId;
 
@@ -101,6 +99,11 @@ class SuggestionVoteTable
                 return $suggestionVote;
             }
         } catch (RuntimeException $e) {
+            $data = [
+                'suggestion_id' => $suggestionId,
+                'user_id' => $userId,
+            ];
+
             $this->tableGateway->insert($data);
             return $suggestionVote;
         }
