@@ -75,9 +75,15 @@ function addModalAlertMessage() {
 function showSuggestionAddEdit(id, suggestion) {
     var editArea = $('#modalContainer #suggestionAddEdit');
     var button = $('#modalContainer #suggestionAddEdit');
+    var suggestionDeleteButton = $('#modalContainer #suggestionAddEdit #suggestionDeleteButton');
     var focusElement = null;
 
     editArea.find(".suggestionAddEditSubmit").data("suggestionid", id);
+    if ($.type(suggestion) === "object") {
+        suggestionDeleteButton.removeClass("disabled");
+    } else {
+    	suggestionDeleteButton.addClass("disabled");
+    }
 
     if (suggestionType == 'String') {
         var value = "";
@@ -334,6 +340,49 @@ $("#modalContainer").on("click", ".suggestionAddEditSubmit", function(event) {
             $('#modalContainer #suggestionAddEdit').collapse('hide');
             enableBootstrapTooltips();
             refreshTranslation = true;
+        } else {
+            addModalAlertMessage();
+        }
+    	hideModalSpinner(true);
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        addModalAlertMessage();
+    	hideModalSpinner(true);
+    });
+});
+
+$("#modalContainer").on("click", ".suggestionDelete", function(event) {
+    var button = $(this);
+
+	if (button.hasClass("disabled")) {
+        return;
+    }
+
+	var suggestion = button.data("suggestionid")
+
+	if (suggestion == 0) {
+        return;
+    }return;
+
+    hideBootstrapTooltips();
+	hideModalSpinner(false);
+
+    $.ajax({
+        url: suggestiondeletePath + "/app/" + app + "/resource/" + resource + "/entry/" + suggestionEntryId + "/suggestion/" + suggestion,
+        dataType: "json",
+        method: "GET"
+    })
+    .done(function(data) {
+        if ($.type(data) == 'object' && data['deleted']) {
+            if (data['deleted'] == true) {
+                var table = $('#modalContainer #suggestions').DataTable();
+                table.row('#suggestion-' + suggestion)
+                  .remove();
+                table.draw();
+        	}
+
+            $('#modalContainer #suggestionAddEdit').collapse('hide');
+            enableBootstrapTooltips();
         } else {
             addModalAlertMessage();
         }

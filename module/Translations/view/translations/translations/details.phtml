@@ -68,7 +68,7 @@ foreach ($suggestions as $suggestion) {
               </tbody>
             </table>
           </div>
-<?php if ($this->isGranted('suggestion.addedit')) : ?>
+<?php if ($this->isGranted('suggestion.addeditdelete')) : ?>
           <div class="col-lg-12"><button type="button" class="btn btn-primary suggestionEdit" data-entryid="<?= $entry->defaultId ?>"><i class="fa fa-plus-circle fa-fw" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Add new suggestion')) ?></button></div>
           <div class="collapse modal-inset" id="suggestionAddEdit">
             <div class="row">
@@ -89,6 +89,7 @@ foreach ($suggestions as $suggestion) {
                 <div class="col-lg-offset-3 col-lg-9">
                   <div class="btn-group" role="group" aria-label="...">
                     <button type="button" class="btn btn-primary suggestionAddEditSubmit"><i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Save')) ?></button>
+                    <button type="button" class="btn btn-danger suggestionDelete" id="suggestionDeleteButton"><i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Delete')) ?></button>
                     <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#suggestionAddEdit"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Cancel')) ?></button>
                   </div>
                 </div>

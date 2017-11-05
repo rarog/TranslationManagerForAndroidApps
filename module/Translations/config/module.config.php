@@ -209,6 +209,21 @@ return [
                             ],
                         ],
                     ],
+                    'suggestiondelete' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => '/suggestiondelete[/app/:appId/resource/:resourceId/entry/:entryId/suggestion/:suggestionId]',
+                            'constraints' => [
+                                'appId' => '[0-9]+',
+                                'resourceId' => '[0-9]+',
+                                'entryId' => '[0-9]+',
+                                'suggestionId' => '[0-9]+',
+                            ],
+                            'defaults' => [
+                                'action' => 'suggestiondelete',
+                            ],
+                        ],
+                    ],
                     'suggestionvote' => [
                         'type' => Segment::class,
                         'options' => [

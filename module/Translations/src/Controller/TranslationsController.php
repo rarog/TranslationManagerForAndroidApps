@@ -618,6 +618,81 @@ class TranslationsController extends AbstractActionController
         ]);
     }
 
+
+    /**
+     * Translation suggestion add and edit action
+     *
+     * @return JsonModel
+     */
+    public function suggestiondeleteAction()
+    {
+        $appId = (int) $this->params()->fromRoute('appId', 0);
+        $resourceId = (int) $this->params()->fromRoute('resourceId', 0);
+        $entryId = (int) $this->params()->fromRoute('entryId', 0);
+        $suggestionId = (int) $this->params()->fromRoute('suggestionId', 0);
+        $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
+
+        $app = $this->getApp($appId);
+
+        if ($app === false) {
+            return new JsonModel(['deleted' => false]);
+        }
+
+        $resource = $this->getResource($resourceId, $appId);
+
+        if ($resource === false) {
+            return new JsonModel(['deleted' => false]);
+        }
+
+        try {
+            $entry = $this->resourceFileEntryTable->getResourceFileEntry($entryId);
+        } catch (\RuntimeException$e) {
+            return new JsonModel(['deleted' => false]);
+        }
+
+        try {
+            $type = $this->resourceTypeTable->getResourceType($entry->ResourceTypeId);
+        } catch (\RuntimeException $e) {
+            return new JsonModel(['deleted' => false]);
+        }
+
+        switch ($type->Name) {
+            case 'String':
+                $typedEntry = $this->entryStringTable->getAllEntryStringsForTranslations($appId, $resourceId, $entryId);
+                break;
+            default:
+                return new JsonModel(['deleted' => false]);
+        }
+
+        if (count($typedEntry) == 1) {
+            $typedEntry = $typedEntry[0];
+        } else {
+            return new JsonModel(['deleted' => false]);
+        }
+
+        if ($suggestionId !== 0) {
+            switch ($type->Name) {
+                case 'String':
+                    $typedSuggestion = $this->suggestionStringTable->getAllSuggestionsForTranslations($typedEntry->id, $userId, $suggestionId);
+                    break;
+            }
+
+            if (count($typedSuggestion) == 1) {
+                $typedSuggestion = $typedSuggestion[0];
+            } else {
+                return new JsonModel(['deleted' => false]);
+            }
+
+            if ($typedSuggestion->userId !== $userId) {
+                return new JsonModel(['deleted' => false]);
+            }
+        }
+
+        $this->suggestionTable->deleteSuggestion($suggestionId);
+
+        return new JsonModel(['deleted' => true]);
+    }
+
     /**
      * Translation suggestion vote action
      *
