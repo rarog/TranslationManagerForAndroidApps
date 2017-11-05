@@ -209,7 +209,13 @@ return [
                 'translations/suggestionaddedit' => [
                     'permissions' => [
                         'translations.view',
-                        'suggestion.addedit',
+                        'suggestion.addeditdelete',
+                    ],
+                ],
+                'translations/suggestiondelete' => [
+                    'permissions' => [
+                        'translations.view',
+                        'suggestion.addeditdelete',
                     ],
                 ],
                 'translations/suggestionvote' => [
@@ -296,7 +302,7 @@ return [
                 ],
                 'user'      => [
                     'permissions' => [
-                        'suggestion.addedit',
+                        'suggestion.addeditdelete',
                         'suggestion.vote',
                         'translations.view',
                         'userBase',

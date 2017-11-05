@@ -17,7 +17,7 @@ if ($suggestion->voteCount > 0) {
 <?php if ($this->isGranted('suggestion.accept')) : ?>
   <button type="button" class="btn btn-default suggestionAccept" data-toggle="tooltip" data-placement="bottom" data-suggestionid="<?= $suggestion->id ?>" title="<?= $this->escapeHtmlAttr($this->translate('Accept this suggestion')) ?>" role="button"><i class="fa fa-check-square-o fa-fw" aria-hidden="true"></i></button>
 <?php endif; ?>
-<?php if ($this->isGranted('suggestion.addedit')) : ?>
+<?php if ($this->isGranted('suggestion.addeditdelete')) : ?>
   <button type="button" class="btn btn-default <?= $btnEditClass ?> suggestionEdit" data-toggle="tooltip" data-placement="bottom" data-suggestion="<?= $this->escapeHtmlAttr(json_encode($suggestion)) ?>" title="<?= $this->escapeHtmlAttr($this->translate('Edit')) ?>" role="button"><i class="fa fa-pencil-square-o fa-fw" aria-hidden="true"></i></button>
 <?php endif; ?>
 <?php if ($this->isGranted('suggestion.vote')) : ?>
