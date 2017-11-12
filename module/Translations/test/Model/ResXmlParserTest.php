@@ -187,7 +187,7 @@ class ResXmlParserTest extends TestCase
     public function testGetEmptyResXML()
     {
         $resXmlParser = $this->getResXmlParser();
-        $result = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, new \ArrayObject(), new \ArrayObject(), new \ArrayObject(), new \ArrayObject(), new ResXmlParserResult()]);
+        $result = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, new \ArrayObject(), new \ArrayObject(), new \ArrayObject(), new ResXmlParserResult()]);
         $this->assertEquals($this->emptyResXML, $result);
     }
 }

@@ -158,13 +158,12 @@ class ResXmlParser implements AppHelperInterface
      * @param string $oldXmlString
      * @param bool $deleteNotInDb
      * @param \ArrayObject $entries
-     * @param \ArrayObject $entriesDbOnly
      * @param \ArrayObject $entryCommons
      * @param \ArrayObject $entryStrings
      * @param ResXmlParserResult $result
      * @return string|null
      */
-    private function exportXmlString(string $oldXmlString, bool $deleteNotInDb, \ArrayObject $entries, \ArrayObject $entriesDbOnly, \ArrayObject $entryCommons, \ArrayObject $entryStrings, ResXmlParserResult $result)
+    private function exportXmlString(string $oldXmlString, bool $deleteNotInDb, \ArrayObject $entries, \ArrayObject $entryCommons, \ArrayObject $entryStrings, ResXmlParserResult $result)
     {
         $newDoc = $this->getEmptyResXML();
 
@@ -241,17 +240,18 @@ class ResXmlParser implements AppHelperInterface
      * @param AppResource $resource
      * @param AppResourceFile $resourceFile
      * @param \ArrayObject $entries
-     * @param \ArrayObject $entriesDbOnly
      * @param \ArrayObject $entryCommons
      * @param \ArrayObject $entryStrings
      * @param ResXmlParserResult $result
      */
-    private function importXmlString(string $xmlString, bool $deleteDbOnly, AppResource $resource, AppResourceFile $resourceFile, \ArrayObject $entries, \ArrayObject $entriesDbOnly, \ArrayObject $entryCommons, \ArrayObject $entryStrings, ResXmlParserResult $result)
+    private function importXmlString(string $xmlString, bool $deleteDbOnly, AppResource $resource, AppResourceFile $resourceFile, \ArrayObject $entries, \ArrayObject $entryCommons, \ArrayObject $entryStrings, ResXmlParserResult $result)
     {
         $querySelector = $this->getNodeSelector();
         if ($querySelector === false) {
             return;
         }
+
+        $entriesDbOnly = $entries->getArrayCopy();
 
         $dom = new Document($xmlString);
         $query = new Query();
@@ -466,7 +466,6 @@ Exception trace:
         $resourceFiles->buffer();
 
         $entries = new \ArrayObject();
-        $entriesDbOnly = new \ArrayObject();
 
         foreach ($resources as $resource) {
             $pathRes = FileHelper::concatenatePath($path, $resource->Name);
@@ -497,15 +496,13 @@ Exception trace:
 
                 if (!array_key_exists($resourceFile->Name, $entries)) {
                     $entries[$resourceFile->Name] = new \ArrayObject();
-                    $entriesDbOnly[$resourceFile->Name] = new \ArrayObject();
                     foreach ($this->resourceFileEntryTable->fetchAll(['app_resource_file_id' => $resourceFile->Id, 'deleted' => 0]) as $entry) {
                         $combinedKey = $entry->Name . "\n" . $entry->Product;
                         $entries[$resourceFile->Name][$combinedKey] = $entry;
-                        $entriesDbOnly[$resourceFile->Name][$combinedKey] = $entry;
                     }
                 }
 
-                $xmlString = $this->exportXmlString(file_get_contents($pathResFile), $deleteNotInDb, $resourceFile, $entries[$resourceFile->Name], $entriesDbOnly[$resourceFile->Name], $entryCommons, $entryStrings, $result);
+                $xmlString = $this->exportXmlString(file_get_contents($pathResFile), $deleteNotInDb, $resourceFile, $entries[$resourceFile->Name], $entryCommons, $entryStrings, $result);
             }
         }
 
@@ -535,7 +532,6 @@ Exception trace:
         $resourceFiles->buffer();
 
         $entries = new \ArrayObject();
-        $entriesDbOnly = new \ArrayObject();
 
         foreach ($resources as $resource) {
             $pathRes = FileHelper::concatenatePath($path, $resource->Name);
@@ -566,15 +562,13 @@ Exception trace:
 
                 if (!array_key_exists($resourceFile->Name, $entries)) {
                     $entries[$resourceFile->Name] = new \ArrayObject();
-                    $entriesDbOnly[$resourceFile->Name] = new \ArrayObject();
                     foreach ($this->resourceFileEntryTable->fetchAll(['app_resource_file_id' => $resourceFile->Id, 'deleted' => 0]) as $entry) {
                         $combinedKey = $entry->Name . "\n" . $entry->Product;
                         $entries[$resourceFile->Name][$combinedKey] = $entry;
-                        $entriesDbOnly[$resourceFile->Name][$combinedKey] = $entry;
                     }
                 }
 
-                $this->importXmlString(file_get_contents($pathResFile), $deleteDbOnly, $resource, $resourceFile, $entries[$resourceFile->Name], $entriesDbOnly[$resourceFile->Name], $entryCommons, $entryStrings, $result);
+                $this->importXmlString(file_get_contents($pathResFile), $deleteDbOnly, $resource, $resourceFile, $entries[$resourceFile->Name], $entryCommons, $entryStrings, $result);
             }
         }
 
