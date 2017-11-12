@@ -251,7 +251,9 @@ class ResXmlParser implements AppHelperInterface
             return;
         }
 
-        $entriesDbOnly = $entries->getArrayCopy();
+        if ($resource->Name === 'values') {
+            $entriesDbOnly = $entries->getArrayCopy();
+        }
 
         $dom = new Document($xmlString);
         $query = new Query();
