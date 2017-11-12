@@ -25,7 +25,7 @@ use Zend\Log\Logger;
 /**
  * @codeCoverageIgnore
  */
-class ResXmlParserResult
+class ResXmlParserImportResult
 {
     public $entriesProcessed;
     public $entriesUpdated;
@@ -38,6 +38,16 @@ class ResXmlParserResult
         $this->entriesUpdated = 0;
         $this->entriesSkippedExistOnlyInDb = 0;
         $this->entriesSkippedNotInDefault = 0;
+    }
+}
+
+class ResXmlParserExportResult
+{
+    public $entriesProcessed;
+
+    public function __construct()
+    {
+        $this->entriesProcessed = 0;
     }
 }
 
@@ -160,10 +170,10 @@ class ResXmlParser implements AppHelperInterface
      * @param \ArrayObject $entries
      * @param \ArrayObject $entryCommons
      * @param \ArrayObject $entryStrings
-     * @param ResXmlParserResult $result
+     * @param ResXmlParserExportResult $result
      * @return string|null
      */
-    private function exportXmlString(string $oldXmlString, bool $deleteNotInDb, \ArrayObject $entries, \ArrayObject $entryCommons, \ArrayObject $entryStrings, ResXmlParserResult $result)
+    private function exportXmlString(string $oldXmlString, bool $deleteNotInDb, \ArrayObject $entries, \ArrayObject $entryCommons, \ArrayObject $entryStrings, ResXmlParserExportResult $result)
     {
         $newDoc = $this->getEmptyResXML();
 
@@ -242,9 +252,9 @@ class ResXmlParser implements AppHelperInterface
      * @param \ArrayObject $entries
      * @param \ArrayObject $entryCommons
      * @param \ArrayObject $entryStrings
-     * @param ResXmlParserResult $result
+     * @param ResXmlParserImportResult $result
      */
-    private function importXmlString(string $xmlString, bool $deleteDbOnly, AppResource $resource, AppResourceFile $resourceFile, \ArrayObject $entries, \ArrayObject $entryCommons, \ArrayObject $entryStrings, ResXmlParserResult $result)
+    private function importXmlString(string $xmlString, bool $deleteDbOnly, AppResource $resource, AppResourceFile $resourceFile, \ArrayObject $entries, \ArrayObject $entryCommons, \ArrayObject $entryStrings, ResXmlParserImportResult $result)
     {
         $querySelector = $this->getNodeSelector();
         if ($querySelector === false) {
@@ -450,11 +460,11 @@ Exception trace:
      *
      * @param App $app
      * @param bool $deleteNotInDb
-     * @return \Translations\Model\ResXmlParserResult
+     * @return \Translations\Model\ResXmlParserExportResult
      * @codeCoverageIgnore
      */
     public function exportResourcesOfApp(App $app, bool $deleteNotInDb) {
-        $result = new ResXmlParserResult();
+        $result = new ResXmlParserExportResult();
 
         if ($this->getNodeSelector() === false) {
             return $result;
@@ -516,11 +526,11 @@ Exception trace:
      *
      * @param App $app
      * @param bool $deleteDbOnly
-     * @return \Translations\Model\ResXmlParserResult
+     * @return \Translations\Model\ResXmlParserImportResult
      * @codeCoverageIgnore
      */
     public function importResourcesOfApp(App $app, bool $deleteDbOnly) {
-        $result = new ResXmlParserResult();
+        $result = new ResXmlParserImportResult();
 
         if ($this->getNodeSelector() === false) {
             return $result;

@@ -17,6 +17,7 @@ namespace TranslationsTest\Model;
 use PHPUnit\Framework\TestCase;
 use Translations\Model\ResXmlParser;
 use Translations\Model\ResXmlParserResult;
+use Translations\Model\ResXmlParserExportResult;
 
 class ResXmlParserTest extends TestCase
 {
@@ -187,7 +188,9 @@ class ResXmlParserTest extends TestCase
     public function testGetEmptyResXML()
     {
         $resXmlParser = $this->getResXmlParser();
-        $result = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, new \ArrayObject(), new \ArrayObject(), new \ArrayObject(), new ResXmlParserResult()]);
-        $this->assertEquals($this->emptyResXML, $result);
+        $result = new ResXmlParserExportResult();
+        $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, new \ArrayObject(), new \ArrayObject(), new \ArrayObject(), $result]);
+        $this->assertEquals($this->emptyResXML, $exportedXmlString);
+        $this->assertEquals($result->entriesProcessed, 0);
     }
 }
