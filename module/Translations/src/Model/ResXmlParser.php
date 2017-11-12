@@ -45,9 +45,6 @@ class ResXmlParser implements AppHelperInterface
 {
     use AppHelperTrait;
 
-    const EMPTY_RES_XML = '<?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"/>';
-
     /**
      * @var AppResourceTable
      */
@@ -160,8 +157,6 @@ class ResXmlParser implements AppHelperInterface
      *
      * @param string $oldXmlString
      * @param bool $deleteNotInDb
-     * @param AppResource $resource
-     * @param AppResourceFile $resourceFile
      * @param \ArrayObject $entries
      * @param \ArrayObject $entriesDbOnly
      * @param \ArrayObject $entryCommons
@@ -169,15 +164,31 @@ class ResXmlParser implements AppHelperInterface
      * @param ResXmlParserResult $result
      * @return string|null
      */
-    private function exportXmlString(string $oldXmlString, bool $deleteNotInDb, AppResource $resource, AppResourceFile $resourceFile, \ArrayObject $entries, \ArrayObject $entriesDbOnly, \ArrayObject $entryCommons, \ArrayObject $entryStrings, ResXmlParserResult $result)
+    private function exportXmlString(string $oldXmlString, bool $deleteNotInDb, \ArrayObject $entries, \ArrayObject $entriesDbOnly, \ArrayObject $entryCommons, \ArrayObject $entryStrings, ResXmlParserResult $result)
     {
-        $newDom = new Document(self::EMPTY_RES_XML);
+        $newDoc = $this->getEmptyResXML();
 
         $oldDom = new Document($oldXmlString);
 
         // TODO: Implement export
 
-        return $newDom->getStringDocument();
+        return $newDoc->saveXML();
+    }
+
+    /**
+     * Generates empty resource XML file
+     *
+     * @return \DOMDocument
+     */
+    private function getEmptyResXML()
+    {
+        $doc = new \DOMDocument('1.0', 'utf-8');
+        $doc->formatOutput = true;
+        $resources = $doc->createElement('resources');
+        $resources->setAttribute('xmlns:xliff', 'urn:oasis:names:tc:xliff:document:1.2');
+        $doc->appendChild($resources);
+
+        return $doc;
     }
 
     /**
@@ -494,7 +505,7 @@ Exception trace:
                     }
                 }
 
-                $xmlString = $this->exportXmlString(file_get_contents($pathResFile), $deleteNotInDb, $resource, $resourceFile, $entries[$resourceFile->Name], $entriesDbOnly[$resourceFile->Name], $entryCommons, $entryStrings, $result);
+                $xmlString = $this->exportXmlString(file_get_contents($pathResFile), $deleteNotInDb, $resourceFile, $entries[$resourceFile->Name], $entriesDbOnly[$resourceFile->Name], $entryCommons, $entryStrings, $result);
             }
         }
 

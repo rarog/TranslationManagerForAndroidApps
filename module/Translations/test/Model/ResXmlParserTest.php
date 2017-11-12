@@ -16,6 +16,7 @@ namespace TranslationsTest\Model;
 
 use PHPUnit\Framework\TestCase;
 use Translations\Model\ResXmlParser;
+use Translations\Model\ResXmlParserResult;
 
 class ResXmlParserTest extends TestCase
 {
@@ -65,6 +66,9 @@ class ResXmlParserTest extends TestCase
 
     // master_clear_accounts - https://github.com/android/platform_packages_apps_settings/blob/nougat-release/res/values-de/strings.xml
     private $badUndecodableStringLeadingToException = '\n\n"Du bist zurzeit in folgenden Konten angemeldet:\n"';
+
+    private $emptyResXML = '<?xml version="1.0" encoding="utf-8"?>' . "\n" .
+        '<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"/>' . "\n";
 
     /**
      * @var ResXmlParser
@@ -175,5 +179,15 @@ class ResXmlParserTest extends TestCase
     {
         $resXmlParser = $this->getResXmlParser();
         $result = $this->invokeMethod($resXmlParser, 'decodeAndroidTranslationString', [$this->badUndecodableStringLeadingToException]);
+    }
+
+    /**
+     * @covers \Translations\Model\ResXmlParser::exportXmlString
+     */
+    public function testGetEmptyResXML()
+    {
+        $resXmlParser = $this->getResXmlParser();
+        $result = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, new \ArrayObject(), new \ArrayObject(), new \ArrayObject(), new \ArrayObject(), new ResXmlParserResult()]);
+        $this->assertEquals($this->emptyResXML, $result);
     }
 }
