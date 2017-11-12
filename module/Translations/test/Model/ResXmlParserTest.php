@@ -16,8 +16,8 @@ namespace TranslationsTest\Model;
 
 use PHPUnit\Framework\TestCase;
 use Translations\Model\ResXmlParser;
-use Translations\Model\ResXmlParserResult;
 use Translations\Model\ResXmlParserExportResult;
+use Translations\Model\ResourceFileEntry;
 
 class ResXmlParserTest extends TestCase
 {
@@ -101,6 +101,13 @@ class ResXmlParserTest extends TestCase
             $resourceTypes->setAccessible(false);
         }
         return $this->resXmlParser;
+    }
+
+    private function getInvalidResourceFileEntry()
+    {
+        return new ResourceFileEntry([
+            'resource_type_id' => -1,
+        ]);
     }
 
     /**
@@ -193,12 +200,50 @@ class ResXmlParserTest extends TestCase
     /**
      * @covers \Translations\Model\ResXmlParser::exportXmlString
      */
-    public function testGetEmptyResXML()
+    public function testExportGetEmptyResXML()
     {
         $resXmlParser = $this->getResXmlParser();
         $result = new ResXmlParserExportResult();
         $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, new \ArrayObject(), new \ArrayObject(), new \ArrayObject(), $result]);
         $this->assertEquals($this->emptyResXML, $exportedXmlString);
         $this->assertEquals($result->entriesProcessed, 0);
+        $this->assertEquals($result->entriesSkippedUnknownType, 0);
+    }
+
+    /**
+     * @covers \Translations\Model\ResXmlParser::exportXmlString
+     */
+    public function testExportUnknownResourceTypeSkipped()
+    {
+        $resXmlParser = $this->getResXmlParser();
+        $result = new ResXmlParserExportResult();
+        $entries = new \ArrayObject([
+            $this->getInvalidResourceFileEntry(),
+        ]);
+        $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, $entries, new \ArrayObject(), new \ArrayObject(), $result]);
+        $this->assertEquals($this->emptyResXML, $exportedXmlString);
+        $this->assertEquals($result->entriesProcessed, 0);
+        $this->assertEquals($result->entriesSkippedUnknownType, 1);
+    }
+
+    /**
+     * @covers \Translations\Model\ResXmlParser::exportXmlString
+     */
+    public function testExportUnknownResourceTypeSkipped2()
+    {
+        $resXmlParser = clone $this->getResXmlParser();
+        $reflection = new \ReflectionClass($resXmlParser);
+        $resourceTypes = $reflection->getProperty('resourceTypes');
+        $resourceTypes->setAccessible(true);
+        $resourceTypes->setValue($resXmlParser, $resourceTypes->getValue($resXmlParser) + [-1 => 'definitelyinvalidtype']);
+        $resourceTypes->setAccessible(false);
+        $result = new ResXmlParserExportResult();
+        $entries = new \ArrayObject([
+            $this->getInvalidResourceFileEntry(),
+        ]);
+        $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, $entries, new \ArrayObject(), new \ArrayObject(), $result]);
+        $this->assertEquals($this->emptyResXML, $exportedXmlString);
+        $this->assertEquals($result->entriesProcessed, 0);
+        $this->assertEquals($result->entriesSkippedUnknownType, 1);
     }
 }

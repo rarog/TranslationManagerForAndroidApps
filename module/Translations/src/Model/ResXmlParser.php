@@ -44,10 +44,12 @@ class ResXmlParserImportResult
 class ResXmlParserExportResult
 {
     public $entriesProcessed;
+    public $entriesSkippedUnknownType;
 
     public function __construct()
     {
         $this->entriesProcessed = 0;
+        $this->entriesSkippedUnknownType = 0;
     }
 }
 
@@ -175,11 +177,21 @@ class ResXmlParser implements AppHelperInterface
      */
     private function exportXmlString(string $oldXmlString, bool $deleteNotInDb, \ArrayObject $entries, \ArrayObject $entryCommons, \ArrayObject $entryStrings, ResXmlParserExportResult $result)
     {
+        $resourceTypes = $this->getResourceTypes();
+
         $newDoc = $this->getEmptyResXML();
 
-        $oldDom = new Document($oldXmlString);
+        foreach ($entries as $entry) {
+            if ($entry->ResourceTypeId === array_search('string', $resourceTypes)) {
+                // TODO: implement export of string
+            } else {
+                $result->entriesSkippedUnknownType++;
+            }
+        }
 
-        // TODO: Implement export
+        $oldDoc = new Document($oldXmlString);
+
+        // TODO: Implement merging of other nodes from original file
 
         return $newDoc->saveXML();
     }
@@ -514,7 +526,7 @@ Exception trace:
                     }
                 }
 
-                $xmlString = $this->exportXmlString(file_get_contents($pathResFile), $deleteNotInDb, $resourceFile, $entries[$resourceFile->Name], $entryCommons, $entryStrings, $result);
+                $xmlString = $this->exportXmlString(file_get_contents($pathResFile), $deleteNotInDb, $entries[$resourceFile->Name], $entryCommons, $entryStrings, $result);
             }
         }
 
