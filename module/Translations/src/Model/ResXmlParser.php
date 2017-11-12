@@ -27,9 +27,6 @@ use Zend\Log\Logger;
  */
 class ResXmlParserResult
 {
-    const EMPTY_RES_XML = '<?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"/>';
-
     public $entriesProcessed;
     public $entriesUpdated;
     public $entriesSkippedExistOnlyInDb;
@@ -47,6 +44,9 @@ class ResXmlParserResult
 class ResXmlParser implements AppHelperInterface
 {
     use AppHelperTrait;
+
+    const EMPTY_RES_XML = '<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"/>';
 
     /**
      * @var AppResourceTable
@@ -158,7 +158,7 @@ class ResXmlParser implements AppHelperInterface
     /**
      * Handles parsing and export of XML
      *
-     * @param string $xmlString
+     * @param string $oldXmlString
      * @param bool $deleteNotInDb
      * @param AppResource $resource
      * @param AppResourceFile $resourceFile
@@ -169,21 +169,15 @@ class ResXmlParser implements AppHelperInterface
      * @param ResXmlParserResult $result
      * @return string|null
      */
-    private function exportXmlString(string $xmlString, bool $deleteNotInDb, AppResource $resource, AppResourceFile $resourceFile, \ArrayObject $entries, \ArrayObject $entriesDbOnly, \ArrayObject $entryCommons, \ArrayObject $entryStrings, ResXmlParserResult $result)
+    private function exportXmlString(string $oldXmlString, bool $deleteNotInDb, AppResource $resource, AppResourceFile $resourceFile, \ArrayObject $entries, \ArrayObject $entriesDbOnly, \ArrayObject $entryCommons, \ArrayObject $entryStrings, ResXmlParserResult $result)
     {
-        $querySelector = $this->getNodeSelector();
-        if ($querySelector === false) {
-            return;
-        }
+        $newDom = new Document(self::EMPTY_RES_XML);
 
-        $dom = new Document($xmlString);
-        $query = new Query();
-        $nodes = $query->execute($querySelector, $dom);
-        $resourceTypes = $this->getResourceTypes();
+        $oldDom = new Document($oldXmlString);
 
         // TODO: Implement export
 
-        return $dom->getStringDocument();
+        return $newDom->getStringDocument();
     }
 
     /**
