@@ -103,7 +103,7 @@ class ResXmlParser implements AppHelperInterface
     private $nodeSelector;
 
     /**
-     * Decodes the translation into readable form
+     * Decodes the translation string into readable form
      *
      * @param string $translationString
      * @throws \RuntimeException
@@ -165,6 +165,23 @@ class ResXmlParser implements AppHelperInterface
     }
 
     /**
+     * Encodes the translation string
+     *
+     * @param string $translationString
+     * @return string
+     */
+    private function encodeAndroidTranslationString(string $translationString)
+    {
+        if ($translationString == '') {
+            return '';
+        }
+
+        $encoded = str_replace(['\'', '"'], ['\\\'', '\"'], $translationString);
+
+        return $encoded;
+    }
+
+    /**
      * Handles parsing and export of XML
      *
      * @param string $oldXmlString
@@ -180,13 +197,29 @@ class ResXmlParser implements AppHelperInterface
         $resourceTypes = $this->getResourceTypes();
 
         $newDoc = $this->getEmptyResXML();
+        $resNode = $newDoc->getElementsByTagName('resources')->item(0);
 
         foreach ($entries as $entry) {
             if ($entry->ResourceTypeId === array_search('string', $resourceTypes)) {
-                // TODO: implement export of string
+                $newNode = $newDoc->createElement('string');
+
+                $value = '';
+                if (array_key_exists($entry->Id, $entryCommons) && array_key_exists($entryCommons[$entry->Id]->Id, $entryStrings)) {
+                    $value = $entryStrings[$entryCommons[$entry->Id]->Id]->Value;
+                }
+                $newNode->nodeValue = $this->encodeAndroidTranslationString($value);
             } else {
                 $result->entriesSkippedUnknownType++;
+                continue;
             }
+
+            $newNode->setAttribute('name', $entry->Name);
+            $newNode->setAttribute('product', $entry->Product);
+            if ($entry->Description != '') {
+                $newNode->setAttribute('description', $entry->Description);
+            }
+
+            $resNode->appendChild($newNode);
         }
 
         $oldDoc = new Document($oldXmlString);
