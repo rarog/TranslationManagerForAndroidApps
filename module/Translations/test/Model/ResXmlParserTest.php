@@ -91,6 +91,14 @@ class ResXmlParserTest extends TestCase
                 $this->createMock(\Translations\Model\EntryStringTable::class),
                 $this->createMock(\Zend\Log\Logger::class)
             );
+
+            $reflection = new \ReflectionClass($this->resXmlParser);
+            $resourceTypes = $reflection->getProperty('resourceTypes');
+            $resourceTypes->setAccessible(true);
+            $resourceTypes->setValue($this->resXmlParser, [
+                1 => 'string',
+            ]);
+            $resourceTypes->setAccessible(false);
         }
         return $this->resXmlParser;
     }
