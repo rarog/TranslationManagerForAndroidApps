@@ -73,11 +73,11 @@ class ResourceFileEntryTable
     public function saveResourceFileEntry(ResourceFileEntry $resourceFileEntry)
     {
         $data = [
-            'app_resource_file_id' => $resourceFileEntry->AppResourceFileId,
-            'resource_type_id' => $resourceFileEntry->ResourceTypeId,
-            'name' => $resourceFileEntry->Name,
-            'product' => $resourceFileEntry->Product,
-            'description' => $resourceFileEntry->Description,
+            'app_resource_file_id' => (int) $resourceFileEntry->AppResourceFileId,
+            'resource_type_id' => (int) $resourceFileEntry->ResourceTypeId,
+            'name' => (string) $resourceFileEntry->Name,
+            'product' => (string) $resourceFileEntry->Product,
+            'description' => is_null($resourceFileEntry->Description) ? null : (string) $resourceFileEntry->Description,
             'deleted' => (int) $resourceFileEntry->Deleted,
             'translatable' => (int) $resourceFileEntry->Translatable,
         ];
