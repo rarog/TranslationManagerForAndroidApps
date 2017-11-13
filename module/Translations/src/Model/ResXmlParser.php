@@ -266,7 +266,7 @@ class ResXmlParser implements AppHelperInterface
             } else {
                 $querySelectors = [];
                 foreach ($resourceTypes as $resourceType) {
-                    $querySelectors[] = '/resources/' . $resourceType;
+                    $querySelectors[] = '/resources/' . $resourceType . '[@name]';
                 };
 
                 $this->nodeSelector = implode('|', $querySelectors);
