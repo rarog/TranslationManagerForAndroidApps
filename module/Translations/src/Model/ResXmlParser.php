@@ -186,13 +186,14 @@ class ResXmlParser implements AppHelperInterface
      *
      * @param string $oldXmlString
      * @param bool $deleteNotInDb
+     * @param AppResource $resource
      * @param \ArrayObject $entries
-     * @param \ArrayObject $entryCommons
-     * @param \ArrayObject $entryStrings
+     * @param \ArrayObject $entriesCommon
+     * @param \ArrayObject $entriesString
      * @param ResXmlParserExportResult $result
      * @return string|null
      */
-    private function exportXmlString(string $oldXmlString, bool $deleteNotInDb, \ArrayObject $entries, \ArrayObject $entryCommons, \ArrayObject $entryStrings, ResXmlParserExportResult $result)
+    private function exportXmlString(string $oldXmlString, bool $deleteNotInDb, AppResource $resource, \ArrayObject $entries, \ArrayObject $entriesCommon, \ArrayObject $entriesString, ResXmlParserExportResult $result)
     {
         $resourceTypes = $this->getResourceTypes();
 
@@ -200,12 +201,16 @@ class ResXmlParser implements AppHelperInterface
         $resNode = $newDoc->getElementsByTagName('resources')->item(0);
 
         foreach ($entries as $entry) {
+            if (($resource->getName() != 'values') && (! $entry->Translatable)) {
+                continue;
+            }
+
             if ($entry->ResourceTypeId === array_search('string', $resourceTypes)) {
                 $newNode = $newDoc->createElement('string');
 
                 $value = '';
-                if (array_key_exists($entry->Id, $entryCommons) && array_key_exists($entryCommons[$entry->Id]->Id, $entryStrings)) {
-                    $value = $entryStrings[$entryCommons[$entry->Id]->Id]->Value;
+                if (array_key_exists($entry->Id, $entriesCommon) && array_key_exists($entriesCommon[$entry->Id]->Id, $entriesString)) {
+                    $value = $entriesString[$entriesCommon[$entry->Id]->Id]->Value;
                 }
                 $newNode->nodeValue = $this->encodeAndroidTranslationString($value);
             } else {
@@ -213,9 +218,10 @@ class ResXmlParser implements AppHelperInterface
                 continue;
             }
 
+            $result->entriesProcessed++;
             $newNode->setAttribute('name', $entry->Name);
             $newNode->setAttribute('product', $entry->Product);
-            if ($entry->Description != '') {
+            if (($resource->getName() == 'values') && ($entry->Description != '')) {
                 $newNode->setAttribute('description', $entry->Description);
             }
 
@@ -295,11 +301,11 @@ class ResXmlParser implements AppHelperInterface
      * @param AppResource $resource
      * @param AppResourceFile $resourceFile
      * @param \ArrayObject $entries
-     * @param \ArrayObject $entryCommons
-     * @param \ArrayObject $entryStrings
+     * @param \ArrayObject $entriesCommon
+     * @param \ArrayObject $entriesString
      * @param ResXmlParserImportResult $result
      */
-    private function importXmlString(string $xmlString, bool $deleteDbOnly, AppResource $resource, AppResourceFile $resourceFile, \ArrayObject $entries, \ArrayObject $entryCommons, \ArrayObject $entryStrings, ResXmlParserImportResult $result)
+    private function importXmlString(string $xmlString, bool $deleteDbOnly, AppResource $resource, AppResourceFile $resourceFile, \ArrayObject $entries, \ArrayObject $entriesCommon, \ArrayObject $entriesString, ResXmlParserImportResult $result)
     {
         $querySelector = $this->getNodeSelector();
         if ($querySelector === false) {
@@ -410,7 +416,7 @@ class ResXmlParser implements AppHelperInterface
             }
 
             if ($resourceFileEntry->ResourceTypeId === array_search('string', $resourceTypes)) {
-                if (! array_key_exists($resourceFileEntry->Id, $entryCommons)) {
+                if (! array_key_exists($resourceFileEntry->Id, $entriesCommon)) {
                     $entryCommon = new EntryCommon();
                     $entryCommon->AppResourceId = $resource->Id;
                     $entryCommon->ResourceFileEntryId = $resourceFileEntry->Id;
@@ -418,19 +424,19 @@ class ResXmlParser implements AppHelperInterface
 
                     $entryCommon = $this->entryCommonTable->saveEntryCommon($entryCommon);
 
-                    $entryCommons[$resourceFileEntry->Id] = $entryCommon;
+                    $entriesCommon[$resourceFileEntry->Id] = $entryCommon;
                 }
 
-                $entryCommon = $entryCommons[$resourceFileEntry->Id];
+                $entryCommon = $entriesCommon[$resourceFileEntry->Id];
 
-                if (! array_key_exists($entryCommon->Id, $entryStrings)) {
+                if (! array_key_exists($entryCommon->Id, $entriesString)) {
                     $entryString = new EntryString();
                     $entryString->EntryCommonId = $entryCommon->Id;
 
-                    $entryStrings[$entryCommon->Id] = $entryString;
+                    $entriesString[$entryCommon->Id] = $entryString;
                 }
 
-                $entryString = $entryStrings[$entryCommon->Id];
+                $entryString = $entriesString[$entryCommon->Id];
 
                 try {
                     $decodedString = $this->decodeAndroidTranslationString($node->textContent);
@@ -559,7 +565,7 @@ Exception trace:
                     }
                 }
 
-                $xmlString = $this->exportXmlString(file_get_contents($pathResFile), $deleteNotInDb, $entries[$resourceFile->Name], $entryCommons, $entryStrings, $result);
+                $xmlString = $this->exportXmlString(file_get_contents($pathResFile), $deleteNotInDb, $resource, $entries[$resourceFile->Name], $entryCommons, $entryStrings, $result);
             }
         }
 

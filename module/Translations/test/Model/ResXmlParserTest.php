@@ -18,6 +18,9 @@ use PHPUnit\Framework\TestCase;
 use Translations\Model\ResXmlParser;
 use Translations\Model\ResXmlParserExportResult;
 use Translations\Model\ResourceFileEntry;
+use Translations\Model\AppResource;
+use Translations\Model\EntryCommon;
+use Translations\Model\EntryString;
 
 class ResXmlParserTest extends TestCase
 {
@@ -85,7 +88,20 @@ class ResXmlParserTest extends TestCase
     private $resXmlParser;
 
     /**
-     * Initialises an ResXmlParser object for tests.
+     * Generates an AppResource object.
+     *
+     * @param bool $default
+     * @return \Translations\Model\AppResource
+     */
+    private function getAppResource(bool $default)
+    {
+        return new AppResource([
+            'name' => ($default) ? 'values' : 'values-de',
+        ]);
+    }
+
+    /**
+     * Initialises a ResXmlParser object for tests.
      *
      * @return ResXmlParser
      */
@@ -122,6 +138,7 @@ class ResXmlParserTest extends TestCase
     {
         return new ResourceFileEntry([
             'resource_type_id' => -1,
+            'translatable' => 1,
         ]);
     }
 
@@ -259,7 +276,7 @@ class ResXmlParserTest extends TestCase
     {
         $resXmlParser = $this->getResXmlParser();
         $result = new ResXmlParserExportResult();
-        $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, new \ArrayObject(), new \ArrayObject(), new \ArrayObject(), $result]);
+        $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, new AppResource(), new \ArrayObject(), new \ArrayObject(), new \ArrayObject(), $result]);
         $this->assertEquals($this->emptyResXML, $exportedXmlString);
         $this->assertEquals($result->entriesProcessed, 0);
         $this->assertEquals($result->entriesSkippedUnknownType, 0);
@@ -275,7 +292,7 @@ class ResXmlParserTest extends TestCase
         $entries = new \ArrayObject([
             $this->getInvalidResourceFileEntry(),
         ]);
-        $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, $entries, new \ArrayObject(), new \ArrayObject(), $result]);
+        $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, new AppResource(), $entries, new \ArrayObject(), new \ArrayObject(), $result]);
         $this->assertEquals($this->emptyResXML, $exportedXmlString);
         $this->assertEquals($result->entriesProcessed, 0);
         $this->assertEquals($result->entriesSkippedUnknownType, 1);
@@ -296,9 +313,96 @@ class ResXmlParserTest extends TestCase
         $entries = new \ArrayObject([
             $this->getInvalidResourceFileEntry(),
         ]);
-        $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, $entries, new \ArrayObject(), new \ArrayObject(), $result]);
+        $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, new AppResource(), $entries, new \ArrayObject(), new \ArrayObject(), $result]);
         $this->assertEquals($this->emptyResXML, $exportedXmlString);
         $this->assertEquals($result->entriesProcessed, 0);
         $this->assertEquals($result->entriesSkippedUnknownType, 1);
+    }
+
+    /**
+     * @covers \Translations\Model\ResXmlParser::exportXmlString
+     */
+    public function testExportStringEntryWithDescription()
+    {
+        $resXmlParser = $this->getResXmlParser();
+        $entry = new ResourceFileEntry([
+            'id' => 1,
+            'resource_type_id' => 1,
+            'name' => 'example_string',
+            'product' => 'default',
+            'description' => 'Example description',
+            'translatable' => 1,
+        ]);
+        $entries = new \ArrayObject([$entry]);
+        $entryCommon = new EntryCommon([
+            'id' => 1,
+            'resource_file_entry_id' => '1',
+        ]);
+        $entriesCommon = new \ArrayObject([1 => $entryCommon]);
+        $entryString = new EntryString([
+            'entry_common_id' => 1,
+            'value' => 'Example value',
+        ]);
+        $entriesString = new \ArrayObject([1 => $entryString]);
+        $result = new ResXmlParserExportResult();
+
+        $expectedXmlString = '<?xml version="1.0" encoding="utf-8"?>' . "\n" .
+            '<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">' . "\n" .
+            '  <string name="example_string" product="default" description="Example description">Example value</string>' . "\n" .
+            '</resources>' . "\n";
+        $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, $this->getAppResource(true), $entries, $entriesCommon, $entriesString, $result]);
+        $this->assertEquals($expectedXmlString, $exportedXmlString);
+        $this->assertEquals($result->entriesProcessed, 1);
+        $this->assertEquals($result->entriesSkippedUnknownType, 0);
+
+        $expectedXmlString = '<?xml version="1.0" encoding="utf-8"?>' . "\n" .
+            '<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">' . "\n" .
+            '  <string name="example_string" product="default">Example value</string>' . "\n" .
+            '</resources>' . "\n";
+        $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, $this->getAppResource(false), $entries, $entriesCommon, $entriesString, $result]);
+        $this->assertEquals($expectedXmlString, $exportedXmlString);
+        $this->assertEquals($result->entriesProcessed, 2);
+        $this->assertEquals($result->entriesSkippedUnknownType, 0);
+    }
+
+    /**
+     * @covers \Translations\Model\ResXmlParser::exportXmlString
+     */
+    public function testExportStringEntryNotTranslatable()
+    {
+        $resXmlParser = $this->getResXmlParser();
+        $entry = new ResourceFileEntry([
+            'id' => 1,
+            'resource_type_id' => 1,
+            'name' => 'example_string',
+            'product' => 'default',
+            'translatable' => 0,
+        ]);
+        $entries = new \ArrayObject([$entry]);
+        $entryCommon = new EntryCommon([
+            'id' => 1,
+            'resource_file_entry_id' => '1',
+        ]);
+        $entriesCommon = new \ArrayObject([1 => $entryCommon]);
+        $entryString = new EntryString([
+            'entry_common_id' => 1,
+            'value' => 'Example value',
+        ]);
+        $entriesString = new \ArrayObject([1 => $entryString]);
+        $result = new ResXmlParserExportResult();
+
+        $expectedXmlString = '<?xml version="1.0" encoding="utf-8"?>' . "\n" .
+            '<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">' . "\n" .
+            '  <string name="example_string" product="default">Example value</string>' . "\n" .
+            '</resources>' . "\n";
+        $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, $this->getAppResource(true), $entries, $entriesCommon, $entriesString, $result]);
+        $this->assertEquals($expectedXmlString, $exportedXmlString);
+        $this->assertEquals($result->entriesProcessed, 1);
+        $this->assertEquals($result->entriesSkippedUnknownType, 0);
+
+        $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, $this->getAppResource(false), $entries, $entriesCommon, $entriesString, $result]);
+        $this->assertEquals($this->emptyResXML, $exportedXmlString);
+        $this->assertEquals($result->entriesProcessed, 1);
+        $this->assertEquals($result->entriesSkippedUnknownType, 0);
     }
 }
