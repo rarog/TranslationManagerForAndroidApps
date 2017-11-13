@@ -15,12 +15,12 @@
 namespace TranslationsTest\Model;
 
 use PHPUnit\Framework\TestCase;
-use Translations\Model\ResXmlParser;
-use Translations\Model\ResXmlParserExportResult;
-use Translations\Model\ResourceFileEntry;
 use Translations\Model\AppResource;
 use Translations\Model\EntryCommon;
 use Translations\Model\EntryString;
+use Translations\Model\ResXmlParser;
+use Translations\Model\ResXmlParserExportResult;
+use Translations\Model\ResourceFileEntry;
 
 class ResXmlParserTest extends TestCase
 {

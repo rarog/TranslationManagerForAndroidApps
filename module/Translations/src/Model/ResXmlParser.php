@@ -228,9 +228,16 @@ class ResXmlParser implements AppHelperInterface
             $resNode->appendChild($newNode);
         }
 
-        $oldDoc = new Document($oldXmlString);
+        if (! $deleteNotInDb) {
+            $oldDoc = new Document($oldXmlString);
+            $query = new Query();
+            $nodes = $query->execute('/resources/*[@name]', $dom);
+            $resourceTypes = $this->getResourceTypes();
 
-        // TODO: Implement merging of other nodes from original file
+            foreach ($nodes as $node) {
+                // TODO: Implement merging of other nodes from original file
+            }
+        }
 
         return $newDoc->saveXML();
     }
@@ -249,6 +256,38 @@ class ResXmlParser implements AppHelperInterface
         $doc->appendChild($resources);
 
         return $doc;
+    }
+
+    /**
+     * Returns node attribute value or false if attribute doesn't exist.
+     *
+     * @param \DOMElement $node
+     * @param string $attributeName
+     * @return boolean|string
+     */
+    private function getNodeAttributeValue(\DOMElement $node, string $attributeName)
+    {
+        if (! $node->hasAttribute($attributeName)) {
+            return false;
+        }
+
+        return $node->getAttribute($attributeName);
+    }
+
+    /**
+     * Returns node product attribute value or "default" if doesn't exist.
+     *
+     * @param \DOMElement $node
+     * @return string
+     */
+    private function getNodeProductAttributeValue(\DOMElement $node)
+    {
+        $product = $this->getNodeAttributeValue($node, 'product');
+        if (($product === false) || empty($product)) {
+            return 'default';
+        }
+
+        return $product;
     }
 
     /**
@@ -322,44 +361,31 @@ class ResXmlParser implements AppHelperInterface
         $resourceTypes = $this->getResourceTypes();
 
         foreach ($nodes as $node) {
-            /**
-             * @var \DOMNamedNodeMap $attributes
-             */
-            $attributes = $node->attributes;
-            if (is_null($attributes)) {
+            $name = $this->getNodeAttributeValue($node, 'name');
+            if ($name === false) {
                 continue;
             }
 
-            $attribute = $attributes->getNamedItem('name');
-            if (is_null($attribute)) {
-                continue;
-            }
-            $name = $attribute->value;
-
-            $product = 'default';
-            $attribute = $attributes->getNamedItem('product');
-            if (! is_null($attribute) && ! empty($attribute->value)) {
-                $product = $attribute->value;
-            }
+            $product = $this->getNodeProductAttributeValue($node);
 
             $description = '';
             $translatable = true;
             if ($resource->Name === 'values') {
-                $attribute = $attributes->getNamedItem('translatable');
-                if (! is_null($attribute)) {
-                    $translatable = $attribute->value !== 'false';
+                $attributeValue = $this->getNodeAttributeValue($node, 'translatable');
+                if ($attributeValue !== false) {
+                    $translatable = $attributeValue !== 'false';
                 }
 
-                $attribute = $attributes->getNamedItem('translation_description');
-                if (! is_null($attribute)) {
-                    $description = $attribute->value;
+                $attributeValue = $this->getNodeAttributeValue($node, 'translation_description');
+                if ($attributeValue !== false) {
+                    $description = $attributeValue;
                 } else {
                     $previousSibling = $node->previousSibling;
                     while (! is_null($previousSibling) && ($previousSibling instanceof \DOMText) && $previousSibling->isWhitespaceInElementContent()) {
                         $previousSibling = $previousSibling->previousSibling;
                     }
                     if (! is_null($previousSibling) && ($previousSibling instanceof \DOMComment)) {
-                        $description = $previousSibling->textContent;
+                        $description = trim($previousSibling->textContent);
                     }
                 }
             }
@@ -368,14 +394,14 @@ class ResXmlParser implements AppHelperInterface
 
             if (! array_key_exists($combinedKey, $entries)) {
                 if ($resource->Name === 'values') {
-                    $resourceFileEntry = new ResourceFileEntry();
-                    $resourceFileEntry->AppResourceFileId = $resourceFile->Id;
-                    $resourceFileEntry->ResourceTypeId = array_search($node->tagName, $resourceTypes);
-                    $resourceFileEntry->Name = $name;
-                    $resourceFileEntry->Product = $product;
-                    $resourceFileEntry->Description = $description;
-                    $resourceFileEntry->Translatable = $translatable;
-                    $entries[$combinedKey] = $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
+                    $entry = new ResourceFileEntry();
+                    $entry->AppResourceFileId = $resourceFile->Id;
+                    $entry->ResourceTypeId = array_search($node->tagName, $resourceTypes);
+                    $entry->Name = $name;
+                    $entry->Product = $product;
+                    $entry->Description = $description;
+                    $entry->Translatable = $translatable;
+                    $entries[$combinedKey] = $this->resourceFileEntryTable->saveResourceFileEntry($entry);
                 } else {
                     $result->entriesSkippedNotInDefault++;
                     continue;
@@ -389,45 +415,45 @@ class ResXmlParser implements AppHelperInterface
             /**
              * @var ResourceFileEntry $resourceFileEntry
              */
-            $resourceFileEntry = $entries[$combinedKey];
+            $entry = $entries[$combinedKey];
             $entryAlreadyUpdated = false;
 
             if ($resource->Name === 'values') {
-                if ($resourceFileEntry->ResourceTypeId !== array_search($node->tagName, $resourceTypes)) {
-                    $resourceFileEntry->Deleted = true;
-                    $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
+                if ($entry->ResourceTypeId !== array_search($node->tagName, $resourceTypes)) {
+                    $entry->Deleted = true;
+                    $this->resourceFileEntryTable->saveResourceFileEntry($entry);
 
-                    $resourceFileEntry = new ResourceFileEntry();
-                    $resourceFileEntry->AppResourceFileId = $resourceFile->Id;
-                    $resourceFileEntry->ResourceTypeId = array_search($node->tagName, $resourceTypes);
-                    $resourceFileEntry->Name = $name;
-                    $resourceFileEntry->Product = $product;
-                    $resourceFileEntry->Description = $description;
-                    $resourceFileEntry->Translatable = $translatable;
-                    $entries[$combinedKey] = $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
-                } elseif ($resourceFileEntry->Description != $description || $resourceFileEntry->Translatable !== $translatable) {
-                    $resourceFileEntry->Description = $description;
-                    $resourceFileEntry->Translatable = $translatable;
-                    $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
+                    $entry = new ResourceFileEntry();
+                    $entry->AppResourceFileId = $resourceFile->Id;
+                    $entry->ResourceTypeId = array_search($node->tagName, $resourceTypes);
+                    $entry->Name = $name;
+                    $entry->Product = $product;
+                    $entry->Description = $description;
+                    $entry->Translatable = $translatable;
+                    $entries[$combinedKey] = $this->resourceFileEntryTable->saveResourceFileEntry($entry);
+                } elseif ($entry->Description != $description || $entry->Translatable !== $translatable) {
+                    $entry->Description = $description;
+                    $entry->Translatable = $translatable;
+                    $this->resourceFileEntryTable->saveResourceFileEntry($entry);
 
                     $result->entriesUpdated++;
                     $entryAlreadyUpdated = true;
                 }
             }
 
-            if ($resourceFileEntry->ResourceTypeId === array_search('string', $resourceTypes)) {
-                if (! array_key_exists($resourceFileEntry->Id, $entriesCommon)) {
+            if ($entry->ResourceTypeId === array_search('string', $resourceTypes)) {
+                if (! array_key_exists($entry->Id, $entriesCommon)) {
                     $entryCommon = new EntryCommon();
                     $entryCommon->AppResourceId = $resource->Id;
-                    $entryCommon->ResourceFileEntryId = $resourceFileEntry->Id;
+                    $entryCommon->ResourceFileEntryId = $entry->Id;
                     $entryCommon->LastChange = 0;
 
                     $entryCommon = $this->entryCommonTable->saveEntryCommon($entryCommon);
 
-                    $entriesCommon[$resourceFileEntry->Id] = $entryCommon;
+                    $entriesCommon[$entry->Id] = $entryCommon;
                 }
 
-                $entryCommon = $entriesCommon[$resourceFileEntry->Id];
+                $entryCommon = $entriesCommon[$entry->Id];
 
                 if (! array_key_exists($entryCommon->Id, $entriesString)) {
                     $entryString = new EntryString();
@@ -471,12 +497,12 @@ Exception trace:
             $result->entriesSkippedExistOnlyInDb += count($entriesDbOnly);
 
             if ($deleteDbOnly) {
-                foreach ($resourceFileEntryKeys[$resourceFile->Name] as $key => $resourceFileEntry) {
-                    $resourceFileEntry->Deleted = true;
-                    $this->resourceFileEntryTable->saveResourceFileEntry($resourceFileEntry);
+                foreach ($entriesDbOnly as $key => $entry) {
+                    $entry->Deleted = true;
+                    $this->resourceFileEntryTable->saveResourceFileEntry($entry);
 
-                    if (array_key_exists($key, $resourceFileEntries[$resourceFile->Name])) {
-                        unset($resourceFileEntries[$resourceFile->Name][$key]);
+                    if (array_key_exists($key, $entries)) {
+                        unset($entries[$key]);
                     }
                 }
             }
