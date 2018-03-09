@@ -175,7 +175,7 @@ class ResourceFileEntry extends AbstractDbTableEntry implements ArraySerializabl
     }
 
     /**
-     * @return null|boolean
+     * @return boolean
      */
     public function getDeleted() {
         if (is_null($this->deleted)) {
