@@ -20,10 +20,13 @@ use UserRbac\Mapper\UserRoleLinkerMapper;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
+use Zend\EventManager\ListenerAggregateTrait;
 use ZfcUser\Mapper\User as UserMapper;
 
 class SetupListener implements ListenerAggregateInterface
 {
+    use ListenerAggregateTrait;
+
     /**
      * @var UserMapper
      */
@@ -45,11 +48,6 @@ class SetupListener implements ListenerAggregateInterface
     private $userSettingsTable;
 
     /**
-     * @var callable
-     */
-    private $event;
-
-    /**
      * Constructor
      *
      * @param UserMapper $userMapper
@@ -57,8 +55,12 @@ class SetupListener implements ListenerAggregateInterface
      * @param TeamTable $teamTable
      * @param UserSettingsTable $userSettingsTable
      */
-    public function __construct(UserMapper $userMapper, UserRoleLinkerMapper $userRoleLinkerMapper, TeamTable $teamTable, UserSettingsTable $userSettingsTable)
-    {
+    public function __construct(
+        UserMapper $userMapper,
+        UserRoleLinkerMapper $userRoleLinkerMapper,
+        TeamTable $teamTable,
+        UserSettingsTable $userSettingsTable
+    ) {
         $this->userMapper = $userMapper;
         $this->userRoleLinkerMapper = $userRoleLinkerMapper;
         $this->teamTable = $teamTable;
@@ -71,21 +73,12 @@ class SetupListener implements ListenerAggregateInterface
      */
     public function attach(EventManagerInterface $events, $priority = 1)
     {
-        $this->event = function ($e) {
-            return $this->onUserCreated($e);
-        };
-        $events->getSharedManager()
-            ->attach('Setup\Controller\SetupController', 'userCreated', $this->event, $priority);
-    }
-
-    /**
-     * {@inheritDoc}
-     * @see \Zend\EventManager\ListenerAggregateInterface::detach()
-     */
-    public function detach(EventManagerInterface $events)
-    {
-        $events->getSharedManager()->detach($this->event);
-        unset($this->event);
+        $this->listeners[] = $events->getSharedManager()->attach(
+            'Setup\Controller\SetupController',
+            'userCreated',
+            [$this, 'onUserCreated'],
+            $priority
+        );
     }
 
     /**
@@ -93,7 +86,7 @@ class SetupListener implements ListenerAggregateInterface
      *
      * @param EventInterface $event
      */
-    private function onUserCreated(EventInterface $event)
+    public function onUserCreated(EventInterface $event)
     {
         $user = $event->getParam('user', null);
         if ($user instanceof \ZfcUser\Entity\UserInterface) {

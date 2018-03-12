@@ -25,7 +25,7 @@ return [
         ],
     ],
     'listeners' => [
-        Listener\SetupListener::class
+        Listener\SetupListener::class,
     ],
     'navigation' => [
         'default' => [
