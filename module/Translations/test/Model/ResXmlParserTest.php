@@ -52,18 +52,18 @@ class ResXmlParserTest extends TestCase
 
     // font_size_preview_text_body - https://github.com/android/platform_packages_apps_settings/blob/nougat-release/res/values/strings.xml
     private $multilineStringWithRealNewlines = "\n" .
-            '    Even with eyes protected by the green spectacles Dorothy and her friends were at first dazzled by the brilliancy of the wonderful City.' . "\n" .
-            '    The streets were lined with beautiful houses all built of green marble and studded everywhere with sparkling emeralds.' . "\n" .
-            '    They walked over a pavement of the same green marble, and where the blocks were joined together were rows of emeralds, set closely, and glittering in the brighness of the sun.' . "\n" .
-            '    The window panes were of green glass; even the sky above the City had a green tint, and the rays of the sun were green.' . "\n" .
-            '    \n\nThere were many people, men, women and children, walking about, and these were all dressed in green clothes and had greenish skins.' . "\n" .
-            '    They looked at Dorothy and her strangely assorted company with wondering eyes, and the children all ran away and hid behind their mothers when they saw the Lion; but no one spoke to them.' . "\n" .
-            '    Many shops stood in the street, and Dorothy saw that everything in them was green.' . "\n" .
-            '    Green candy and green pop-corn were offered for sale, as well as green shoes, green hats and green clothes of all sorts.' . "\n" .
-            '    At one place a man was selling green lemonade, and when the children bought it Dorothy could see that they paid for it with green pennies.' . "\n" .
-            '    \n\nThere seemed to be no horses nor animals of any kind; the men carried things around in little green carts, which they pushed before them.' . "\n" .
-            '    Everyone seeemed happy and contented and prosperous.' . "\n" .
-            '    ';
+        '    Even with eyes protected by the green spectacles Dorothy and her friends were at first dazzled by the brilliancy of the wonderful City.' . "\n" .
+        '    The streets were lined with beautiful houses all built of green marble and studded everywhere with sparkling emeralds.' . "\n" .
+        '    They walked over a pavement of the same green marble, and where the blocks were joined together were rows of emeralds, set closely, and glittering in the brighness of the sun.' . "\n" .
+        '    The window panes were of green glass; even the sky above the City had a green tint, and the rays of the sun were green.' . "\n" .
+        '    \n\nThere were many people, men, women and children, walking about, and these were all dressed in green clothes and had greenish skins.' . "\n" .
+        '    They looked at Dorothy and her strangely assorted company with wondering eyes, and the children all ran away and hid behind their mothers when they saw the Lion; but no one spoke to them.' . "\n" .
+        '    Many shops stood in the street, and Dorothy saw that everything in them was green.' . "\n" .
+        '    Green candy and green pop-corn were offered for sale, as well as green shoes, green hats and green clothes of all sorts.' . "\n" .
+        '    At one place a man was selling green lemonade, and when the children bought it Dorothy could see that they paid for it with green pennies.' . "\n" .
+        '    \n\nThere seemed to be no horses nor animals of any kind; the men carried things around in little green carts, which they pushed before them.' . "\n" .
+        '    Everyone seeemed happy and contented and prosperous.' . "\n" .
+        '    ';
     private $multilineStringWithRealNewlinesDecoded = 'Even with eyes protected by the green spectacles Dorothy and her friends were at first dazzled by the brilliancy of the wonderful City. The streets were lined with beautiful houses all built of green marble and studded everywhere with sparkling emeralds. They walked over a pavement of the same green marble, and where the blocks were joined together were rows of emeralds, set closely, and glittering in the brighness of the sun. The window panes were of green glass; even the sky above the City had a green tint, and the rays of the sun were green.' . "\n" .
         "\n" .
         'There were many people, men, women and children, walking about, and these were all dressed in green clothes and had greenish skins. They looked at Dorothy and her strangely assorted company with wondering eyes, and the children all ran away and hid behind their mothers when they saw the Lion; but no one spoke to them. Many shops stood in the street, and Dorothy saw that everything in them was green. Green candy and green pop-corn were offered for sale, as well as green shoes, green hats and green clothes of all sorts. At one place a man was selling green lemonade, and when the children bought it Dorothy could see that they paid for it with green pennies.' . "\n" .
@@ -116,7 +116,7 @@ class ResXmlParserTest extends TestCase
                 $this->createMock(\Translations\Model\EntryCommonTable::class),
                 $this->createMock(\Translations\Model\EntryStringTable::class),
                 $this->createMock(\Zend\Log\Logger::class)
-            );
+                );
 
             $reflection = new \ReflectionClass($this->resXmlParser);
             $resourceTypes = $reflection->getProperty('resourceTypes');
@@ -399,10 +399,94 @@ class ResXmlParserTest extends TestCase
         $this->assertEquals($expectedXmlString, $exportedXmlString);
         $this->assertEquals($result->entriesProcessed, 1);
         $this->assertEquals($result->entriesSkippedUnknownType, 0);
+        $this->assertEquals($result->oldEntriesPreservedUnknownType, 0);
 
         $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, $this->getAppResource(false), $entries, $entriesCommon, $entriesString, $result]);
         $this->assertEquals($this->emptyResXML, $exportedXmlString);
         $this->assertEquals($result->entriesProcessed, 1);
         $this->assertEquals($result->entriesSkippedUnknownType, 0);
+        $this->assertEquals($result->oldEntriesPreservedUnknownType, 0);
+    }
+
+    public function testExportEntriesIgnoringWrongOldEntriesXml()
+    {
+        $resXmlParser = $this->getResXmlParser();
+        $entry = new ResourceFileEntry([
+            'id' => 1,
+            'resource_type_id' => 1,
+            'name' => 'example_string',
+            'product' => 'default',
+            'translatable' => 0,
+        ]);
+        $entries = new \ArrayObject([$entry]);
+        $entryCommon = new EntryCommon([
+            'id' => 1,
+            'resource_file_entry_id' => '1',
+        ]);
+        $entriesCommon = new \ArrayObject([1 => $entryCommon]);
+        $entryString = new EntryString([
+            'entry_common_id' => 1,
+            'value' => 'Example value',
+        ]);
+        $entriesString = new \ArrayObject([1 => $entryString]);
+        $result = new ResXmlParserExportResult();
+
+        $oldXmlString = '<?xml version="1.0" encoding="utf-8"?>' . "\n" .
+            '<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">' . "\n" .
+            '  <unknownEntry random="attribute">Whatever value</unknownEntry>' . "\n" .
+            '</wrongEndTag>' . "\n";
+
+        $expectedXmlString = '<?xml version="1.0" encoding="utf-8"?>' . "\n" .
+            '<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">' . "\n" .
+            '  <string name="example_string" product="default">Example value</string>' . "\n" .
+            '</resources>' . "\n";
+        $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', [$oldXmlString, false, $this->getAppResource(true), $entries, $entriesCommon, $entriesString, $result]);
+        $this->assertEquals($expectedXmlString, $exportedXmlString);
+        $this->assertEquals($result->entriesProcessed, 1);
+        $this->assertEquals($result->entriesSkippedUnknownType, 0);
+        $this->assertEquals($result->oldEntriesPreservedUnknownType, 0);
+    }
+
+    /**
+     * @covers \Translations\Model\ResXmlParser::exportXmlString
+     */
+    public function testExportEntriesPreservingOldEntries()
+    {
+        $resXmlParser = $this->getResXmlParser();
+        $entry = new ResourceFileEntry([
+            'id' => 1,
+            'resource_type_id' => 1,
+            'name' => 'example_string',
+            'product' => 'default',
+            'translatable' => 0,
+        ]);
+        $entries = new \ArrayObject([$entry]);
+        $entryCommon = new EntryCommon([
+            'id' => 1,
+            'resource_file_entry_id' => '1',
+        ]);
+        $entriesCommon = new \ArrayObject([1 => $entryCommon]);
+        $entryString = new EntryString([
+            'entry_common_id' => 1,
+            'value' => 'Example value',
+        ]);
+        $entriesString = new \ArrayObject([1 => $entryString]);
+        $result = new ResXmlParserExportResult();
+
+        $oldXmlString = '<?xml version="1.0" encoding="utf-8"?>' . "\n" .
+            '<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">' . "\n" .
+            '  <unknownEntry random="attribute">Whatever value</unknownEntry>' . "\n" .
+            '</resources>' . "\n";
+
+        $expectedXmlString = '<?xml version="1.0" encoding="utf-8"?>' . "\n" .
+            '<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">' . "\n" .
+            '  <string name="example_string" product="default">Example value</string>' . "\n" .
+            '  <unknownEntry random="attribute">Whatever value</unknownEntry>' . "\n" .
+            '</resources>' . "\n";
+        $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', [$oldXmlString, false, $this->getAppResource(true), $entries, $entriesCommon, $entriesString, $result]);
+        $this->assertEquals($expectedXmlString, $exportedXmlString);
+        $this->assertEquals($result->entriesProcessed, 1);
+        $this->assertEquals($result->entriesSkippedUnknownType, 0);
+        $this->assertEquals($result->oldEntriesPreservedUnknownType, 1);
     }
 }

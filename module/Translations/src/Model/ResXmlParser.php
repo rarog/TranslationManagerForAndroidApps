@@ -17,6 +17,7 @@ namespace Translations\Model;
 use Translations\Model\Helper\AppHelperInterface;
 use Translations\Model\Helper\AppHelperTrait;
 use Translations\Model\Helper\FileHelper;
+use Zend\Dom\Exception\RuntimeException as ZendDomRuntimeException;
 use Zend\Dom\Document;
 use Zend\Dom\Document\Query;
 use Zend\Json\Json;
@@ -45,11 +46,13 @@ class ResXmlParserExportResult
 {
     public $entriesProcessed;
     public $entriesSkippedUnknownType;
+    public $oldEntriesPreservedUnknownType;
 
     public function __construct()
     {
         $this->entriesProcessed = 0;
         $this->entriesSkippedUnknownType = 0;
+        $this->oldEntriesPreservedUnknownType = 0;
     }
 }
 
@@ -229,12 +232,24 @@ class ResXmlParser implements AppHelperInterface
         }
 
         if (! $deleteNotInDb) {
-            $oldDoc = new Document($oldXmlString);
+            $oldDocDom = new Document($oldXmlString);
             $query = new Query();
-            $nodes = $query->execute('/resources/*[@name]', $dom);
+            try {
+                $nodes = $query->execute('/resources/*', $oldDocDom);
+            } catch (ZendDomRuntimeException $e) {
+                // An error occured while parsing XML, returning what we got.
+                return $newDoc->saveXML();
+            }
             $resourceTypes = $this->getResourceTypes();
 
             foreach ($nodes as $node) {
+                if (! array_search($node->tagName, $resourceTypes)) {
+                    $newNode = $newDoc->importNode($node, true);
+                    $resNode->appendChild($newNode);
+                    $result->oldEntriesPreservedUnknownType ++;
+                    continue;
+                }
+
                 // TODO: Implement merging of other nodes from original file
             }
         }
