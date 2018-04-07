@@ -408,6 +408,9 @@ class ResXmlParserTest extends TestCase
         $this->assertEquals($result->oldEntriesPreservedUnknownType, 0);
     }
 
+    /**
+     * @covers \Translations\Model\ResXmlParser::exportXmlString
+     */
     public function testExportEntriesIgnoringWrongOldEntriesXml()
     {
         $resXmlParser = $this->getResXmlParser();
