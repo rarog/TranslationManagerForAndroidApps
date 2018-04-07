@@ -107,10 +107,14 @@ class ResXmlParser implements AppHelperInterface
      */
     private $nodeSelector;
 
+    /**
+     * Adds child node from another document to the parent node
+     *
+     * @param \DomNode $node Parent node
+     * @param \DomNode $childNode New child node
+     */
     private function addChildNodeFromOtherDocument(\DomNode $node, \DomNode $childNode)
     {
-        //$node->Do
-        //$newNode = $doc->importNode($node, true);
         $node->appendChild($node->ownerDocument->importNode($childNode, true));
     }
 
@@ -212,9 +216,18 @@ class ResXmlParser implements AppHelperInterface
         $newDoc = $this->getEmptyResXML();
         $resNode = $newDoc->getElementsByTagName('resources')->item(0);
 
+        if (! $deleteNotInDb) {
+            $dbEntries = [];
+        }
+
         foreach ($entries as $entry) {
             if (($resource->getName() != 'values') && (! $entry->Translatable)) {
                 continue;
+            }
+
+            if (! $deleteNotInDb) {
+                $combinedKey = $entry->getName(). "\n" . $entry->getProduct();
+                $dbEntries[$combinedKey] = null;
             }
 
             if ($entry->ResourceTypeId === array_search('string', $resourceTypes)) {
@@ -268,7 +281,16 @@ class ResXmlParser implements AppHelperInterface
                     continue;
                 }
 
-                // TODO: Implement merging of other nodes from original file
+                $product = $this->getNodeProductAttributeValue($node);
+
+                $combinedKey = $name . "\n" . $product;
+                if (! array_key_exists($combinedKey, $dbEntries)) {
+                    $this->addChildNodeFromOtherDocument($resNode, $node);
+                    $result->oldEntriesPreservedKnownTypeEntryNotInDb++;
+                    continue;
+                }
+
+                // If code lands here, the entry was previously exported as db entry.
             }
         }
 
