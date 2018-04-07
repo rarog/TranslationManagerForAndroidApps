@@ -58,7 +58,7 @@ class ResourceFileEntry extends AbstractDbTableEntry implements ArraySerializabl
     private $description;
 
     /**
-     * @var null|boolean
+     * @var boolean
      */
     private $deleted;
 
@@ -188,9 +188,7 @@ class ResourceFileEntry extends AbstractDbTableEntry implements ArraySerializabl
      * @param null|boolean $deleted
      */
     public function setDeleted($deleted) {
-        $deleted = (boolean) $deleted;
-
-        $this->deleted = $deleted;
+        $this->deleted = (boolean) $deleted;
     }
 
     /**
