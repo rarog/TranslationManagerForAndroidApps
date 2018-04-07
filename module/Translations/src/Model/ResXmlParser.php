@@ -47,12 +47,14 @@ class ResXmlParserExportResult
     public $entriesProcessed;
     public $entriesSkippedUnknownType;
     public $oldEntriesPreservedUnknownType;
+    public $oldEntriesPreservedKnownTypeEntryNotInDb;
 
     public function __construct()
     {
         $this->entriesProcessed = 0;
         $this->entriesSkippedUnknownType = 0;
         $this->oldEntriesPreservedUnknownType = 0;
+        $this->oldEntriesPreservedKnownTypeEntryNotInDb = 0;
     }
 }
 
@@ -104,6 +106,13 @@ class ResXmlParser implements AppHelperInterface
      * @var boolean|string
      */
     private $nodeSelector;
+
+    private function addChildNodeFromOtherDocument(\DomNode $node, \DomNode $childNode)
+    {
+        //$node->Do
+        //$newNode = $doc->importNode($node, true);
+        $node->appendChild($node->ownerDocument->importNode($childNode, true));
+    }
 
     /**
      * Decodes the translation string into readable form
@@ -243,10 +252,19 @@ class ResXmlParser implements AppHelperInterface
             $resourceTypes = $this->getResourceTypes();
 
             foreach ($nodes as $node) {
+                // Unknown nodes
                 if (! array_search($node->tagName, $resourceTypes)) {
-                    $newNode = $newDoc->importNode($node, true);
-                    $resNode->appendChild($newNode);
-                    $result->oldEntriesPreservedUnknownType ++;
+                    $this->addChildNodeFromOtherDocument($resNode, $node);
+                    $result->oldEntriesPreservedUnknownType++;
+                    continue;
+                }
+
+                $name = $this->getNodeAttributeValue($node, 'name');
+
+                // Known nodes without name attribute
+                if ($name === false) {
+                    $this->addChildNodeFromOtherDocument($resNode, $node);
+                    $result->oldEntriesPreservedKnownTypeEntryNotInDb++;
                     continue;
                 }
 

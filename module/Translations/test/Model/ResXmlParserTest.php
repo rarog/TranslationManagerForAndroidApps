@@ -481,18 +481,21 @@ class ResXmlParserTest extends TestCase
         $oldXmlString = '<?xml version="1.0" encoding="utf-8"?>' . "\n" .
             '<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">' . "\n" .
             '  <unknownEntry random="attribute">Whatever value</unknownEntry>' . "\n" .
+            '  <string>Entry without name attribute</string>' . "\n" .
             '</resources>' . "\n";
 
         $expectedXmlString = '<?xml version="1.0" encoding="utf-8"?>' . "\n" .
             '<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">' . "\n" .
             '  <string name="example_string" product="default">Example value</string>' . "\n" .
             '  <unknownEntry random="attribute">Whatever value</unknownEntry>' . "\n" .
+            '  <string>Entry without name attribute</string>' . "\n" .
             '</resources>' . "\n";
         $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', [$oldXmlString, false, $this->getAppResource(true), $entries, $entriesCommon, $entriesString, $result]);
         $this->assertEquals($expectedXmlString, $exportedXmlString);
         $this->assertEquals($result->entriesProcessed, 1);
         $this->assertEquals($result->entriesSkippedUnknownType, 0);
         $this->assertEquals($result->oldEntriesPreservedUnknownType, 1);
+        $this->assertEquals($result->oldEntriesPreservedKnownTypeEntryNotInDb, 1);
     }
 
     /**
