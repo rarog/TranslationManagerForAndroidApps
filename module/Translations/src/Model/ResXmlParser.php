@@ -372,7 +372,12 @@ class ResXmlParser implements AppHelperInterface
 
         $dom = new Document($xmlString);
         $query = new Query();
-        $nodes = $query->execute($querySelector, $dom);
+        try {
+            $nodes = $query->execute($querySelector, $dom);
+        } catch (ZendDomRuntimeException $e) {
+            // An error occured while parsing XML.
+            return;
+        }
         $resourceTypes = $this->getResourceTypes();
 
         foreach ($nodes as $node) {

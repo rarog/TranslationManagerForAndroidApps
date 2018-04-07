@@ -16,10 +16,12 @@ namespace TranslationsTest\Model;
 
 use PHPUnit\Framework\TestCase;
 use Translations\Model\AppResource;
+use Translations\Model\AppResourceFile;
 use Translations\Model\EntryCommon;
 use Translations\Model\EntryString;
 use Translations\Model\ResXmlParser;
 use Translations\Model\ResXmlParserExportResult;
+use Translations\Model\ResXmlParserImportResult;
 use Translations\Model\ResourceFileEntry;
 
 class ResXmlParserTest extends TestCase
@@ -491,5 +493,26 @@ class ResXmlParserTest extends TestCase
         $this->assertEquals($result->entriesProcessed, 1);
         $this->assertEquals($result->entriesSkippedUnknownType, 0);
         $this->assertEquals($result->oldEntriesPreservedUnknownType, 1);
+    }
+
+    /**
+     * @covers \Translations\Model\ResXmlParser::importXmlString
+     */
+    public function testImportEntriesIgnoringWrongXml()
+    {
+        $resXmlParser = $this->getResXmlParser();
+
+        $result = new ResXmlParserImportResult();
+
+        $brokenXmlString = '<?xml version="1.0" encoding="utf-8"?>' . "\n" .
+            '<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">' . "\n" .
+            '  <string name="the_name">The value</string>' . "\n" .
+            '</wrongEndTag>' . "\n";
+
+        $exportedXmlString = $this->invokeMethod($resXmlParser, 'importXmlString', [$brokenXmlString, false, $this->getAppResource(true), new AppResourceFile(), new \ArrayObject([]), new \ArrayObject([]), new \ArrayObject([]), $result]);
+        $this->assertEquals($result->entriesProcessed, 0);
+        $this->assertEquals($result->entriesUpdated, 0);
+        $this->assertEquals($result->entriesSkippedExistOnlyInDb, 0);
+        $this->assertEquals($result->entriesSkippedNotInDefault, 0);
     }
 }
