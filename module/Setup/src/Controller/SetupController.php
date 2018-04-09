@@ -17,6 +17,7 @@ namespace Setup\Controller;
 use Setup\Model\DatabaseHelper;
 use Zend\Cache\Storage\Adapter\AbstractAdapter as CacheAdapter;
 use Zend\Config\Config;
+use Zend\Http\PhpEnvironment\Response;
 use Zend\Config\Writer\PhpArray as ConfigPhpArray;
 use Zend\Math\Rand;
 use Zend\ModuleManager\Listener\ListenerOptions;
@@ -273,16 +274,13 @@ class SetupController extends AbstractActionController
     }
 
     /**
-     * Generates error 403 and returns view model with disabled layout
+     * Generates error 403
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Zend\Http\PhpEnvironment\Response
      */
     private function throw403()
     {
-        $this->getResponse()->setStatusCode(403);
-        $viewModel = new ViewModel();
-        $viewModel->setTerminal(true);
-        return $viewModel;
+        return $this->getResponse()->setStatusCode(Response::STATUS_CODE_403);
     }
 
     /**
