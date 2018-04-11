@@ -19,12 +19,13 @@ use Application\Model\UserLanguages;
 use Application\Model\UserLanguagesTable;
 use Application\Model\UserSettings;
 use Application\Model\UserSettingsTable;
+use Application\Model\UserTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
-use Zend\Session\Container;
 
-class SettingsController extends AbstractActionController
+class UsersController extends AbstractActionController
 {
+
     /**
      * @var UserLanguagesTable
      */
@@ -36,6 +37,11 @@ class SettingsController extends AbstractActionController
     private $userSettingsTable;
 
     /**
+     * @var UserTable
+     */
+    private $userTable;
+
+    /**
      * @var Translator
      */
     private $translator;
@@ -45,26 +51,41 @@ class SettingsController extends AbstractActionController
      *
      * @param UserLanguagesTable $userLanguagesTable
      * @param UserSettingsTable $userSettingsTable
+     * @param UserTable $userTable
      * @param Translator $translator
      */
     public function __construct(
         UserLanguagesTable $userLanguagesTable,
         UserSettingsTable $userSettingsTable,
+        UserTable $userTable,
         Translator $translator
     ) {
         $this->userLanguagesTable = $userLanguagesTable;
         $this->userSettingsTable = $userSettingsTable;
+        $this->userTable = $userTable;
         $this->translator = $translator;
     }
 
     public function indexAction()
     {
-        return $this->redirect()->toRoute('home');
+        return [
+            'users' => $this->userTable->fetchAll(),
+        ];
     }
 
     public function userlanguagesAction()
     {
-        $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
+        $userId = (int) $this->params()->fromRoute('userId', 0);
+
+        if (0 === $userId) {
+            return $this->redirect()->toRoute('users', ['action' => 'index']);
+        }
+
+        try {
+            $user = $this->userTable->getUser($userId);
+        } catch (\RuntimeException $e) {
+            return $this->redirect()->toRoute('users', ['action' => 'index']);
+        }
 
         $localeNamesAll = $this->configHelp('settings')->locale_names_primary->toArray();
         $localeNames = $localeNamesAll[$this->translator->getLocale()];
@@ -105,17 +126,6 @@ class SettingsController extends AbstractActionController
 
         $userSettings->Locale = $form->get('interfacelanguage')->getValue();
         $this->userSettingsTable->saveUserSettings($userSettings);
-
-        $userSettingsContainer = new Container('userSettings');
-        if (isset($userSettingsContainer->init) &&
-            ($userSettingsContainer->locale !== $userSettings->Locale)) {
-            // Let bootstrapUserSettings renew the settings cache on next page load.
-            unset($userSettingsContainer->init);
-
-            // Set the locale for current output.
-            $this->translator->setLocale($userSettings->locale);
-            $this->translator->setFallbackLocale(\Locale::getPrimaryLanguage($userSettings->locale));
-        }
 
         $newUserLanguages = $form->get('languages')->getValue();
 

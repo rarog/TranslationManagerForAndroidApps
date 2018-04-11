@@ -15,6 +15,7 @@
 namespace Application;
 
 use Zend\Router\Http\Literal;
+use Zend\Router\Http\Segment;
 use Zend\ServiceManager\Factory\InvokableFactory;
 
 return [
@@ -144,7 +145,31 @@ return [
                         'options' => [
                             'route' => '/userlanguages',
                             'defaults' => [
-                                'controller' => Controller\SettingsController::class,
+                                'action' => 'userlanguages',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'users' => [
+                'type' => Literal::class,
+                'options' => [
+                    'route' => '/users',
+                    'defaults' => [
+                        'controller' => Controller\UsersController::class,
+                        'action' => 'index',
+                    ]
+                ],
+                'may_terminate' => true,
+                'child_routes' => [
+                    'userlanguages' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => '/userlanguages/user/:userId',
+                            'constraints' => [
+                                'userId' => '[0-9]+',
+                            ],
+                            'defaults' => [
                                 'action' => 'userlanguages',
                             ],
                         ],

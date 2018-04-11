@@ -1,0 +1,21 @@
+<?php
+$title = $this->translate('My languages');
+$this->headTitle($title);
+$this->bootstrapSelectHelper();
+?>
+<h1><?= $this->escapeHtml($title) ?></h1>
+<div>
+<?php
+foreach ($messages as $message) {
+    echo $this->partial('partial/alert.phtml', [
+        'canClose' => $message['canClose'],
+        'message'  => $message['message'],
+        'type'     => $message['type'],
+    ]);
+}
+?>
+</div>
+<?php
+$form->setAttribute('action', $this->url('settings/userlanguages'));
+echo $this->form($form, \TwbBundle\Form\View\Helper\TwbBundleForm::LAYOUT_HORIZONTAL);
+?>

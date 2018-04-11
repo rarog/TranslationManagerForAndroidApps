@@ -68,6 +68,11 @@ return [
                         'guest',
                     ],
                 ],
+                'users*' => [
+                    'permissions' => [
+                        'users.view',
+                    ],
+                ],
                 'team/add' => [
                     'permissions' => [
                         'team.view',
@@ -292,6 +297,7 @@ return [
                         'teammember.add',
                         'teammember.remove',
                         'teammember.view',
+                        'users.view',
                     ],
                 ],
                 'superuser' => [
