@@ -23,6 +23,7 @@ return [
         'factories' => [
             Controller\IndexController::class => InvokableFactory::class,
             Controller\SettingsController::class => Factory\Controller\SettingsControllerFactory::class,
+            Controller\UsersController::class => Factory\Controller\UsersControllerFactory::class,
         ],
     ],
     'listeners' => [
