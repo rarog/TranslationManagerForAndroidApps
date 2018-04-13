@@ -89,4 +89,65 @@ class UserTable
 
         return $row;
     }
+
+    /**
+     * Gets all entries with additional details
+     *
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
+    public function fetchAllPlus()
+    {
+        return $this->tableGateway->select(
+            function (Select $select) {
+                $select->columns([
+                    'userId' => 'user_id',
+                    'username',
+                    'email',
+                    'displayName' => 'display_name',
+                    'state'
+                ])
+                    ->join('user_role_linker', 'user_role_linker.user_id = user.user_id',
+                    [
+                        'roleId' => 'role_id'
+                    ], Select::JOIN_INNER)
+                    ->join('team_member', 'team_member.user_id = user.user_id', [], Select::JOIN_LEFT)
+                    ->join('team', 'team.id = team_member.team_id',
+                    [
+                        'teamName' => 'name'
+                    ], Select::JOIN_LEFT);
+            }
+        );
+    }
+
+    /**
+     * Gets all entries with additional details allowed to user
+     *
+     * @param int $userId
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
+    public function fetchAllPlusAllowedToUser(int $userId)
+    {
+        return $this->tableGateway->select(
+            function (Select $select) use ($userId) {
+                // TODO: Return only teams, where $userId is member
+                $select->columns(
+                    [
+                        'userId' => 'user_id',
+                        'username',
+                        'email',
+                        'displayName' => 'display_name',
+                        'state'
+                    ])
+                    ->join('user_role_linker', 'user_role_linker.user_id = user.user_id',
+                    [
+                        'roleId' => 'role_id'
+                    ], Select::JOIN_INNER)
+                    ->join('team_member', 'team_member.user_id = user.user_id', [], Select::JOIN_LEFT)
+                    ->join('team', 'team.id = team_member.team_id',
+                    [
+                        'teamName' => 'name'
+                    ], Select::JOIN_LEFT);
+            }
+        );
+    }
 }

@@ -68,8 +68,14 @@ class UsersController extends AbstractActionController
 
     public function indexAction()
     {
+        if ($this->isGranted('users.viewAll')) {
+            $users = $this->userTable->fetchAllPlus();
+        } else {
+            $users = $this->userTable->fetchAllPlusAllowedToUser($this->zfcUserAuthentication()->getIdentity()->getId());
+        }
+
         return [
-            'users' => $this->userTable->fetchAll(),
+            'users' => $users,
         ];
     }
 

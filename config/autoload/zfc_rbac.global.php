@@ -273,6 +273,7 @@ return [
                         'team.add',
                         'team.delete',
                         'team.viewAll',
+                        'users.viewAll',
                     ],
                 ],
                 'teamadmin' => [
