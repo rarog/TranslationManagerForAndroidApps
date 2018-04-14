@@ -27,17 +27,15 @@ $this->dataTablesInitHelper(['table' => '#users']);
       <td>
         <div class="btn-group">
     <?php if ($this->isGranted('users.edit')) : ?>
-          <a class="btn btn-default" href="<?= $this->url('users', [
+          <a class="btn btn-default" href="<?= $this->url('users/edit', [
     'userId' => $user->userId,
 ]) ?>"><i class="fa fa-pencil-square-o fa-fw" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Edit')) ?></a>
-          <a class="btn btn-default" href="<?= $this->url('users', [
-    'action' => 'userlanguages',
+          <a class="btn btn-default" href="<?= $this->url('users/userlanguages', [
     'userId' => $user->userId,
 ]) ?>"><i class="fa fa-language fa-fw" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Languages')) ?></a>
     <?php endif; ?>
     <?php if ($this->isGranted('users.delete')) : ?>
-          <a class="btn btn-danger" href="<?= $this->url('users', [
-    'action' => 'delete',
+          <a class="btn btn-danger" href="<?= $this->url('users/delete', [
     'userId' => $user->userId,
 ]) ?>"><i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i> <?= $this->escapeHtml($this->translate('Delete')) ?></a>
     <?php endif; ?>

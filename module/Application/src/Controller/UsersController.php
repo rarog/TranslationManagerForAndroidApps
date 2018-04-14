@@ -88,7 +88,7 @@ class UsersController extends AbstractActionController
         if (! $this->isGranted('users.viewAll')) {
             $limitToTeamsOfUser = $this->zfcUserAuthentication()->getIdentity()->getId();
         }
-        $users = $this->userTable->fetchAllPlus();
+        $users = $this->userTable->fetchAllPlus($limitToTeamsOfUser);
 
         return [
             'users' => $users,

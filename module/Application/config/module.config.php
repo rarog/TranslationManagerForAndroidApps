@@ -44,6 +44,12 @@ return [
                 'permission' => 'userBase',
                 'pages' => [
                     [
+                        'label' => _('Users'),
+                        'route' => 'users',
+                        'icon' => 'fa fa-address-book fa-fw',
+                        'permission' => 'users.view',
+                    ],
+                    [
                         'label' => _('Teams'),
                         'route' => 'team',
                         'icon' => 'fa fa-users fa-fw',
