@@ -14,11 +14,13 @@
 
 namespace Application\Model;
 
-use RuntimeException;
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\TableGateway;
 use ZfcUser\Mapper\User as UserMapper;
+use ArrayObject;
+use RuntimeException;
 
 class UserTable
 {
@@ -93,61 +95,44 @@ class UserTable
     /**
      * Gets all entries with additional details
      *
+     * @param int $limitToTeamsOfUser  User id. If 0, no restriction to user teams will be done
      * @return \Zend\Db\ResultSet\ResultSet
      */
-    public function fetchAllPlus()
+    public function fetchAllPlus(int $limitToTeamsOfUser)
     {
-        return $this->tableGateway->select(
-            function (Select $select) {
-                $select->columns([
-                    'userId' => 'user_id',
-                    'username',
-                    'email',
-                    'displayName' => 'display_name',
-                    'state'
-                ])
-                    ->join('user_role_linker', 'user_role_linker.user_id = user.user_id',
-                    [
-                        'roleId' => 'role_id'
-                    ], Select::JOIN_INNER)
-                    ->join('team_member', 'team_member.user_id = user.user_id', [], Select::JOIN_LEFT)
-                    ->join('team', 'team.id = team_member.team_id',
-                    [
-                        'teamName' => 'name'
-                    ], Select::JOIN_LEFT);
-            }
-        );
-    }
+        $select = new Select();
+        $select->columns([
+            'userId' => 'user_id',
+            'username',
+            'email',
+            'displayName' => 'display_name',
+            'state',
+        ])
+            ->from($this->tableGateway->table)
+            ->join('user_role_linker', 'user_role_linker.user_id = user.user_id', [
+            'roleId' => 'role_id'
+        ], Select::JOIN_INNER)
+            ->join('team_member', 'team_member.user_id = user.user_id', [], Select::JOIN_LEFT)
+            ->join('team', 'team.id = team_member.team_id', [
+            'teamName' => 'name',
+        ], Select::JOIN_LEFT);
 
-    /**
-     * Gets all entries with additional details allowed to user
-     *
-     * @param int $userId
-     * @return \Zend\Db\ResultSet\ResultSet
-     */
-    public function fetchAllPlusAllowedToUser(int $userId)
-    {
-        return $this->tableGateway->select(
-            function (Select $select) use ($userId) {
-                // TODO: Return only teams, where $userId is member
-                $select->columns(
-                    [
-                        'userId' => 'user_id',
-                        'username',
-                        'email',
-                        'displayName' => 'display_name',
-                        'state'
-                    ])
-                    ->join('user_role_linker', 'user_role_linker.user_id = user.user_id',
-                    [
-                        'roleId' => 'role_id'
-                    ], Select::JOIN_INNER)
-                    ->join('team_member', 'team_member.user_id = user.user_id', [], Select::JOIN_LEFT)
-                    ->join('team', 'team.id = team_member.team_id',
-                    [
-                        'teamName' => 'name'
-                    ], Select::JOIN_LEFT);
-            }
-        );
+        $returnArray = new ArrayObject([], ArrayObject::ARRAY_AS_PROPS);
+
+        $sql = new Sql($this->tableGateway->adapter, $this->tableGateway->table);
+        $results = $sql->prepareStatementForSqlObject($select)->execute();
+
+        foreach ($results as $result) {
+            $result['userId'] = (int) $result['userId'];
+            $result['username'] = (string) $result['username'];
+            $result['email'] = (string) $result['email'];
+            $result['displayName'] = (string) $result['displayName'];
+            $result['state'] = (bool) $result['state'];
+            $result['roleId'] = (string) $result['roleId'];
+
+            $returnArray[] = new ArrayObject($result, ArrayObject::ARRAY_AS_PROPS);
+        }
+
+        return $returnArray;
     }
 }

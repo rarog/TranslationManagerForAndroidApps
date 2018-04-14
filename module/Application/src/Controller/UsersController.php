@@ -22,6 +22,7 @@ use Application\Model\UserSettingsTable;
 use Application\Model\UserTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
+use RuntimeException;
 
 class UsersController extends AbstractActionController
 {
@@ -66,13 +67,28 @@ class UsersController extends AbstractActionController
         $this->translator = $translator;
     }
 
+    public function addAction()
+    {
+
+    }
+
+    public function deleteAction()
+    {
+
+    }
+
+    public function editAction()
+    {
+
+    }
+
     public function indexAction()
     {
-        if ($this->isGranted('users.viewAll')) {
-            $users = $this->userTable->fetchAllPlus();
-        } else {
-            $users = $this->userTable->fetchAllPlusAllowedToUser($this->zfcUserAuthentication()->getIdentity()->getId());
+        $limitToTeamsOfUser = 0;
+        if (! $this->isGranted('users.viewAll')) {
+            $limitToTeamsOfUser = $this->zfcUserAuthentication()->getIdentity()->getId();
         }
+        $users = $this->userTable->fetchAllPlus();
 
         return [
             'users' => $users,
@@ -89,7 +105,7 @@ class UsersController extends AbstractActionController
 
         try {
             $user = $this->userTable->getUser($userId);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             return $this->redirect()->toRoute('users', ['action' => 'index']);
         }
 
@@ -98,7 +114,7 @@ class UsersController extends AbstractActionController
 
         try {
             $userSettings = $this->userSettingsTable->getUserSettings($userId);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $userSettings = new UserSettings([
                 'user_id' => $userId,
                 'locale' => 'en_US',

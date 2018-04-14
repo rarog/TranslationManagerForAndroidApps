@@ -68,6 +68,26 @@ return [
                         'guest',
                     ],
                 ],
+                'users/add' => [
+                    'permissions' => [
+                        'users.add',
+                    ],
+                ],
+                'users/delete' => [
+                    'permissions' => [
+                        'users.delete',
+                    ],
+                ],
+                'users/edit' => [
+                    'permissions' => [
+                        'users.edit',
+                    ],
+                ],
+                'users/userlanguages' => [
+                    'permissions' => [
+                        'users.edit',
+                    ],
+                ],
                 'users*' => [
                     'permissions' => [
                         'users.view',
@@ -298,6 +318,9 @@ return [
                         'teammember.add',
                         'teammember.remove',
                         'teammember.view',
+                        'users.add',
+                        'users.delete',
+                        'users.edit',
                         'users.view',
                     ],
                 ],

@@ -163,6 +163,39 @@ return [
                 ],
                 'may_terminate' => true,
                 'child_routes' => [
+                    'add' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/add',
+                            'defaults' => [
+                                'action' => 'add',
+                            ],
+                        ],
+                    ],
+                    'edit' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => '/edit/user/:userId',
+                            'constraints' => [
+                                'userId' => '[0-9]+',
+                            ],
+                            'defaults' => [
+                                'action' => 'edit',
+                            ],
+                        ],
+                    ],
+                    'delete' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => '/delete/user/:userId',
+                            'constraints' => [
+                                'userId' => '[0-9]+',
+                            ],
+                            'defaults' => [
+                                'action' => 'delete',
+                            ],
+                        ],
+                    ],
                     'userlanguages' => [
                         'type' => Segment::class,
                         'options' => [
