@@ -85,10 +85,16 @@ class UsersController extends AbstractActionController
     public function indexAction()
     {
         $limitToTeamsOfUser = 0;
+        $limitToActiveUsers = false;
         if (! $this->isGranted('users.viewAll')) {
             $limitToTeamsOfUser = $this->zfcUserAuthentication()->getIdentity()->getId();
+            $limitToActiveUsers = true;
         }
-        $users = $this->userTable->fetchAllPlus($limitToTeamsOfUser);
+
+        $users = $this->userTable->fetchAllPlus(
+            $limitToTeamsOfUser,
+            $limitToActiveUsers
+        );
 
         return [
             'users' => $users,

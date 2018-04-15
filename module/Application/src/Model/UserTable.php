@@ -11,7 +11,6 @@
  * @license   https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License version 3 or later
  * @link      https://github.com/rarog/TranslationManagerForAndroidApps
  */
-
 namespace Application\Model;
 
 use Zend\Db\Sql\Select;
@@ -24,6 +23,7 @@ use RuntimeException;
 
 class UserTable
 {
+
     /**
      * @var TableGateway
      */
@@ -65,9 +65,13 @@ class UserTable
     public function fetchAllNotInTeam(int $teamId)
     {
         $select = new Select();
-        $select->columns(['user_id'])
+        $select->columns([
+            'user_id',
+        ])
             ->from('team_member')
-            ->where(['team_id' => $teamId]);
+            ->where([
+            'team_id' => $teamId,
+        ]);
 
         $where = new Where();
         $where->notIn('user_id', $select);
@@ -78,7 +82,7 @@ class UserTable
     /**
      * Get entry
      *
-     * @param  int $id
+     * @param int $id
      * @throws RuntimeException
      * @return \ZfcUser\Entity\User
      */
@@ -95,10 +99,13 @@ class UserTable
     /**
      * Gets all entries with additional details
      *
-     * @param int $limitToTeamsOfUser  User id. If 0, no restriction to user teams will be done
-     * @return \Zend\Db\ResultSet\ResultSet
+     * @param int $limitToTeamsOfUser
+     *            User id. If 0, no restriction to user teams will be done
+     * @param bool $limitToActiveUsers
+     *            If set to true, only active users will be listed
+     * @return \ArrayObject
      */
-    public function fetchAllPlus(int $limitToTeamsOfUser)
+    public function fetchAllPlus(int $limitToTeamsOfUser, bool $limitToActiveUsers)
     {
         $select = new Select();
         $select->columns([
@@ -116,6 +123,10 @@ class UserTable
             ->join('team', 'team.id = team_member.team_id', [
             'teamName' => 'name',
         ], Select::JOIN_LEFT);
+
+        if ($limitToActiveUsers) {
+            $select->where('state = 1');
+        }
 
         $returnArray = new ArrayObject([], ArrayObject::ARRAY_AS_PROPS);
 
