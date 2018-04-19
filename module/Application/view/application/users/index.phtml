@@ -15,15 +15,25 @@ $this->dataTablesInitHelper(['table' => '#users']);
       <th><?= $this->escapeHtml($this->translate('Username')) ?></th>
       <th><?= $this->escapeHtml($this->translate('Display name')) ?></th>
       <th><?= $this->escapeHtml($this->translate('Email')) ?></th>
+<?php if ($this->isGranted('users.viewAll')) : ?>
+      <th><?= $this->escapeHtml($this->translate('Role')) ?></th>
+<?php endif; ?>
       <th>&nbsp;</th>
     </tr>
   </thead>
   <tbody>
 <?php foreach ($users as $user) : ?>
     <tr>
-      <td><?= $this->escapeHtml($user->username) ?></td>
+      <td>
+<?php if ($this->isGranted('users.viewAll')) : ?>
+        <i class="fa <?php if ($user->state) : ?>fa-check-circle text-success<?php else : ?>fa-times-circle text-danger<?php endif; ?> fa-fw" aria-hidden="true"></i>
+<?php endif; ?>
+        <?= $this->escapeHtml($user->username) ?></td>
       <td><?= $this->escapeHtml($user->displayName) ?></td>
       <td><?= $this->escapeHtml($user->email) ?></td>
+<?php if ($this->isGranted('users.viewAll')) : ?>
+      <td><?= $this->escapeHtml($user->roleId) ?></td>
+<?php endif; ?>
       <td>
         <div class="btn-group">
     <?php if ($this->isGranted('users.edit')) : ?>
