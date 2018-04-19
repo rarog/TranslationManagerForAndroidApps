@@ -1,4 +1,6 @@
 <?php
+namespace UserRbac;
+
 /**
  * UserRbac Configuration
  *
@@ -34,9 +36,9 @@ $options = [
      * User Role Linker Entity Class
      *
      * Class name of User Role Linker Entity
-     * Default: UserRbac\Entity\UserRoleLinker
+     * Default: Model\UserRoleLinker::class
      */
-    //'user_role_linker_entity_class' => 'UserRbac\Entity\UserRoleLinker',
+    //'user_role_linker_entity_class' => Model\UserRoleLinker::class,
 ];
 
 /**

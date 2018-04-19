@@ -14,13 +14,19 @@
 
 namespace Application\Listener;
 
+use Application\Model\UserSettings;
 use Application\Model\UserSettingsTable;
+use Setup\Controller\SetupController;
+use Translations\Model\Team;
 use Translations\Model\TeamTable;
-use UserRbac\Mapper\UserRoleLinkerMapper;
+use UserRbac\Model\UserRoleLinker;
+use UserRbac\Model\UserRoleLinkerTable;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\EventManager\ListenerAggregateTrait;
+use Zend\Session\Container;
+use ZfcUser\Entity\UserInterface;
 use ZfcUser\Mapper\User as UserMapper;
 
 class SetupListener implements ListenerAggregateInterface
@@ -33,9 +39,9 @@ class SetupListener implements ListenerAggregateInterface
     private $userMapper;
 
     /**
-     * @var UserRoleLinkerMapper
+     * @var UserRoleLinkerTable
      */
-    private $userRoleLinkerMapper;
+    private $userRoleLinkerTable;
 
     /**
      * @var TeamTable
@@ -51,18 +57,18 @@ class SetupListener implements ListenerAggregateInterface
      * Constructor
      *
      * @param UserMapper $userMapper
-     * @param UserRoleLinkerMapper $userRoleLinkerMapper
+     * @param UserRoleLinkerTable $userRoleLinkerTable
      * @param TeamTable $teamTable
      * @param UserSettingsTable $userSettingsTable
      */
     public function __construct(
         UserMapper $userMapper,
-        UserRoleLinkerMapper $userRoleLinkerMapper,
+        UserRoleLinkerTable $userRoleLinkerTable,
         TeamTable $teamTable,
         UserSettingsTable $userSettingsTable
     ) {
         $this->userMapper = $userMapper;
-        $this->userRoleLinkerMapper = $userRoleLinkerMapper;
+        $this->userRoleLinkerTable = $userRoleLinkerTable;
         $this->teamTable = $teamTable;
         $this->userSettingsTable = $userSettingsTable;
     }
@@ -74,7 +80,7 @@ class SetupListener implements ListenerAggregateInterface
     public function attach(EventManagerInterface $events, $priority = 1)
     {
         $this->listeners[] = $events->getSharedManager()->attach(
-            'Setup\Controller\SetupController',
+            SetupController::class,
             'userCreated',
             [$this, 'onUserCreated'],
             $priority
@@ -89,24 +95,24 @@ class SetupListener implements ListenerAggregateInterface
     public function onUserCreated(EventInterface $event)
     {
         $user = $event->getParam('user', null);
-        if ($user instanceof \ZfcUser\Entity\UserInterface) {
+        if ($user instanceof UserInterface) {
             // Enable the user for login.
             $user->setState(1);
             $this->userMapper->update($user);
 
             // Giving the new user the admin role.
-            $userLinker = new \UserRbac\Entity\UserRoleLinker($user, 'admin');
-            $this->userRoleLinkerMapper->insert($userLinker);
+            $userLinker = new UserRoleLinker($user, 'admin');
+            $this->userRoleLinkerTable->insert($userLinker);
 
             // Creating the first team.
-            $team = new \Translations\Model\Team([
+            $team = new Team([
                 'name' => 'Default team', // Don't translate here, just create English name.
             ]);
             $team = $this->teamTable->saveTeam($team);
 
             // Give the new user the current setup locale and newly created team.
-            $setupContainer = new \Zend\Session\Container('setup');
-            $userSettings = new \Application\Model\UserSettings([
+            $setupContainer = new Container('setup');
+            $userSettings = new UserSettings([
                 'user_id' => $user->getId(),
                 'locale'  => $setupContainer->currentLanguage,
                 'team_id' => $team->id,

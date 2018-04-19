@@ -14,9 +14,11 @@
 
 namespace Application\Factory\Listener;
 
+use Application\Listener\SetupListener;
 use Application\Model\UserSettingsTable;
 use Interop\Container\ContainerInterface;
 use Translations\Model\TeamTable;
+use UserRbac\Model\UserRoleLinkerTable;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
 class SetupListenerFactory implements FactoryInterface
@@ -27,9 +29,9 @@ class SetupListenerFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new \Application\Listener\SetupListener(
+        return new SetupListener(
             $container->get('zfcuser_user_mapper'),
-            $container->get('UserRbac\UserRoleLinkerMapper'),
+            $container->get(UserRoleLinkerTable::class),
             $container->get(TeamTable::class),
             $container->get(UserSettingsTable::class)
         );
