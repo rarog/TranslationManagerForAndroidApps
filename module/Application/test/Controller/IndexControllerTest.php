@@ -11,53 +11,42 @@
  * @license   https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License version 3 or later
  * @link      https://github.com/rarog/TranslationManagerForAndroidApps
  */
-
 namespace ApplicationTest\Controller;
 
 use Application\Controller\IndexController;
-use Zend\Stdlib\ArrayUtils;
-use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
+use PHPUnit\Framework\TestCase;
+use Zend\Http\Request;
+use Zend\Mvc\MvcEvent;
+use Zend\Router\RouteMatch;
 
-class IndexControllerTest extends AbstractHttpControllerTestCase
+class IndexControllerTest extends TestCase
 {
+
     public function setUp()
     {
-        // The module configuration should still be applicable for tests.
-        // You can override configuration here with test case specific values,
-        // such as sample view templates, path stacks, module_listener_options,
-        // etc.
-        $configOverrides = [
-            'db' => [],
-        ];
-
-        $this->setApplicationConfig(ArrayUtils::merge(
-            include __DIR__ . '/../../../../config/application.config.php',
-            $configOverrides
-        ));
-
-        parent::setUp();
+        $this->controller = new IndexController();
+        $this->request = new Request();
+        $this->routeMatch = new RouteMatch([
+            'controller' => 'application'
+        ]);
+        $this->event = new MvcEvent();
+        $this->event->setRouteMatch($this->routeMatch);
+        $this->controller->setEvent($this->event);
     }
 
-    /**
-     * @runInSeparateProcess
-     */
-    public function testIndexActionCantBeAccessedNeedsLogin()
+    public function testIndexActionCanBeAccessed()
     {
-        $this->dispatch('/', 'GET');
-        $this->assertResponseStatusCode(302);
-        $this->assertModuleName('application');
-        $this->assertControllerName(IndexController::class); // as specified in router's controller name alias
-        $this->assertControllerClass('IndexController');
-        $this->assertMatchedRouteName('home');
-        $this->assertRedirectTo('/user/login');
+        $this->routeMatch->setParam('action', 'index');
+        $result = $this->controller->dispatch($this->request);
+        $response = $this->controller->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testInvalidRouteDoesNotCrash()
     {
-        $this->dispatch('/invalid/route', 'GET');
-        $this->assertResponseStatusCode(404);
+        $this->routeMatch->setParam('action', 'invalid-action');
+        $result = $this->controller->dispatch($this->request);
+        $response = $this->controller->getResponse();
+        $this->assertEquals(404, $response->getStatusCode());
     }
 }
