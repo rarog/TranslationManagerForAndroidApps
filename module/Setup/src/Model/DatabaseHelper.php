@@ -10,6 +10,7 @@ namespace Setup\Model;
 use Zend\Config\Config;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\AbstractPreparableSql;
+use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\SqlInterface;
@@ -25,6 +26,8 @@ use Zend\Db\Sql\Ddl\Constraint\UniqueKey;
 use Zend\Db\Sql\Ddl\Index\Index;
 use Zend\Mvc\I18n\Translator;
 use ZfcUser\Options\ModuleOptions as ZUModuleOptions;
+use Exception;
+use RuntimeException;
 
 class DatabaseHelper
 {
@@ -54,9 +57,18 @@ class DatabaseHelper
     private $zuModuleOptions;
 
     /**
+     * Installation schema file regular expression
+     *
      * @var string
      */
     private $installationSchemaRegex;
+
+    /**
+     * Update schema file regular expression
+     *
+     * @var string
+     */
+    private $updateSchemaRegex;
 
     /**
      * @var int
@@ -104,16 +116,41 @@ class DatabaseHelper
             $driver = $this->dbConfig['driver'];
 
             if (! array_key_exists($driver, $schemaNaming)) {
-                throw new \RuntimeException(sprintf('Database config contains unsupported driver "%s".', $driver));
+                throw new RuntimeException(sprintf('Database config contains unsupported driver "%s".', $driver));
             }
 
             $this->installationSchemaRegex = sprintf(
                 '/schema\.%s\.(\d+)\.sql/',
                 $schemaNaming[$driver]
-                );
+            );
         }
 
         return $this->installationSchemaRegex;
+    }
+
+    /**
+     * Generates update schema regular expression.
+     *
+     * @throws \RuntimeException
+     * @return string
+     */
+    private function getUpdateSchemaRegex()
+    {
+        if (is_null($this->updateSchemaRegex)) {
+            $schemaNaming = $this->setupConfig->get('db_schema_naming')->toArray();
+            $driver = $this->dbConfig['driver'];
+
+            if (! array_key_exists($driver, $schemaNaming)) {
+                throw new RuntimeException(sprintf('Database config contains unsupported driver "%s".', $driver));
+            }
+
+            $this->updateSchemaRegex = sprintf(
+                '/schemaUpdate\.%s\.(\d+)\.sql/',
+                $schemaNaming[$driver]
+            );
+        }
+
+        return $this->updateSchemaRegex;
     }
 
     /**
@@ -148,7 +185,7 @@ class DatabaseHelper
             }
             $this->lastMessage = ($connection->isConnected()) ? $this->translator->translate('Database connection successfully established.') : $this->translator->translate('Could not establish database connection.');
             return $connection->isConnected();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->lastMessage = $e->getMessage();
             return false;
         }
@@ -223,7 +260,7 @@ class DatabaseHelper
         $this->lastParsedSchemaVersion = $max;
 
         if ($max === 0) {
-            throw new \RuntimeException('No valid installation schema file found.');
+            throw new RuntimeException('No valid installation schema file found.');
         }
 
         return $path . '/' . $maxFilename;
@@ -243,7 +280,7 @@ class DatabaseHelper
             $sqlString = trim($sql);
             $this->dbAdapter->getDriver()->getConnection()->getResource()->exec($sqlString);
         } else {
-            throw new \Exception(sprintf(
+            throw new Exception(sprintf(
                 'Function executeSqlStatement was called with unsupport parameter of type "%s".',
                 (is_object($sql)) ? get_class($sql) : gettype($sql)
             ));
@@ -504,7 +541,7 @@ class DatabaseHelper
                 $this->lastMessage = $this->translator->translate('Database schema seems to be installed correctly. Proceed with the next step.');
                 return true;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->lastStatus = self::DBNOTINSTALLEDORTABLENOTPRESENT;
             $this->lastMessage = $this->translator->translate('Database schema seems to not be installed yet.');
             return false;
@@ -521,7 +558,7 @@ class DatabaseHelper
         if ($this->isSchemaInstalled()) {
             $select = $this->getSql()
             ->select($this->zuModuleOptions->getTableName())
-            ->columns(array('count' => new \Zend\Db\Sql\Expression('count(*)')));
+            ->columns(array('count' => new Expression('count(*)')));
             $statement = $this->getSql()->prepareStatementForSqlObject($select);
 
             try {
@@ -536,7 +573,7 @@ class DatabaseHelper
                     $this->lastMessage = $this->translator->translate('No user exists yet, please create one.');
                 }
                 return $exists;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->lastStatus = self::SOMETHINGISWRONGWITHWITHUSERTABLE;
                 $this->lastMessage = sprintf(
                     $this->translator->translate('Something is wrong with the user table, setup can\'t proceed. Error message: %s'),

@@ -15,6 +15,7 @@
 namespace TranslationsTest\Model;
 
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use phpmock\MockBuilder;
 use Setup\Model\DatabaseHelper;
 
@@ -35,6 +36,12 @@ class DatabaseHelperTest extends TestCase
     private $sqliteConfig = [
         'db' => [
             'driver' => 'Pdo_Sqlite',
+        ],
+    ];
+
+    private $pgsqlConfig = [
+        'db' => [
+            'driver' => 'Pdo_Pgsql',
         ],
     ];
 
@@ -95,14 +102,13 @@ class DatabaseHelperTest extends TestCase
 
     /**
      * @covers \Setup\Model\DatabaseHelper::getInstallationSchemaRegex
-     * @expectedException RuntimeException
-     * @expectedExceptionMessageRegExp /Database config contains unsupported driver "\w+"./
      */
     public function testGetInstallationSchemaRegexUnsupported()
     {
         $databaseHelper = $this->getDatabaseHelper($this->unsupportedConfig);
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessageRegExp('/Database config contains unsupported driver "\w+"./');
         $result = $this->invokeMethod($databaseHelper, 'getInstallationSchemaRegex');
-        $this->assertEquals('/schema\.mysql\.(\d)\.sql/', $result);
     }
 
     /**
@@ -123,6 +129,57 @@ class DatabaseHelperTest extends TestCase
         $databaseHelper = $this->getDatabaseHelper($this->sqliteConfig);
         $result = $this->invokeMethod($databaseHelper, 'getInstallationSchemaRegex');
         $this->assertEquals('/schema\.sqlite\.(\d+)\.sql/', $result);
+    }
+
+    /**
+     * @covers \Setup\Model\DatabaseHelper::getInstallationSchemaRegex
+     */
+    public function testGetInstallationSchemaRegexPgsql()
+    {
+        $databaseHelper = $this->getDatabaseHelper($this->pgsqlConfig);
+        $result = $this->invokeMethod($databaseHelper, 'getInstallationSchemaRegex');
+        $this->assertEquals('/schema\.pgsql\.(\d+)\.sql/', $result);
+    }
+
+    /**
+     * @covers \Setup\Model\DatabaseHelper::getUpdateSchemaRegex
+     */
+    public function testGetUpdateSchemaRegexUnsupported()
+    {
+        $databaseHelper = $this->getDatabaseHelper($this->unsupportedConfig);
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessageRegExp('/Database config contains unsupported driver "\w+"./');
+        $result = $this->invokeMethod($databaseHelper, 'getUpdateSchemaRegex');
+    }
+
+    /**
+     * @covers \Setup\Model\DatabaseHelper::getUpdateSchemaRegex
+     */
+    public function testGetUpdateSchemaRegexMysql()
+    {
+        $databaseHelper = $this->getDatabaseHelper($this->mysqlConfig);
+        $result = $this->invokeMethod($databaseHelper, 'getUpdateSchemaRegex');
+        $this->assertEquals('/schemaUpdate\.mysql\.(\d+)\.sql/', $result);
+    }
+
+    /**
+     * @covers \Setup\Model\DatabaseHelper::getUpdateSchemaRegex
+     */
+    public function testGetUpdateSchemaRegexSqlite()
+    {
+        $databaseHelper = $this->getDatabaseHelper($this->sqliteConfig);
+        $result = $this->invokeMethod($databaseHelper, 'getUpdateSchemaRegex');
+        $this->assertEquals('/schemaUpdate\.sqlite\.(\d+)\.sql/', $result);
+    }
+
+    /**
+     * @covers \Setup\Model\DatabaseHelper::getUpdateSchemaRegex
+     */
+    public function testGetUpdateSchemaRegexPgsql()
+    {
+        $databaseHelper = $this->getDatabaseHelper($this->pgsqlConfig);
+        $result = $this->invokeMethod($databaseHelper, 'getUpdateSchemaRegex');
+        $this->assertEquals('/schemaUpdate\.pgsql\.(\d+)\.sql/', $result);
     }
 
     /**
