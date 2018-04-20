@@ -102,7 +102,7 @@ class SetupListener implements ListenerAggregateInterface
 
             // Giving the new user the admin role.
             $userLinker = new UserRoleLinker($user, 'admin');
-            $this->userRoleLinkerTable->insert($userLinker);
+            $this->userRoleLinkerTable->saveUserRoleLinker($userLinker);
 
             // Creating the first team.
             $team = new Team([
