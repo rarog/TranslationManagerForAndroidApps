@@ -259,9 +259,14 @@ class SetupController extends AbstractActionController
      */
     private function replaceConfigInFile(string $file, array $configArray)
     {
+        $config = null;
+
         // Reading current content of config file
-        $config = include($file);
-        if (!is_array($config)) {
+        if (is_file($file)) {
+            $config = include ($file);
+        }
+
+        if (! is_array($config)) {
             $config = [];
         }
 
@@ -269,8 +274,8 @@ class SetupController extends AbstractActionController
         foreach ($configArray as $key => $value) {
             $config[$key] = $value;
         }
-        $this->getConfigWriter()
-        ->toFile($file, new \Zend\Config\Config($config, false));
+
+        $this->getConfigWriter()->toFile($file, new \Zend\Config\Config($config, false));
     }
 
     /**
