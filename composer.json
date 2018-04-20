@@ -85,7 +85,8 @@
 	"require-dev" : {
 		"zendframework/zend-test" : "^3.1",
 		"phpunit/phpunit" : "^5.0 || ^6.0",
-		"php-mock/php-mock" : "^2.0"
+		"php-mock/php-mock" : "^2.0",
+		"php-coveralls/php-coveralls": "^2.0"
 	},
 	"support" : {
 		"source" : "https://github.com/rarog/TranslationManagerForAndroidApps",
