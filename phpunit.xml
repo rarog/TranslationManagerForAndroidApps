@@ -22,8 +22,14 @@
         </testsuite>
     </testsuites>
     <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <file>./module/Translations/src/Model/ResXmlParser.php</file>
+        <whitelist>
+			<directory suffix=".php">./module/Application/src</directory>
+			<directory suffix=".php">./module/Setup/src</directory>
+			<directory suffix=".php">./module/Translations/src</directory>
         </whitelist>
     </filter>
+    <logging>
+        <log type="coverage-text" target="php://stdout"/>
+        <log type="coverage-clover" target="build/logs/clover.xml"/>
+    </logging>
 </phpunit>

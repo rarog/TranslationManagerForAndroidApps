@@ -14,11 +14,11 @@
 
 namespace Setup\Controller;
 
+use Setup\Helper\FileHelper;
 use Setup\Model\DatabaseHelper;
 use Zend\Cache\Storage\Adapter\AbstractAdapter as CacheAdapter;
 use Zend\Config\Config;
 use Zend\Http\PhpEnvironment\Response;
-use Zend\Config\Writer\PhpArray as ConfigPhpArray;
 use Zend\Math\Rand;
 use Zend\ModuleManager\Listener\ListenerOptions;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -84,11 +84,6 @@ class SetupController extends AbstractActionController
     private $availableLanguages;
 
     /**
-     * @var ConfigPhpArray
-     */
-    private $configWriter;
-
-    /**
      * @var Config
      */
     private $setupConfig;
@@ -109,20 +104,6 @@ class SetupController extends AbstractActionController
             $this->availableLanguages = $this->getSetupConfig()->available_languages->toArray();
         }
         return $this->availableLanguages;
-    }
-
-    /**
-     * Gets an instance of PhpArray config writer
-     *
-     * @return ConfigPhpArray
-     */
-    private function getConfigWriter()
-    {
-        if (is_null($this->configWriter)) {
-            $this->configWriter = new \Zend\Config\Writer\PhpArray();
-            $this->configWriter->setUseBracketArraySyntax(true);
-        }
-        return $this->configWriter;
     }
 
     /**
@@ -249,33 +230,6 @@ class SetupController extends AbstractActionController
         if ($this->databaseHelper->isSetupComplete()) {
             return $this->redirect()->toRoute('zfcuser/login');
         }
-    }
-
-    /**
-     * Helper function to replace config blocks in file
-     *
-     * @param string $file
-     * @param array $configArray
-     */
-    private function replaceConfigInFile(string $file, array $configArray)
-    {
-        $config = null;
-
-        // Reading current content of config file
-        if (is_file($file)) {
-            $config = include ($file);
-        }
-
-        if (! is_array($config)) {
-            $config = [];
-        }
-
-        // Replacing old config with new
-        foreach ($configArray as $key => $value) {
-            $config[$key] = $value;
-        }
-
-        $this->getConfigWriter()->toFile($file, new \Zend\Config\Config($config, false));
     }
 
     /**
@@ -471,17 +425,21 @@ class SetupController extends AbstractActionController
                 $config['db'] = $database->getArrayCopy();
                 $config['security'] = $security;
 
+                $fileHelper = new FileHelper();
+
                 // Replacing content of local.php config file
-                $this->replaceConfigInFile('config/autoload/local.php', $config);
+                $fileHelper->replaceConfigInFile('config/autoload/local.php', $config);
 
                 // Replacing content of config cache if enabled
                 if ($this->listenerOptions->getConfigCacheEnabled() &&
                     file_exists($this->listenerOptions->getConfigCacheFile())) {
-                        $this->replaceConfigInFile($this->listenerOptions->getConfigCacheFile(), $config);
-                    }
+                    $fileHelper->replaceConfigInFile($this->listenerOptions->getConfigCacheFile(), $config);
+                }
 
-                    $this->setLastStep(3);
-                    return $this->redirect()->toRoute('setup', ['action' => 'step3']);
+                $this->setLastStep(3);
+                return $this->redirect()->toRoute('setup', [
+                    'action' => 'step3'
+                ]);
             }
         }
 
