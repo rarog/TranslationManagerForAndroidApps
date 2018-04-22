@@ -14,7 +14,7 @@
 
 namespace Application\View\Strategy;
 
-use Setup\Model\DatabaseHelper as SetupDatabaseHelper;
+use Setup\Helper\DatabaseHelper as SetupDatabaseHelper;
 use Zend\Authentication\AuthenticationServiceInterface;
 use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\MvcEvent;
@@ -47,15 +47,18 @@ class SetupAwareRedirectStrategy extends AbstractStrategy
     /**
      * Constructor
      *
-     * @param RedirectStrategyOptions        $options
+     * @param RedirectStrategyOptions $options
      * @param AuthenticationServiceInterface $authenticationService
-     * @param SetupDatabaseHelper            $setupDatabaseHelper
+     * @param SetupDatabaseHelper $setupDatabaseHelper
      */
-    public function __construct(RedirectStrategyOptions $options, AuthenticationServiceInterface $authenticationService, SetupDatabaseHelper $setupDatabaseHelper)
-    {
-        $this->options               = $options;
+    public function __construct(
+        RedirectStrategyOptions $options,
+        AuthenticationServiceInterface $authenticationService,
+        SetupDatabaseHelper $setupDatabaseHelper
+    ) {
+        $this->options = $options;
         $this->authenticationService = $authenticationService;
-        $this->setupDatabaseHelper   = $setupDatabaseHelper;
+        $this->setupDatabaseHelper = $setupDatabaseHelper;
     }
 
     /**

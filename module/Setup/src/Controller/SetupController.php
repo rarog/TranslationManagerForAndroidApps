@@ -14,10 +14,9 @@
 
 namespace Setup\Controller;
 
+use Setup\Helper\DatabaseHelper;
 use Setup\Helper\FileHelper;
-use Setup\Model\DatabaseHelper;
 use Zend\Cache\Storage\Adapter\AbstractAdapter as CacheAdapter;
-use Zend\Config\Config;
 use Zend\Http\PhpEnvironment\Response;
 use Zend\Math\Rand;
 use Zend\ModuleManager\Listener\ListenerOptions;
@@ -84,7 +83,7 @@ class SetupController extends AbstractActionController
     private $availableLanguages;
 
     /**
-     * @var Config
+     * @var \Zend\Config\Config
      */
     private $setupConfig;
 

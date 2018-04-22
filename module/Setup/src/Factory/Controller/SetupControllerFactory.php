@@ -15,23 +15,30 @@
 namespace Setup\Factory\Controller;
 
 use Interop\Container\ContainerInterface;
+use Setup\Controller\SetupController;
+use Setup\Helper\DatabaseHelper;
+use Zend\ModuleManager\Listener\ListenerOptions;
+use Zend\Mvc\I18n\Translator;
 use Zend\ServiceManager\Factory\FactoryInterface;
+use Zend\Session\Container;
+use Zend\Session\SessionManager;
+use Zend\View\Renderer\PhpRenderer;
 
 class SetupControllerFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $configuration = $container->get('ApplicationConfig');
-        $listenerOptions  = new \Zend\ModuleManager\Listener\ListenerOptions($configuration['module_listener_options']);
-        return new \Setup\Controller\SetupController(
-            $container->get(\Zend\Mvc\I18n\Translator::class),
-            new \Zend\Session\Container('setup'),
-            new \Zend\ModuleManager\Listener\ListenerOptions($configuration['module_listener_options']),
-            $container->get(\Zend\View\Renderer\PhpRenderer::class),
+
+        return new SetupController(
+            $container->get(Translator::class),
+            new Container('setup'),
+            new ListenerOptions($configuration['module_listener_options']),
+            $container->get(PhpRenderer::class),
             $container->get('zfcuser_user_service'),
             $container->get('zfcuser_module_options'),
-            $container->get(\Setup\Model\DatabaseHelper::class),
-            $container->get(\Zend\Session\SessionManager::class),
+            $container->get(DatabaseHelper::class),
+            $container->get(SessionManager::class),
             $container->get('SetupCache')
         );
     }

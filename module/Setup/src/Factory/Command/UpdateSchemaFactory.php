@@ -15,14 +15,21 @@
 namespace Setup\Factory\Command;
 
 use Interop\Container\ContainerInterface;
+use Setup\Command\UpdateSchema;
+use Setup\Helper\DatabaseHelper;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
 class UpdateSchemaFactory implements FactoryInterface
 {
+
+    /**
+     * {@inheritDoc}
+     * @see \Zend\ServiceManager\Factory\FactoryInterface::__invoke()
+     */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new \Setup\Command\UpdateSchema(
-            $container->get(\Setup\Model\DatabaseHelper::class)
+        return new UpdateSchema(
+            $container->get(DatabaseHelper::class)
         );
     }
 }

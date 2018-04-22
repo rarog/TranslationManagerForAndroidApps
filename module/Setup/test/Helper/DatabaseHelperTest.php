@@ -12,12 +12,16 @@
  * @link      https://github.com/rarog/TranslationManagerForAndroidApps
  */
 
-namespace TranslationsTest\Model;
+namespace SetupTest\Helper;
 
 use PHPUnit\Framework\TestCase;
+use Setup\Helper\DatabaseHelper;
+use Zend\Config\Config;
+use Zend\Mvc\I18n\Translator;
+use ZfcUser\Options\ModuleOptions;
+use ReflectionClass;
 use RuntimeException;
 use phpmock\MockBuilder;
-use Setup\Model\DatabaseHelper;
 
 class DatabaseHelperTest extends TestCase
 {
@@ -53,9 +57,9 @@ class DatabaseHelperTest extends TestCase
         $setupConfig = include './module/Setup/config/setup.global.php.dist';
 
         return new DatabaseHelper(
-            new \Zend\Config\Config(array_merge($config, $setupConfig)),
-            $this->createMock(\Zend\Mvc\I18n\Translator::class),
-            $this->createMock(\ZfcUser\Options\ModuleOptions::class)
+            new Config(array_merge($config, $setupConfig)),
+            $this->createMock(Translator::class),
+            $this->createMock(ModuleOptions::class)
         );
     }
 
@@ -64,21 +68,21 @@ class DatabaseHelperTest extends TestCase
      */
     private function getMockScandirMysqlSchema()
     {
+        $databaseHelper = new ReflectionClass(DatabaseHelper::class);
         $builder = new MockBuilder();
-        $builder->setNamespace('Setup\Model')
-                ->setName('scandir')
-                ->setFunction(
-                    function ($directory, $sorting_order = null, $context = null) {
-                        return [
-                            '.',
-                            '..',
-                            'schema.mysql.1.sql',
-                            'schema.mysql.10.sql',
-                            'schema.mysql.9.sql',
-                            'some.file',
-                        ];
-                    }
-                );
+        $builder->setNamespace($databaseHelper->getNamespaceName())
+            ->setName('scandir')
+            ->setFunction(
+            function ($directory, $sorting_order = null, $context = null) {
+                return [
+                    '.',
+                    '..',
+                    'schema.mysql.1.sql',
+                    'schema.mysql.10.sql',
+                    'schema.mysql.9.sql',
+                    'some.file'
+                ];
+            });
 
         return $builder->build();
     }
@@ -93,7 +97,7 @@ class DatabaseHelperTest extends TestCase
      */
     private function invokeMethod($object, $methodName, array $parameters = [])
     {
-        $reflection = new \ReflectionClass(get_class($object));
+        $reflection = new ReflectionClass(get_class($object));
         $method = $reflection->getMethod($methodName);
         $method->setAccessible(true);
 
@@ -101,7 +105,7 @@ class DatabaseHelperTest extends TestCase
     }
 
     /**
-     * @covers \Setup\Model\DatabaseHelper::getInstallationSchemaRegex
+     * @covers \Setup\Helper\DatabaseHelper::getInstallationSchemaRegex
      */
     public function testGetInstallationSchemaRegexUnsupported()
     {
@@ -112,7 +116,7 @@ class DatabaseHelperTest extends TestCase
     }
 
     /**
-     * @covers \Setup\Model\DatabaseHelper::getInstallationSchemaRegex
+     * @covers \Setup\Helper\DatabaseHelper::getInstallationSchemaRegex
      */
     public function testGetInstallationSchemaRegexMysql()
     {
@@ -122,7 +126,7 @@ class DatabaseHelperTest extends TestCase
     }
 
     /**
-     * @covers \Setup\Model\DatabaseHelper::getInstallationSchemaRegex
+     * @covers \Setup\Helper\DatabaseHelper::getInstallationSchemaRegex
      */
     public function testGetInstallationSchemaRegexSqlite()
     {
@@ -132,7 +136,7 @@ class DatabaseHelperTest extends TestCase
     }
 
     /**
-     * @covers \Setup\Model\DatabaseHelper::getInstallationSchemaRegex
+     * @covers \Setup\Helper\DatabaseHelper::getInstallationSchemaRegex
      */
     public function testGetInstallationSchemaRegexPgsql()
     {
@@ -142,7 +146,7 @@ class DatabaseHelperTest extends TestCase
     }
 
     /**
-     * @covers \Setup\Model\DatabaseHelper::getUpdateSchemaRegex
+     * @covers \Setup\Helper\DatabaseHelper::getUpdateSchemaRegex
      */
     public function testGetUpdateSchemaRegexUnsupported()
     {
@@ -153,7 +157,7 @@ class DatabaseHelperTest extends TestCase
     }
 
     /**
-     * @covers \Setup\Model\DatabaseHelper::getUpdateSchemaRegex
+     * @covers \Setup\Helper\DatabaseHelper::getUpdateSchemaRegex
      */
     public function testGetUpdateSchemaRegexMysql()
     {
@@ -163,7 +167,7 @@ class DatabaseHelperTest extends TestCase
     }
 
     /**
-     * @covers \Setup\Model\DatabaseHelper::getUpdateSchemaRegex
+     * @covers \Setup\Helper\DatabaseHelper::getUpdateSchemaRegex
      */
     public function testGetUpdateSchemaRegexSqlite()
     {
@@ -173,7 +177,7 @@ class DatabaseHelperTest extends TestCase
     }
 
     /**
-     * @covers \Setup\Model\DatabaseHelper::getUpdateSchemaRegex
+     * @covers \Setup\Helper\DatabaseHelper::getUpdateSchemaRegex
      */
     public function testGetUpdateSchemaRegexPgsql()
     {
@@ -183,7 +187,7 @@ class DatabaseHelperTest extends TestCase
     }
 
     /**
-     * @covers \Setup\Model\DatabaseHelper::getSchemaInstallationFilepath
+     * @covers \Setup\Helper\DatabaseHelper::getSchemaInstallationFilepath
      */
     public function testGetSchemaInstallationFilepath()
     {
@@ -201,9 +205,7 @@ class DatabaseHelperTest extends TestCase
     }
 
     /**
-     * @covers \Setup\Model\DatabaseHelper::getSchemaInstallationFilepath
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage No valid installation schema file found.
+     * @covers \Setup\Helper\DatabaseHelper::getSchemaInstallationFilepath
      */
     public function testGetSchemaInstallationFilepathException()
     {
@@ -211,11 +213,10 @@ class DatabaseHelperTest extends TestCase
 
         $databaseHelper = $this->getDatabaseHelper($this->sqliteConfig);
 
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('No valid installation schema file found.');
+
         $mock->enable();
-        try {
-            $result = $this->invokeMethod($databaseHelper, 'getSchemaInstallationFilepath');
-        } finally {
-            $mock->disable();
-        }
+        $this->invokeMethod($databaseHelper, 'getSchemaInstallationFilepath');
     }
 }

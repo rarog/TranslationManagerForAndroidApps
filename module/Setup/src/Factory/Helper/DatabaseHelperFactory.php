@@ -12,18 +12,21 @@
  * @link      https://github.com/rarog/TranslationManagerForAndroidApps
  */
 
-namespace Setup\Factory\Model;
+namespace Setup\Factory\Helper;
 
 use Interop\Container\ContainerInterface;
+use Setup\Helper\DatabaseHelper;
+use Zend\Config\Config;
+use Zend\Mvc\I18n\Translator;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
 class DatabaseHelperFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new \Setup\Model\DatabaseHelper(
-            new \Zend\Config\Config($container->get('config')),
-            $container->get(\Zend\Mvc\I18n\Translator::class),
+        return new DatabaseHelper(
+            new Config($container->get('config')),
+            $container->get(Translator::class),
             $container->get('zfcuser_module_options')
         );
     }

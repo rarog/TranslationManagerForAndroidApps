@@ -15,14 +15,21 @@
 namespace Setup\Factory\Command;
 
 use Interop\Container\ContainerInterface;
+use Setup\Command\PrintSchema;
+use Setup\Helper\DatabaseHelper;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
 class PrintSchemaFactory implements FactoryInterface
 {
+
+    /**
+     * {@inheritDoc}
+     * @see \Zend\ServiceManager\Factory\FactoryInterface::__invoke()
+     */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new \Setup\Command\PrintSchema(
-            $container->get(\Setup\Model\DatabaseHelper::class)
+        return new PrintSchema(
+            $container->get(DatabaseHelper::class)
         );
     }
 }

@@ -16,7 +16,10 @@ namespace Application\Factory\View\Strategy;
 
 use Application\View\Strategy\SetupAwareRedirectStrategy;
 use Interop\Container\ContainerInterface;
+use Setup\Helper\DatabaseHelper;
+use Zend\Authentication\AuthenticationService;
 use Zend\ServiceManager\Factory\FactoryInterface;
+use ZfcRbac\Options\ModuleOptions;
 
 /**
  * Factory to create a setup aware redirect strategy
@@ -31,12 +34,12 @@ class SetupAwareRedirectStrategyFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         /** @var \ZfcRbac\Options\ModuleOptions $moduleOptions */
-        $moduleOptions = $container->get(\ZfcRbac\Options\ModuleOptions::class);
-        /** @var \Zend\Authentication\AuthenticationService $authenticationService */
-        $authenticationService = $container->get(\Zend\Authentication\AuthenticationService::class);
-        /** @var \Setup\Model\DatabaseHelper $databaseHelper */
-        $databaseHelper = $container->get(\Setup\Model\DatabaseHelper::class);
+        $moduleOptions = $container->get(ModuleOptions::class);
 
-        return new SetupAwareRedirectStrategy($moduleOptions->getRedirectStrategy(), $authenticationService, $databaseHelper);
+        return new SetupAwareRedirectStrategy(
+            $moduleOptions->getRedirectStrategy(),
+            $container->get(AuthenticationService::class),
+            $container->get(DatabaseHelper::class)
+        );
     }
 }

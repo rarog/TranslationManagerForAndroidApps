@@ -13,10 +13,10 @@
  */
 namespace Setup\Command;
 
-use Setup\Model\DatabaseHelper;
-use Zend\Console\Adapter\AdapterInterface;
-use Zend\Console\ColorInterface;
+use Setup\Helper\DatabaseHelper;
 use ZF\Console\Route;
+use Zend\Console\ColorInterface;
+use Zend\Console\Adapter\AdapterInterface;
 
 class PrintSchema
 {

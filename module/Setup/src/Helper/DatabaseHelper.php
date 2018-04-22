@@ -5,7 +5,7 @@
  * @license   https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License version 3 or later
  */
 
-namespace Setup\Model;
+namespace Setup\Helper;
 
 use Zend\Config\Config;
 use Zend\Db\Adapter\Adapter;
