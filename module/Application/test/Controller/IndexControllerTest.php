@@ -42,6 +42,14 @@ class IndexControllerTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
+    public function testAboutActionCanBeAccessed()
+    {
+        $this->routeMatch->setParam('action', 'about');
+        $result = $this->controller->dispatch($this->request);
+        $response = $this->controller->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
     public function testInvalidRouteDoesNotCrash()
     {
         $this->routeMatch->setParam('action', 'invalid-action');
