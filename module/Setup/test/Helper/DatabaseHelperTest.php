@@ -88,20 +88,37 @@ class DatabaseHelperTest extends TestCase
     }
 
     /**
-     * Call protected/private method of a class.
+     * Call protected/private method of an object.
      *
      * @param object $object Instantiated object that we will run method on.
      * @param string $methodName Method name to call
      * @param array  $parameters Array of parameters to pass into method.
      * @return mixed Method return.
      */
-    private function invokeMethod($object, $methodName, array $parameters = [])
+    private function invokeMethod($object, string $methodName, array $parameters = [])
     {
         $reflection = new ReflectionClass(get_class($object));
         $method = $reflection->getMethod($methodName);
         $method->setAccessible(true);
 
         return $method->invokeArgs($object, $parameters);
+    }
+
+    /**
+     * Set protected/private property of an object.
+     *
+     * @param object $object Instantiated object that we will run method on.
+     * @param string $propertyName Method name to call
+     * @param array  $parameters Array of parameters to pass into method.
+     * @return mixed Method return.
+     */
+    private function setPropertyValue($object, string $propertyName, $value)
+    {
+        $reflection = new ReflectionClass(get_class($object));
+        $property = $reflection->getProperty($propertyName);
+        $property->setAccessible(true);
+
+        $property->setValue($object, $value);
     }
 
     /**
@@ -218,5 +235,56 @@ class DatabaseHelperTest extends TestCase
 
         $mock->enable();
         $this->invokeMethod($databaseHelper, 'getSchemaInstallationFilepath');
+    }
+
+    /**
+     * @covers \Setup\Helper\DatabaseHelper::getLastParsedSchemaVersion
+     */
+    public function testGetLastParsedSchemaVersion()
+    {
+        $schemaVersion1 = 10;
+        $schemaVersion2 = 1;
+
+        $databaseHelper = $this->getDatabaseHelper($this->unsupportedConfig);
+
+        $this->setPropertyValue($databaseHelper, 'lastParsedSchemaVersion', $schemaVersion1);
+        $this->assertEquals($schemaVersion1, $databaseHelper->getLastParsedSchemaVersion());
+
+        $this->setPropertyValue($databaseHelper, 'lastParsedSchemaVersion', $schemaVersion2);
+        $this->assertEquals($schemaVersion2, $databaseHelper->getLastParsedSchemaVersion());
+    }
+
+    /**
+     * @covers \Setup\Helper\DatabaseHelper::getLastStatus
+     */
+    public function testGetLastStatus()
+    {
+        $status1 = 42;
+        $status2 = 123;
+
+        $databaseHelper = $this->getDatabaseHelper($this->unsupportedConfig);
+
+        $this->setPropertyValue($databaseHelper, 'lastStatus', $status1);
+        $this->assertEquals($status1, $databaseHelper->getLastStatus());
+
+        $this->setPropertyValue($databaseHelper, 'lastStatus', $status2);
+        $this->assertEquals($status2, $databaseHelper->getLastStatus());
+    }
+
+    /**
+     * @covers \Setup\Helper\DatabaseHelper::getLastMessage
+     */
+    public function testGetLastMessage()
+    {
+        $message1 = 'Message 1';
+        $message2 = 'Another message 2';
+
+        $databaseHelper = $this->getDatabaseHelper($this->unsupportedConfig);
+
+        $this->setPropertyValue($databaseHelper, 'lastMessage', $message1);
+        $this->assertEquals($message1, $databaseHelper->getLastMessage());
+
+        $this->setPropertyValue($databaseHelper, 'lastMessage', $message2);
+        $this->assertEquals($message2, $databaseHelper->getLastMessage());
     }
 }
