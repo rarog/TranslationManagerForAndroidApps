@@ -62,6 +62,22 @@ class FileHelperTest extends TestCase
         $this->assertInstanceOf(PhpArray::class, $this->configWriterProperty->getValue($this->fileHelper));
     }
 
+    public function testNormalizePath()
+    {
+        $input1 = '/somePath/';
+        $result1 = '/somePath';
+
+        $input2 = '\\anotherPath\\';
+        $result2 = '\\anotherPath';
+
+        $input3 = '/cleanPath';
+        $result3 = '/cleanPath';
+
+        $this->assertEquals($result1, $this->fileHelper::normalizePath($input1));
+        $this->assertEquals($result2, $this->fileHelper::normalizePath($input2));
+        $this->assertEquals($result3, $this->fileHelper::normalizePath($input3));
+    }
+
     public function testReplaceConfigInFile()
     {
         $this->configWriterProperty->setValue($this->fileHelper, $this->phpArray->reveal());

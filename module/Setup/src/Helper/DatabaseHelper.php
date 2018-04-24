@@ -233,7 +233,7 @@ class DatabaseHelper
      */
     private function getSchemaInstallationFilepath()
     {
-        $path = $this->normalizePath($this->setupConfig->get('db_schema_path'));
+        $path = FileHelper::normalizePath($this->setupConfig->get('db_schema_path'));
         $pattern = $this->getInstallationSchemaRegex();
 
         $max = 0;
@@ -578,19 +578,6 @@ class DatabaseHelper
     }
 
     /**
-     * Normalize a path for insertion in the stack
-     *
-     * @param  string $path
-     * @return string
-     */
-    private function normalizePath(string $path)
-    {
-        $path = rtrim($path, '/');
-        $path = rtrim($path, '\\');
-        return $path;
-    }
-
-    /**
      * Sets database config array and creates an adapter with it
      *
      * @param array $dbConfig
@@ -620,7 +607,7 @@ class DatabaseHelper
     }
 
     public function printSchema(string $filename, string $sqlType) {
-        $path = $this->normalizePath($this->setupConfig->get('db_schema_path'));
+        $path = FileHelper::normalizePath($this->setupConfig->get('db_schema_path'));
         $schemaFile = $path . '/' . $filename;
 
         $driver = null;

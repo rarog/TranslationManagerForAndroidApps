@@ -41,6 +41,19 @@ class FileHelper
     }
 
     /**
+     * Normalize a path by removing trailing slashes
+     *
+     * @param  string $path
+     * @return string
+     */
+    public static function normalizePath(string $path)
+    {
+        $path = rtrim($path, '/');
+        $path = rtrim($path, '\\');
+        return $path;
+    }
+
+    /**
      * Helper function to replace config blocks in file
      *
      * @param string $filePath
