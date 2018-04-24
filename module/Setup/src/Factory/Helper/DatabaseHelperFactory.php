@@ -15,6 +15,7 @@
 namespace Setup\Factory\Helper;
 
 use Interop\Container\ContainerInterface;
+use Setup\Helper\AdapterProviderHelper;
 use Setup\Helper\DatabaseHelper;
 use Zend\Config\Config;
 use Zend\Mvc\I18n\Translator;
@@ -26,6 +27,7 @@ class DatabaseHelperFactory implements FactoryInterface
     {
         return new DatabaseHelper(
             new Config($container->get('config')),
+            new AdapterProviderHelper(),
             $container->get(Translator::class),
             $container->get('zfcuser_module_options')
         );

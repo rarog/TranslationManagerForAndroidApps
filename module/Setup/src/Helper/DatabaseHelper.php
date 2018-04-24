@@ -28,13 +28,24 @@ use Zend\Mvc\I18n\Translator;
 use ZfcUser\Options\ModuleOptions as ZUModuleOptions;
 use Exception;
 use RuntimeException;
+use Zend\Db\Adapter\AdapterInterface;
 
 class DatabaseHelper
 {
+
     /**
-     * @var mixed
+     * Database config array, that can be used to initialise an instance of \Zend\Db\Adapter\Adapter
+     *
+     * @var array
      */
-    private $dbConfig;
+    private $dbConfigArray = [];
+
+    /**
+     * Adapter provider helper
+     *
+     * @var AdapterProviderHelper
+     */
+    private $adapterProvider;
 
     /**
      * @var Adapter
@@ -104,6 +115,20 @@ class DatabaseHelper
     const CURRENTSCHEMAISLATEST = 31;
 
     /**
+     * Generates adapter if not instantiated
+     *
+     * @return \Zend\Db\Adapter\Adapter
+     */
+    private function getDbAdapter()
+    {
+        if (! $this->dbAdapter instanceof AdapterInterface) {
+            $this->dbAdapter = $this->adapterProvider->getDbAdapter($this->dbConfigArray);
+        }
+
+        return $this->dbAdapter;
+    }
+
+    /**
      * Generates installation schema regular expression.
      *
      * @throws \RuntimeException
@@ -113,7 +138,7 @@ class DatabaseHelper
     {
         if (is_null($this->installationSchemaRegex)) {
             $schemaNaming = $this->setupConfig->get('db_schema_naming')->toArray();
-            $driver = $this->dbConfig['driver'];
+            $driver = $this->dbConfigArray['driver'];
 
             if (! array_key_exists($driver, $schemaNaming)) {
                 throw new RuntimeException(sprintf('Database config contains unsupported driver "%s".', $driver));
@@ -138,7 +163,7 @@ class DatabaseHelper
     {
         if (is_null($this->updateSchemaRegex)) {
             $schemaNaming = $this->setupConfig->get('db_schema_naming')->toArray();
-            $driver = $this->dbConfig['driver'];
+            $driver = $this->dbConfigArray['driver'];
 
             if (! array_key_exists($driver, $schemaNaming)) {
                 throw new RuntimeException(sprintf('Database config contains unsupported driver "%s".', $driver));
@@ -157,14 +182,16 @@ class DatabaseHelper
      * Constructor
      *
      * @param Config $config
+     * @param AdapterProviderHelper $adapterProvider
      * @param Translator $translator
      * @param ZUModuleOptions $zuModuleOptions
      */
-    public function __construct(Config $config, Translator $translator, ZUModuleOptions $zuModuleOptions)
+    public function __construct(Config $config, AdapterProviderHelper $adapterProvider, Translator $translator, ZUModuleOptions $zuModuleOptions)
     {
         $dbConfig = $config->db;
 
         $this->setDbConfigArray(($dbConfig) ? $dbConfig->toArray() : []);
+        $this->adapterProvider = $adapterProvider;
         $this->translator = $translator;
         $this->setupConfig = $config->setup;
         $this->zuModuleOptions = $zuModuleOptions;
@@ -178,8 +205,8 @@ class DatabaseHelper
     public function canConnect()
     {
         try {
-            $this->dbAdapter->getDriver()->checkEnvironment();
-            $connection = $this->dbAdapter->getDriver()->getConnection();
+            $this->getDbAdapter()->getDriver()->checkEnvironment();
+            $connection = $this->getDbAdapter()->getDriver()->getConnection();
             if (!$connection->isConnected()) {
                 $connection->connect();
             }
@@ -230,7 +257,7 @@ class DatabaseHelper
     private function getSql()
     {
         if (is_null($this->sql)) {
-            $this->sql = new Sql($this->dbAdapter);
+            $this->sql = new Sql($this->getDbAdapter());
         }
         return $this->sql;
     }
@@ -274,11 +301,11 @@ class DatabaseHelper
     private function executeSqlStatement($sql)
     {
         if ($sql instanceof \Zend\Db\Sql\SqlInterface) {
-            $sqlString = $this->getSql()->buildSqlString($sql, $this->dbAdapter);
-            $this->dbAdapter->query($sqlString, Adapter::QUERY_MODE_EXECUTE);
+            $sqlString = $this->getSql()->buildSqlString($sql, $this->getDbAdapter());
+            $this->getDbAdapter()->query($sqlString, Adapter::QUERY_MODE_EXECUTE);
         } else if (is_string($sql)) {
             $sqlString = trim($sql);
-            $this->dbAdapter->getDriver()->getConnection()->getResource()->exec($sqlString);
+            $this->getDbAdapter()->getDriver()->getConnection()->getResource()->exec($sqlString);
         } else {
             throw new Exception(sprintf(
                 'Function executeSqlStatement was called with unsupport parameter of type "%s".',
@@ -605,8 +632,11 @@ class DatabaseHelper
      * @param array $dbConfig
      */
     public function setDbConfigArray(array $dbConfig) {
-        $this->dbConfig = $dbConfig;
-        $this->dbAdapter = new Adapter($dbConfig);
+        $this->dbConfigArray = $dbConfig;
+
+        // Resetting dependant objects
+        $this->dbAdapter = null;
+        $this->sql = null;
     }
 
     /**
