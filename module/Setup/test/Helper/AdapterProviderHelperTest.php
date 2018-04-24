@@ -16,7 +16,11 @@ namespace SetupTest\Helper;
 use PHPUnit\Framework\TestCase;
 use Setup\Helper\AdapterProviderHelper;
 use Zend\Db\Adapter\Adapter;
+use Zend\Db\Adapter\Driver\ConnectionInterface;
+use Zend\Db\Adapter\Driver\DriverInterface;
 use Zend\Db\Adapter\Driver\Pdo\Pdo;
+use Exception;
+use ReflectionClass;
 
 class AdapterProviderHelperTest extends TestCase
 {
@@ -29,14 +33,41 @@ class AdapterProviderHelperTest extends TestCase
 
     const DRIVER_SQLITE = 'Pdo_Sqlite';
 
+    private $adapterProviderHelper;
+
+    private $dbAdapterProperty;
+
+    private $connection;
+
+    private $driver;
+
+    private $adapter;
+
+    protected function setUp()
+    {
+        $this->adapterProviderHelper = new AdapterProviderHelper();
+
+        $reflection = new ReflectionClass(AdapterProviderHelper::class);
+
+        $this->dbAdapterProperty = $reflection->getProperty('dbAdapter');
+        $this->dbAdapterProperty->setAccessible(true);
+
+        $this->connection = $this->prophesize(ConnectionInterface::class);
+
+        $this->driver = $this->prophesize(DriverInterface::class);
+        $this->driver->checkEnvironment()->willReturn(true);
+        $this->driver->getConnection()->willReturn($this->connection);
+
+        $this->adapter = $this->prophesize(Adapter::class);
+        $this->adapter->getDriver()->willReturn($this->driver);
+    }
+
     public function testSetDbAdapterEmptyArray()
     {
-        $adapterProviderHelper = new AdapterProviderHelper();
+        $this->adapterProviderHelper->setDbAdapter([]);
+        $this->assertEquals(self::DRIVER_EMPTY, $this->adapterProviderHelper->getDbDriverName());
 
-        $adapterProviderHelper->setDbAdapter([]);
-        $this->assertEquals(self::DRIVER_EMPTY, $adapterProviderHelper->getDbDriverName());
-
-        $adapter = $adapterProviderHelper->getDbAdapter();
+        $adapter = $this->adapterProviderHelper->getDbAdapter();
         $this->assertInstanceOf(Adapter::class, $adapter);
         $this->assertInstanceOf(Pdo::class, $adapter->getDriver());
         $this->assertEmpty($adapter->getDriver()
@@ -45,13 +76,11 @@ class AdapterProviderHelperTest extends TestCase
 
     public function testGetDbAdapterWillCallSetDbAdapterWithEmptyArray()
     {
-        $adapterProviderHelper = new AdapterProviderHelper();
+        $this->assertEquals(self::DRIVER_EMPTY, $this->adapterProviderHelper->getDbDriverName());
 
-        $this->assertEquals(self::DRIVER_EMPTY, $adapterProviderHelper->getDbDriverName());
+        $adapter = $this->adapterProviderHelper->getDbAdapter();
 
-        $adapter = $adapterProviderHelper->getDbAdapter();
-
-        $this->assertEquals(self::DRIVER_EMPTY, $adapterProviderHelper->getDbDriverName());
+        $this->assertEquals(self::DRIVER_EMPTY, $this->adapterProviderHelper->getDbDriverName());
 
         $this->assertInstanceOf(Adapter::class, $adapter);
         $this->assertInstanceOf(Pdo::class, $adapter->getDriver());
@@ -61,25 +90,23 @@ class AdapterProviderHelperTest extends TestCase
 
     public function testSetDbAdapterInvalidConfigArray()
     {
-        $adapterProviderHelper = new AdapterProviderHelper();
-
-        $adapterProviderHelper->setDbAdapter([
+        $this->adapterProviderHelper->setDbAdapter([
             'driver' => new \stdClass()
         ]);
-        $this->assertEquals(self::DRIVER_EMPTY, $adapterProviderHelper->getDbDriverName());
+        $this->assertEquals(self::DRIVER_EMPTY, $this->adapterProviderHelper->getDbDriverName());
 
-        $adapter = $adapterProviderHelper->getDbAdapter();
+        $adapter = $this->adapterProviderHelper->getDbAdapter();
         $this->assertInstanceOf(Adapter::class, $adapter);
         $this->assertInstanceOf(Pdo::class, $adapter->getDriver());
         $this->assertEmpty($adapter->getDriver()
             ->getDatabasePlatformName());
 
-        $adapterProviderHelper->setDbAdapter([
+        $this->adapterProviderHelper->setDbAdapter([
             'driver' => 'unknownDriver'
         ]);
-        $this->assertEquals(self::DRIVER_EMPTY, $adapterProviderHelper->getDbDriverName());
+        $this->assertEquals(self::DRIVER_EMPTY, $this->adapterProviderHelper->getDbDriverName());
 
-        $adapter = $adapterProviderHelper->getDbAdapter();
+        $adapter = $this->adapterProviderHelper->getDbAdapter();
         $this->assertInstanceOf(Adapter::class, $adapter);
         $this->assertInstanceOf(Pdo::class, $adapter->getDriver());
         $this->assertEmpty($adapter->getDriver()
@@ -88,36 +115,56 @@ class AdapterProviderHelperTest extends TestCase
 
     public function testSetDbAdapterValidConfigArray()
     {
-        $adapterProviderHelper = new AdapterProviderHelper();
-
-        $adapterProviderHelper->setDbAdapter([
+        $this->adapterProviderHelper->setDbAdapter([
             'driver' => self::DRIVER_MYSQL
         ]);
-        $this->assertEquals(self::DRIVER_MYSQL, $adapterProviderHelper->getDbDriverName());
+        $this->assertEquals(self::DRIVER_MYSQL, $this->adapterProviderHelper->getDbDriverName());
 
-        $adapter = $adapterProviderHelper->getDbAdapter();
+        $adapter = $this->adapterProviderHelper->getDbAdapter();
         $this->assertInstanceOf(Adapter::class, $adapter);
         $this->assertEquals('Mysql', $adapter->getDriver()
             ->getDatabasePlatformName());
 
-        $adapterProviderHelper->setDbAdapter([
+        $this->adapterProviderHelper->setDbAdapter([
             'driver' => self::DRIVER_PGSQL
         ]);
-        $this->assertEquals(self::DRIVER_PGSQL, $adapterProviderHelper->getDbDriverName());
+        $this->assertEquals(self::DRIVER_PGSQL, $this->adapterProviderHelper->getDbDriverName());
 
-        $adapter = $adapterProviderHelper->getDbAdapter();
+        $adapter = $this->adapterProviderHelper->getDbAdapter();
         $this->assertInstanceOf(Adapter::class, $adapter);
         $this->assertEquals('Postgresql', $adapter->getDriver()
             ->getDatabasePlatformName());
 
-        $adapterProviderHelper->setDbAdapter([
+        $this->adapterProviderHelper->setDbAdapter([
             'driver' => self::DRIVER_SQLITE
         ]);
-        $this->assertEquals(self::DRIVER_SQLITE, $adapterProviderHelper->getDbDriverName());
+        $this->assertEquals(self::DRIVER_SQLITE, $this->adapterProviderHelper->getDbDriverName());
 
-        $adapter = $adapterProviderHelper->getDbAdapter();
+        $adapter = $this->adapterProviderHelper->getDbAdapter();
         $this->assertInstanceOf(Adapter::class, $adapter);
         $this->assertEquals('Sqlite', $adapter->getDriver()
             ->getDatabasePlatformName());
+    }
+
+    public function testCanConnectReturnsFalseOnException()
+    {
+        $this->dbAdapterProperty->setValue($this->adapterProviderHelper, $this->adapter->reveal());
+
+        $this->adapter->getDriver()->willThrow(new Exception('Controlled Exception during test'));
+
+        $this->assertEquals(false, $this->adapterProviderHelper->canConnect());
+    }
+
+    public function testCanConnect()
+    {
+        $this->dbAdapterProperty->setValue($this->adapterProviderHelper, $this->adapter->reveal());
+
+        $this->connection->connect()->will(function () {});
+
+        $this->connection->isConnected()->willReturn(false);
+        $this->assertEquals(false, $this->adapterProviderHelper->canConnect());
+
+        $this->connection->isConnected()->willReturn(true);
+        $this->assertEquals(true, $this->adapterProviderHelper->canConnect());
     }
 }

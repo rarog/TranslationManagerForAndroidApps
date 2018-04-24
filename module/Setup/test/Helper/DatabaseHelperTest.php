@@ -251,6 +251,19 @@ class DatabaseHelperTest extends TestCase
     }
 
     /**
+     * @covers \Setup\Helper\DatabaseHelper::canConnect
+     */
+    public function testCanConnect()
+    {
+        $databaseHelper = $this->getDatabaseHelper($this->unsupportedConfig);
+
+        $this->adapterProvider->canConnect()->willReturn(false);
+        $this->assertEquals(false, $databaseHelper->canConnect());
+        $this->adapterProvider->canConnect()->willReturn(true);
+        $this->assertEquals(true, $databaseHelper->canConnect());
+    }
+
+    /**
      * @covers \Setup\Helper\DatabaseHelper::getLastParsedSchemaVersion
      */
     public function testGetLastParsedSchemaVersion()

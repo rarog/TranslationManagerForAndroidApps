@@ -8,6 +8,7 @@ namespace Setup\Helper;
 
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\AdapterInterface;
+use Exception;
 
 class AdapterProviderHelper
 {
@@ -45,6 +46,26 @@ class AdapterProviderHelper
     private $dbDriverName = 'Pdo';
 
     /**
+     * Helper function to test, if database connection can be established with provided credentials.
+     *
+     * @return boolean
+     */
+    public function canConnect()
+    {
+        try {
+            $driver = $this->getDbAdapter()->getDriver();
+            $driver->checkEnvironment();
+            $connection = $driver->getConnection();
+            if (! $connection->isConnected()) {
+                $connection->connect();
+            }
+            return $connection->isConnected();
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    /**
      * Creates adapter
      *
      * @param array $dbConfig
@@ -56,7 +77,7 @@ class AdapterProviderHelper
         if (! array_key_exists('driver', $dbConfig) || ! is_string($dbConfig['driver']) ||
             ! in_array($dbConfig['driver'], self::SUPPORTED_ADAPTERS)) {
             $dbConfig = [
-                'driver' => 'Pdo'
+                'driver' => 'Pdo',
             ];
         }
 

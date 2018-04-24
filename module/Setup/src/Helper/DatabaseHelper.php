@@ -177,18 +177,9 @@ class DatabaseHelper
      */
     public function canConnect()
     {
-        try {
-            $this->adapterProvider->getDbAdapter()->getDriver()->checkEnvironment();
-            $connection = $this->adapterProvider->getDbAdapter()->getDriver()->getConnection();
-            if (!$connection->isConnected()) {
-                $connection->connect();
-            }
-            $this->lastMessage = ($connection->isConnected()) ? $this->translator->translate('Database connection successfully established.') : $this->translator->translate('Could not establish database connection.');
-            return $connection->isConnected();
-        } catch (Exception $e) {
-            $this->lastMessage = $e->getMessage();
-            return false;
-        }
+        $canConnect = $this->adapterProvider->canConnect();
+        $this->lastMessage = ($canConnect) ? $this->translator->translate('Database connection successfully established.') : $this->translator->translate('Database connection can\'t be established.');
+        return $canConnect;
     }
 
     /**
