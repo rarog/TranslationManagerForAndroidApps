@@ -16,15 +16,14 @@ namespace SetupTest\Helper;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Setup\Helper\AdapterProviderHelper;
 use Setup\Helper\DatabaseHelper;
 use Zend\Config\Config;
-use Zend\Db\Adapter\Adapter;
 use Zend\Mvc\I18n\Translator;
 use ZfcUser\Options\ModuleOptions;
 use ReflectionClass;
 use RuntimeException;
 use phpmock\MockBuilder;
-use Setup\Helper\AdapterProviderHelper;
 
 class DatabaseHelperTest extends TestCase
 {
@@ -57,11 +56,8 @@ class DatabaseHelperTest extends TestCase
     protected function setUp()
     {
         $this->adapterProvider = $this->prophesize(AdapterProviderHelper::class);
-        $this->adapterProvider->getDbAdapter(Argument::type('array'))->will(
-            function ($args) {
-                return new Adapter([
-                    'driver' => 'Pdo',
-                ]);
+        $this->adapterProvider->setDbAdapter(Argument::type('array'))->will(function ($args) {
+            $this->getDbDriverName()->willReturn($args[0]['driver']);
         });
     }
 
@@ -303,14 +299,5 @@ class DatabaseHelperTest extends TestCase
 
         $this->setPropertyValue($databaseHelper, 'lastMessage', $message2);
         $this->assertEquals($message2, $databaseHelper->getLastMessage());
-    }
-
-    /**
-     * @covers \Setup\Helper\DatabaseHelper::getDbAdapter
-     */
-    public function testGetDbAdapter()
-    {
-        $databaseHelper = $this->getDatabaseHelper($this->unsupportedConfig);
-        $this->assertInstanceOf(Adapter::class, $this->invokeMethod($databaseHelper, 'getDbAdapter'));
     }
 }

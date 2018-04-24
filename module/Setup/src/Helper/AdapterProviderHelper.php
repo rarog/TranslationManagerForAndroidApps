@@ -7,11 +7,13 @@
 namespace Setup\Helper;
 
 use Zend\Db\Adapter\Adapter;
+use Zend\Db\Adapter\AdapterInterface;
 
 class AdapterProviderHelper
 {
 
     /**
+     * Array of supported adapters
      *
      * @var Adapter
      */
@@ -22,21 +24,68 @@ class AdapterProviderHelper
     ];
 
     /**
+     * Database config array, that can be used to initialise an instance of \Zend\Db\Adapter\Adapter
+     *
+     * @var array
+     */
+    private $dbConfigArray = [];
+
+    /**
+     * Database adapter
+     *
+     * @var null|Adapter
+     */
+    private $dbAdapter;
+
+    /**
+     * Driver name used to initialise the adapter
+     *
+     * @var string
+     */
+    private $dbDriverName = 'Pdo';
+
+    /**
      * Creates adapter
      *
      * @param array $dbConfig
      * @return \Zend\Db\Adapter\Adapter
      */
-    public function getDbAdapter(array $dbConfig)
+    public function setDbAdapter(array $dbConfig)
     {
-        // Ensuring, that a valid adapter is returned even if config array is invalid
+        // Ensuring, that a valid adapter is created even if config array is invalid
         if (! array_key_exists('driver', $dbConfig) || ! is_string($dbConfig['driver']) ||
             ! in_array($dbConfig['driver'], self::SUPPORTED_ADAPTERS)) {
             $dbConfig = [
-                'driver' => 'Pdo',
+                'driver' => 'Pdo'
             ];
         }
 
-        return new Adapter($dbConfig);
+        $this->dbAdapter = new Adapter($dbConfig);
+        $this->dbDriverName = $dbConfig['driver'];
+    }
+
+    /**
+     * Returns adapter
+     *
+     * @return \Zend\Db\Adapter\Adapter
+     */
+    public function getDbAdapter()
+    {
+        // Ensuring, that a valid adapter is returned even if no valid adapter is present yet
+        if (! $this->dbAdapter instanceof AdapterInterface) {
+            $this->setDbAdapter([]);
+        }
+
+        return $this->dbAdapter;
+    }
+
+    /**
+     * Returns driver name used to initialise the adapter
+     *
+     * @return string
+     */
+    public function getDbDriverName()
+    {
+        return $this->dbDriverName;
     }
 }
