@@ -19,6 +19,7 @@ use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\Driver\ConnectionInterface;
 use Zend\Db\Adapter\Driver\DriverInterface;
 use Zend\Db\Adapter\Driver\Pdo\Pdo;
+use Zend\Db\Sql\Sql;
 use Exception;
 use ReflectionClass;
 
@@ -146,6 +147,17 @@ class AdapterProviderHelperTest extends TestCase
             ->getDatabasePlatformName());
     }
 
+    public function testSetDbAdapterResetsSqlProperty()
+    {
+        $this->assertAttributeEmpty('sql', $this->adapterProviderHelper);
+
+        $this->adapterProviderHelper->getSql();
+        $this->assertAttributeInstanceOf(Sql::class, 'sql', $this->adapterProviderHelper);
+
+        $this->adapterProviderHelper->setDbAdapter([]);
+        $this->assertAttributeEmpty('sql', $this->adapterProviderHelper);
+    }
+
     public function testCanConnectReturnsFalseOnException()
     {
         $this->dbAdapterProperty->setValue($this->adapterProviderHelper, $this->adapter->reveal());
@@ -166,5 +178,12 @@ class AdapterProviderHelperTest extends TestCase
 
         $this->connection->isConnected()->willReturn(true);
         $this->assertEquals(true, $this->adapterProviderHelper->canConnect());
+    }
+
+    public function testGetSql()
+    {
+        $this->assertAttributeEmpty('sql', $this->adapterProviderHelper);
+        $this->assertInstanceOf(Sql::class, $this->adapterProviderHelper->getSql());
+        $this->assertAttributeInstanceOf(Sql::class, 'sql', $this->adapterProviderHelper);
     }
 }

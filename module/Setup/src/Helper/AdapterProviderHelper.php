@@ -8,6 +8,8 @@ namespace Setup\Helper;
 
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\SqlInterface;
 use Exception;
 
 class AdapterProviderHelper
@@ -44,6 +46,8 @@ class AdapterProviderHelper
      * @var string
      */
     private $dbDriverName = 'Pdo';
+
+    private $sql;
 
     /**
      * Helper function to test, if database connection can be established with provided credentials.
@@ -83,6 +87,7 @@ class AdapterProviderHelper
 
         $this->dbAdapter = new Adapter($dbConfig);
         $this->dbDriverName = $dbConfig['driver'];
+        $this->sql = null;
     }
 
     /**
@@ -108,5 +113,19 @@ class AdapterProviderHelper
     public function getDbDriverName()
     {
         return $this->dbDriverName;
+    }
+
+    /**
+     * Gets SQL object from adapter.
+     *
+     * @return Sql
+     */
+    public function getSql()
+    {
+        if (! $this->sql instanceof SqlInterface) {
+            $this->sql = new Sql($this->getDbAdapter());
+        }
+
+        return $this->sql;
     }
 }

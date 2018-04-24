@@ -12,7 +12,6 @@ use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\AbstractPreparableSql;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Insert;
-use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\SqlInterface;
 use Zend\Db\Sql\Ddl\CreateTable;
 use Zend\Db\Sql\Ddl\Column\AbstractLengthColumn;
@@ -212,20 +211,6 @@ class DatabaseHelper
         return $this->lastMessage;
     }
 
-
-    /**
-     * Gets SQL object from adapter.
-     *
-     * @return Sql
-     */
-    private function getSql()
-    {
-        if (is_null($this->sql)) {
-            $this->sql = new Sql($this->adapterProvider->getDbAdapter());
-        }
-        return $this->sql;
-    }
-
     /**
      * Assemblies path of the database schema installation file. Works only with *nix file separators correctly.
      *
@@ -264,8 +249,8 @@ class DatabaseHelper
      */
     private function executeSqlStatement($sql)
     {
-        if ($sql instanceof \Zend\Db\Sql\SqlInterface) {
-            $sqlString = $this->getSql()->buildSqlString($sql, $this->adapterProvider->getDbAdapter());
+        if ($sql instanceof SqlInterface) {
+            $sqlString = $this->adapterProvider->getSql()->buildSqlString($sql, $this->adapterProvider->getDbAdapter());
             $this->adapterProvider->getDbAdapter()->query($sqlString, Adapter::QUERY_MODE_EXECUTE);
         } else if (is_string($sql)) {
             $sqlString = trim($sql);
@@ -479,7 +464,7 @@ class DatabaseHelper
                 }
 
                 // Inserting version information.
-                $insert = $this->getSql()->insert($this->setupConfig->get('db_schema_version_table'));
+                $insert = $this->adapterProvider->getSql()->insert($this->setupConfig->get('db_schema_version_table'));
                 $insert->columns(['version', 'setupid', 'timestamp'])
                     ->values([
                         'version' => $this->lastParsedSchemaVersion,
@@ -508,10 +493,12 @@ class DatabaseHelper
             return false;
         }
 
-        $select = $this->getSql()
+        $select = $this->adapterProvider->getSql()
             ->select($this->setupConfig->get('db_schema_version_table'))
-            ->where(['version' => 1]);
-        $statement = $this->getSql()->prepareStatementForSqlObject($select);
+            ->where([
+            'version' => 1
+        ]);
+        $statement = $this->adapterProvider->getSql()->prepareStatementForSqlObject($select);
         try {
             $resultSet = $statement->execute();
             $result = $resultSet->current();
@@ -547,10 +534,12 @@ class DatabaseHelper
     public function isSetupComplete()
     {
         if ($this->isSchemaInstalled()) {
-            $select = $this->getSql()
-            ->select($this->zuModuleOptions->getTableName())
-            ->columns(array('count' => new Expression('count(*)')));
-            $statement = $this->getSql()->prepareStatementForSqlObject($select);
+            $select = $this->adapterProvider->getSql()
+                ->select($this->zuModuleOptions->getTableName())
+                ->columns(array(
+                'count' => new Expression('count(*)')
+            ));
+            $statement = $this->adapterProvider->getSql()->prepareStatementForSqlObject($select);
 
             try {
                 $resultSet = $statement->execute();
@@ -657,7 +646,7 @@ class DatabaseHelper
                 set_error_handler($suppressError);
             }
 
-            $sqlString .= $this->getSql()->buildSqlString($sqlCommand, $tempAdapter);
+            $sqlString .= $this->adapterProvider->getSql()->buildSqlString($sqlCommand, $tempAdapter);
 
             if ($sqlCommand instanceof AbstractPreparableSql) {
                 restore_error_handler();
