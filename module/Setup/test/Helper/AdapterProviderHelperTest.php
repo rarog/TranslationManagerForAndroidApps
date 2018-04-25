@@ -11,6 +11,7 @@
  * @license   https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License version 3 or later
  * @link      https://github.com/rarog/TranslationManagerForAndroidApps
  */
+
 namespace SetupTest\Helper;
 
 use PHPUnit\Framework\TestCase;
@@ -25,7 +26,6 @@ use ReflectionClass;
 
 class AdapterProviderHelperTest extends TestCase
 {
-
     const DRIVER_EMPTY = 'Pdo';
 
     const DRIVER_MYSQL = 'Pdo_Mysql';
@@ -171,7 +171,8 @@ class AdapterProviderHelperTest extends TestCase
     {
         $this->dbAdapterProperty->setValue($this->adapterProviderHelper, $this->adapter->reveal());
 
-        $this->connection->connect()->will(function () {});
+        $this->connection->connect()->will(function () {
+        });
 
         $this->connection->isConnected()->willReturn(false);
         $this->assertEquals(false, $this->adapterProviderHelper->canConnect());

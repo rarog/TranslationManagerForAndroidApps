@@ -86,16 +86,17 @@ class DatabaseHelperTest extends TestCase
         $builder->setNamespace($databaseHelper->getNamespaceName())
             ->setName('scandir')
             ->setFunction(
-            function ($directory, $sorting_order = null, $context = null) {
-                return [
-                    '.',
-                    '..',
-                    'schema.mysql.1.sql',
-                    'schema.mysql.10.sql',
-                    'schema.mysql.9.sql',
-                    'some.file'
-                ];
-            });
+                function ($directory, $sorting_order = null, $context = null) {
+                    return [
+                        '.',
+                        '..',
+                        'schema.mysql.1.sql',
+                        'schema.mysql.10.sql',
+                        'schema.mysql.9.sql',
+                        'some.file',
+                    ];
+                }
+            );
 
         return $builder->build();
     }

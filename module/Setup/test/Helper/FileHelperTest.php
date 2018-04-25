@@ -11,6 +11,7 @@
  * @license   https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License version 3 or later
  * @link      https://github.com/rarog/TranslationManagerForAndroidApps
  */
+
 namespace SetupTest\Helper;
 
 use PHPUnit\Framework\TestCase;
@@ -22,7 +23,6 @@ use ReflectionClass;
 
 class FileHelperTest extends TestCase
 {
-
     private $fileHelper;
 
     private $phpArray;
@@ -43,7 +43,8 @@ class FileHelperTest extends TestCase
         $this->phpArray->toFile(Argument::type('string'), Argument::type(Config::class), Argument::cetera())->will(
             function ($args) use (&$phpArrayToFileConfigParam) {
                 $phpArrayToFileConfigParam = $args[1]->toArray(); // print_r($phpArrayToFileConfigParam);
-            });
+            }
+        );
 
         $reflection = new ReflectionClass(FileHelper::class);
 

@@ -123,12 +123,12 @@ class SetupController extends AbstractActionController
      */
     private function setCurrentLanguage()
     {
-        if (!is_null($this->container->currentLanguage) &&
+        if (! is_null($this->container->currentLanguage) &&
             array_key_exists($this->container->currentLanguage, $this->getAvailableLanguages())) {
                 $this->translator
                 ->setLocale($this->container->currentLanguage)
                 ->setFallbackLocale(\Locale::getPrimaryLanguage($this->container->currentLanguage));
-            }
+        }
     }
 
     /**
@@ -136,7 +136,8 @@ class SetupController extends AbstractActionController
      *
      * @return int
      */
-    private function getLastStep() {
+    private function getLastStep()
+    {
         return (int) $this->container->lastStep;
     }
 
@@ -145,7 +146,8 @@ class SetupController extends AbstractActionController
      *
      * @param int $lastStep
      */
-    private function setLastStep(int $lastStep) {
+    private function setLastStep(int $lastStep)
+    {
         $this->container->lastStep = $lastStep;
     }
 
@@ -170,7 +172,7 @@ class SetupController extends AbstractActionController
         } else {
             $dbHelper = $this->databaseHelper;
 
-            if (!$dbHelper->canConnect() && ($currentStep > 2)) {
+            if (! $dbHelper->canConnect() && ($currentStep > 2)) {
                 return $this->redirect()->toRoute('setup', ['action' => 'step2']);
             }
         }
@@ -198,7 +200,11 @@ class SetupController extends AbstractActionController
         $sessionId = $this->session->getId();
         $now = time();
 
-        if (!($this->setupCache->hasItem('highlanderSessionId') && ($this->setupCache->hasItem('highlanderLastSeen')))) {
+        if (! (
+                $this->setupCache->hasItem('highlanderSessionId')
+                && ($this->setupCache->hasItem('highlanderLastSeen'))
+            )
+        ) {
             $this->setupCache->setItems([
                 'highlanderSessionId' => $sessionId,
                 'highlanderLastSeen' => $now,
@@ -254,8 +260,17 @@ class SetupController extends AbstractActionController
      * @param SessionManager $session;
      * @param CacheAdapter $setupCache
      */
-    public function __construct(Translator $translator, SessionContainer $container, ListenerOptions $listenerOptions, Renderer $renderer, ZUUser $zuUserService, ZUModuleOptions $zuModuleOptions, DatabaseHelper $databaseHelper, SessionManager $session, CacheAdapter $setupCache)
-    {
+    public function __construct(
+        Translator $translator,
+        SessionContainer $container,
+        ListenerOptions $listenerOptions,
+        Renderer $renderer,
+        ZUUser $zuUserService,
+        ZUModuleOptions $zuModuleOptions,
+        DatabaseHelper $databaseHelper,
+        SessionManager $session,
+        CacheAdapter $setupCache
+    ) {
         $this->translator = $translator;
         $this->container = $container;
         $this->listenerOptions = $listenerOptions;
@@ -277,33 +292,36 @@ class SetupController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isXmlHttpRequest()) {
             $this->setCurrentLanguage();
-
-            if ($request->isPost() &&
-                ($postData = $request->getPost()->toArray())) {
-                    $dbHelper = $this->databaseHelper;
-                    $dbHelper->setDbConfigArray($postData);
-                    $type = ($dbHelper->canConnect()) ? 'success' : 'danger';
-                    $message = $dbHelper->getLastMessage();
+            if ($request->isPost() && ($postData = $request->getPost()->toArray())) {
+                $dbHelper = $this->databaseHelper;
+                $dbHelper->setDbConfigArray($postData);
+                if ($dbHelper->canConnect()) {
+                    $type = 'success';
+                    $message = $this->translator->translate('Database connection successfully established.');
                 } else {
                     $type = 'danger';
-                    $message = $this->translator->translate('<strong>Error:</strong> Invalid POST data was provided.');
+                    $message = $this->translator->translate('Database connection can\'t be established.');
                 }
+            } else {
+                $type = 'danger';
+                $message = $this->translator->translate('<strong>Error:</strong> Invalid POST data was provided.');
+            }
 
-                $viewModel = new ViewModel([
-                    'type'     => $type,
-                    'message'  => $message,
-                    'canClose' => true,
-                ]);
-                $viewModel->setTemplate('partial/alert.phtml')
+            $viewModel = new ViewModel([
+                'type' => $type,
+                'message' => $message,
+                'canClose' => true,
+            ]);
+            $viewModel->setTemplate('partial/alert.phtml')
                 ->setTerminal(true);
-                $htmlOutput = $this->renderer->render($viewModel);
+            $htmlOutput = $this->renderer->render($viewModel);
 
-                $jsonModel = new JsonModel([
-                    'html' => $htmlOutput,
-                ]);
-                $jsonModel->setTerminal(true);
+            $jsonModel = new JsonModel([
+                'html' => $htmlOutput,
+            ]);
+            $jsonModel->setTerminal(true);
 
-                return $jsonModel;
+            return $jsonModel;
         } else {
             return $this->throw403();
         }
@@ -323,7 +341,7 @@ class SetupController extends AbstractActionController
             $nextEnabled = true;
             $installSchemaEnabled = true;
             // Disable buttons if needed.
-            if (!$dbHelper->isSchemaInstalled()) {
+            if (! $dbHelper->isSchemaInstalled()) {
                 $nextEnabled = false;
             }
             // This code works properly only, because isSchemaInstalled() was called above.
@@ -371,7 +389,7 @@ class SetupController extends AbstractActionController
 
                     $this->setLastStep(2);
                     return $this->redirect()->toRoute('setup', ['action' => 'step2']);
-                }
+            }
         }
 
         return new ViewModel([
@@ -401,8 +419,8 @@ class SetupController extends AbstractActionController
 
         $database = new \Setup\Model\Database(
             ($this->configHelp()->db) ? $this->configHelp()->db->toArray() : []
-            );
-        $security = ($this->configHelp()->security) ? $this->configHelp()->security->toArray(): '';
+        );
+        $security = ($this->configHelp()->security) ? $this->configHelp()->security->toArray() : '';
         $masterKey = (is_array($security)) ? (string) $security['master_key'] : '';
         if ($masterKey == '') {
             $masterKey = Rand::getString(64);
@@ -472,7 +490,7 @@ class SetupController extends AbstractActionController
         }
 
         // Disable buttons if needed.
-        if (!$dbHelper->isSchemaInstalled()) {
+        if (! $dbHelper->isSchemaInstalled()) {
             $this->disableFormElement($formStep3->get('next'));
         }
         // This code works properly only, because isSchemaInstalled() was called above.
@@ -508,10 +526,10 @@ class SetupController extends AbstractActionController
         $userCreation = new \Setup\Model\UserCreation($this->zuModuleOptions);
 
         $formStep4 = new \Setup\Form\Step4Form();
-        if (!$this->zuModuleOptions->getEnableUsername()) {
+        if (! $this->zuModuleOptions->getEnableUsername()) {
             $formStep4->remove('username');
         }
-        if (!$this->zuModuleOptions->getEnableDisplayName()) {
+        if (! $this->zuModuleOptions->getEnableDisplayName()) {
             $formStep4->remove('display_name');
         }
         $formStep4->setHydrator(new \Zend\Hydrator\ClassMethods);

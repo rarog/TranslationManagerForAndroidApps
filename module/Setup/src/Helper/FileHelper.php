@@ -11,6 +11,7 @@
  * @license   https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License version 3 or later
  * @link      https://github.com/rarog/TranslationManagerForAndroidApps
  */
+
 namespace Setup\Helper;
 
 use Zend\Config\Config;
@@ -18,7 +19,6 @@ use Zend\Config\Writer\PhpArray;
 
 class FileHelper
 {
-
     /**
      * PhpArray config writer
      *
@@ -65,7 +65,7 @@ class FileHelper
 
         // Reading current content of config file
         if (is_file($filePath)) {
-            $config = include ($filePath);
+            $config = include($filePath);
         }
 
         if (! is_array($config)) {

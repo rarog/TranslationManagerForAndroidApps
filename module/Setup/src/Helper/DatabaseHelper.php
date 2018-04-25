@@ -1,8 +1,15 @@
 <?php
 /**
- * @link      https://github.com/rarog/TranslationManagerForAndroidApps for the canonical source repository
- * @copyright Copyright (c) 2017 Andrej Sinicyn
+ * Translation Manager for Android Apps
+ *
+ * PHP version 7
+ *
+ * @category  PHP
+ * @package   TranslationManagerForAndroidApps
+ * @author    Andrej Sinicyn <rarogit@gmail.com>
+ * @copyright 2017 Andrej Sinicyn
  * @license   https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License version 3 or later
+ * @link      https://github.com/rarog/TranslationManagerForAndroidApps
  */
 
 namespace Setup\Helper;
@@ -30,7 +37,6 @@ use RuntimeException;
 
 class DatabaseHelper
 {
-
     /**
      * Adapter provider helper
      *
@@ -81,11 +87,6 @@ class DatabaseHelper
      * @var string
      */
     private $lastMessage;
-
-    /**
-     * @var Sql
-     */
-    private $sql;
 
     const NODBCONNECTION = 0;
     const DBNOTINSTALLEDORTABLENOTPRESENT = 1;
@@ -158,8 +159,12 @@ class DatabaseHelper
      * @param Translator $translator
      * @param ZUModuleOptions $zuModuleOptions
      */
-    public function __construct(Config $config, AdapterProviderHelper $adapterProvider, Translator $translator, ZUModuleOptions $zuModuleOptions)
-    {
+    public function __construct(
+        Config $config,
+        AdapterProviderHelper $adapterProvider,
+        Translator $translator,
+        ZUModuleOptions $zuModuleOptions
+    ) {
         $this->adapterProvider = $adapterProvider;
         $this->translator = $translator;
         $this->setupConfig = $config->setup;
@@ -176,9 +181,7 @@ class DatabaseHelper
      */
     public function canConnect()
     {
-        $canConnect = $this->adapterProvider->canConnect();
-        $this->lastMessage = ($canConnect) ? $this->translator->translate('Database connection successfully established.') : $this->translator->translate('Database connection can\'t be established.');
-        return $canConnect;
+        return $this->adapterProvider->canConnect();
     }
 
     /**
@@ -252,7 +255,7 @@ class DatabaseHelper
         if ($sql instanceof SqlInterface) {
             $sqlString = $this->adapterProvider->getSql()->buildSqlString($sql, $this->adapterProvider->getDbAdapter());
             $this->adapterProvider->getDbAdapter()->query($sqlString, Adapter::QUERY_MODE_EXECUTE);
-        } else if (is_string($sql)) {
+        } elseif (is_string($sql)) {
             $sqlString = trim($sql);
             $this->adapterProvider->getDbAdapter()->getDriver()->getConnection()->getResource()->exec($sqlString);
         } else {
@@ -269,7 +272,8 @@ class DatabaseHelper
      * @param string $schemaFilenamePath
      * @return boolean|\Zend\Db\Sql\SqlInterface[]
      */
-    private function parseSchemaFile(string $schemaFilenamePath) {
+    private function parseSchemaFile(string $schemaFilenamePath)
+    {
         if (! file_exists($schemaFilenamePath)) {
             return false;
         }
@@ -381,7 +385,11 @@ class DatabaseHelper
                                 is_array($constr['lengths'])) {
                                 $lengths = $constr['lengths'];
                             }
-                            $sqlConstr = new $supportedConstraints[$constr['type']]($constr['column'], $name, $lengths);
+                            $sqlConstr = new $supportedConstraints[$constr['type']](
+                                $constr['column'],
+                                $name,
+                                $lengths
+                            );
                         } elseif ($constr['type'] === 'ForeignKey') {
                             if (! array_key_exists('referenceTable', $constr) ||
                                 ! is_string($constr['referenceTable']) ||
@@ -402,9 +410,19 @@ class DatabaseHelper
                                 array_key_exists($constr['onUpdate'], $supportedForeignKeyRules)) {
                                 $onUpdate = $supportedForeignKeyRules[$constr['onUpdate']];
                             }
-                            $sqlConstr = new $supportedConstraints[$constr['type']]($name, $constr['column'], $constr['referenceTable'], $constr['referenceColumn'], $onDelete, $onUpdate);
+                            $sqlConstr = new $supportedConstraints[$constr['type']](
+                                $name,
+                                $constr['column'],
+                                $constr['referenceTable'],
+                                $constr['referenceColumn'],
+                                $onDelete,
+                                $onUpdate
+                            );
                         } else {
-                            $sqlConstr = new $supportedConstraints[$constr['type']]($constr['column'], $name);
+                            $sqlConstr = new $supportedConstraints[$constr['type']](
+                                $constr['column'],
+                                $name
+                            );
                         }
 
                         $sql->addConstraint($sqlConstr);
@@ -446,7 +464,7 @@ class DatabaseHelper
      */
     public function installSchema()
     {
-        if (!$this->isSchemaInstalled() &&
+        if (! $this->isSchemaInstalled() &&
             ($this->lastStatus = self::DBNOTINSTALLEDORTABLENOTPRESENT)) {
                 // Creating version table.
                 $table = new CreateTable($this->setupConfig->get('db_schema_version_table'));
@@ -458,10 +476,10 @@ class DatabaseHelper
 
                 // Installing the custom application database schema script.
                 $schemaFile = $this->getSchemaInstallationFilepath();
-                if (file_exists($schemaFile)) {
-                    $schema = file_get_contents($schemaFile);
-                    $this->executeSqlStatement($schema);
-                }
+            if (file_exists($schemaFile)) {
+                $schema = file_get_contents($schemaFile);
+                $this->executeSqlStatement($schema);
+            }
 
                 // Inserting version information.
                 $insert = $this->adapterProvider->getSql()->insert($this->setupConfig->get('db_schema_version_table'));
@@ -472,13 +490,13 @@ class DatabaseHelper
                         'timestamp' => time(),
                     ]);
                 $this->executeSqlStatement($insert);
-                if ($this->setupConfig->get('db_schema_init_version') > 1){
-                    $insert->values([
-                        'version' => $this->setupConfig->get('db_schema_init_version'),
-                    ], $insert::VALUES_MERGE);
-                    $this->executeSqlStatement($insert);
-                }
+            if ($this->setupConfig->get('db_schema_init_version') > 1) {
+                $insert->values([
+                'version' => $this->setupConfig->get('db_schema_init_version'),
+                ], $insert::VALUES_MERGE);
+                $this->executeSqlStatement($insert);
             }
+        }
     }
 
     /**
@@ -486,8 +504,9 @@ class DatabaseHelper
      *
      * @return boolean
      */
-    public function isSchemaInstalled() {
-        if (!$this->canConnect()) {
+    public function isSchemaInstalled()
+    {
+        if (! $this->canConnect()) {
             $this->lastStatus = self::NODBCONNECTION;
             $this->lastMessage = $this->translator->translate('Database connection can\'t be established.');
             return false;
@@ -497,7 +516,7 @@ class DatabaseHelper
             ->select($this->setupConfig->get('db_schema_version_table'))
             ->where([
             'version' => 1
-        ]);
+            ]);
         $statement = $this->adapterProvider->getSql()->prepareStatementForSqlObject($select);
         try {
             $resultSet = $statement->execute();
@@ -506,17 +525,23 @@ class DatabaseHelper
                 $this->lastStatus = self::TABLEEXISTSBUTISEMPTY;
                 $this->lastMessage = $this->translator->translate('The database version table exists but is empty.');
                 return false;
-            } else if (!array_key_exists('setupid', $result)) {
+            } elseif (! array_key_exists('setupid', $result)) {
                 $this->lastStatus = self::TABLEEXISTSBUTHASWRONGSTRUCTURE;
-                $this->lastMessage = $this->translator->translate('The database version table exists but has wrong structure.');
+                $this->lastMessage = $this->translator->translate(
+                    'The database version table exists but has wrong structure.'
+                );
                 return false;
-            } else if ($result['setupid'] != (string) $this->setupConfig->get('setup_id')) {
+            } elseif ($result['setupid'] != (string) $this->setupConfig->get('setup_id')) {
                 $this->lastStatus = self::TABLEEXISTSBUTHASWRONGSETUPID;
-                $this->lastMessage = $this->translator->translate('The database version exists but contains wrong setup id. This means, that another application is installed in this database.');
+                $this->lastMessage = $this->translator->translate(
+                    'The database version exists but contains wrong setup id. This means, that another application is installed in this database.'
+                );
                 return false;
             } else {
                 $this->lastStatus = self::DBSCHEMASEEMSTOBEINSTALLED;
-                $this->lastMessage = $this->translator->translate('Database schema seems to be installed correctly. Proceed with the next step.');
+                $this->lastMessage = $this->translator->translate(
+                    'Database schema seems to be installed correctly. Proceed with the next step.'
+                );
                 return true;
             }
         } catch (Exception $e) {
@@ -536,9 +561,9 @@ class DatabaseHelper
         if ($this->isSchemaInstalled()) {
             $select = $this->adapterProvider->getSql()
                 ->select($this->zuModuleOptions->getTableName())
-                ->columns(array(
+                ->columns([
                 'count' => new Expression('count(*)')
-            ));
+                ]);
             $statement = $this->adapterProvider->getSql()->prepareStatementForSqlObject($select);
 
             try {
@@ -548,7 +573,9 @@ class DatabaseHelper
                 $exists = ($result['count'] > 0);
                 $this->lastStatus = self::USERTABLESEEMSTOBEOK;
                 if ($exists) {
-                    $this->lastMessage = $this->translator->translate('A user already exists in the database. Proceed with next step.');
+                    $this->lastMessage = $this->translator->translate(
+                        'A user already exists in the database. Proceed with next step.'
+                    );
                 } else {
                     $this->lastMessage = $this->translator->translate('No user exists yet, please create one.');
                 }
@@ -556,9 +583,11 @@ class DatabaseHelper
             } catch (Exception $e) {
                 $this->lastStatus = self::SOMETHINGISWRONGWITHWITHUSERTABLE;
                 $this->lastMessage = sprintf(
-                    $this->translator->translate('Something is wrong with the user table, setup can\'t proceed. Error message: %s'),
+                    $this->translator->translate(
+                        'Something is wrong with the user table, setup can\'t proceed. Error message: %s'
+                    ),
                     $e->getMessage()
-                    );
+                );
                 return false;
             }
         } else {
@@ -571,11 +600,9 @@ class DatabaseHelper
      *
      * @param array $dbConfig
      */
-    public function setDbConfigArray(array $dbConfig) {
+    public function setDbConfigArray(array $dbConfig)
+    {
         $this->adapterProvider->setDbAdapter($dbConfig);
-
-        // Resetting dependant objects
-        $this->sql = null;
     }
 
     /**
@@ -583,7 +610,7 @@ class DatabaseHelper
      */
     public function updateSchema()
     {
-        if (!$this->isSetupComplete()) {
+        if (! $this->isSetupComplete()) {
             $this->lastStatus = self::SETUPINCOMPLETE;
             return;
         }
@@ -592,10 +619,10 @@ class DatabaseHelper
 
         $this->lastStatus = self::CURRENTSCHEMAISLATEST;
         return;
-
     }
 
-    public function printSchema(string $filename, string $sqlType) {
+    public function printSchema(string $filename, string $sqlType)
+    {
         $path = FileHelper::normalizePath($this->setupConfig->get('db_schema_path'));
         $schemaFile = $path . '/' . $filename;
 
@@ -636,7 +663,8 @@ class DatabaseHelper
             'driver' => 'Pdo',
         ]);
         // AbstractPlatform::quoteValue is throwing errors. This function will suppress them.
-        $suppressError = function($errno, $errstr, $errfile, $errline, $errcontext){};
+        $suppressError = function ($errno, $errstr, $errfile, $errline, $errcontext) {
+        };
 
         $sqlString = '';
         foreach ($processedSchema as $sqlCommand) {
