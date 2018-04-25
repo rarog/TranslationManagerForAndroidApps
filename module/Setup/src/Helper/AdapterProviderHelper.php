@@ -54,6 +54,11 @@ class AdapterProviderHelper
      */
     private $dbDriverName = 'Pdo';
 
+    /**
+     * Sql instance initialised with database adapter
+     *
+     * @var null|Sql
+     */
     private $sql;
 
     /**
