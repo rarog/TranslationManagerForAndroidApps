@@ -133,6 +133,21 @@ class DatabaseHelperTest extends TestCase
     }
 
     /**
+     * @param bool $expectedResult Expected result
+     * @return \phpmock\Mock
+     */
+    private function getMockFileExistsMysqlSchema(callable $function)
+    {
+        $databaseHelper = new ReflectionClass(DatabaseHelper::class);
+        $builder = new MockBuilder();
+        $builder->setNamespace($databaseHelper->getNamespaceName())
+            ->setName('file_exists')
+            ->setFunction($function);
+
+        return $builder->build();
+    }
+
+    /**
      * Call protected/private method of an object.
      *
      * @param object $object Instantiated object that we will run method on.
@@ -208,44 +223,70 @@ class DatabaseHelperTest extends TestCase
     }
 
     /**
-     * @covers \Setup\Helper\DatabaseHelper::getUpdateSchemaRegex
+     * @covers \Setup\Helper\DatabaseHelper::getUpdateSchemaPattern
      */
     public function testGetUpdateSchemaRegexUnsupported()
     {
         $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessageRegExp('/Database config contains unsupported driver "\w+"./');
-        $result = $this->invokeMethod($databaseHelper, 'getUpdateSchemaRegex');
+        $this->invokeMethod($databaseHelper, 'getUpdateSchemaPattern', [
+            0
+        ]);
     }
 
     /**
-     * @covers \Setup\Helper\DatabaseHelper::getUpdateSchemaRegex
+     * @covers \Setup\Helper\DatabaseHelper::getUpdateSchemaPattern
      */
-    public function testGetUpdateSchemaRegexMysql()
+    public function testGetUpdateSchemaPatternMysql()
     {
         $databaseHelper = $this->getDatabaseHelper($this->mysqlConfig);
-        $result = $this->invokeMethod($databaseHelper, 'getUpdateSchemaRegex');
-        $this->assertEquals('/schemaUpdate\.mysql\.(\d+)\.sql/', $result);
+
+        $result = $this->invokeMethod($databaseHelper, 'getUpdateSchemaPattern', [
+            3
+        ]);
+        $this->assertEquals('schemaUpdate.mysql.3.sql', $result);
+
+        $result = $this->invokeMethod($databaseHelper, 'getUpdateSchemaPattern', [
+            42
+        ]);
+        $this->assertEquals('schemaUpdate.mysql.42.sql', $result);
     }
 
     /**
-     * @covers \Setup\Helper\DatabaseHelper::getUpdateSchemaRegex
+     * @covers \Setup\Helper\DatabaseHelper::getUpdateSchemaPattern
      */
-    public function testGetUpdateSchemaRegexSqlite()
+    public function testGetUpdateSchemaPatternSqlite()
     {
         $databaseHelper = $this->getDatabaseHelper($this->sqliteConfig);
-        $result = $this->invokeMethod($databaseHelper, 'getUpdateSchemaRegex');
-        $this->assertEquals('/schemaUpdate\.sqlite\.(\d+)\.sql/', $result);
+
+        $result = $this->invokeMethod($databaseHelper, 'getUpdateSchemaPattern', [
+            3
+        ]);
+        $this->assertEquals('schemaUpdate.sqlite.3.sql', $result);
+
+        $result = $this->invokeMethod($databaseHelper, 'getUpdateSchemaPattern', [
+            42
+        ]);
+        $this->assertEquals('schemaUpdate.sqlite.42.sql', $result);
     }
 
     /**
-     * @covers \Setup\Helper\DatabaseHelper::getUpdateSchemaRegex
+     * @covers \Setup\Helper\DatabaseHelper::getUpdateSchemaPattern
      */
     public function testGetUpdateSchemaRegexPgsql()
     {
         $databaseHelper = $this->getDatabaseHelper($this->pgsqlConfig);
-        $result = $this->invokeMethod($databaseHelper, 'getUpdateSchemaRegex');
-        $this->assertEquals('/schemaUpdate\.pgsql\.(\d+)\.sql/', $result);
+
+        $result = $this->invokeMethod($databaseHelper, 'getUpdateSchemaPattern', [
+            3
+        ]);
+        $this->assertEquals('schemaUpdate.pgsql.3.sql', $result);
+
+        $result = $this->invokeMethod($databaseHelper, 'getUpdateSchemaPattern', [
+            42
+        ]);
+        $this->assertEquals('schemaUpdate.pgsql.42.sql', $result);
     }
 
     /**
@@ -381,7 +422,7 @@ class DatabaseHelperTest extends TestCase
         $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
 
         $this->adapterProvider->canConnect()->willReturn(true);
-        $this->statement->execute()->will(function() {
+        $this->statement->execute()->will(function () {
             $result = new ResultSet();
             $result->initialize([]);
 
@@ -400,7 +441,7 @@ class DatabaseHelperTest extends TestCase
         $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
 
         $this->adapterProvider->canConnect()->willReturn(true);
-        $this->statement->execute()->will(function() {
+        $this->statement->execute()->will(function () {
             $result = new ResultSet();
             $result->initialize([
                 []
@@ -421,7 +462,7 @@ class DatabaseHelperTest extends TestCase
         $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
 
         $this->adapterProvider->canConnect()->willReturn(true);
-        $this->statement->execute()->will(function() {
+        $this->statement->execute()->will(function () {
             $result = new ResultSet();
             $result->initialize([
                 [
@@ -446,7 +487,7 @@ class DatabaseHelperTest extends TestCase
         $schemaInstalledResult = $this->schemaInstalledResult;
 
         $this->adapterProvider->canConnect()->willReturn(true);
-        $this->statement->execute()->will(function() use ($schemaInstalledResult){
+        $this->statement->execute()->will(function () use ($schemaInstalledResult) {
             $result = new ResultSet();
             $result->initialize($schemaInstalledResult);
 
@@ -481,7 +522,7 @@ class DatabaseHelperTest extends TestCase
         $executeCallCount = 0;
 
         $this->adapterProvider->canConnect()->willReturn(true);
-        $this->statement->execute()->will(function() use ($schemaInstalledResult, &$executeCallCount){
+        $this->statement->execute()->will(function () use ($schemaInstalledResult, &$executeCallCount) {
             if ($executeCallCount === 0) {
                 $result = new ResultSet();
                 $result->initialize($schemaInstalledResult);
@@ -510,12 +551,11 @@ class DatabaseHelperTest extends TestCase
         $numberOfUsers = 0;
 
         $this->adapterProvider->canConnect()->willReturn(true);
-        $this->statement->execute()->will(function() use ($schemaInstalledResult, &$executeCallCount, $numberOfUsers){
+        $this->statement->execute()->will(function () use ($schemaInstalledResult, &$executeCallCount, $numberOfUsers) {
             $result = new ResultSet();
 
             if ($executeCallCount === 0) {
                 $result->initialize($schemaInstalledResult);
-                $executeCallCount++;
             } else {
                 $result->initialize([
                     [
@@ -523,6 +563,8 @@ class DatabaseHelperTest extends TestCase
                     ]
                 ]);
             }
+
+            $executeCallCount++;
 
             return $result;
         });
@@ -544,12 +586,11 @@ class DatabaseHelperTest extends TestCase
         $numberOfUsers = 42;
 
         $this->adapterProvider->canConnect()->willReturn(true);
-        $this->statement->execute()->will(function() use ($schemaInstalledResult, &$executeCallCount, $numberOfUsers){
+        $this->statement->execute()->will(function () use ($schemaInstalledResult, &$executeCallCount, $numberOfUsers) {
             $result = new ResultSet();
 
             if ($executeCallCount === 0) {
                 $result->initialize($schemaInstalledResult);
-                $executeCallCount++;
             } else {
                 $result->initialize([
                     [
@@ -557,6 +598,8 @@ class DatabaseHelperTest extends TestCase
                     ]
                 ]);
             }
+
+            $executeCallCount++;
 
             return $result;
         });
@@ -579,5 +622,109 @@ class DatabaseHelperTest extends TestCase
         $databaseHelper->setDbConfigArray($this->mysqlConfig['db']);
 
         $this->assertEquals('Pdo_Mysql', $adapterProvider->getDbDriverName());
+    }
+
+    /**
+     * @covers \Setup\Helper\DatabaseHelper::updateSchema
+     */
+    public function testUpdateSchemaSetupIncomplete()
+    {
+        $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
+
+        $this->adapterProvider->canConnect()->willReturn(false);
+
+        $databaseHelper->updateSchema();
+
+        $this->assertEquals(DatabaseHelper::SETUPINCOMPLETE, $databaseHelper->getLastStatus());
+    }
+
+    /**
+     * @covers \Setup\Helper\DatabaseHelper::updateSchema
+     */
+    public function testUpdateSchemaSetupComplete()
+    {
+        $databaseHelper = $this->getDatabaseHelper($this->mysqlConfig);
+
+        $schemaInstalledResult = $this->schemaInstalledResult;
+
+        $executeCallCount = 0;
+
+        $this->adapterProvider->canConnect()->willReturn(true);
+        $this->statement->execute()->will(function () use ($schemaInstalledResult, &$executeCallCount) {
+            $result = new ResultSet();
+
+            if ($executeCallCount === 0) {
+                $result->initialize($schemaInstalledResult);
+            } elseif ($executeCallCount === 1) {
+                $result->initialize([
+                    [
+                        'count' => 1
+                    ]
+                ]);
+            } else {
+                $result->initialize([
+                    [
+                        'version' => 10
+                    ]
+                ]);
+            }
+
+            $executeCallCount++;
+
+            return $result;
+        });
+
+        $fileExistsCallCount = 0;
+
+        $mockFileExists = $this->getMockFileExistsMysqlSchema(
+            function ($filename) use (&$fileExistsCallCount) {
+                $fileExistsCallCount++;
+                return false;
+            }
+        );
+        $mockFileExists->enable();
+
+        $databaseHelper->updateSchema();
+
+        $mockFileExists->disable();
+
+        $this->assertEquals(DatabaseHelper::CURRENTSCHEMAISLATEST, $databaseHelper->getLastStatus());
+        $this->assertEquals(1, $fileExistsCallCount);
+
+        $executeCallCount = 0;
+        $fileExistsCallCount = 0;
+
+        $mockFileExists = $this->getMockFileExistsMysqlSchema(
+            function ($filename) use (&$fileExistsCallCount) {
+                $fileExistsCallCount++;
+                if (($filename === 'data/schema/schemaUpdate.mysql.11.sql')
+                    || ($filename === 'data/schema/schemaUpdate.mysql.12.sql')) {
+                    return true;
+                }
+                return false;
+            }
+        );
+        $mockFileExists->enable();
+
+        $databaseHelperReflection = new ReflectionClass(DatabaseHelper::class);
+        $builder = new MockBuilder();
+        $builder->setNamespace($databaseHelperReflection->getNamespaceName())
+            ->setName('file_get_contents')
+            ->setFunction(
+                function ($filename) {
+                    return '';
+                }
+            );
+
+        $mockFileGetContents = $builder->build();
+        $mockFileGetContents->enable();
+
+        $databaseHelper->updateSchema();
+
+        $mockFileGetContents->disable();
+        $mockFileExists->disable();
+
+        $this->assertEquals(DatabaseHelper::SCHEMAUPDATED, $databaseHelper->getLastStatus());
+        $this->assertEquals(3, $fileExistsCallCount);
     }
 }

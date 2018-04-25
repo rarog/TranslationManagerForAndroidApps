@@ -100,6 +100,7 @@ class DatabaseHelper
 
     const SETUPINCOMPLETE = 30;
     const CURRENTSCHEMAISLATEST = 31;
+    const SCHEMAUPDATED = 32;
 
     /**
      * Generates installation schema regular expression.
@@ -127,28 +128,26 @@ class DatabaseHelper
     }
 
     /**
-     * Generates update schema regular expression.
+     * Generates update schema pattern.
      *
+     * @param int $version
      * @throws \RuntimeException
      * @return string
      */
-    private function getUpdateSchemaRegex()
+    private function getUpdateSchemaPattern(int $version)
     {
-        if (is_null($this->updateSchemaRegex)) {
-            $schemaNaming = $this->setupConfig->get('db_schema_naming')->toArray();
-            $driver = $this->adapterProvider->getDbDriverName();
+        $schemaNaming = $this->setupConfig->get('db_schema_naming')->toArray();
+        $driver = $this->adapterProvider->getDbDriverName();
 
-            if (! array_key_exists($driver, $schemaNaming)) {
-                throw new RuntimeException(sprintf('Database config contains unsupported driver "%s".', $driver));
-            }
-
-            $this->updateSchemaRegex = sprintf(
-                '/schemaUpdate\.%s\.(\d+)\.sql/',
-                $schemaNaming[$driver]
-            );
+        if (! array_key_exists($driver, $schemaNaming)) {
+            throw new RuntimeException(sprintf('Database config contains unsupported driver "%s".', $driver));
         }
 
-        return $this->updateSchemaRegex;
+        return sprintf(
+            'schemaUpdate.%s.%d.sql',
+            $schemaNaming[$driver],
+            $version
+        );
     }
 
     /**
@@ -249,6 +248,7 @@ class DatabaseHelper
      * Executes a prepared SQL statement in the configured database.
      *
      * @param \Zend\Db\Sql\SqlInterface|string  $sql
+     * @throws RuntimeException
      */
     private function executeSqlStatement($sql)
     {
@@ -259,7 +259,7 @@ class DatabaseHelper
             $sqlString = trim($sql);
             $this->adapterProvider->getDbAdapter()->getDriver()->getConnection()->getResource()->exec($sqlString);
         } else {
-            throw new Exception(sprintf(
+            throw new RuntimeException(sprintf(
                 'Function executeSqlStatement was called with unsupport parameter of type "%s".',
                 (is_object($sql)) ? get_class($sql) : gettype($sql)
             ));
@@ -464,36 +464,44 @@ class DatabaseHelper
      */
     public function installSchema()
     {
-        if (! $this->isSchemaInstalled() &&
-            ($this->lastStatus = self::DBNOTINSTALLEDORTABLENOTPRESENT)) {
-                // Creating version table.
-                $table = new CreateTable($this->setupConfig->get('db_schema_version_table'));
-                $table->addColumn(new BigInteger('version'))
-                    ->addColumn(new Varchar('setupid', 32))
-                    ->addColumn(new BigInteger('timestamp'))
-                    ->addConstraint(new PrimaryKey('version'));
-                $this->executeSqlStatement($table);
+        if (! $this->isSchemaInstalled()
+            && ($this->lastStatus = self::DBNOTINSTALLEDORTABLENOTPRESENT)) {
+            // Creating version table.
+            $table = new CreateTable($this->setupConfig->get('db_schema_version_table'));
+            $table->addColumn(new BigInteger('version'))
+                ->addColumn(new Varchar('setupid', 32))
+                ->addColumn(new BigInteger('timestamp'))
+                ->addConstraint(new PrimaryKey('version'));
+            $this->executeSqlStatement($table);
 
-                // Installing the custom application database schema script.
-                $schemaFile = $this->getSchemaInstallationFilepath();
+            // Installing the custom application database schema script.
+            $schemaFile = $this->getSchemaInstallationFilepath();
             if (file_exists($schemaFile)) {
                 $schema = file_get_contents($schemaFile);
                 $this->executeSqlStatement($schema);
             }
 
-                // Inserting version information.
-                $insert = $this->adapterProvider->getSql()->insert($this->setupConfig->get('db_schema_version_table'));
-                $insert->columns(['version', 'setupid', 'timestamp'])
-                    ->values([
-                        'version' => $this->lastParsedSchemaVersion,
-                        'setupid' => $this->setupConfig->get('setup_id'),
-                        'timestamp' => time(),
-                    ]);
-                $this->executeSqlStatement($insert);
+            // Inserting version information.
+            $insert = $this->adapterProvider->getSql()->insert($this->setupConfig->get('db_schema_version_table'));
+            $insert->columns([
+                'version',
+                'setupid',
+                'timestamp'
+            ])->values(
+                [
+                    'version' => $this->lastParsedSchemaVersion,
+                    'setupid' => $this->setupConfig->get('setup_id'),
+                    'timestamp' => time()
+                ]
+            );
+            $this->executeSqlStatement($insert);
             if ($this->setupConfig->get('db_schema_init_version') > 1) {
-                $insert->values([
-                'version' => $this->setupConfig->get('db_schema_init_version'),
-                ], $insert::VALUES_MERGE);
+                $insert->values(
+                    [
+                        'version' => $this->setupConfig->get('db_schema_init_version')
+                    ],
+                    $insert::VALUES_MERGE
+                );
                 $this->executeSqlStatement($insert);
             }
         }
@@ -615,10 +623,57 @@ class DatabaseHelper
             return;
         }
 
+        $select = $this->adapterProvider->getSql()
+            ->select($this->setupConfig->get('db_schema_version_table'))
+            ->columns([
+                'version' => new Expression('max(version)')
+            ]);
+        $statement = $this->adapterProvider->getSql()->prepareStatementForSqlObject($select);
+
+        // If isSetupComplete() = true, it shouldn't happen, that max version isn't returned.
+        // But better be safe than sorry.
+        try {
+            $resultSet = $statement->execute();
+            $result = $resultSet->current();
+            if (is_null($result) || (! array_key_exists('version', $result))) {
+                $this->lastStatus = self::SETUPINCOMPLETE;
+                return false;
+            }
+
+            $version = (int) $result['version'];
+        } catch (Exception $e) {
+            $this->lastStatus = self::SETUPINCOMPLETE;
+            return;
+        }
+
         // TODO: Write proper logic
 
         $this->lastStatus = self::CURRENTSCHEMAISLATEST;
-        return;
+
+        $path = FileHelper::normalizePath($this->setupConfig->get('db_schema_path'));
+        while (file_exists($schemaUpdateFile = $path . '/' . $this->getUpdateSchemaPattern(++$version))) {
+            $this->lastStatus = self::SCHEMAUPDATED;
+
+            $schema = file_get_contents($schemaUpdateFile);
+            $this->executeSqlStatement($schema);
+
+            // Inserting version information.
+            $insert = $this->adapterProvider->getSql()->insert($this->setupConfig->get('db_schema_version_table'));
+            $insert->columns(
+                [
+                    'version',
+                    'setupid',
+                    'timestamp'
+                ]
+            )->values(
+                [
+                    'version' => $version,
+                    'setupid' => $this->setupConfig->get('setup_id'),
+                    'timestamp' => time()
+                ]
+            );
+            $this->executeSqlStatement($insert);
+        }
     }
 
     public function printSchema(string $filename, string $sqlType)
