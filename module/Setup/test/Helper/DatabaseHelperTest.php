@@ -19,15 +19,23 @@ use Prophecy\Argument;
 use Setup\Helper\AdapterProviderHelper;
 use Setup\Helper\DatabaseHelper;
 use Zend\Config\Config;
+use Zend\Db\Adapter\Driver\StatementInterface;
+use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Sql\PreparableSqlInterface;
+use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Sql;
 use Zend\Mvc\I18n\Translator;
 use ZfcUser\Options\ModuleOptions;
+use Exception;
 use ReflectionClass;
 use RuntimeException;
 use phpmock\MockBuilder;
 
 class DatabaseHelperTest extends TestCase
 {
-    private $unsupportedConfig = [
+    const DEFAULT_TEST_SETUPID = 'TestSetupId';
+
+    private $defaultConfig = [
         'db' => [
             'driver' => 'Pdo',
         ],
@@ -51,14 +59,35 @@ class DatabaseHelperTest extends TestCase
         ],
     ];
 
+    private $schemaInstalledResult = [
+        [
+            'setupid' => self::DEFAULT_TEST_SETUPID,
+        ]
+    ];
+
+    private $statement;
+
     private $adapterProvider;
 
     protected function setUp()
     {
+        $select = $this->prophesize(Select::class);
+        $select->columns(Argument::cetera())->willReturn($select->reveal());
+        $select->where(Argument::cetera())->willReturn($select->reveal());
+
+        $this->statement = $this->prophesize(StatementInterface::class);
+
+        $sql = $this->prophesize(Sql::class);
+        $sql->select(Argument::any())->willReturn($select->reveal());
+        $sql->prepareStatementForSqlObject(Argument::type(PreparableSqlInterface::class))->willReturn(
+            $this->statement->reveal()
+        );
+
         $this->adapterProvider = $this->prophesize(AdapterProviderHelper::class);
         $this->adapterProvider->setDbAdapter(Argument::type('array'))->will(function ($args) {
             $this->getDbDriverName()->willReturn($args[0]['driver']);
         });
+        $this->adapterProvider->getSql()->willReturn($sql->reveal());
     }
 
     /**
@@ -67,9 +96,11 @@ class DatabaseHelperTest extends TestCase
     private function getDatabaseHelper(array $config)
     {
         $setupConfig = include './module/Setup/config/setup.global.php.dist';
+        $config = array_merge_recursive($setupConfig, $config);
+        $config['setup']['setup_id'] = self::DEFAULT_TEST_SETUPID;
 
         return new DatabaseHelper(
-            new Config(array_merge($config, $setupConfig)),
+            new Config($config),
             $this->adapterProvider->reveal(),
             $this->createMock(Translator::class),
             $this->createMock(ModuleOptions::class)
@@ -140,7 +171,7 @@ class DatabaseHelperTest extends TestCase
      */
     public function testGetInstallationSchemaRegexUnsupported()
     {
-        $databaseHelper = $this->getDatabaseHelper($this->unsupportedConfig);
+        $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessageRegExp('/Database config contains unsupported driver "\w+"./');
         $result = $this->invokeMethod($databaseHelper, 'getInstallationSchemaRegex');
@@ -181,7 +212,7 @@ class DatabaseHelperTest extends TestCase
      */
     public function testGetUpdateSchemaRegexUnsupported()
     {
-        $databaseHelper = $this->getDatabaseHelper($this->unsupportedConfig);
+        $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessageRegExp('/Database config contains unsupported driver "\w+"./');
         $result = $this->invokeMethod($databaseHelper, 'getUpdateSchemaRegex');
@@ -256,7 +287,7 @@ class DatabaseHelperTest extends TestCase
      */
     public function testCanConnect()
     {
-        $databaseHelper = $this->getDatabaseHelper($this->unsupportedConfig);
+        $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
 
         $this->adapterProvider->canConnect()->willReturn(false);
         $this->assertEquals(false, $databaseHelper->canConnect());
@@ -272,7 +303,7 @@ class DatabaseHelperTest extends TestCase
         $schemaVersion1 = 10;
         $schemaVersion2 = 1;
 
-        $databaseHelper = $this->getDatabaseHelper($this->unsupportedConfig);
+        $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
 
         $this->setPropertyValue($databaseHelper, 'lastParsedSchemaVersion', $schemaVersion1);
         $this->assertEquals($schemaVersion1, $databaseHelper->getLastParsedSchemaVersion());
@@ -289,7 +320,7 @@ class DatabaseHelperTest extends TestCase
         $status1 = 42;
         $status2 = 123;
 
-        $databaseHelper = $this->getDatabaseHelper($this->unsupportedConfig);
+        $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
 
         $this->setPropertyValue($databaseHelper, 'lastStatus', $status1);
         $this->assertEquals($status1, $databaseHelper->getLastStatus());
@@ -306,12 +337,247 @@ class DatabaseHelperTest extends TestCase
         $message1 = 'Message 1';
         $message2 = 'Another message 2';
 
-        $databaseHelper = $this->getDatabaseHelper($this->unsupportedConfig);
+        $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
 
         $this->setPropertyValue($databaseHelper, 'lastMessage', $message1);
         $this->assertEquals($message1, $databaseHelper->getLastMessage());
 
         $this->setPropertyValue($databaseHelper, 'lastMessage', $message2);
         $this->assertEquals($message2, $databaseHelper->getLastMessage());
+    }
+
+    /**
+     * @covers \Setup\Helper\DatabaseHelper::isSchemaInstalled
+     */
+    public function testIsSchemaInstalledCantConnect()
+    {
+        $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
+
+        $this->adapterProvider->canConnect()->willReturn(false);
+
+        $this->assertEquals(false, $databaseHelper->isSchemaInstalled());
+        $this->assertEquals(DatabaseHelper::NODBCONNECTION, $databaseHelper->getLastStatus());
+    }
+
+    /**
+     * @covers \Setup\Helper\DatabaseHelper::isSchemaInstalled
+     */
+    public function testIsSchemaInstalledStatementCatchesException()
+    {
+        $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
+
+        $this->adapterProvider->canConnect()->willReturn(true);
+        $this->statement->execute()->willThrow(new Exception('Some exception'));
+
+        $this->assertEquals(false, $databaseHelper->isSchemaInstalled());
+        $this->assertEquals(DatabaseHelper::DBNOTINSTALLEDORTABLENOTPRESENT, $databaseHelper->getLastStatus());
+    }
+
+    /**
+     * @covers \Setup\Helper\DatabaseHelper::isSchemaInstalled
+     */
+    public function testIsSchemaInstalledResultIsNull()
+    {
+        $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
+
+        $this->adapterProvider->canConnect()->willReturn(true);
+        $this->statement->execute()->will(function() {
+            $result = new ResultSet();
+            $result->initialize([]);
+
+            return $result;
+        });
+
+        $this->assertEquals(false, $databaseHelper->isSchemaInstalled());
+        $this->assertEquals(DatabaseHelper::TABLEEXISTSBUTISEMPTY, $databaseHelper->getLastStatus());
+    }
+
+    /**
+     * @covers \Setup\Helper\DatabaseHelper::isSchemaInstalled
+     */
+    public function testIsSchemaInstalledResultDoesntHaveSetupIdKeyInArray()
+    {
+        $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
+
+        $this->adapterProvider->canConnect()->willReturn(true);
+        $this->statement->execute()->will(function() {
+            $result = new ResultSet();
+            $result->initialize([
+                []
+            ]);
+
+            return $result;
+        });
+
+        $this->assertEquals(false, $databaseHelper->isSchemaInstalled());
+        $this->assertEquals(DatabaseHelper::TABLEEXISTSBUTHASWRONGSTRUCTURE, $databaseHelper->getLastStatus());
+    }
+
+    /**
+     * @covers \Setup\Helper\DatabaseHelper::isSchemaInstalled
+     */
+    public function testIsSchemaInstalledResultHasWrongSetupId()
+    {
+        $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
+
+        $this->adapterProvider->canConnect()->willReturn(true);
+        $this->statement->execute()->will(function() {
+            $result = new ResultSet();
+            $result->initialize([
+                [
+                    'setupid' => self::DEFAULT_TEST_SETUPID . 'Wrong',
+                ]
+            ]);
+
+            return $result;
+        });
+
+        $this->assertEquals(false, $databaseHelper->isSchemaInstalled());
+        $this->assertEquals(DatabaseHelper::TABLEEXISTSBUTHASWRONGSETUPID, $databaseHelper->getLastStatus());
+    }
+
+    /**
+     * @covers \Setup\Helper\DatabaseHelper::isSchemaInstalled
+     */
+    public function testIsSchemaInstalledSetupIdCorrect()
+    {
+        $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
+
+        $schemaInstalledResult = $this->schemaInstalledResult;
+
+        $this->adapterProvider->canConnect()->willReturn(true);
+        $this->statement->execute()->will(function() use ($schemaInstalledResult){
+            $result = new ResultSet();
+            $result->initialize($schemaInstalledResult);
+
+            return $result;
+        });
+
+        $this->assertEquals(true, $databaseHelper->isSchemaInstalled());
+        $this->assertEquals(DatabaseHelper::DBSCHEMASEEMSTOBEINSTALLED, $databaseHelper->getLastStatus());
+    }
+
+    /**
+     * @covers \Setup\Helper\DatabaseHelper::isSetupComplete
+     */
+    public function testIsSetupCompleteReturnsFalseIfNotSchemaInstalled()
+    {
+        $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
+
+        $this->adapterProvider->canConnect()->willReturn(false);
+
+        $this->assertEquals(false, $databaseHelper->isSetupComplete());
+    }
+
+    /**
+     * @covers \Setup\Helper\DatabaseHelper::isSetupComplete
+     */
+    public function testIsSetupCompleteCatchesExceptionReturnsFalse()
+    {
+        $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
+
+        $schemaInstalledResult = $this->schemaInstalledResult;
+
+        $executeCallCount = 0;
+
+        $this->adapterProvider->canConnect()->willReturn(true);
+        $this->statement->execute()->will(function() use ($schemaInstalledResult, &$executeCallCount){
+            if ($executeCallCount === 0) {
+                $result = new ResultSet();
+                $result->initialize($schemaInstalledResult);
+                $executeCallCount++;
+
+                return $result;
+            } else {
+                throw new Exception('Some exception');
+            }
+        });
+
+        $this->assertEquals(false, $databaseHelper->isSetupComplete());
+        $this->assertEquals(DatabaseHelper::SOMETHINGISWRONGWITHWITHUSERTABLE, $databaseHelper->getLastStatus());
+    }
+
+    /**
+     * @covers \Setup\Helper\DatabaseHelper::isSetupComplete
+     */
+    public function testIsSetupCompleteReturnsFalseIfNumberOfUsersLessThanOne()
+    {
+        $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
+
+        $schemaInstalledResult = $this->schemaInstalledResult;
+
+        $executeCallCount = 0;
+        $numberOfUsers = 0;
+
+        $this->adapterProvider->canConnect()->willReturn(true);
+        $this->statement->execute()->will(function() use ($schemaInstalledResult, &$executeCallCount, $numberOfUsers){
+            $result = new ResultSet();
+
+            if ($executeCallCount === 0) {
+                $result->initialize($schemaInstalledResult);
+                $executeCallCount++;
+            } else {
+                $result->initialize([
+                    [
+                        'count' => $numberOfUsers
+                    ]
+                ]);
+            }
+
+            return $result;
+        });
+
+        $this->assertEquals(false, $databaseHelper->isSetupComplete());
+        $this->assertEquals(DatabaseHelper::USERTABLESEEMSTOBEOK, $databaseHelper->getLastStatus());
+    }
+
+    /**
+     * @covers \Setup\Helper\DatabaseHelper::isSetupComplete
+     */
+    public function testIsSetupCompleteReturnsTrueIfNumberOfUsersGreaterZero()
+    {
+        $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
+
+        $schemaInstalledResult = $this->schemaInstalledResult;
+
+        $executeCallCount = 0;
+        $numberOfUsers = 42;
+
+        $this->adapterProvider->canConnect()->willReturn(true);
+        $this->statement->execute()->will(function() use ($schemaInstalledResult, &$executeCallCount, $numberOfUsers){
+            $result = new ResultSet();
+
+            if ($executeCallCount === 0) {
+                $result->initialize($schemaInstalledResult);
+                $executeCallCount++;
+            } else {
+                $result->initialize([
+                    [
+                        'count' => $numberOfUsers
+                    ]
+                ]);
+            }
+
+            return $result;
+        });
+
+        $this->assertEquals(true, $databaseHelper->isSetupComplete());
+        $this->assertEquals(DatabaseHelper::USERTABLESEEMSTOBEOK, $databaseHelper->getLastStatus());
+    }
+
+    /**
+     * @covers \Setup\Helper\DatabaseHelper::setDbConfigArray
+     */
+    public function testSetDbConfigArray()
+    {
+        $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
+
+        $adapterProvider = $this->adapterProvider->reveal();
+
+        $this->assertEquals('Pdo', $adapterProvider->getDbDriverName());
+
+        $databaseHelper->setDbConfigArray($this->mysqlConfig['db']);
+
+        $this->assertEquals('Pdo_Mysql', $adapterProvider->getDbDriverName());
     }
 }

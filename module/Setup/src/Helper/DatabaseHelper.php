@@ -521,7 +521,7 @@ class DatabaseHelper
         try {
             $resultSet = $statement->execute();
             $result = $resultSet->current();
-            if (empty($result)) {
+            if (is_null($result)) {
                 $this->lastStatus = self::TABLEEXISTSBUTISEMPTY;
                 $this->lastMessage = $this->translator->translate('The database version table exists but is empty.');
                 return false;
