@@ -640,10 +640,41 @@ class DatabaseHelperTest extends TestCase
     public function testUpdateSchemaSetupIncomplete()
     {
         $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
+        $schemaInstalledResult = $this->schemaInstalledResult;
 
         $this->adapterProvider->canConnect()->willReturn(false);
 
         $databaseHelper->updateSchema();
+
+        $this->assertEquals(DatabaseHelper::SETUPINCOMPLETE, $databaseHelper->getLastStatus());
+
+        $executeCallCount = 0;
+        $this->adapterProvider->canConnect()->willReturn(true);
+        $this->adapterProvider->executeSqlStatement(Argument::any())->will(
+            function () use ($schemaInstalledResult, &$executeCallCount) {
+                $result = new ResultSet();
+
+                if ($executeCallCount === 0) {
+                    $result->initialize($schemaInstalledResult);
+                } elseif ($executeCallCount === 1) {
+                    $result->initialize([
+                        [
+                            'count' => 1
+                        ]
+                    ]);
+                } else {
+                    $result->initialize([]);
+                }
+
+                $executeCallCount ++;
+
+                return $result;
+            }
+        );
+
+        $this->assertEquals(DatabaseHelper::SETUPINCOMPLETE, $databaseHelper->getLastStatus());
+
+        $this->adapterProvider->executeSqlStatement(Argument::any())->willThrow(new Exception('Some exception'));
 
         $this->assertEquals(DatabaseHelper::SETUPINCOMPLETE, $databaseHelper->getLastStatus());
     }
@@ -654,7 +685,6 @@ class DatabaseHelperTest extends TestCase
     public function testUpdateSchemaSetupComplete()
     {
         $databaseHelper = $this->getDatabaseHelper($this->mysqlConfig);
-
         $schemaInstalledResult = $this->schemaInstalledResult;
 
         $executeCallCount = 0;

@@ -615,7 +615,7 @@ class DatabaseHelper
             $result = $resultSet->current();
             if (is_null($result) || (! array_key_exists('version', $result))) {
                 $this->lastStatus = self::SETUPINCOMPLETE;
-                return false;
+                return;
             }
 
             $version = (int) $result['version'];
