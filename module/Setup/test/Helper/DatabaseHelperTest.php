@@ -647,8 +647,18 @@ class DatabaseHelperTest extends TestCase
         $databaseHelper->updateSchema();
 
         $this->assertEquals(DatabaseHelper::SETUPINCOMPLETE, $databaseHelper->getLastStatus());
+    }
+
+    /**
+     * @covers \Setup\Helper\DatabaseHelper::updateSchema
+     */
+    public function testUpdateSchemaIncorrectVersionInformation()
+    {
+        $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
+        $schemaInstalledResult = $this->schemaInstalledResult;
 
         $executeCallCount = 0;
+
         $this->adapterProvider->canConnect()->willReturn(true);
         $this->adapterProvider->executeSqlStatement(Argument::any())->will(
             function () use ($schemaInstalledResult, &$executeCallCount) {
@@ -672,9 +682,45 @@ class DatabaseHelperTest extends TestCase
             }
         );
 
-        $this->assertEquals(DatabaseHelper::SETUPINCOMPLETE, $databaseHelper->getLastStatus());
+        $databaseHelper->updateSchema();
 
-        $this->adapterProvider->executeSqlStatement(Argument::any())->willThrow(new Exception('Some exception'));
+        $this->assertEquals(DatabaseHelper::SETUPINCOMPLETE, $databaseHelper->getLastStatus());
+    }
+
+    /**
+     * @covers \Setup\Helper\DatabaseHelper::updateSchema
+     */
+    public function testUpdateSchemaExecuteSqlStatementThrowsException()
+    {
+        $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
+        $schemaInstalledResult = $this->schemaInstalledResult;
+
+        $executeCallCount = 0;
+
+        $this->adapterProvider->canConnect()->willReturn(true);
+        $this->adapterProvider->executeSqlStatement(Argument::any())->will(
+            function () use ($schemaInstalledResult, &$executeCallCount) {
+                $result = new ResultSet();
+
+                if ($executeCallCount === 0) {
+                    $result->initialize($schemaInstalledResult);
+                } elseif ($executeCallCount === 1) {
+                    $result->initialize([
+                        [
+                            'count' => 1
+                        ]
+                    ]);
+                } else {
+                    throw new Exception('Some exception');
+                }
+
+                $executeCallCount ++;
+
+                return $result;
+            }
+        );
+
+        $databaseHelper->updateSchema();
 
         $this->assertEquals(DatabaseHelper::SETUPINCOMPLETE, $databaseHelper->getLastStatus());
     }

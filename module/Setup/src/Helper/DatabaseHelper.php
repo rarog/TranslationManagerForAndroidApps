@@ -613,7 +613,7 @@ class DatabaseHelper
         try {
             $resultSet = $this->adapterProvider->executeSqlStatement($select);
             $result = $resultSet->current();
-            if (is_null($result) || (! array_key_exists('version', $result))) {
+            if (is_null($result) || (! array_key_exists('version', $result))) {;
                 $this->lastStatus = self::SETUPINCOMPLETE;
                 return;
             }
