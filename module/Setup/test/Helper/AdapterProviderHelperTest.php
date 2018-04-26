@@ -20,9 +20,14 @@ use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\Driver\ConnectionInterface;
 use Zend\Db\Adapter\Driver\DriverInterface;
 use Zend\Db\Adapter\Driver\Pdo\Pdo;
+use Zend\Db\Sql\Ddl\CreateTable;
+use Zend\Db\Sql\Ddl\Column\BigInteger;
+use Zend\Db\Sql\Ddl\Column\Varchar;
 use Zend\Db\Sql\Sql;
 use Exception;
 use ReflectionClass;
+use RuntimeException;
+use Zend\Db\Sql\Select;
 
 class AdapterProviderHelperTest extends TestCase
 {
@@ -60,6 +65,7 @@ class AdapterProviderHelperTest extends TestCase
         $this->driver->getConnection()->willReturn($this->connection);
 
         $this->adapter = $this->prophesize(Adapter::class);
+        $this->adapter->getDriver()->willReturn($this->driver);
         $this->adapter->getDriver()->willReturn($this->driver);
     }
 
@@ -186,5 +192,47 @@ class AdapterProviderHelperTest extends TestCase
         $this->assertAttributeEmpty('sql', $this->adapterProviderHelper);
         $this->assertInstanceOf(Sql::class, $this->adapterProviderHelper->getSql());
         $this->assertAttributeInstanceOf(Sql::class, 'sql', $this->adapterProviderHelper);
+    }
+
+    public function testExecuteSqlStatement()
+    {
+        // This test exploits the fact that with default configuration in-memory SQLite database is created.
+        $this->adapterProviderHelper->setDbAdapter([
+            'driver' => self::DRIVER_SQLITE
+        ]);
+
+        // Testing by creating table, which is SqlInterface...
+        $table = new CreateTable('some_table');
+        $table->addColumn(new BigInteger('id'))
+            ->addColumn(new Varchar('another_column', 32));
+        $this->adapterProviderHelper->executeSqlStatement($table);
+
+        // ...then inserting data by execution of raw strings...
+        $this->adapterProviderHelper->executeSqlStatement(
+            'INSERT INTO some_table (id, another_column) VALUES (1, \'First row\');' . "\n" .
+            'INSERT INTO some_table (id, another_column) VALUES (6, \'Another row\');'
+        );
+
+        $expectedRow1 = [
+            'id' => 1,
+            'another_column' => 'First row'
+        ];
+        $expectedRow2 = [
+            'id' => 1,
+            'another_column' => 'First row'
+        ];
+
+        // ...which are by getting results via prepared statement
+        $result = $this->adapterProviderHelper->executeSqlStatement(new Select('some_table'));
+        $this->assertEquals(2, $result->count());
+        $this->assertEquals($expectedRow1, $result->current());
+        $this->assertEquals($expectedRow2, $result->current());
+
+        // Finally provoking exception by submitting unsupported parameter like an integer.
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessageRegExp(
+            '/Function executeSqlStatement was called with unsupport parameter of type "\w+"./'
+        );
+        $this->adapterProviderHelper->executeSqlStatement(9);
     }
 }

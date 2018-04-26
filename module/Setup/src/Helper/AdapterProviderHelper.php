@@ -16,11 +16,11 @@ namespace Setup\Helper;
 
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\PreparableSqlInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\SqlInterface;
 use Exception;
 use RuntimeException;
-use Zend\Db\Sql\PreparableSqlInterface;
 
 class AdapterProviderHelper
 {
@@ -96,11 +96,11 @@ class AdapterProviderHelper
             $statement = $this->getSql()->prepareStatementForSqlObject($sql);
             return $statement->execute();
         } elseif ($sql instanceof SqlInterface) {
-            $sqlString = $this->getSql()->buildSqlString($sql, $this->adapterProvider->getDbAdapter());
+            $sqlString = $this->getSql()->buildSqlString($sql, $this->getDbAdapter());
             return $this->getDbAdapter()->query($sqlString, Adapter::QUERY_MODE_EXECUTE);
         } elseif (is_string($sql)) {
             $sqlString = trim($sql);
-            return $this->getDbAdapter()->getDriver()->getConnection()->getResource()->exec($sqlString);
+            $this->getDbAdapter()->getDriver()->getConnection()->getResource()->exec($sqlString);
         } else {
             throw new RuntimeException(sprintf(
                 'Function executeSqlStatement was called with unsupport parameter of type "%s".',
