@@ -245,28 +245,6 @@ class DatabaseHelper
     }
 
     /**
-     * Executes a prepared SQL statement in the configured database.
-     *
-     * @param \Zend\Db\Sql\SqlInterface|string  $sql
-     * @throws RuntimeException
-     */
-    private function executeSqlStatement($sql)
-    {
-        if ($sql instanceof SqlInterface) {
-            $sqlString = $this->adapterProvider->getSql()->buildSqlString($sql, $this->adapterProvider->getDbAdapter());
-            $this->adapterProvider->getDbAdapter()->query($sqlString, Adapter::QUERY_MODE_EXECUTE);
-        } elseif (is_string($sql)) {
-            $sqlString = trim($sql);
-            $this->adapterProvider->getDbAdapter()->getDriver()->getConnection()->getResource()->exec($sqlString);
-        } else {
-            throw new RuntimeException(sprintf(
-                'Function executeSqlStatement was called with unsupport parameter of type "%s".',
-                (is_object($sql)) ? get_class($sql) : gettype($sql)
-            ));
-        }
-    }
-
-    /**
      * Parses schema file with array of abstract commands into series of prepared SqlInterface commands.
      *
      * @param string $schemaFilenamePath
@@ -472,13 +450,13 @@ class DatabaseHelper
                 ->addColumn(new Varchar('setupid', 32))
                 ->addColumn(new BigInteger('timestamp'))
                 ->addConstraint(new PrimaryKey('version'));
-            $this->executeSqlStatement($table);
+            $this->adapterProvider->executeSqlStatement($table);
 
             // Installing the custom application database schema script.
             $schemaFile = $this->getSchemaInstallationFilepath();
             if (file_exists($schemaFile)) {
                 $schema = file_get_contents($schemaFile);
-                $this->executeSqlStatement($schema);
+                $this->adapterProvider->executeSqlStatement($schema);
             }
 
             // Inserting version information.
@@ -494,7 +472,7 @@ class DatabaseHelper
                     'timestamp' => time()
                 ]
             );
-            $this->executeSqlStatement($insert);
+            $this->adapterProvider->executeSqlStatement($insert);
             if ($this->setupConfig->get('db_schema_init_version') > 1) {
                 $insert->values(
                     [
@@ -502,7 +480,7 @@ class DatabaseHelper
                     ],
                     $insert::VALUES_MERGE
                 );
-                $this->executeSqlStatement($insert);
+                $this->adapterProvider->executeSqlStatement($insert);
             }
         }
     }
@@ -523,11 +501,11 @@ class DatabaseHelper
         $select = $this->adapterProvider->getSql()
             ->select($this->setupConfig->get('db_schema_version_table'))
             ->where([
-            'version' => 1
+                'version' => 1
             ]);
-        $statement = $this->adapterProvider->getSql()->prepareStatementForSqlObject($select);
+
         try {
-            $resultSet = $statement->execute();
+            $resultSet = $this->adapterProvider->executeSqlStatement($select);
             $result = $resultSet->current();
             if (is_null($result)) {
                 $this->lastStatus = self::TABLEEXISTSBUTISEMPTY;
@@ -569,13 +547,14 @@ class DatabaseHelper
         if ($this->isSchemaInstalled()) {
             $select = $this->adapterProvider->getSql()
                 ->select($this->zuModuleOptions->getTableName())
-                ->columns([
-                'count' => new Expression('count(*)')
-                ]);
-            $statement = $this->adapterProvider->getSql()->prepareStatementForSqlObject($select);
+                ->columns(
+                    [
+                        'count' => new Expression('count(*)')
+                    ]
+                );
 
             try {
-                $resultSet = $statement->execute();
+                $resultSet = $this->adapterProvider->executeSqlStatement($select);
                 $result = $resultSet->current();
 
                 $exists = ($result['count'] > 0);
@@ -628,12 +607,11 @@ class DatabaseHelper
             ->columns([
                 'version' => new Expression('max(version)')
             ]);
-        $statement = $this->adapterProvider->getSql()->prepareStatementForSqlObject($select);
 
         // If isSetupComplete() = true, it shouldn't happen, that max version isn't returned.
         // But better be safe than sorry.
         try {
-            $resultSet = $statement->execute();
+            $resultSet = $this->adapterProvider->executeSqlStatement($select);
             $result = $resultSet->current();
             if (is_null($result) || (! array_key_exists('version', $result))) {
                 $this->lastStatus = self::SETUPINCOMPLETE;
@@ -646,33 +624,35 @@ class DatabaseHelper
             return;
         }
 
-        // TODO: Write proper logic
-
         $this->lastStatus = self::CURRENTSCHEMAISLATEST;
 
         $path = FileHelper::normalizePath($this->setupConfig->get('db_schema_path'));
+        $insert = null;
         while (file_exists($schemaUpdateFile = $path . '/' . $this->getUpdateSchemaPattern(++$version))) {
             $this->lastStatus = self::SCHEMAUPDATED;
 
             $schema = file_get_contents($schemaUpdateFile);
-            $this->executeSqlStatement($schema);
+            $this->adapterProvider->executeSqlStatement($schema);
 
             // Inserting version information.
-            $insert = $this->adapterProvider->getSql()->insert($this->setupConfig->get('db_schema_version_table'));
-            $insert->columns(
-                [
+            if (is_null($insert)) {
+                $insert = $this->adapterProvider->getSql()->insert($this->setupConfig->get('db_schema_version_table'));
+                $insert->columns([
                     'version',
                     'setupid',
                     'timestamp'
-                ]
-            )->values(
+                ])->values([
+                    'setupid' => $this->setupConfig->get('setup_id')
+                ]);
+            }
+            $insert->values(
                 [
                     'version' => $version,
-                    'setupid' => $this->setupConfig->get('setup_id'),
                     'timestamp' => time()
-                ]
+                ],
+                $insert::VALUES_MERGE
             );
-            $this->executeSqlStatement($insert);
+            $this->adapterProvider->executeSqlStatement($insert);
         }
     }
 

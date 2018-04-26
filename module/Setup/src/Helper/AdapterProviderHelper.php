@@ -19,6 +19,8 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\SqlInterface;
 use Exception;
+use RuntimeException;
+use Zend\Db\Sql\PreparableSqlInterface;
 
 class AdapterProviderHelper
 {
@@ -78,6 +80,32 @@ class AdapterProviderHelper
             return $connection->isConnected();
         } catch (Exception $e) {
             return false;
+        }
+    }
+
+    /**
+     * Executes a prepared SQL statement in the configured database.
+     *
+     * @param PreparableSqlInterface|SqlInterface|string  $sql
+     * @throws RuntimeException
+     * @return \Zend\Db\Adapter\Driver\ResultInterface|\Zend\Db\Adapter\Driver\StatementInterface|\Zend\Db\ResultSet\ResultSet
+     */
+    public function executeSqlStatement($sql)
+    {
+        if ($sql instanceof PreparableSqlInterface) {
+            $statement = $this->getSql()->prepareStatementForSqlObject($sql);
+            return $statement->execute();
+        } elseif ($sql instanceof SqlInterface) {
+            $sqlString = $this->getSql()->buildSqlString($sql, $this->adapterProvider->getDbAdapter());
+            return $this->getDbAdapter()->query($sqlString, Adapter::QUERY_MODE_EXECUTE);
+        } elseif (is_string($sql)) {
+            $sqlString = trim($sql);
+            return $this->getDbAdapter()->getDriver()->getConnection()->getResource()->exec($sqlString);
+        } else {
+            throw new RuntimeException(sprintf(
+                'Function executeSqlStatement was called with unsupport parameter of type "%s".',
+                (is_object($sql)) ? get_class($sql) : gettype($sql)
+            ));
         }
     }
 

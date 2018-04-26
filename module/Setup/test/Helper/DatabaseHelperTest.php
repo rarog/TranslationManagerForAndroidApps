@@ -30,6 +30,7 @@ use Exception;
 use ReflectionClass;
 use RuntimeException;
 use phpmock\MockBuilder;
+use Zend\Db\Sql\Insert;
 
 class DatabaseHelperTest extends TestCase
 {
@@ -65,8 +66,6 @@ class DatabaseHelperTest extends TestCase
         ]
     ];
 
-    private $statement;
-
     private $adapterProvider;
 
     protected function setUp()
@@ -75,12 +74,17 @@ class DatabaseHelperTest extends TestCase
         $select->columns(Argument::cetera())->willReturn($select->reveal());
         $select->where(Argument::cetera())->willReturn($select->reveal());
 
-        $this->statement = $this->prophesize(StatementInterface::class);
+        $insert = $this->prophesize(Insert::class);
+        $insert->columns(Argument::cetera())->willReturn($insert->reveal());
+        $insert->values(Argument::cetera())->willReturn($insert->reveal());
+
+        $statement = $this->prophesize(StatementInterface::class);
 
         $sql = $this->prophesize(Sql::class);
         $sql->select(Argument::any())->willReturn($select->reveal());
+        $sql->insert(Argument::any())->willReturn($insert->reveal());
         $sql->prepareStatementForSqlObject(Argument::type(PreparableSqlInterface::class))->willReturn(
-            $this->statement->reveal()
+            $statement->reveal()
         );
 
         $this->adapterProvider = $this->prophesize(AdapterProviderHelper::class);
@@ -408,7 +412,7 @@ class DatabaseHelperTest extends TestCase
         $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
 
         $this->adapterProvider->canConnect()->willReturn(true);
-        $this->statement->execute()->willThrow(new Exception('Some exception'));
+        $this->adapterProvider->executeSqlStatement(Argument::any())->willThrow(new Exception('Some exception'));
 
         $this->assertEquals(false, $databaseHelper->isSchemaInstalled());
         $this->assertEquals(DatabaseHelper::DBNOTINSTALLEDORTABLENOTPRESENT, $databaseHelper->getLastStatus());
@@ -422,7 +426,7 @@ class DatabaseHelperTest extends TestCase
         $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
 
         $this->adapterProvider->canConnect()->willReturn(true);
-        $this->statement->execute()->will(function () {
+        $this->adapterProvider->executeSqlStatement(Argument::any())->will(function () {
             $result = new ResultSet();
             $result->initialize([]);
 
@@ -441,7 +445,7 @@ class DatabaseHelperTest extends TestCase
         $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
 
         $this->adapterProvider->canConnect()->willReturn(true);
-        $this->statement->execute()->will(function () {
+        $this->adapterProvider->executeSqlStatement(Argument::any())->will(function () {
             $result = new ResultSet();
             $result->initialize([
                 []
@@ -462,7 +466,7 @@ class DatabaseHelperTest extends TestCase
         $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
 
         $this->adapterProvider->canConnect()->willReturn(true);
-        $this->statement->execute()->will(function () {
+        $this->adapterProvider->executeSqlStatement(Argument::any())->will(function () {
             $result = new ResultSet();
             $result->initialize([
                 [
@@ -487,7 +491,7 @@ class DatabaseHelperTest extends TestCase
         $schemaInstalledResult = $this->schemaInstalledResult;
 
         $this->adapterProvider->canConnect()->willReturn(true);
-        $this->statement->execute()->will(function () use ($schemaInstalledResult) {
+        $this->adapterProvider->executeSqlStatement(Argument::any())->will(function () use ($schemaInstalledResult) {
             $result = new ResultSet();
             $result->initialize($schemaInstalledResult);
 
@@ -522,17 +526,19 @@ class DatabaseHelperTest extends TestCase
         $executeCallCount = 0;
 
         $this->adapterProvider->canConnect()->willReturn(true);
-        $this->statement->execute()->will(function () use ($schemaInstalledResult, &$executeCallCount) {
-            if ($executeCallCount === 0) {
-                $result = new ResultSet();
-                $result->initialize($schemaInstalledResult);
-                $executeCallCount++;
+        $this->adapterProvider->executeSqlStatement(Argument::any())->will(
+            function () use ($schemaInstalledResult, &$executeCallCount) {
+                if ($executeCallCount === 0) {
+                    $result = new ResultSet();
+                    $result->initialize($schemaInstalledResult);
+                    $executeCallCount ++;
 
-                return $result;
-            } else {
-                throw new Exception('Some exception');
+                    return $result;
+                } else {
+                    throw new Exception('Some exception');
+                }
             }
-        });
+        );
 
         $this->assertEquals(false, $databaseHelper->isSetupComplete());
         $this->assertEquals(DatabaseHelper::SOMETHINGISWRONGWITHWITHUSERTABLE, $databaseHelper->getLastStatus());
@@ -551,23 +557,25 @@ class DatabaseHelperTest extends TestCase
         $numberOfUsers = 0;
 
         $this->adapterProvider->canConnect()->willReturn(true);
-        $this->statement->execute()->will(function () use ($schemaInstalledResult, &$executeCallCount, $numberOfUsers) {
-            $result = new ResultSet();
+        $this->adapterProvider->executeSqlStatement(Argument::any())->will(
+            function () use ($schemaInstalledResult, &$executeCallCount, $numberOfUsers) {
+                $result = new ResultSet();
 
-            if ($executeCallCount === 0) {
-                $result->initialize($schemaInstalledResult);
-            } else {
-                $result->initialize([
-                    [
-                        'count' => $numberOfUsers
-                    ]
-                ]);
+                if ($executeCallCount === 0) {
+                    $result->initialize($schemaInstalledResult);
+                } else {
+                    $result->initialize([
+                        [
+                            'count' => $numberOfUsers
+                        ]
+                    ]);
+                }
+
+                $executeCallCount ++;
+
+                return $result;
             }
-
-            $executeCallCount++;
-
-            return $result;
-        });
+        );
 
         $this->assertEquals(false, $databaseHelper->isSetupComplete());
         $this->assertEquals(DatabaseHelper::USERTABLESEEMSTOBEOK, $databaseHelper->getLastStatus());
@@ -586,23 +594,25 @@ class DatabaseHelperTest extends TestCase
         $numberOfUsers = 42;
 
         $this->adapterProvider->canConnect()->willReturn(true);
-        $this->statement->execute()->will(function () use ($schemaInstalledResult, &$executeCallCount, $numberOfUsers) {
-            $result = new ResultSet();
+        $this->adapterProvider->executeSqlStatement(Argument::any())->will(
+            function () use ($schemaInstalledResult, &$executeCallCount, $numberOfUsers) {
+                $result = new ResultSet();
 
-            if ($executeCallCount === 0) {
-                $result->initialize($schemaInstalledResult);
-            } else {
-                $result->initialize([
-                    [
-                        'count' => $numberOfUsers
-                    ]
-                ]);
+                if ($executeCallCount === 0) {
+                    $result->initialize($schemaInstalledResult);
+                } else {
+                    $result->initialize([
+                        [
+                            'count' => $numberOfUsers
+                        ]
+                    ]);
+                }
+
+                $executeCallCount ++;
+
+                return $result;
             }
-
-            $executeCallCount++;
-
-            return $result;
-        });
+        );
 
         $this->assertEquals(true, $databaseHelper->isSetupComplete());
         $this->assertEquals(DatabaseHelper::USERTABLESEEMSTOBEOK, $databaseHelper->getLastStatus());
@@ -650,29 +660,31 @@ class DatabaseHelperTest extends TestCase
         $executeCallCount = 0;
 
         $this->adapterProvider->canConnect()->willReturn(true);
-        $this->statement->execute()->will(function () use ($schemaInstalledResult, &$executeCallCount) {
-            $result = new ResultSet();
+        $this->adapterProvider->executeSqlStatement(Argument::any())->will(
+            function () use ($schemaInstalledResult, &$executeCallCount) {
+                $result = new ResultSet();
 
-            if ($executeCallCount === 0) {
-                $result->initialize($schemaInstalledResult);
-            } elseif ($executeCallCount === 1) {
-                $result->initialize([
-                    [
-                        'count' => 1
-                    ]
-                ]);
-            } else {
-                $result->initialize([
-                    [
-                        'version' => 10
-                    ]
-                ]);
+                if ($executeCallCount === 0) {
+                    $result->initialize($schemaInstalledResult);
+                } elseif ($executeCallCount === 1) {
+                    $result->initialize([
+                        [
+                            'count' => 1
+                        ]
+                    ]);
+                } else {
+                    $result->initialize([
+                        [
+                            'version' => 10
+                        ]
+                    ]);
+                }
+
+                $executeCallCount ++;
+
+                return $result;
             }
-
-            $executeCallCount++;
-
-            return $result;
-        });
+        );
 
         $fileExistsCallCount = 0;
 
