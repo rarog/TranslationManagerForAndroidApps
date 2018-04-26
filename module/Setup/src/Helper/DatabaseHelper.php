@@ -34,6 +34,7 @@ use Zend\Mvc\I18n\Translator;
 use ZfcUser\Options\ModuleOptions as ZUModuleOptions;
 use Exception;
 use RuntimeException;
+use Zend\Db\Sql\Ddl\AlterTable;
 
 class DatabaseHelper
 {
@@ -266,6 +267,7 @@ class DatabaseHelper
         }
 
         $supportedCommands = [
+            'AlterTable',
             'CreateTable',
             'Insert',
         ];
@@ -303,9 +305,85 @@ class DatabaseHelper
 
             $commandName = $command['commandName'];
 
-            if ($commandName === 'CreateTable') {
+            if ($commandName === 'AlterTable') {
+                $addColumnCount = 0;
+                $changeColumnCount = 0;
+                if (array_key_exists('addColumn', $command) &&
+                    is_array($command['addColumn'])) {
+                    $addColumnCount = count($command['addColumn']);
+                }
+                if (array_key_exists('changeColumn', $command) &&
+                    is_array($command['changeColumn'])) {
+                    $changeColumnCount = count($command['changeColumn']);
+                }
+
+                if (($addColumnCount + $changeColumnCount) === 0) {
+                    continue;
+                }
+
+                $sql = new AlterTable($command['tableName']);
+
+                if ($addColumnCount > 0) {
+                    foreach ($command['addColumn'] as $col) {
+                        if (! array_key_exists('type', $col) ||
+                            ! array_key_exists($col['type'], $supportedColumns) ||
+                            ! array_key_exists('name', $col) ||
+                            ! is_string($col['name'])) {
+                            continue;
+                        }
+
+                        $sqlCol = new $supportedColumns[$col['type']]($col['name']);
+
+                        if ($sqlCol instanceof AbstractLengthColumn && array_key_exists('length', $col) &&
+                            is_int($col['length'])) {
+                            $sqlCol->setLength($col['length']);
+                        }
+                        if (array_key_exists('nullable', $col) && is_bool($col['nullable'])) {
+                            $sqlCol->setNullable($col['nullable']);
+                        }
+                        if (array_key_exists('default', $col)) {
+                            $sqlCol->setDefault($col['default']);
+                        }
+                        if (array_key_exists('options', $col) && is_array($col['options'])) {
+                            $sqlCol->setOptions($col['options']);
+                        }
+
+                        $sql->addColumn($sqlCol);
+                    }
+                }
+
+                if ($changeColumnCount > 0) {
+                    foreach ($command['changeColumn'] as $col) {
+                        if (! array_key_exists('type', $col) ||
+                            ! array_key_exists($col['type'], $supportedColumns) ||
+                            ! array_key_exists('name', $col) ||
+                            ! is_string($col['name'])) {
+                            continue;
+                        }
+
+                        $sqlCol = new $supportedColumns[$col['type']]($col['name']);
+
+                        if ($sqlCol instanceof AbstractLengthColumn && array_key_exists('length', $col) &&
+                            is_int($col['length'])) {
+                            $sqlCol->setLength($col['length']);
+                        }
+                        if (array_key_exists('nullable', $col) && is_bool($col['nullable'])) {
+                            $sqlCol->setNullable($col['nullable']);
+                        }
+                        if (array_key_exists('default', $col)) {
+                            $sqlCol->setDefault($col['default']);
+                        }
+                        if (array_key_exists('options', $col) && is_array($col['options'])) {
+                            $sqlCol->setOptions($col['options']);
+                        }
+
+                        $sql->changeColumn($col['name'], $sqlCol);
+                    }
+                }
+            } elseif ($commandName === 'CreateTable') {
                 if (! array_key_exists('addColumn', $command) ||
-                    ! is_array($command['addColumn'])) {
+                    ! is_array($command['addColumn']) ||
+                    (count($command['addColumn']) === 0)) {
                     continue;
                 }
 
