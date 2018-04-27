@@ -67,7 +67,7 @@ abstract class AbstractDbTableEntry implements ArraySerializableInterface, Input
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
         throw new \DomainException(sprintf(
-            '%s does not allow injection of an alternate input filter',
+            '%s does not allow injection of an alternate input filter.',
             __CLASS__
         ));
     }

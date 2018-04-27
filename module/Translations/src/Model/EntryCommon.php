@@ -43,6 +43,11 @@ class EntryCommon extends AbstractDbTableEntry implements ArraySerializableInter
     private $lastChange;
 
     /**
+     * @var null|int
+     */
+    private $notificationStatus;
+
+    /**
      * @var InputFilter
      */
     private $inputFilter;
@@ -50,15 +55,17 @@ class EntryCommon extends AbstractDbTableEntry implements ArraySerializableInter
     /**
      * @return null|int
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
     /**
      * @param null|int $id
      */
-    public function setId($id) {
-        if (!is_null($id)) {
+    public function setId($id)
+    {
+        if (! is_null($id)) {
             $id = (int) $id;
         }
         $this->id = $id;
@@ -67,15 +74,17 @@ class EntryCommon extends AbstractDbTableEntry implements ArraySerializableInter
     /**
      * @return null|int
      */
-    public function getAppResourceId() {
+    public function getAppResourceId()
+    {
         return $this->appResourceId;
     }
 
     /**
      * @param null|int $appResourceId
      */
-    public function setAppResourceId($appResourceId) {
-        if (!is_null($appResourceId)) {
+    public function setAppResourceId($appResourceId)
+    {
+        if (! is_null($appResourceId)) {
             $appResourceId = (int) $appResourceId;
         }
         $this->appResourceId = $appResourceId;
@@ -84,15 +93,17 @@ class EntryCommon extends AbstractDbTableEntry implements ArraySerializableInter
     /**
      * @return null|int
      */
-    public function getResourceFileEntryId() {
+    public function getResourceFileEntryId()
+    {
         return $this->resourceFileEntryId;
     }
 
     /**
      * @param null|int $resourceFileEntryId
      */
-    public function setResourceFileEntryId($resourceFileEntryId) {
-        if (!is_null($resourceFileEntryId)) {
+    public function setResourceFileEntryId($resourceFileEntryId)
+    {
+        if (! is_null($resourceFileEntryId)) {
             $resourceFileEntryId = (int) $resourceFileEntryId;
         }
         $this->resourceFileEntryId = $resourceFileEntryId;
@@ -101,18 +112,39 @@ class EntryCommon extends AbstractDbTableEntry implements ArraySerializableInter
     /**
      * @return null|int
      */
-    public function getLastChange() {
+    public function getLastChange()
+    {
         return $this->lastChange;
     }
 
     /**
      * @param null|int $lastChange
      */
-    public function setLastChange($lastChange) {
-        if (!is_null($lastChange)) {
+    public function setLastChange($lastChange)
+    {
+        if (! is_null($lastChange)) {
             $lastChange = (int) $lastChange;
         }
         $this->lastChange = $lastChange;
+    }
+
+    /**
+     * @return null|int
+     */
+    public function getNotificationStatus()
+    {
+        return $this->notificationStatus;
+    }
+
+    /**
+     * @param null|int $notificationStatus
+     */
+    public function setNotificationStatus($notificationStatus)
+    {
+        if (! is_null($notificationStatus)) {
+            $notificationStatus = (int) $notificationStatus;
+        }
+        $this->notificationStatus = $notificationStatus;
     }
 
     /**
@@ -155,6 +187,13 @@ class EntryCommon extends AbstractDbTableEntry implements ArraySerializableInter
                 ['name' => ToInt::class],
             ],
         ]);
+        $inputFilter->add([
+            'name'     => 'notification_status',
+            'required' => true,
+            'filters'  => [
+                ['name' => ToInt::class],
+            ],
+        ]);
 
         $this->inputFilter = $inputFilter;
         return $this->inputFilter;
@@ -166,10 +205,13 @@ class EntryCommon extends AbstractDbTableEntry implements ArraySerializableInter
      */
     public function exchangeArray(array $array)
     {
-        $this->Id = !empty($array['id']) ? $array['id'] : null;
-        $this->AppResourceId = !empty($array['app_resource_id']) ? $array['app_resource_id'] : null;
-        $this->ResourceFileEntryId = !empty($array['resource_file_entry_id']) ? $array['resource_file_entry_id'] : null;
-        $this->LastChange = !empty($array['last_change']) ? $array['last_change'] : null;
+        $this->setId(isset($array['id']) ? $array['id'] : null);
+        $this->setAppResourceId(isset($array['app_resource_id']) ? $array['app_resource_id'] : null);
+        $this->setResourceFileEntryId(
+            isset($array['resource_file_entry_id']) ? $array['resource_file_entry_id'] : null
+        );
+        $this->setLastChange(isset($array['last_change']) ? $array['last_change'] : null);
+        $this->setNotificationStatus(isset($array['notification_status']) ? $array['notification_status'] : null);
     }
 
     /**
@@ -179,10 +221,11 @@ class EntryCommon extends AbstractDbTableEntry implements ArraySerializableInter
     public function getArrayCopy()
     {
         return [
-            'id' => $this->Id,
-            'app_resource_id' => $this->AppResourceId,
-            'resource_file_entry_id' => $this->ResourceFileEntryId,
-            'last_change' => $this->LastChange,
+            'id' => $this->getId(),
+            'app_resource_id' => $this->getAppResourceId(),
+            'resource_file_entry_id' => $this->getResourceFileEntryId(),
+            'last_change' => $this->getLastChange(),
+            'notification_status' => $this->getNotificationStatus()
         ];
     }
 }
