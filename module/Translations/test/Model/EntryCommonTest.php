@@ -18,6 +18,7 @@ use PHPUnit\Framework\TestCase;
 use Translations\Model\EntryCommon;
 use Zend\InputFilter\InputFilterInterface;
 use DomainException;
+use ReflectionClass;
 
 class EntryCommonTest extends TestCase
 {
@@ -68,7 +69,16 @@ class EntryCommonTest extends TestCase
     {
         $entryCommon = new EntryCommon();
 
-        $this->assertInstanceOf(InputFilterInterface::class, $entryCommon->getInputFilter());
+        $reflection = new ReflectionClass(EntryCommon::class);
+        $inputFilterProperty = $reflection->getProperty('inputFilter');
+        $inputFilterProperty->setAccessible(true);
+
+        $this->assertNull($inputFilterProperty->getValue($entryCommon));
+
+        $inputFilter = $entryCommon->getInputFilter();
+        $this->assertInstanceOf(InputFilterInterface::class, $inputFilter);
+        $this->assertSame($inputFilterProperty->getValue($entryCommon), $inputFilter);
+        $this->assertSame($inputFilter, $entryCommon->getInputFilter());
     }
 
     public function testSetInputFilter()
