@@ -845,12 +845,21 @@ class DatabaseHelperTest extends TestCase
                 ],
                 [
                     'type' => 'Integer',
-                    'name' => 'validColumn',
-                    // name isn't string
+                    'name' => 'validColumnWithDefaultAndOptions',
+                    'default' => 0,
+                    'options' => [
+                        'autoincrement' => true,
+                    ],
+                ],
+                [
+                    'type' => 'Varchar',
+                    'name' => 'nullableValidColumnWithLength',
+                    'length' => 25,
+                    'nullable' => true,
                 ],
             ],
         ];
-        $expectedResult2 = 1;
+        $expectedResult2 = 2;
 
         $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
         $sql = $this->prophesize(CreateTable::class);
@@ -859,6 +868,13 @@ class DatabaseHelperTest extends TestCase
             $expectedResult1,
             $this->invokeMethod($databaseHelper, 'parseAddColumn', [
                 $sql->reveal(),
+                $input1,
+            ])
+        );
+        $this->assertEquals(
+            $expectedResult1,
+            $this->invokeMethod($databaseHelper, 'parseAddColumn', [
+                new \stdClass(),
                 $input1,
             ])
         );
