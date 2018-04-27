@@ -7,6 +7,7 @@
     <file>module/Application/src</file>
     <file>module/Application/test</file>
     <file>module/Common/src</file>
+    <file>module/Common/test</file>
     <file>module/Setup/config</file>
     <file>module/Setup/src</file>
     <file>module/Setup/test</file>
