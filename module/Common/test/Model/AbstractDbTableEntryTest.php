@@ -79,7 +79,14 @@ class AbstractDbTableEntryTest extends TestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Invalid property');
 
-        $this->abstractDbTableEntry->NonexistantProperty = $this->testValue;
         $gettingValue = $this->abstractDbTableEntry->NonexistantProperty;
+    }
+
+    public function testSetMagicException()
+    {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Invalid property');
+
+        $this->abstractDbTableEntry->NonexistantProperty = $this->testValue;
     }
 }
