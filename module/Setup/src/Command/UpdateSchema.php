@@ -18,7 +18,6 @@ use ZF\Console\Route;
 use Zend\Console\ColorInterface;
 use Zend\Console\Adapter\AdapterInterface;
 
-
 class UpdateSchema
 {
     /**
@@ -54,6 +53,9 @@ class UpdateSchema
                 break;
             case $this->databaseHelper::CURRENTSCHEMAISLATEST:
                 $msg = 'Latest schema is already installed in the database.';
+                break;
+            case $this->databaseHelper::SCHEMAUPDATED:
+                $msg = 'Schema was updated.';
                 break;
             default:
                 $msg = 'Unknown status';
