@@ -20,6 +20,7 @@ use Zend\Db\Sql\AbstractPreparableSql;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\SqlInterface;
+use Zend\Db\Sql\Ddl\AlterTable;
 use Zend\Db\Sql\Ddl\CreateTable;
 use Zend\Db\Sql\Ddl\Column\AbstractLengthColumn;
 use Zend\Db\Sql\Ddl\Column\BigInteger;
@@ -34,7 +35,6 @@ use Zend\Mvc\I18n\Translator;
 use ZfcUser\Options\ModuleOptions as ZUModuleOptions;
 use Exception;
 use RuntimeException;
-use Zend\Db\Sql\Ddl\AlterTable;
 
 class DatabaseHelper
 {
@@ -89,6 +89,46 @@ class DatabaseHelper
      */
     private $lastMessage;
 
+    /**
+     * @var array
+     */
+    private $supportedParsingCommands = [
+        'AlterTable',
+        'CreateTable',
+        'Insert',
+    ];
+
+    /**
+     * @var array
+     */
+    private $supportedParsingColumns = [
+        'BigInteger' => BigInteger::class,
+        'Integer' => Integer::class,
+        'Text' => Text::class,
+        'Varchar' => Varchar::class,
+    ];
+
+    /**
+     * @var array
+     */
+    private $supportedParsingConstraints = [
+        'Index' => Index::class,
+        'ForeignKey' => ForeignKey::class,
+        'PrimaryKey' => PrimaryKey::class,
+        'UniqueKey' => UniqueKey::class,
+    ];
+
+    /**
+     * @var array
+     */
+    private $supportedParsingForeignKeyRules = [
+        'cascade' => 'CASCADE',
+        'noAction' => 'NO ACTION',
+        'restrict' => 'RESTRICT',
+        'setDefault' => 'SET DEFAULT',
+        'setNull' => 'SET NULL',
+    ];
+
     const NODBCONNECTION = 0;
     const DBNOTINSTALLEDORTABLENOTPRESENT = 1;
     const TABLEEXISTSBUTISEMPTY = 2;
@@ -129,6 +169,37 @@ class DatabaseHelper
     }
 
     /**
+     * Assemblies path of the database schema installation file. Works only with *nix file separators correctly.
+     *
+     * @return string
+     */
+    private function getSchemaInstallationFilepath()
+    {
+        $path = FileHelper::normalizePath($this->setupConfig->get('db_schema_path'));
+        $pattern = $this->getInstallationSchemaRegex();
+
+        $max = 0;
+        $maxFilename = '';
+        foreach (scandir($path) as $file) {
+            if (preg_match($pattern, $file, $matches) == 1) {
+                $maxTemp = (int) $matches[1];
+                if ($maxTemp > $max) {
+                    $max = $maxTemp;
+                    $maxFilename = $file;
+                }
+            }
+        }
+
+        $this->lastParsedSchemaVersion = $max;
+
+        if ($max === 0) {
+            throw new RuntimeException('No valid installation schema file found.');
+        }
+
+        return $path . '/' . $maxFilename;
+    }
+
+    /**
      * Generates update schema pattern.
      *
      * @param int $version
@@ -149,6 +220,54 @@ class DatabaseHelper
             $schemaNaming[$driver],
             $version
         );
+    }
+
+    /**
+     * Processes addColumn commands
+     *
+     * @param CreateTable|AlterTable $sql
+     * @param array $command
+     * @return number
+     */
+    private function parseAddColumn($sql, array $command)
+    {
+        $processedEntries = 0;
+
+        if (! ($sql instanceof CreateTable) && ! ($sql instanceof AlterTable)) {
+            return $processedEntries;
+        }
+
+        if (array_key_exists('addColumn', $command) && is_array($command['addColumn'])) {
+            foreach ($command['addColumn'] as $col) {
+                if (! array_key_exists('type', $col) ||
+                    ! array_key_exists($col['type'], $this->supportedParsingColumns) ||
+                    ! array_key_exists('name', $col) ||
+                    ! is_string($col['name'])) {
+                    continue;
+                }
+
+                $sqlCol = new $this->supportedParsingColumns[$col['type']]($col['name']);
+
+                if ($sqlCol instanceof AbstractLengthColumn && array_key_exists('length', $col) &&
+                    is_int($col['length'])) {
+                    $sqlCol->setLength($col['length']);
+                }
+                if (array_key_exists('nullable', $col) && is_bool($col['nullable'])) {
+                    $sqlCol->setNullable($col['nullable']);
+                }
+                if (array_key_exists('default', $col)) {
+                    $sqlCol->setDefault($col['default']);
+                }
+                if (array_key_exists('options', $col) && is_array($col['options'])) {
+                    $sqlCol->setOptions($col['options']);
+                }
+
+                $sql->addColumn($sqlCol);
+                $processedEntries++;
+            }
+        }
+
+        return $processedEntries;
     }
 
     /**
@@ -215,37 +334,6 @@ class DatabaseHelper
     }
 
     /**
-     * Assemblies path of the database schema installation file. Works only with *nix file separators correctly.
-     *
-     * @return string
-     */
-    private function getSchemaInstallationFilepath()
-    {
-        $path = FileHelper::normalizePath($this->setupConfig->get('db_schema_path'));
-        $pattern = $this->getInstallationSchemaRegex();
-
-        $max = 0;
-        $maxFilename = '';
-        foreach (scandir($path) as $file) {
-            if (preg_match($pattern, $file, $matches) == 1) {
-                $maxTemp = (int) $matches[1];
-                if ($maxTemp > $max) {
-                    $max = $maxTemp;
-                    $maxFilename = $file;
-                }
-            }
-        }
-
-        $this->lastParsedSchemaVersion = $max;
-
-        if ($max === 0) {
-            throw new RuntimeException('No valid installation schema file found.');
-        }
-
-        return $path . '/' . $maxFilename;
-    }
-
-    /**
      * Parses schema file with array of abstract commands into series of prepared SqlInterface commands.
      *
      * @param string $schemaFilenamePath
@@ -266,38 +354,13 @@ class DatabaseHelper
             return false;
         }
 
-        $supportedCommands = [
-            'AlterTable',
-            'CreateTable',
-            'Insert',
-        ];
-        $supportedColumns = [
-            'BigInteger' => BigInteger::class,
-            'Integer' => Integer::class,
-            'Text' => Text::class,
-            'Varchar' => Varchar::class,
-        ];
-        $supportedConstraints = [
-            'Index' => Index::class,
-            'ForeignKey' => ForeignKey::class,
-            'PrimaryKey' => PrimaryKey::class,
-            'UniqueKey' => UniqueKey::class,
-        ];
-        $supportedForeignKeyRules = [
-            'cascade' => 'CASCADE',
-            'noAction' => 'NO ACTION',
-            'restrict' => 'RESTRICT',
-            'setDefault' => 'SET DEFAULT',
-            'setNull' => 'SET NULL',
-        ];
-
         $processedCommands = [];
 
         foreach ($schema as $command) {
             $sql = null;
 
             if (! array_key_exists('commandName', $command) ||
-                ! in_array($command['commandName'], $supportedCommands, true) ||
+                ! in_array($command['commandName'], $this->supportedParsingCommands, true) ||
                 ! array_key_exists('tableName', $command) ||
                 ! is_string($command['tableName'])) {
                 continue;
@@ -306,62 +369,30 @@ class DatabaseHelper
             $commandName = $command['commandName'];
 
             if ($commandName === 'AlterTable') {
-                $addColumnCount = 0;
                 $changeColumnCount = 0;
-                if (array_key_exists('addColumn', $command) &&
-                    is_array($command['addColumn'])) {
-                    $addColumnCount = count($command['addColumn']);
-                }
                 if (array_key_exists('changeColumn', $command) &&
                     is_array($command['changeColumn'])) {
                     $changeColumnCount = count($command['changeColumn']);
                 }
 
-                if (($addColumnCount + $changeColumnCount) === 0) {
-                    continue;
-                }
-
                 $sql = new AlterTable($command['tableName']);
 
-                if ($addColumnCount > 0) {
-                    foreach ($command['addColumn'] as $col) {
-                        if (! array_key_exists('type', $col) ||
-                            ! array_key_exists($col['type'], $supportedColumns) ||
-                            ! array_key_exists('name', $col) ||
-                            ! is_string($col['name'])) {
-                            continue;
-                        }
+                $addColumnCount = $this->parseAddColumn($sql, $command);
 
-                        $sqlCol = new $supportedColumns[$col['type']]($col['name']);
-
-                        if ($sqlCol instanceof AbstractLengthColumn && array_key_exists('length', $col) &&
-                            is_int($col['length'])) {
-                            $sqlCol->setLength($col['length']);
-                        }
-                        if (array_key_exists('nullable', $col) && is_bool($col['nullable'])) {
-                            $sqlCol->setNullable($col['nullable']);
-                        }
-                        if (array_key_exists('default', $col)) {
-                            $sqlCol->setDefault($col['default']);
-                        }
-                        if (array_key_exists('options', $col) && is_array($col['options'])) {
-                            $sqlCol->setOptions($col['options']);
-                        }
-
-                        $sql->addColumn($sqlCol);
-                    }
+                if (($addColumnCount + $changeColumnCount) === 0) {
+                    continue;
                 }
 
                 if ($changeColumnCount > 0) {
                     foreach ($command['changeColumn'] as $col) {
                         if (! array_key_exists('type', $col) ||
-                            ! array_key_exists($col['type'], $supportedColumns) ||
+                            ! array_key_exists($col['type'], $this->supportedParsingColumns) ||
                             ! array_key_exists('name', $col) ||
                             ! is_string($col['name'])) {
                             continue;
                         }
 
-                        $sqlCol = new $supportedColumns[$col['type']]($col['name']);
+                        $sqlCol = new $this->supportedParsingColumns[$col['type']]($col['name']);
 
                         if ($sqlCol instanceof AbstractLengthColumn && array_key_exists('length', $col) &&
                             is_int($col['length'])) {
@@ -381,49 +412,19 @@ class DatabaseHelper
                     }
                 }
             } elseif ($commandName === 'CreateTable') {
-                if (! array_key_exists('addColumn', $command) ||
-                    ! is_array($command['addColumn']) ||
-                    (count($command['addColumn']) === 0)) {
-                    continue;
-                }
-
                 $sql = new CreateTable($command['tableName']);
 
-                foreach ($command['addColumn'] as $col) {
-                    if (! array_key_exists('type', $col) ||
-                        ! array_key_exists($col['type'], $supportedColumns) ||
-                        ! array_key_exists('name', $col) ||
-                        ! is_string($col['name'])) {
-                        continue;
-                    }
+                $addColumnCount = $this->parseAddColumn($sql, $command);
 
-                    $sqlCol = new $supportedColumns[$col['type']]($col['name']);
-
-                    if ($sqlCol instanceof AbstractLengthColumn &&
-                        array_key_exists('length', $col) &&
-                        is_int($col['length'])) {
-                        $sqlCol->setLength($col['length']);
-                    }
-                    if (array_key_exists('nullable', $col) &&
-                        is_bool($col['nullable'])) {
-                        $sqlCol->setNullable($col['nullable']);
-                    }
-                    if (array_key_exists('default', $col)) {
-                        $sqlCol->setDefault($col['default']);
-                    }
-                    if (array_key_exists('options', $col) &&
-                        is_array($col['options'])) {
-                        $sqlCol->setOptions($col['options']);
-                    }
-
-                    $sql->addColumn($sqlCol);
+                if ($addColumnCount === 0) {
+                    continue;
                 }
 
                 if (array_key_exists('addConstraint', $command) &&
                     is_array($command['addConstraint'])) {
                     foreach ($command['addConstraint'] as $constr) {
                         if (! array_key_exists('type', $constr) ||
-                            ! array_key_exists($constr['type'], $supportedConstraints) ||
+                            ! array_key_exists($constr['type'], $this->supportedParsingConstraints) ||
                             ! array_key_exists('column', $constr) ||
                             ! (is_string($constr['column']) || is_array($constr['column']))) {
                             continue;
@@ -441,7 +442,7 @@ class DatabaseHelper
                                 is_array($constr['lengths'])) {
                                 $lengths = $constr['lengths'];
                             }
-                            $sqlConstr = new $supportedConstraints[$constr['type']](
+                            $sqlConstr = new $this->supportedParsingConstraints[$constr['type']](
                                 $constr['column'],
                                 $name,
                                 $lengths
@@ -457,16 +458,16 @@ class DatabaseHelper
                             $onDelete = null;
                             if (array_key_exists('onDelete', $constr) &&
                                 is_string($constr['onDelete']) &&
-                                array_key_exists($constr['onDelete'], $supportedForeignKeyRules)) {
-                                $onDelete = $supportedForeignKeyRules[$constr['onDelete']];
+                                array_key_exists($constr['onDelete'], $this->supportedParsingForeignKeyRules)) {
+                                $onDelete = $this->supportedParsingForeignKeyRules[$constr['onDelete']];
                             }
                             $onUpdate = null;
                             if (array_key_exists('onUpdate', $constr) &&
                                 is_string($constr['onUpdate']) &&
-                                array_key_exists($constr['onUpdate'], $supportedForeignKeyRules)) {
-                                $onUpdate = $supportedForeignKeyRules[$constr['onUpdate']];
+                                array_key_exists($constr['onUpdate'], $this->supportedParsingForeignKeyRules)) {
+                                $onUpdate = $this->supportedParsingForeignKeyRules[$constr['onUpdate']];
                             }
-                            $sqlConstr = new $supportedConstraints[$constr['type']](
+                            $sqlConstr = new $this->supportedParsingConstraints[$constr['type']](
                                 $name,
                                 $constr['column'],
                                 $constr['referenceTable'],
@@ -475,7 +476,7 @@ class DatabaseHelper
                                 $onUpdate
                             );
                         } else {
-                            $sqlConstr = new $supportedConstraints[$constr['type']](
+                            $sqlConstr = new $this->supportedParsingConstraints[$constr['type']](
                                 $constr['column'],
                                 $name
                             );
@@ -691,7 +692,7 @@ class DatabaseHelper
         try {
             $resultSet = $this->adapterProvider->executeSqlStatement($select);
             $result = $resultSet->current();
-            if (is_null($result) || (! array_key_exists('version', $result))) {;
+            if (is_null($result) || (! array_key_exists('version', $result))) {
                 $this->lastStatus = self::SETUPINCOMPLETE;
                 return;
             }

@@ -21,16 +21,17 @@ use Setup\Helper\DatabaseHelper;
 use Zend\Config\Config;
 use Zend\Db\Adapter\Driver\StatementInterface;
 use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\PreparableSqlInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Ddl\CreateTable;
 use Zend\Mvc\I18n\Translator;
 use ZfcUser\Options\ModuleOptions;
 use Exception;
 use ReflectionClass;
 use RuntimeException;
 use phpmock\MockBuilder;
-use Zend\Db\Sql\Insert;
 
 class DatabaseHelperTest extends TestCase
 {
@@ -814,5 +815,59 @@ class DatabaseHelperTest extends TestCase
 
         $this->assertEquals(DatabaseHelper::SCHEMAUPDATED, $databaseHelper->getLastStatus());
         $this->assertEquals(3, $fileExistsCallCount);
+    }
+
+    /**
+     * @covers \Setup\Helper\DatabaseHelper::parseAddColumn
+     */
+    public function testParseAddColumn()
+    {
+        $input1 = [];
+        $expectedResult1 = 0;
+
+        $input2 = [
+            'addColumn' => [
+                [
+                    'name' => 'columnWithNoType',
+                ],
+                [
+                    'type' => 'unknownType',
+                    'name' => 'columnWithInvalidType',
+                ],
+                [
+                    'type' => 'Integer',
+                    // has no name
+                ],
+                [
+                    'type' => 'Integer',
+                    'name' => 1,
+                    // name isn't string
+                ],
+                [
+                    'type' => 'Integer',
+                    'name' => 'validColumn',
+                    // name isn't string
+                ],
+            ],
+        ];
+        $expectedResult2 = 1;
+
+        $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
+        $sql = $this->prophesize(CreateTable::class);
+
+        $this->assertEquals(
+            $expectedResult1,
+            $this->invokeMethod($databaseHelper, 'parseAddColumn', [
+                $sql->reveal(),
+                $input1,
+            ])
+        );
+        $this->assertEquals(
+            $expectedResult2,
+            $this->invokeMethod($databaseHelper, 'parseAddColumn', [
+                $sql->reveal(),
+                $input2,
+            ])
+        );
     }
 }
