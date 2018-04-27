@@ -17,7 +17,6 @@ namespace TranslationsTest\Model;
 use PHPUnit\Framework\TestCase;
 use Translations\Model\EntryCommon;
 use Zend\InputFilter\InputFilterInterface;
-use DomainException;
 use ReflectionClass;
 
 class EntryCommonTest extends TestCase
@@ -79,17 +78,6 @@ class EntryCommonTest extends TestCase
         $this->assertInstanceOf(InputFilterInterface::class, $inputFilter);
         $this->assertSame($inputFilterProperty->getValue($entryCommon), $inputFilter);
         $this->assertSame($inputFilter, $entryCommon->getInputFilter());
-    }
-
-    public function testSetInputFilter()
-    {
-        $entryCommon = new EntryCommon();
-        $inputFilter = $this->prophesize(InputFilterInterface::class);
-
-        $this->expectException(DomainException::class);
-        $this->expectExceptionMessageRegExp('/\w+ does not allow injection of an alternate input filter./');
-
-        $entryCommon->setInputFilter($inputFilter->reveal());
     }
 
     public function testArraySerializableImplementations()

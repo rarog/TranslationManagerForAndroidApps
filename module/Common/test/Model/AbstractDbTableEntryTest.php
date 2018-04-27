@@ -23,6 +23,8 @@ class AbstractDbTableEntryTest extends TestCase
 {
     private $abstractDbTableEntry;
 
+    private $testValue = 'someValue';
+
     protected function setUp()
     {
         $this->abstractDbTableEntry = new class extends AbstractDbTableEntry {
@@ -68,9 +70,16 @@ class AbstractDbTableEntryTest extends TestCase
 
     public function testGetSetMagic()
     {
-        $testValue = 'someValue';
+        $this->abstractDbTableEntry->SomeProperty = $this->testValue;
+        $this->assertEquals($this->testValue, $this->abstractDbTableEntry->SomeProperty);
+    }
 
-        $this->abstractDbTableEntry->SomeProperty = $testValue;
-        $this->assertEquals($testValue, $this->abstractDbTableEntry->SomeProperty);
+    public function testGetMagicException()
+    {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Invalid property');
+
+        $this->abstractDbTableEntry->NonexistantProperty = $this->testValue;
+        $gettingValue = $this->abstractDbTableEntry->NonexistantProperty;
     }
 }
