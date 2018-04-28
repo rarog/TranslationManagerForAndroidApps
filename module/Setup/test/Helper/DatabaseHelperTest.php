@@ -25,6 +25,7 @@ use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\PreparableSqlInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Ddl\AlterTable;
 use Zend\Db\Sql\Ddl\CreateTable;
 use Zend\Mvc\I18n\Translator;
 use ZfcUser\Options\ModuleOptions;
@@ -881,6 +882,69 @@ class DatabaseHelperTest extends TestCase
         $this->assertEquals(
             $expectedResult2,
             $this->invokeMethod($databaseHelper, 'parseAddColumn', [
+                $sql->reveal(),
+                $input2,
+            ])
+        );
+    }
+
+    /**
+     * @covers \Setup\Helper\DatabaseHelper::parseChangeColumn
+     */
+    public function testParseChangeColumn()
+    {
+        $input1 = [];
+        $expectedResult1 = 0;
+
+        $input2 = [
+            'changeColumn' => [
+                [
+                    'name' => 'columnWithNoType',
+                ],
+                [
+                    'type' => 'unknownType',
+                    'name' => 'columnWithInvalidType',
+                ],
+                [
+                    'type' => 'Integer',
+                    // has no name
+                ],
+                [
+                    'type' => 'Integer',
+                    'name' => 1,
+                    // name isn't string
+                ],
+                [
+                    'type' => 'Integer',
+                    'name' => 'validColumnWithDefaultAndOptions',
+                    'default' => 0,
+                    'options' => [
+                        'autoincrement' => true,
+                    ],
+                ],
+                [
+                    'type' => 'Varchar',
+                    'name' => 'nullableValidColumnWithLength',
+                    'length' => 25,
+                    'nullable' => true,
+                ],
+            ],
+        ];
+        $expectedResult2 = 2;
+
+        $databaseHelper = $this->getDatabaseHelper($this->defaultConfig);
+        $sql = $this->prophesize(AlterTable::class);
+
+        $this->assertEquals(
+            $expectedResult1,
+            $this->invokeMethod($databaseHelper, 'parseChangeColumn', [
+                $sql->reveal(),
+                $input1,
+            ])
+        );
+        $this->assertEquals(
+            $expectedResult2,
+            $this->invokeMethod($databaseHelper, 'parseChangeColumn', [
                 $sql->reveal(),
                 $input2,
             ])
