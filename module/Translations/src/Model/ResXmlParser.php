@@ -508,7 +508,7 @@ class ResXmlParser implements AppHelperInterface
                     $entryCommon->ResourceFileEntryId = $entry->Id;
                     $entryCommon->LastChange = 0;
 
-                    $entryCommon = $this->entryCommonTable->saveEntryCommon($entryCommon);
+                    $this->entryCommonTable->saveEntryCommon($entryCommon);
 
                     $entriesCommon[$entry->Id] = $entryCommon;
                 }

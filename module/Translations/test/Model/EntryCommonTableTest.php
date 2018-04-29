@@ -38,6 +38,12 @@ class EntryCommonTableTest extends TestCase
         'notification_status' => 1,
     ];
 
+    private $tableGateway;
+
+    private $statement;
+
+    private $mockDriver;
+
     private $entryCommonTable;
 
     private function getMethod($class, $methodName)
@@ -117,7 +123,7 @@ class EntryCommonTableTest extends TestCase
         $this->assertEquals($entryCommon->getArrayCopy(), $returnedResultSet->getArrayCopy());
     }
 
-    public function testEntryCommonExceptionThrown()
+    public function testGetEntryCommonExceptionThrown()
     {
         $resultSet = $this->prophesize(ResultSetInterface::class);
         $resultSet->current()->willReturn(null);
@@ -129,5 +135,76 @@ class EntryCommonTableTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Could not find row with identifier 1');
         $this->entryCommonTable->getEntryCommon(1);
+    }
+
+    public function testSaveEntryCommonInsertCalled()
+    {
+        $newArrayData = $this->exampleArrayData;
+        unset($newArrayData['id']);
+
+        $newId = 1;
+
+        $entryCommon = new EntryCommon($newArrayData);
+
+        $this->tableGateway->insert(Argument::type('array'))->will(function () use ($newId) {
+            $this->getLastInsertValue()->willReturn($newId);
+        });
+        $this->tableGateway->insert(Argument::type('array'))->shouldBeCalled();
+        $this->tableGateway->update(Argument::any())->shouldNotBeCalled();
+
+        $this->entryCommonTable->saveEntryCommon($entryCommon);
+
+        $this->assertEquals($newId, $entryCommon->getId());
+    }
+
+    public function testSaveEntryCommonUpdateCalled()
+    {
+        $entryCommon = new EntryCommon($this->exampleArrayData);
+
+        $resultSet = $this->prophesize(ResultSetInterface::class);
+        $resultSet->current()->willReturn($this->exampleArrayData);
+
+        $this->tableGateway->select([
+            'id' => $this->exampleArrayData['id'],
+        ])->willReturn($resultSet->reveal());
+        $this->tableGateway->insert(Argument::any())->shouldNotBeCalled();
+        $this->tableGateway
+            ->update(
+                array_diff_key($this->exampleArrayData, ['id' => null]),
+                ['id' => $this->exampleArrayData['id']]
+            )->shouldBeCalled();
+
+        $this->entryCommonTable->saveEntryCommon($entryCommon);
+    }
+
+    public function testSaveEntryCommonExceptionThrown()
+    {
+        $entryCommon = new EntryCommon($this->exampleArrayData);
+
+        $resultSet = $this->prophesize(ResultSetInterface::class);
+        $resultSet->current()->willReturn(null);
+
+        $this->tableGateway->select([
+            'id' => $this->exampleArrayData['id'],
+        ])->willReturn($resultSet->reveal());
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage(
+            sprintf('Could not find row with identifier %d', $this->exampleArrayData['id'])
+        );
+
+        $this->tableGateway->insert(Argument::any())->shouldNotBeCalled();
+        $this->tableGateway->update(Argument::any())->shouldNotBeCalled();
+
+        $this->entryCommonTable->saveEntryCommon($entryCommon);
+
+        $this->assertEquals($newId, $entryCommon->getId());
+    }
+
+    public function testDeleteEntryCommon()
+    {
+        $id = 42;
+        $this->tableGateway->delete(['id' => $id])->shouldBeCalled();
+        $this->entryCommonTable->deleteEntryCommon($id);
     }
 }

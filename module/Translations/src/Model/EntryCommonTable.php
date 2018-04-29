@@ -68,22 +68,22 @@ class EntryCommonTable
      *
      * @param EntryCommon $entryCommon
      * @throws RuntimeException
-     * @return \Translations\Model\EntryCommon
      */
     public function saveEntryCommon(EntryCommon $entryCommon)
     {
         $data = [
-            'app_resource_id' => $entryCommon->AppResourceId,
-            'resource_file_entry_id' => $entryCommon->ResourceFileEntryId,
-            'last_change' => $entryCommon->LastChange,
+            'app_resource_id' => $entryCommon->getAppResourceId(),
+            'resource_file_entry_id' => $entryCommon->getResourceFileEntryId(),
+            'last_change' => $entryCommon->getLastChange(),
+            'notification_status' => $entryCommon->getNotificationStatus(),
         ];
 
-        $id = (int) $entryCommon->Id;
+        $id = (int) $entryCommon->getId();
 
         if ($id === 0) {
             $this->tableGateway->insert($data);
-            $entryCommon->Id = $this->tableGateway->getLastInsertValue();
-            return $entryCommon;
+            $entryCommon->setId($this->tableGateway->getLastInsertValue());
+            return;
         }
 
         if (! $this->getEntryCommon($id)) {
@@ -91,7 +91,6 @@ class EntryCommonTable
         }
 
         $this->tableGateway->update($data, ['id' => $id]);
-        return $entryCommon;
     }
 
     /**
