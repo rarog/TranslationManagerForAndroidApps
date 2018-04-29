@@ -187,18 +187,15 @@ class EntryCommonTableTest extends TestCase
         $this->tableGateway->select([
             'id' => $this->exampleArrayData['id'],
         ])->willReturn($resultSet->reveal());
-
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage(
-            sprintf('Could not find row with identifier %d', $this->exampleArrayData['id'])
-        );
-
         $this->tableGateway->insert(Argument::any())->shouldNotBeCalled();
         $this->tableGateway->update(Argument::any())->shouldNotBeCalled();
 
-        $this->entryCommonTable->saveEntryCommon($entryCommon);
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage(
+            sprintf('Cannot update row with identifier %d; does not exist', $this->exampleArrayData['id'])
+        );
 
-        $this->assertEquals($newId, $entryCommon->getId());
+        $this->entryCommonTable->saveEntryCommon($entryCommon);
     }
 
     public function testDeleteEntryCommon()

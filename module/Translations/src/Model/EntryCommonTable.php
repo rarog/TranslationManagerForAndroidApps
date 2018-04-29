@@ -86,11 +86,16 @@ class EntryCommonTable
             return;
         }
 
-        if (! $this->getEntryCommon($id)) {
-            throw new RuntimeException(sprintf('Cannot update row with identifier %d; does not exist', $id));
+        try {
+            if ($this->getEntryCommon($id)) {
+                $this->tableGateway->update($data, ['id' => $id]);
+            }
+        } catch (RuntimeException $e) {
+            throw new RuntimeException(sprintf(
+                'Cannot update row with identifier %d; does not exist',
+                $id
+            ));
         }
-
-        $this->tableGateway->update($data, ['id' => $id]);
     }
 
     /**
