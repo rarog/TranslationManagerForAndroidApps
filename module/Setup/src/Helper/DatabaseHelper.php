@@ -271,6 +271,50 @@ class DatabaseHelper
     }
 
     /**
+     * Processes changeColumn commands
+     *
+     * @param AlterTable $sql
+     * @param array $command
+     * @return number
+     */
+    private function parseChangeColumn(AlterTable $sql, array $command)
+    {
+        $processedEntries = 0;
+
+        if (array_key_exists('changeColumn', $command) && is_array($command['changeColumn'])) {
+            foreach ($command['changeColumn'] as $col) {
+                if (! array_key_exists('type', $col) ||
+                    ! array_key_exists($col['type'], $this->supportedParsingColumns) ||
+                    ! array_key_exists('name', $col) ||
+                    ! is_string($col['name'])) {
+                    continue;
+                }
+
+                $sqlCol = new $this->supportedParsingColumns[$col['type']]($col['name']);
+
+                if ($sqlCol instanceof AbstractLengthColumn && array_key_exists('length', $col) &&
+                    is_int($col['length'])) {
+                    $sqlCol->setLength($col['length']);
+                }
+                if (array_key_exists('nullable', $col) && is_bool($col['nullable'])) {
+                    $sqlCol->setNullable($col['nullable']);
+                }
+                if (array_key_exists('default', $col)) {
+                    $sqlCol->setDefault($col['default']);
+                }
+                if (array_key_exists('options', $col) && is_array($col['options'])) {
+                    $sqlCol->setOptions($col['options']);
+                }
+
+                $sql->changeColumn($col['name'], $sqlCol);
+                $processedEntries++;
+            }
+        }
+
+        return $processedEntries;
+    }
+
+    /**
      * Constructor
      *
      * @param Config $config
@@ -369,47 +413,13 @@ class DatabaseHelper
             $commandName = $command['commandName'];
 
             if ($commandName === 'AlterTable') {
-                $changeColumnCount = 0;
-                if (array_key_exists('changeColumn', $command) &&
-                    is_array($command['changeColumn'])) {
-                    $changeColumnCount = count($command['changeColumn']);
-                }
-
                 $sql = new AlterTable($command['tableName']);
 
                 $addColumnCount = $this->parseAddColumn($sql, $command);
+                $changeColumnCount = $this->parseChangeColumn($sql, $command);
 
                 if (($addColumnCount + $changeColumnCount) === 0) {
                     continue;
-                }
-
-                if ($changeColumnCount > 0) {
-                    foreach ($command['changeColumn'] as $col) {
-                        if (! array_key_exists('type', $col) ||
-                            ! array_key_exists($col['type'], $this->supportedParsingColumns) ||
-                            ! array_key_exists('name', $col) ||
-                            ! is_string($col['name'])) {
-                            continue;
-                        }
-
-                        $sqlCol = new $this->supportedParsingColumns[$col['type']]($col['name']);
-
-                        if ($sqlCol instanceof AbstractLengthColumn && array_key_exists('length', $col) &&
-                            is_int($col['length'])) {
-                            $sqlCol->setLength($col['length']);
-                        }
-                        if (array_key_exists('nullable', $col) && is_bool($col['nullable'])) {
-                            $sqlCol->setNullable($col['nullable']);
-                        }
-                        if (array_key_exists('default', $col)) {
-                            $sqlCol->setDefault($col['default']);
-                        }
-                        if (array_key_exists('options', $col) && is_array($col['options'])) {
-                            $sqlCol->setOptions($col['options']);
-                        }
-
-                        $sql->changeColumn($col['name'], $sqlCol);
-                    }
                 }
             } elseif ($commandName === 'CreateTable') {
                 $sql = new CreateTable($command['tableName']);
