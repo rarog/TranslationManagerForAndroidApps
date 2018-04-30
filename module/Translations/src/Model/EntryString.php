@@ -43,14 +43,16 @@ class EntryString extends AbstractDbTableEntry implements ArraySerializableInter
     /**
      * @return null|int
      */
-    public function getEntryCommonId() {
+    public function getEntryCommonId()
+    {
         return $this->entryCommonId;
     }
 
     /**
      * @param null|int $id
      */
-    public function setEntryCommonId($entryCommonId) {
+    public function setEntryCommonId($entryCommonId)
+    {
         if (! is_null($entryCommonId)) {
             $entryCommonId = (int) $entryCommonId;
         }
@@ -60,14 +62,16 @@ class EntryString extends AbstractDbTableEntry implements ArraySerializableInter
     /**
      * @return null|string
      */
-    public function getValue() {
+    public function getValue()
+    {
         return $this->value;
     }
 
     /**
      * @param null|string $value
      */
-    public function setValue($value) {
+    public function setValue($value)
+    {
         if (! is_null($value)) {
             $value = (string) $value;
         }
@@ -122,8 +126,8 @@ class EntryString extends AbstractDbTableEntry implements ArraySerializableInter
      */
     public function exchangeArray(array $array)
     {
-        $this->EntryCommonId = !empty($array['entry_common_id']) ? $array['entry_common_id'] : null;
-        $this->Value = !empty($array['value']) ? $array['value'] : null;
+        $this->setEntryCommonId(isset($array['entry_common_id']) ? $array['entry_common_id'] : null);
+        $this->setValue(isset($array['value']) ? $array['value'] : null);
     }
 
     /**
@@ -133,8 +137,8 @@ class EntryString extends AbstractDbTableEntry implements ArraySerializableInter
     public function getArrayCopy()
     {
         return [
-            'entry_common_id' => $this->EntryCommonId,
-            'value' => $this->Value,
+            'entry_common_id' => $this->getEntryCommonId(),
+            'value' => $this->getValue(),
         ];
     }
 }
