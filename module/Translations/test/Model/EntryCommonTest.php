@@ -22,7 +22,7 @@ use ReflectionClass;
 class EntryCommonTest extends TestCase
 {
     private $exampleArrayData = [
-        'id' => '42',
+        'id' => 42,
         'app_resource_id' => 12,
         'resource_file_entry_id' => 11,
         'last_change' => 12345654,
@@ -41,27 +41,57 @@ class EntryCommonTest extends TestCase
 
         $entryCommon = new EntryCommon($this->exampleArrayData);
 
-        $this->assertEquals(42, $entryCommon->getId());
-        $this->assertEquals(12, $entryCommon->getAppResourceId());
-        $this->assertEquals(11, $entryCommon->getResourceFileEntryId());
-        $this->assertEquals(12345654, $entryCommon->getLastChange());
-        $this->assertEquals(1, $entryCommon->getNotificationStatus());
+        $this->assertEquals(
+            $this->exampleArrayData['id'],
+            $entryCommon->getId()
+        );
+        $this->assertEquals(
+            $this->exampleArrayData['app_resource_id'],
+            $entryCommon->getAppResourceId()
+        );
+        $this->assertEquals(
+            $this->exampleArrayData['resource_file_entry_id'],
+            $entryCommon->getResourceFileEntryId()
+        );
+        $this->assertEquals(
+            $this->exampleArrayData['last_change'],
+            $entryCommon->getLastChange()
+        );
+        $this->assertEquals(
+            $this->exampleArrayData['notification_status'],
+            $entryCommon->getNotificationStatus()
+        );
     }
 
     public function testSetterAndGetters()
     {
         $entryCommon = new EntryCommon();
-        $entryCommon->setId(42);
-        $entryCommon->setAppResourceId(12);
-        $entryCommon->setResourceFileEntryId(11);
-        $entryCommon->setLastChange(12345654);
-        $entryCommon->setNotificationStatus(1);
+        $entryCommon->setId($this->exampleArrayData['id']);
+        $entryCommon->setAppResourceId($this->exampleArrayData['app_resource_id']);
+        $entryCommon->setResourceFileEntryId($this->exampleArrayData['resource_file_entry_id']);
+        $entryCommon->setLastChange($this->exampleArrayData['last_change']);
+        $entryCommon->setNotificationStatus($this->exampleArrayData['notification_status']);
 
-        $this->assertEquals(42, $entryCommon->getId());
-        $this->assertEquals(12, $entryCommon->getAppResourceId());
-        $this->assertEquals(11, $entryCommon->getResourceFileEntryId());
-        $this->assertEquals(12345654, $entryCommon->getLastChange());
-        $this->assertEquals(1, $entryCommon->getNotificationStatus());
+        $this->assertEquals(
+            $this->exampleArrayData['id'],
+            $entryCommon->getId()
+        );
+        $this->assertEquals(
+            $this->exampleArrayData['app_resource_id'],
+            $entryCommon->getAppResourceId()
+        );
+        $this->assertEquals(
+            $this->exampleArrayData['resource_file_entry_id'],
+            $entryCommon->getResourceFileEntryId()
+        );
+        $this->assertEquals(
+            $this->exampleArrayData['last_change'],
+            $entryCommon->getLastChange()
+        );
+        $this->assertEquals(
+            $this->exampleArrayData['notification_status'],
+            $entryCommon->getNotificationStatus()
+        );
     }
 
     public function testGetInputFilter()
