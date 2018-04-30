@@ -25,7 +25,6 @@ use Zend\Db\Adapter\Driver\StatementInterface;
 use Zend\Db\Adapter\Platform\Sql92;
 use Zend\Db\ResultSet\ResultSetInterface;
 use Zend\Db\TableGateway\TableGateway;
-use ReflectionClass;
 use RuntimeException;
 
 class EntryCommonTableTest extends TestCase
@@ -45,14 +44,6 @@ class EntryCommonTableTest extends TestCase
     private $mockDriver;
 
     private $entryCommonTable;
-
-    private function getMethod($class, $methodName)
-    {
-        $reflection = new ReflectionClass($class);
-        $method = $reflection->getMethod($methodName);
-        $method->setAccessible(true);
-        return $method;
-    }
 
     protected function setUp()
     {
@@ -115,25 +106,32 @@ class EntryCommonTableTest extends TestCase
         $resultSet->current()->willReturn($entryCommon);
 
         $this->tableGateway->select([
-            'id' => 42,
+            'id' => $this->exampleArrayData['id'],
         ])->willReturn($resultSet->reveal());
 
-        $returnedResultSet = $this->entryCommonTable->getEntryCommon(42);
+        $returnedResultSet = $this->entryCommonTable->getEntryCommon($this->exampleArrayData['id']);
         $this->assertInstanceOf(EntryCommon::class, $returnedResultSet);
         $this->assertEquals($entryCommon->getArrayCopy(), $returnedResultSet->getArrayCopy());
     }
 
     public function testGetEntryCommonExceptionThrown()
     {
+        $invalidId = 1;
+
         $resultSet = $this->prophesize(ResultSetInterface::class);
         $resultSet->current()->willReturn(null);
 
         $this->tableGateway->select([
-            'id' => 1,
+            'id' => $invalidId,
         ])->willReturn($resultSet->reveal());
 
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Could not find row with identifier 1');
+        $this->expectExceptionMessage(
+            sprintf(
+                'Could not find row with identifier %s',
+                $invalidId
+            )
+        );
         $this->entryCommonTable->getEntryCommon(1);
     }
 
