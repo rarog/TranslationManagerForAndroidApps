@@ -14,12 +14,12 @@
 
 namespace Translations\Model;
 
-use ArrayObject;
-use RuntimeException;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
+use ArrayObject;
+use RuntimeException;
 
 class EntryStringTable
 {
@@ -84,10 +84,10 @@ class EntryStringTable
     public function saveEntryString(EntryString $entryString)
     {
         $data = [
-            'value' => $entryString->Value,
+            'value' => $entryString->getValue(),
         ];
 
-        $entryCommonId = (int) $entryString->EntryCommonId;
+        $entryCommonId = (int) $entryString->getEntryCommonId();
 
         if ($entryCommonId === 0) {
             throw new RuntimeException('Cannot handle entry with invalid id');
@@ -190,7 +190,7 @@ class EntryStringTable
             ['entry_count.deleted' => Expression::TYPE_IDENTIFIER],
             [0 => Expression::TYPE_VALUE],
         ]);
-        $select->join(['entry_count' => 'resource_file_entry'], $onEntryCount,[
+        $select->join(['entry_count' => 'resource_file_entry'], $onEntryCount, [
             'entryCount' => new Expression('count(distinct entry_count.id)'),
         ], $select::JOIN_LEFT);
 
@@ -213,7 +213,7 @@ class EntryStringTable
             'value' => 'value',
         ], Select::JOIN_LEFT);
 
-        $select->join('suggestion', 'suggestion.entry_common_id = entry_common.id',[
+        $select->join('suggestion', 'suggestion.entry_common_id = entry_common.id', [
             'suggestionCount' => new Expression('count(distinct suggestion.id)'),
         ], $select::JOIN_LEFT);
 
