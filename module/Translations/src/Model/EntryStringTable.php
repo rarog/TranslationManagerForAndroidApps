@@ -128,14 +128,14 @@ class EntryStringTable
     {
         try {
             $defaultAppResource = $this->appResourceTable->getAppResourceByAppIdAndName($appId, 'values');
-        } catch (\Exception $e) {
+        } catch (RuntimeException $e) {
             $defaultAppResource = false;
         }
 
         $select = new Select;
         $select->columns([
             'defaultValue' => 'value',
-        ])->from(['default' => $this->tableGateway->table]);
+        ])->from(['default' => $this->tableGateway->getTable()]);
 
         $onDefaultEntryCommon = new Expression('? = ?', [
             ['default_common.id' => Expression::TYPE_IDENTIFIER],
@@ -158,7 +158,7 @@ class EntryStringTable
         ]);
         $select->join('app_resource', $onAppResource, [], Select::JOIN_INNER);
 
-        if (($defaultAppResource === false) || ($defaultAppResource->Id !== $appResourceId)) {
+        if (($defaultAppResource === false) || ($defaultAppResource->getId() !== $appResourceId)) {
             $onResourceFileEntry = new Expression('? = ? AND ? = ? AND ? = ?', [
                 ['resource_file_entry.id' => Expression::TYPE_IDENTIFIER],
                 ['default_common.resource_file_entry_id' => Expression::TYPE_IDENTIFIER],
@@ -203,6 +203,7 @@ class EntryStringTable
         $select->join('entry_common', $onEntryCommon, [
             'id' => 'id',
             'lastChange' => 'last_change',
+            'notificationStatus' => 'notification_status',
         ], Select::JOIN_LEFT);
 
         $onEntryString = new Expression('? = ?', [
@@ -229,6 +230,7 @@ class EntryStringTable
             'resource_file_entry.description',
             'entry_common.id',
             'entry_common.last_change',
+            'entry_common.notification_status',
             'entry_string.value',
         ]);
 
@@ -238,7 +240,7 @@ class EntryStringTable
 
         $returnArray = new ArrayObject([], ArrayObject::ARRAY_AS_PROPS);
 
-        $sql = new Sql($this->tableGateway->adapter, $this->tableGateway->table);
+        $sql = new Sql($this->tableGateway->getAdapter(), $this->tableGateway->getTable());
         $results = $sql->prepareStatementForSqlObject($select)->execute();
 
         foreach ($results as $result) {
@@ -250,6 +252,7 @@ class EntryStringTable
             $result['entryCount'] = (int) $result['entryCount'];
             $result['id'] = (int) $result['id'];
             $result['lastChange'] = (int) $result['lastChange'];
+            $result['notificationStatus'] = (int) $result['notificationStatus'];
             $result['suggestionCount'] = (int) $result['suggestionCount'];
 
             $returnArray[] = new ArrayObject($result, ArrayObject::ARRAY_AS_PROPS);

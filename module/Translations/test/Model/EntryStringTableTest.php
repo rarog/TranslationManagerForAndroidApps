@@ -27,6 +27,7 @@ use Zend\Db\ResultSet\ResultSetInterface;
 use Zend\Db\TableGateway\TableGateway;
 use RuntimeException;
 use Translations\Model\AppResourceTable;
+use ArrayObject;
 
 class EntryStringTableTest extends TestCase
 {
@@ -38,6 +39,8 @@ class EntryStringTableTest extends TestCase
     private $tableGateway;
 
     private $appResourceTable;
+
+    private $internalStatement;
 
     private $statement;
 
@@ -53,6 +56,7 @@ class EntryStringTableTest extends TestCase
         $this->appResourceTable = $this->prophesize(AppResourceTable::class);
 
         $internalStatement = new StatementContainer();
+        $this->internalStatement = $internalStatement;
 
         $statement = $this->prophesize(StatementInterface::class);
         $this->statement = $statement;
@@ -185,5 +189,75 @@ class EntryStringTableTest extends TestCase
         $this->tableGateway->update(Argument::any())->shouldNotBeCalled();
 
         $this->entryStringTable->saveEntryString($entrystring);
+    }
+
+    public function testGetAllEntryStringsForTranslations()
+    {
+        $appId1 = 1;
+        $appResourceId = 2;
+        $entryId = 0;
+        $expectedSql1 = 'SELECT "default"."value" AS "defaultValue", ' .
+            '"default_common"."id" AS "defaultId", ' .
+            '"default_common"."app_resource_id" AS "appResourceId", ' .
+            '"default_common"."resource_file_entry_id" AS "resourceFileEntryId", ' .
+            '"default_common"."last_change" AS "defaultLastChange", ' .
+            '"resource_file_entry"."resource_type_id" AS "resourceTypeId", ' .
+            '"resource_file_entry"."name" AS "name", ' .
+            '"resource_file_entry"."product" AS "product", ' .
+            '"resource_file_entry"."description" AS "description", ' .
+            'count(distinct entry_count.id) AS "entryCount", ' .
+            '"entry_common"."id" AS "id", ' .
+            '"entry_common"."last_change" AS "lastChange", ' .
+            '"entry_common"."notification_status" AS "notificationStatus", ' .
+            '"entry_string"."value" AS "value", ' .
+            'count(distinct suggestion.id) AS "suggestionCount" ' .
+            'FROM "entry_string" AS "default" ' .
+            'INNER JOIN "entry_common" AS "default_common" ON "default_common"."id" = "default"."entry_common_id" ' .
+            'INNER JOIN "app_resource" ON "app_resource"."id" = "default_common"."app_resource_id" AND ' .
+            '"app_resource"."app_id" = ? AND "app_resource"."name" = ? ' .
+            'INNER JOIN "resource_file_entry" ON ' .
+            '"resource_file_entry"."id" = "default_common"."resource_file_entry_id" AND ' .
+            '"resource_file_entry"."deleted" = ? AND "resource_file_entry"."translatable" = ? ' .
+            'LEFT JOIN "resource_file_entry" AS "entry_count" ON ' .
+            '"entry_count"."app_resource_file_id" = "resource_file_entry"."app_resource_file_id" AND ' .
+            '"entry_count"."name" = "resource_file_entry"."name" AND "entry_count"."deleted" = ? ' .
+            'LEFT JOIN "entry_common" ON ' .
+            '"entry_common"."resource_file_entry_id" = "default_common"."resource_file_entry_id" AND ' .
+            '"entry_common"."app_resource_id" = ? ' .
+            'LEFT JOIN "entry_string" ON "entry_string"."entry_common_id" = "entry_common"."id" ' .
+            'LEFT JOIN "suggestion" ON "suggestion"."entry_common_id" = "entry_common"."id" ' .
+            'GROUP BY "default"."value", "default_common"."id", "default_common"."app_resource_id", ' .
+            '"default_common"."resource_file_entry_id", "default_common"."last_change", ' .
+            '"resource_file_entry"."resource_type_id", "resource_file_entry"."name", ' .
+            '"resource_file_entry"."product", "resource_file_entry"."description", "entry_common"."id", ' .
+            '"entry_common"."last_change", "entry_common"."notification_status", "entry_string"."value"';
+
+        $expectedParameters1 = [
+            'join2part1' => $appId1, // app_resource.app_id
+            'join2part2' => 'values', // app_resource.name
+            'join3part1' => 0, // resource_file_entry.deleted
+            'join3part2' => 1, // resource_file_entry.translatable
+            'join4part1' => 0, // entry_count.deleted
+            'join5part1' => $appResourceId, // entry_common.app_resource_id
+        ];
+
+        $resultSet = $this->prophesize(ResultSetInterface::class)->reveal();
+
+        $this->appResourceTable
+            ->getAppResourceByAppIdAndName($appId1, 'values')
+            ->willThrow(new RuntimeException());
+        $this->statement->execute()->willReturn($resultSet);
+        $this->statement->execute()->shouldBeCalled();
+
+        $this->assertInstanceOf(
+            ArrayObject::class,
+            $this->entryStringTable->getAllEntryStringsForTranslations(
+                $appId1,
+                $appResourceId,
+                $entryId
+            )
+        );
+        $this->assertEquals($expectedSql1, $this->internalStatement->getSql());
+        $this->assertEquals($expectedParameters1, $this->internalStatement->getParameterContainer()->getNamedArray());
     }
 }
