@@ -24,7 +24,7 @@ use ReflectionClass;
 
 class IndexControllerTest extends AbstractHttpControllerTestCase
 {
-    protected $authorizationService;
+    private $authorizationService;
 
     public function setUp()
     {
@@ -37,11 +37,7 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
 
         parent::setUp();
 
-        // Tricking: on console requests application doesn't run through most onBootstrap events,
-        // thus not trying to instantiate session and other things not needed for testing
-        $this->setUseConsoleRequest(true);
         $serviceManager = $this->getApplicationServiceLocator();
-        $this->setUseConsoleRequest(false);
 
         $authorizationService = $this->prophesize(AuthorizationService::class);
         $this->authorizationService = $authorizationService;
@@ -62,11 +58,12 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
         $this->authorizationService->isGranted('userBase')->willReturn(false);
 
         $this->dispatch('/application/about', 'GET');
-        $this->assertResponseStatusCode(500);
+        $this->assertResponseStatusCode(302);
         $this->assertModuleName('application');
         $this->assertControllerName(IndexController::class);
         $this->assertControllerClass('IndexController');
         $this->assertMatchedRouteName('application/about');
+        $this->assertRedirectTo('/user/login');
     }
 
     public function testAboutActionCanBeAccessedByUsers()
@@ -92,11 +89,12 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
         $this->authorizationService->isGranted('userBase')->willReturn(false);
 
         $this->dispatch('/', 'GET');
-        $this->assertResponseStatusCode(500);
+        $this->assertResponseStatusCode(302);
         $this->assertModuleName('application');
         $this->assertControllerName(IndexController::class);
         $this->assertControllerClass('IndexController');
         $this->assertMatchedRouteName('home');
+        $this->assertRedirectTo('/user/login');
     }
 
     public function testIndexActionCanBeAccessedByUsers()
