@@ -15,6 +15,14 @@
 namespace Translations\Factory\Model;
 
 use Interop\Container\ContainerInterface;
+use Translations\Model\AppResourceFileTable;
+use Translations\Model\AppResourceTable;
+use Translations\Model\EntryCommonTable;
+use Translations\Model\EntryStringTable;
+use Translations\Model\ResourceFileEntryTable;
+use Translations\Model\ResourceTypeTable;
+use Translations\Parser\ResXmlParser;
+use Zend\Log\Logger;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
 class ResXmlParserFactory implements FactoryInterface
@@ -25,14 +33,14 @@ class ResXmlParserFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $resXmlParser = new \Translations\Model\ResXmlParser(
-            $container->get(\Translations\Model\AppResourceTable::class),
-            $container->get(\Translations\Model\AppResourceFileTable::class),
-            $container->get(\Translations\Model\ResourceTypeTable::class),
-            $container->get(\Translations\Model\ResourceFileEntryTable::class),
-            $container->get(\Translations\Model\EntryCommonTable::class),
-            $container->get(\Translations\Model\EntryStringTable::class),
-            $container->get(\Zend\Log\Logger::class)
+        $resXmlParser = new ResXmlParser(
+            $container->get(AppResourceTable::class),
+            $container->get(AppResourceFileTable::class),
+            $container->get(ResourceTypeTable::class),
+            $container->get(ResourceFileEntryTable::class),
+            $container->get(EntryCommonTable::class),
+            $container->get(EntryStringTable::class),
+            $container->get(Logger::class)
         );
 
         $config = $container->get('config');

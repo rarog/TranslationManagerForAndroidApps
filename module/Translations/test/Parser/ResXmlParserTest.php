@@ -12,17 +12,18 @@
  * @link      https://github.com/rarog/TranslationManagerForAndroidApps
  */
 
-namespace TranslationsTest\Model;
+namespace TranslationsTest\Parser;
 
 use PHPUnit\Framework\TestCase;
 use Translations\Model\AppResource;
 use Translations\Model\AppResourceFile;
 use Translations\Model\EntryCommon;
 use Translations\Model\EntryString;
-use Translations\Model\ResXmlParser;
-use Translations\Model\ResXmlParserExportResult;
-use Translations\Model\ResXmlParserImportResult;
 use Translations\Model\ResourceFileEntry;
+use Translations\Parser\ResXmlParser;
+use Translations\Parser\ResXmlParserExportResult;
+use Translations\Parser\ResXmlParserImportResult;
+use RuntimeException;
 
 class ResXmlParserTest extends TestCase
 {
@@ -161,9 +162,6 @@ class ResXmlParserTest extends TestCase
         return $method->invokeArgs($object, $parameters);
     }
 
-    /**
-     * @covers \Translations\Model\ResXmlParser::decodeAndroidTranslationString
-     */
     public function testDecodeEmptyStringWithoutQuotes()
     {
         $resXmlParser = $this->getResXmlParser();
@@ -171,9 +169,6 @@ class ResXmlParserTest extends TestCase
         $this->assertEquals($this->emptyStringWithoutQuotesDecoded, $result);
     }
 
-    /**
-     * @covers \Translations\Model\ResXmlParser::decodeAndroidTranslationString
-     */
     public function testDecodeEmptyStringWithQuotes()
     {
         $resXmlParser = $this->getResXmlParser();
@@ -181,9 +176,6 @@ class ResXmlParserTest extends TestCase
         $this->assertEquals($this->emptyStringWithQuotesDecoded, $result);
     }
 
-    /**
-     * @covers \Translations\Model\ResXmlParser::decodeAndroidTranslationString
-     */
     public function testDecodeStringWithoutQuotes()
     {
         $resXmlParser = $this->getResXmlParser();
@@ -191,9 +183,6 @@ class ResXmlParserTest extends TestCase
         $this->assertEquals($this->stringWithoutQuotesDecoded, $result);
     }
 
-    /**
-     * @covers \Translations\Model\ResXmlParser::decodeAndroidTranslationString
-     */
     public function testDecodeStringWithQuotes()
     {
         $resXmlParser = $this->getResXmlParser();
@@ -201,9 +190,6 @@ class ResXmlParserTest extends TestCase
         $this->assertEquals($this->stringWithQuotesDecoded, $result);
     }
 
-    /**
-     * @covers \Translations\Model\ResXmlParser::decodeAndroidTranslationString
-     */
     public function testDecodeBrokenStringNotBeginnungButEndingWithQuote()
     {
         $resXmlParser = $this->getResXmlParser();
@@ -211,9 +197,6 @@ class ResXmlParserTest extends TestCase
         $this->assertEquals($this->brokenStringNotBeginnungButEndingWithQuoteDecoded, $result);
     }
 
-    /**
-     * @covers \Translations\Model\ResXmlParser::decodeAndroidTranslationString
-     */
     public function testDecodeMultilineStringWithRealNewlines()
     {
         $resXmlParser = $this->getResXmlParser();
@@ -221,19 +204,14 @@ class ResXmlParserTest extends TestCase
         $this->assertEquals($this->multilineStringWithRealNewlinesDecoded, $result);
     }
 
-    /**
-     * @covers \Translations\Model\ResXmlParser::decodeAndroidTranslationString
-     * @expectedException RuntimeException
-     */
     public function testBadUndecodableStringLeadingToException()
     {
         $resXmlParser = $this->getResXmlParser();
-        $result = $this->invokeMethod($resXmlParser, 'decodeAndroidTranslationString', [$this->badUndecodableStringLeadingToException]);
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Android string couldn\'t be decoded');
+        $this->invokeMethod($resXmlParser, 'decodeAndroidTranslationString', [$this->badUndecodableStringLeadingToException]);
     }
 
-    /**
-     * @covers \Translations\Model\ResXmlParser::encodeAndroidTranslationString
-     */
     public function testEncodeEmptyStringWithoutQuotes()
     {
         $resXmlParser = $this->getResXmlParser();
@@ -241,9 +219,6 @@ class ResXmlParserTest extends TestCase
         $this->assertEquals($this->emptyStringWithoutQuotesEncoded, $result);
     }
 
-    /**
-     * @covers \Translations\Model\ResXmlParser::encodeAndroidTranslationString
-     */
     public function testEncodeStringWithoutQuotes()
     {
         $resXmlParser = $this->getResXmlParser();
@@ -251,9 +226,6 @@ class ResXmlParserTest extends TestCase
         $this->assertEquals($this->stringWithoutQuotesEncoded, $result);
     }
 
-    /**
-     * @covers \Translations\Model\ResXmlParser::encodeAndroidTranslationString
-     */
     public function testEncodeAndroidExampleStringWithApostrophes()
     {
         $resXmlParser = $this->getResXmlParser();
@@ -261,9 +233,6 @@ class ResXmlParserTest extends TestCase
         $this->assertEquals($this->androidExampleStringWithApostrophesEncoded, $result);
     }
 
-    /**
-     * @covers \Translations\Model\ResXmlParser::encodeAndroidTranslationString
-     */
     public function testEncodeAndroidExampleStringWithQuotes()
     {
         $resXmlParser = $this->getResXmlParser();
@@ -271,9 +240,6 @@ class ResXmlParserTest extends TestCase
         $this->assertEquals($this->androidExampleStringWithQuotesEncoded, $result);
     }
 
-    /**
-     * @covers \Translations\Model\ResXmlParser::exportXmlString
-     */
     public function testExportGetEmptyResXML()
     {
         $resXmlParser = $this->getResXmlParser();
@@ -284,9 +250,6 @@ class ResXmlParserTest extends TestCase
         $this->assertEquals($result->entriesSkippedUnknownType, 0);
     }
 
-    /**
-     * @covers \Translations\Model\ResXmlParser::exportXmlString
-     */
     public function testExportUnknownResourceTypeSkipped()
     {
         $resXmlParser = $this->getResXmlParser();
@@ -300,9 +263,6 @@ class ResXmlParserTest extends TestCase
         $this->assertEquals($result->entriesSkippedUnknownType, 1);
     }
 
-    /**
-     * @covers \Translations\Model\ResXmlParser::exportXmlString
-     */
     public function testExportUnknownResourceTypeSkipped2()
     {
         $resXmlParser = clone $this->getResXmlParser();
@@ -321,9 +281,6 @@ class ResXmlParserTest extends TestCase
         $this->assertEquals($result->entriesSkippedUnknownType, 1);
     }
 
-    /**
-     * @covers \Translations\Model\ResXmlParser::exportXmlString
-     */
     public function testExportStringEntryWithDescription()
     {
         $resXmlParser = $this->getResXmlParser();
@@ -367,9 +324,6 @@ class ResXmlParserTest extends TestCase
         $this->assertEquals($result->entriesSkippedUnknownType, 0);
     }
 
-    /**
-     * @covers \Translations\Model\ResXmlParser::exportXmlString
-     */
     public function testExportStringEntryNotTranslatable()
     {
         $resXmlParser = $this->getResXmlParser();
@@ -410,9 +364,6 @@ class ResXmlParserTest extends TestCase
         $this->assertEquals($result->oldEntriesPreservedUnknownType, 0);
     }
 
-    /**
-     * @covers \Translations\Model\ResXmlParser::exportXmlString
-     */
     public function testExportEntriesIgnoringWrongOldEntriesXml()
     {
         $resXmlParser = $this->getResXmlParser();
@@ -452,9 +403,6 @@ class ResXmlParserTest extends TestCase
         $this->assertEquals($result->oldEntriesPreservedUnknownType, 0);
     }
 
-    /**
-     * @covers \Translations\Model\ResXmlParser::exportXmlString
-     */
     public function testExportEntriesPreservingOldEntries()
     {
         $resXmlParser = $this->getResXmlParser();
@@ -503,9 +451,6 @@ class ResXmlParserTest extends TestCase
         $this->assertEquals($result->oldEntriesPreservedKnownTypeEntryNotInDb, 3);
     }
 
-    /**
-     * @covers \Translations\Model\ResXmlParser::importXmlString
-     */
     public function testImportEntriesIgnoringWrongXml()
     {
         $resXmlParser = $this->getResXmlParser();

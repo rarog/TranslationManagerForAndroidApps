@@ -247,7 +247,7 @@ return [
     'service_manager' => [
         'factories' => [
             Model\Helper\EncryptionHelper::class => Factory\Model\EncryptionHelperFactory::class,
-            Model\ResXmlParser::class => Factory\Model\ResXmlParserFactory::class,
+            Parser\ResXmlParser::class => Factory\Parser\ResXmlParserFactory::class,
         ],
     ],
     'translator' => [

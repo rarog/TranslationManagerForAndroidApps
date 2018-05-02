@@ -12,51 +12,35 @@
  * @link      https://github.com/rarog/TranslationManagerForAndroidApps
  */
 
-namespace Translations\Model;
+namespace Translations\Parser;
 
+use Translations\Model\App;
+use Translations\Model\AppResource;
+use Translations\Model\AppResourceFile;
+use Translations\Model\AppResourceFileTable;
+use Translations\Model\AppResourceTable;
+use Translations\Model\EntryCommon;
+use Translations\Model\EntryCommonTable;
+use Translations\Model\EntryString;
+use Translations\Model\EntryStringTable;
+use Translations\Model\ResourceFileEntry;
+use Translations\Model\ResourceFileEntryTable;
+use Translations\Model\ResourceTypeTable;
 use Translations\Model\Helper\AppHelperInterface;
 use Translations\Model\Helper\AppHelperTrait;
 use Translations\Model\Helper\FileHelper;
-use Zend\Dom\Exception\RuntimeException as ZendDomRuntimeException;
 use Zend\Dom\Document;
 use Zend\Dom\Document\Query;
+use Zend\Dom\Exception\RuntimeException as ZendDomRuntimeException;
 use Zend\Json\Json;
 use Zend\Log\Logger;
-
-/**
- * @codeCoverageIgnore
- */
-class ResXmlParserImportResult
-{
-    public $entriesProcessed;
-    public $entriesUpdated;
-    public $entriesSkippedExistOnlyInDb;
-    public $entriesSkippedNotInDefault;
-
-    public function __construct()
-    {
-        $this->entriesProcessed = 0;
-        $this->entriesUpdated = 0;
-        $this->entriesSkippedExistOnlyInDb = 0;
-        $this->entriesSkippedNotInDefault = 0;
-    }
-}
-
-class ResXmlParserExportResult
-{
-    public $entriesProcessed;
-    public $entriesSkippedUnknownType;
-    public $oldEntriesPreservedUnknownType;
-    public $oldEntriesPreservedKnownTypeEntryNotInDb;
-
-    public function __construct()
-    {
-        $this->entriesProcessed = 0;
-        $this->entriesSkippedUnknownType = 0;
-        $this->oldEntriesPreservedUnknownType = 0;
-        $this->oldEntriesPreservedKnownTypeEntryNotInDb = 0;
-    }
-}
+use ArrayObject;
+use DOMComment;
+use DOMDocument;
+use DOMElement;
+use DOMNode;
+use DOMText;
+use RuntimeException;
 
 class ResXmlParser implements AppHelperInterface
 {
@@ -110,10 +94,10 @@ class ResXmlParser implements AppHelperInterface
     /**
      * Adds child node from another document to the parent node
      *
-     * @param \DomNode $node Parent node
-     * @param \DomNode $childNode New child node
+     * @param DOMNode $node Parent node
+     * @param DOMNode $childNode New child node
      */
-    private function addChildNodeFromOtherDocument(\DomNode $node, \DomNode $childNode)
+    private function addChildNodeFromOtherDocument(DOMNode $node, DOMNode $childNode)
     {
         $node->appendChild($node->ownerDocument->importNode($childNode, true));
     }
@@ -122,7 +106,7 @@ class ResXmlParser implements AppHelperInterface
      * Decodes the translation string into readable form
      *
      * @param string $translationString
-     * @throws \RuntimeException
+     * @throws RuntimeException
      * @return string
      */
     private function decodeAndroidTranslationString(string $translationString)
@@ -131,7 +115,8 @@ class ResXmlParser implements AppHelperInterface
             return '';
         }
 
-        // Fixing strings stored in multiline format. Why, is it relevant to copypaste Android strings like "font_size_preview_text_body" this way?
+        // Fixing strings stored in multiline format.
+        // Why is it relevant to copypaste Android strings like "font_size_preview_text_body" this way?
         // 1) Be paranoid about strings form files with Windows newlines
         $translationString = str_replace("\r\n", "\n", $translationString);
         // 2) Be paranoid about strings form files with Mac newlines
@@ -158,7 +143,8 @@ class ResXmlParser implements AppHelperInterface
             $jsonTranslationString = '"' . $jsonTranslationString;
         }
 
-        if (mb_strlen(mb_substr($jsonTranslationString, -1, 1) !== '"') || (mb_substr($jsonTranslationString, -1, 2) == '\"')) {
+        if (mb_strlen(mb_substr($jsonTranslationString, - 1, 1) !== '"') ||
+            (mb_substr($jsonTranslationString, - 1, 2) == '\"')) {
             $jsonTranslationString .= '"';
         }
 
@@ -175,8 +161,8 @@ class ResXmlParser implements AppHelperInterface
             }
 
             return $decoded;
-        } catch (\RuntimeException $e) {
-            throw new \RuntimeException('Android string couldn\'t be decoded.');
+        } catch (RuntimeException $e) {
+            throw new RuntimeException('Android string couldn\'t be decoded.');
         }
     }
 
@@ -203,14 +189,21 @@ class ResXmlParser implements AppHelperInterface
      * @param string $oldXmlString
      * @param bool $deleteNotInDb
      * @param AppResource $resource
-     * @param \ArrayObject $entries
-     * @param \ArrayObject $entriesCommon
-     * @param \ArrayObject $entriesString
+     * @param ArrayObject $entries
+     * @param ArrayObject $entriesCommon
+     * @param ArrayObject $entriesString
      * @param ResXmlParserExportResult $result
      * @return string|null
      */
-    private function exportXmlString(string $oldXmlString, bool $deleteNotInDb, AppResource $resource, \ArrayObject $entries, \ArrayObject $entriesCommon, \ArrayObject $entriesString, ResXmlParserExportResult $result)
-    {
+    private function exportXmlString(
+        string $oldXmlString,
+        bool $deleteNotInDb,
+        AppResource $resource,
+        ArrayObject $entries,
+        ArrayObject $entriesCommon,
+        ArrayObject $entriesString,
+        ResXmlParserExportResult $result
+    ) {
         $resourceTypes = $this->getResourceTypes();
 
         $newDoc = $this->getEmptyResXML();
@@ -234,7 +227,8 @@ class ResXmlParser implements AppHelperInterface
                 $newNode = $newDoc->createElement('string');
 
                 $value = '';
-                if (array_key_exists($entry->Id, $entriesCommon) && array_key_exists($entriesCommon[$entry->Id]->Id, $entriesString)) {
+                if (array_key_exists($entry->Id, $entriesCommon) &&
+                    array_key_exists($entriesCommon[$entry->Id]->Id, $entriesString)) {
                     $value = $entriesString[$entriesCommon[$entry->Id]->Id]->Value;
                 }
                 $newNode->nodeValue = $this->encodeAndroidTranslationString($value);
@@ -304,7 +298,7 @@ class ResXmlParser implements AppHelperInterface
      */
     private function getEmptyResXML()
     {
-        $doc = new \DOMDocument('1.0', 'utf-8');
+        $doc = new DOMDocument('1.0', 'utf-8');
         $doc->formatOutput = true;
         $resources = $doc->createElement('resources');
         $resources->setAttribute('xmlns:xliff', 'urn:oasis:names:tc:xliff:document:1.2');
@@ -316,11 +310,11 @@ class ResXmlParser implements AppHelperInterface
     /**
      * Returns node attribute value or false if attribute doesn't exist.
      *
-     * @param \DOMElement $node
+     * @param DOMElement $node
      * @param string $attributeName
      * @return boolean|string
      */
-    private function getNodeAttributeValue(\DOMElement $node, string $attributeName)
+    private function getNodeAttributeValue(DOMElement $node, string $attributeName)
     {
         if (! $node->hasAttribute($attributeName)) {
             return false;
@@ -332,10 +326,10 @@ class ResXmlParser implements AppHelperInterface
     /**
      * Returns node product attribute value or "default" if doesn't exist.
      *
-     * @param \DOMElement $node
+     * @param DOMElement $node
      * @return string
      */
-    private function getNodeProductAttributeValue(\DOMElement $node)
+    private function getNodeProductAttributeValue(DOMElement $node)
     {
         $product = $this->getNodeAttributeValue($node, 'product');
         if (($product === false) || empty($product)) {
@@ -394,13 +388,21 @@ class ResXmlParser implements AppHelperInterface
      * @param bool $deleteDbOnly
      * @param AppResource $resource
      * @param AppResourceFile $resourceFile
-     * @param \ArrayObject $entries
-     * @param \ArrayObject $entriesCommon
-     * @param \ArrayObject $entriesString
+     * @param ArrayObject $entries
+     * @param ArrayObject $entriesCommon
+     * @param ArrayObject $entriesString
      * @param ResXmlParserImportResult $result
      */
-    private function importXmlString(string $xmlString, bool $deleteDbOnly, AppResource $resource, AppResourceFile $resourceFile, \ArrayObject $entries, \ArrayObject $entriesCommon, \ArrayObject $entriesString, ResXmlParserImportResult $result)
-    {
+    private function importXmlString(
+        string $xmlString,
+        bool $deleteDbOnly,
+        AppResource $resource,
+        AppResourceFile $resourceFile,
+        ArrayObject $entries,
+        ArrayObject $entriesCommon,
+        ArrayObject $entriesString,
+        ResXmlParserImportResult $result
+    ) {
         $querySelector = $this->getNodeSelector();
         if ($querySelector === false) {
             return;
@@ -441,10 +443,11 @@ class ResXmlParser implements AppHelperInterface
                     $description = $attributeValue;
                 } else {
                     $previousSibling = $node->previousSibling;
-                    while (! is_null($previousSibling) && ($previousSibling instanceof \DOMText) && $previousSibling->isWhitespaceInElementContent()) {
+                    while (! is_null($previousSibling) && ($previousSibling instanceof DOMText) &&
+                        $previousSibling->isWhitespaceInElementContent()) {
                         $previousSibling = $previousSibling->previousSibling;
                     }
-                    if (! is_null($previousSibling) && ($previousSibling instanceof \DOMComment)) {
+                    if (! is_null($previousSibling) && ($previousSibling instanceof DOMComment)) {
                         $description = trim($previousSibling->textContent);
                     }
                 }
@@ -526,7 +529,7 @@ class ResXmlParser implements AppHelperInterface
 
                 try {
                     $decodedString = $this->decodeAndroidTranslationString($node->textContent);
-                } catch (\RuntimeException $e) {
+                } catch (RuntimeException $e) {
                     $decodedString = $node->textContent;
                     $message = sprintf('Android string: %s
 String name: %s
@@ -581,8 +584,15 @@ Exception trace:
      * @param Logger $logger
      * @codeCoverageIgnore
      */
-    public function __construct(AppResourceTable $appResourceTable, AppResourceFileTable $appResourceFileTable, ResourceTypeTable $resourceTypeTable, ResourceFileEntryTable $resourceFileEntryTable, EntryCommonTable  $entryCommonTable, EntryStringTable $entryStringTable, Logger $logger)
-    {
+    public function __construct(
+        AppResourceTable $appResourceTable,
+        AppResourceFileTable $appResourceFileTable,
+        ResourceTypeTable $resourceTypeTable,
+        ResourceFileEntryTable $resourceFileEntryTable,
+        EntryCommonTable  $entryCommonTable,
+        EntryStringTable $entryStringTable,
+        Logger $logger
+    ) {
         $this->appResourceTable = $appResourceTable;
         $this->appResourceFileTable = $appResourceFileTable;
         $this->resourceTypeTable = $resourceTypeTable;
@@ -597,10 +607,11 @@ Exception trace:
      *
      * @param App $app
      * @param bool $deleteNotInDb
-     * @return \Translations\Model\ResXmlParserExportResult
+     * @return \Translations\Parser\ResXmlParserExportResult
      * @codeCoverageIgnore
      */
-    public function exportResourcesOfApp(App $app, bool $deleteNotInDb) {
+    public function exportResourcesOfApp(App $app, bool $deleteNotInDb)
+    {
         $result = new ResXmlParserExportResult();
 
         if ($this->getNodeSelector() === false) {
@@ -614,13 +625,13 @@ Exception trace:
         $resourceFiles = $this->appResourceFileTable->fetchAll(['app_id' => $app->Id]);
         $resourceFiles->buffer();
 
-        $entries = new \ArrayObject();
+        $entries = new ArrayObject();
 
         foreach ($resources as $resource) {
             $pathRes = FileHelper::concatenatePath($path, $resource->Name);
 
             $entryIds = [];
-            $entryCommons = new \ArrayObject();
+            $entryCommons = new ArrayObject();
             foreach ($this->entryCommonTable->fetchAll(['app_resource_id' => $resource->Id]) as $entryCommon) {
                 $entryIds[] = $entryCommon->Id;
                 $entryCommons[$entryCommon->ResourceFileEntryId] = $entryCommon;
@@ -631,7 +642,7 @@ Exception trace:
                 $entryIds = 0;
             }
 
-            $entryStrings = new \ArrayObject();
+            $entryStrings = new ArrayObject();
             foreach ($this->entryStringTable->fetchAll(['entry_common_id' => $entryIds]) as $entryString) {
                 $entryStrings[$entryString->EntryCommonId] = $entryString;
             }
@@ -639,19 +650,30 @@ Exception trace:
             foreach ($resourceFiles as $resourceFile) {
                 $pathResFile = FileHelper::concatenatePath($pathRes, $resourceFile->Name);
 
-                if (!FileHelper::isFileWritable($pathResFile)) {
+                if (! FileHelper::isFileWritable($pathResFile)) {
                     continue;
                 }
 
-                if (!array_key_exists($resourceFile->Name, $entries)) {
-                    $entries[$resourceFile->Name] = new \ArrayObject();
-                    foreach ($this->resourceFileEntryTable->fetchAll(['app_resource_file_id' => $resourceFile->Id, 'deleted' => 0]) as $entry) {
+                if (! array_key_exists($resourceFile->Name, $entries)) {
+                    $entries[$resourceFile->Name] = new ArrayObject();
+                    foreach ($this->resourceFileEntryTable->fetchAll([
+                        'app_resource_file_id' => $resourceFile->Id,
+                        'deleted' => 0,
+                    ]) as $entry) {
                         $combinedKey = $entry->Name . "\n" . $entry->Product;
                         $entries[$resourceFile->Name][$combinedKey] = $entry;
                     }
                 }
 
-                $xmlString = $this->exportXmlString(file_get_contents($pathResFile), $deleteNotInDb, $resource, $entries[$resourceFile->Name], $entryCommons, $entryStrings, $result);
+                $xmlString = $this->exportXmlString(
+                    file_get_contents($pathResFile),
+                    $deleteNotInDb,
+                    $resource,
+                    $entries[$resourceFile->Name],
+                    $entryCommons,
+                    $entryStrings,
+                    $result
+                );
             }
         }
 
@@ -663,10 +685,11 @@ Exception trace:
      *
      * @param App $app
      * @param bool $deleteDbOnly
-     * @return \Translations\Model\ResXmlParserImportResult
+     * @return \Translations\Parser\ResXmlParserImportResult
      * @codeCoverageIgnore
      */
-    public function importResourcesOfApp(App $app, bool $deleteDbOnly) {
+    public function importResourcesOfApp(App $app, bool $deleteDbOnly)
+    {
         $result = new ResXmlParserImportResult();
 
         if ($this->getNodeSelector() === false) {
@@ -680,14 +703,16 @@ Exception trace:
         $resourceFiles = $this->appResourceFileTable->fetchAll(['app_id' => $app->Id]);
         $resourceFiles->buffer();
 
-        $entries = new \ArrayObject();
+        $entries = new ArrayObject();
 
         foreach ($resources as $resource) {
             $pathRes = FileHelper::concatenatePath($path, $resource->Name);
 
             $entryIds = [];
-            $entryCommons = new \ArrayObject();
-            foreach ($this->entryCommonTable->fetchAll(['app_resource_id' => $resource->Id]) as $entryCommon) {
+            $entryCommons = new ArrayObject();
+            foreach ($this->entryCommonTable->fetchAll([
+                'app_resource_id' => $resource->Id,
+            ]) as $entryCommon) {
                 $entryIds[] = $entryCommon->Id;
                 $entryCommons[$entryCommon->ResourceFileEntryId] = $entryCommon;
             }
@@ -697,7 +722,7 @@ Exception trace:
                 $entryIds = 0;
             }
 
-            $entryStrings = new \ArrayObject();
+            $entryStrings = new ArrayObject();
             foreach ($this->entryStringTable->fetchAll(['entry_common_id' => $entryIds]) as $entryString) {
                 $entryStrings[$entryString->EntryCommonId] = $entryString;
             }
@@ -705,19 +730,33 @@ Exception trace:
             foreach ($resourceFiles as $resourceFile) {
                 $pathResFile = FileHelper::concatenatePath($pathRes, $resourceFile->Name);
 
-                if (!FileHelper::isFileValidResource($pathResFile)) {
+                if (! FileHelper::isFileValidResource($pathResFile)) {
                     continue;
                 }
 
-                if (!array_key_exists($resourceFile->Name, $entries)) {
-                    $entries[$resourceFile->Name] = new \ArrayObject();
-                    foreach ($this->resourceFileEntryTable->fetchAll(['app_resource_file_id' => $resourceFile->Id, 'deleted' => 0]) as $entry) {
+                if (! array_key_exists($resourceFile->Name, $entries)) {
+                    $entries[$resourceFile->Name] = new ArrayObject();
+                    foreach ($this->resourceFileEntryTable->fetchAll(
+                        [
+                            'app_resource_file_id' => $resourceFile->Id,
+                            'deleted' => 0,
+                        ]
+                    ) as $entry) {
                         $combinedKey = $entry->Name . "\n" . $entry->Product;
                         $entries[$resourceFile->Name][$combinedKey] = $entry;
                     }
                 }
 
-                $this->importXmlString(file_get_contents($pathResFile), $deleteDbOnly, $resource, $resourceFile, $entries[$resourceFile->Name], $entryCommons, $entryStrings, $result);
+                $this->importXmlString(
+                    file_get_contents($pathResFile),
+                    $deleteDbOnly,
+                    $resource,
+                    $resourceFile,
+                    $entries[$resourceFile->Name],
+                    $entryCommons,
+                    $entryStrings,
+                    $result
+                );
             }
         }
 

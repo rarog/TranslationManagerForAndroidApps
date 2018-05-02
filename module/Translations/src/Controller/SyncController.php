@@ -17,7 +17,7 @@ namespace Translations\Controller;
 use Translations\Form\SyncExportForm;
 use Translations\Form\SyncImportForm;
 use Translations\Model\AppTable;
-use Translations\Model\ResXmlParser;
+use Translations\Parser\ResXmlParser;
 use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
