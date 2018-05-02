@@ -15,6 +15,12 @@
 namespace Translations\Factory\Controller;
 
 use Interop\Container\ContainerInterface;
+use Translations\Controller\AppResourceFileController;
+use Translations\Model\AppResourceFileTable;
+use Translations\Model\AppResourceTable;
+use Translations\Model\AppTable;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Mvc\I18n\Translator;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
 class AppResourceFileControllerFactory implements FactoryInterface
@@ -25,12 +31,12 @@ class AppResourceFileControllerFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new \Translations\Controller\AppResourceFileController(
-            $container->get(\Translations\Model\AppResourceFileTable::class),
-            $container->get(\Translations\Model\AppTable::class),
-            $container->get(\Translations\Model\AppResourceTable::class),
-            $container->get(\Zend\Mvc\I18n\Translator::class),
-            $container->get(\Zend\Db\Adapter\AdapterInterface::class)
+        return new AppResourceFileController(
+            $container->get(AppResourceFileTable::class),
+            $container->get(AppTable::class),
+            $container->get(AppResourceTable::class),
+            $container->get(Translator::class),
+            $container->get(AdapterInterface::class)
         );
     }
 }
