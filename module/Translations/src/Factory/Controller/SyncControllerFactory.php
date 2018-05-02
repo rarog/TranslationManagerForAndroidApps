@@ -15,7 +15,12 @@
 namespace Translations\Factory\Controller;
 
 use Interop\Container\ContainerInterface;
+use Translations\Controller\SyncController;
+use Translations\Model\AppTable;
+use Translations\Parser\ResXmlParser;
+use Zend\Mvc\I18n\Translator;
 use Zend\ServiceManager\Factory\FactoryInterface;
+use Zend\View\Renderer\PhpRenderer;
 
 class SyncControllerFactory implements FactoryInterface
 {
@@ -25,11 +30,11 @@ class SyncControllerFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new \Translations\Controller\SyncController(
-            $container->get(\Translations\Model\AppTable::class),
-            $container->get(\Translations\Model\ResXmlParser::class),
-            $container->get(\Zend\Mvc\I18n\Translator::class),
-            $container->get(\Zend\View\Renderer\PhpRenderer::class)
+        return new SyncController(
+            $container->get(AppTable::class),
+            $container->get(ResXmlParser::class),
+            $container->get(Translator::class),
+            $container->get(PhpRenderer::class)
         );
     }
 }
