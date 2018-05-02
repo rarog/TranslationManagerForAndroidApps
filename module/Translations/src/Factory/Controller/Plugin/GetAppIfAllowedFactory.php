@@ -15,7 +15,11 @@
 namespace Translations\Factory\Controller\Plugin;
 
 use Interop\Container\ContainerInterface;
+use Translations\Controller\Plugin\GetAppIfAllowed;
+use Translations\Model\AppResourceTable;
+use Translations\Model\AppTable;
 use Zend\ServiceManager\Factory\FactoryInterface;
+use ZfcRbac\Service\AuthorizationService;
 
 class GetAppIfAllowedFactory implements FactoryInterface
 {
@@ -25,10 +29,10 @@ class GetAppIfAllowedFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new \Translations\Controller\Plugin\GetAppIfAllowed(
-            $container->get(\Translations\Model\AppTable::class),
-            $container->get(\Translations\Model\AppResourceTable::class),
-            $container->get(\ZfcRbac\Service\AuthorizationService::class)
+        return new GetAppIfAllowed(
+            $container->get(AppTable::class),
+            $container->get(AppResourceTable::class),
+            $container->get(AuthorizationService::class)
         );
     }
 }
