@@ -11,7 +11,7 @@
  * @license   https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License version 3 or later
  * @link      https://github.com/rarog/TranslationManagerForAndroidApps
  */
-namespace SetupTest\Helper;
+namespace SetupTest\Factory\Helper;
 
 use PHPUnit\Framework\TestCase;
 use Setup\Factory\Helper\DatabaseHelperFactory;
@@ -22,26 +22,19 @@ use ZfcUser\Options\ModuleOptions as ZfcUserModuleOptions;
 
 class DatabaseHelperFactoryTest extends TestCase
 {
-
     public function testFactory()
     {
         $factory = new DatabaseHelperFactory();
 
-        $setupConfig = [
-            'db' => [
-                'driver' => 'Pdo'
-            ]
-        ];
-
         $serviceManager = new ServiceManager();
 
-        $serviceManager->setService('config', $setupConfig);
-        $serviceManager->setService('zfcuser_module_options', new ZfcUserModuleOptions());
+        $serviceManager->setService('config', []);
 
-        $translator = $this->getMockBuilder(Translator::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceManager->setService(Translator::class, $translator);
+        $zfcUserModuleOptions = $this->prophesize(ZfcUserModuleOptions::class);
+        $serviceManager->setService('zfcuser_module_options', $zfcUserModuleOptions->reveal());
+
+        $translator = $this->prophesize(Translator::class);
+        $serviceManager->setService(Translator::class, $translator->reveal());
 
         $databaseHelper = $factory($serviceManager, null);
         $this->assertInstanceOf(DatabaseHelper::class, $databaseHelper);
