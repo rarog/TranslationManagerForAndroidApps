@@ -14,7 +14,13 @@
 
 namespace Translations\Factory\Controller;
 
+use Application\Model\UserSettingsTable;
 use Interop\Container\ContainerInterface;
+use Translations\Controller\AppController;
+use Translations\Model\AppTable;
+use Translations\Model\TeamTable;
+use Translations\Model\Helper\EncryptionHelper;
+use Zend\Mvc\I18n\Translator;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
 class AppControllerFactory implements FactoryInterface
@@ -25,12 +31,12 @@ class AppControllerFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new \Translations\Controller\AppController(
-            $container->get(\Translations\Model\AppTable::class),
-            $container->get(\Translations\Model\TeamTable::class),
-            $container->get(\Application\Model\UserSettingsTable::class),
-            $container->get(\Zend\Mvc\I18n\Translator::class),
-            $container->get(\Translations\Model\Helper\EncryptionHelper::class)
+        return new AppController(
+            $container->get(AppTable::class),
+            $container->get(TeamTable::class),
+            $container->get(UserSettingsTable::class),
+            $container->get(Translator::class),
+            $container->get(EncryptionHelper::class)
         );
     }
 }
