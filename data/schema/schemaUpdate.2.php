@@ -30,7 +30,7 @@ return [
         'addColumn' => [
             [
                 'type' => 'Integer',
-                'name' => 'notification_state',
+                'name' => 'notification_status',
             ],
         ],
     ],
