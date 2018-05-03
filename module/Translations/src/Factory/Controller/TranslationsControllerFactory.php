@@ -15,7 +15,19 @@
 namespace Translations\Factory\Controller;
 
 use Interop\Container\ContainerInterface;
+use Translations\Controller\TranslationsController;
+use Translations\Model\AppResourceTable;
+use Translations\Model\AppTable;
+use Translations\Model\EntryCommonTable;
+use Translations\Model\EntryStringTable;
+use Translations\Model\ResourceFileEntryTable;
+use Translations\Model\ResourceTypeTable;
+use Translations\Model\SuggestionStringTable;
+use Translations\Model\SuggestionTable;
+use Translations\Model\SuggestionVoteTable;
+use Zend\Mvc\I18n\Translator;
 use Zend\ServiceManager\Factory\FactoryInterface;
+use Zend\View\Renderer\PhpRenderer;
 
 class TranslationsControllerFactory implements FactoryInterface
 {
@@ -25,18 +37,18 @@ class TranslationsControllerFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new \Translations\Controller\TranslationsController(
-            $container->get(\Translations\Model\AppTable::class),
-            $container->get(\Translations\Model\AppResourceTable::class),
-            $container->get(\Translations\Model\ResourceTypeTable::class),
-            $container->get(\Translations\Model\ResourceFileEntryTable::class),
-            $container->get(\Translations\Model\EntryCommonTable::class),
-            $container->get(\Translations\Model\EntryStringTable::class),
-            $container->get(\Translations\Model\SuggestionTable::class),
-            $container->get(\Translations\Model\SuggestionStringTable::class),
-            $container->get(\Translations\Model\SuggestionVoteTable::class),
-            $container->get(\Zend\Mvc\I18n\Translator::class),
-            $container->get(\Zend\View\Renderer\PhpRenderer::class)
+        return new TranslationsController(
+            $container->get(AppTable::class),
+            $container->get(AppResourceTable::class),
+            $container->get(ResourceTypeTable::class),
+            $container->get(ResourceFileEntryTable::class),
+            $container->get(EntryCommonTable::class),
+            $container->get(EntryStringTable::class),
+            $container->get(SuggestionTable::class),
+            $container->get(SuggestionStringTable::class),
+            $container->get(SuggestionVoteTable::class),
+            $container->get(Translator::class),
+            $container->get(PhpRenderer::class)
         );
     }
 }
