@@ -60,9 +60,9 @@
 		"development-enable" : "zf-development-mode enable",
 		"development-status" : "zf-development-mode status",
 		"minify" : [
-			"yui-compressor --type css -o ./public/css/style.min.css ./public/css/style.css",
-			"yui-compressor --type js -o ./public/js/fixJumpingNavbar.min.js ./public/js/fixJumpingNavbar.js",
-			"yui-compressor --type js -o ./public/js/translations.min.js ./public/js/translations.js"
+			"java -jar ./vendor/bin/yuicompressor.jar --type css -o ./public/css/style.min.css ./public/css/style.css",
+			"java -jar ./vendor/bin/yuicompressor.jar --type js -o ./public/js/fixJumpingNavbar.min.js ./public/js/fixJumpingNavbar.js",
+			"java -jar ./vendor/bin/yuicompressor.jar --type js -o ./public/js/translations.min.js ./public/js/translations.js"
 		],
 		"post-create-project-cmd" : "@development-enable",
 		"serve" : "php -S 0.0.0.0:8080 -t public public/index.php",
@@ -87,7 +87,8 @@
 		"zendframework/zend-coding-standard": "^1.0",
 		"phpunit/phpunit" : "^5.0 || ^6.0",
 		"php-mock/php-mock" : "^2.0",
-		"php-coveralls/php-coveralls": "^2.0"
+		"php-coveralls/php-coveralls": "^2.0",
+		"packagelist/yuicompressor-bin": "^2.4"
 	},
 	"support" : {
 		"source" : "https://github.com/rarog/TranslationManagerForAndroidApps",
