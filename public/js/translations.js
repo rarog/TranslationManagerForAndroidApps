@@ -236,6 +236,59 @@ $("#translations").on("click", ".translationDetails", function(event) {
     });
 });
 
+$("#modalContainer").on("click", ".toggleNotificationStatus", function(event) {
+    var button = $(this);
+
+	if (button.hasClass("disabled")) {
+        return;
+    }
+
+    var app = $("#app").val();
+    var resource = $("#resource").val();
+    var entry = button.data("entryid");
+    var notificationstatus = button.data("notificationstatus");
+
+    if (notificationstatus < 0) {
+    	notificationstatus = 0;
+    } else if (notificationstatus > 1) {
+    	notificationstatus = 1;
+    }
+
+    if (notificationstatus == 0) {
+    	notificationstatus = 1;
+    } else {
+    	notificationstatus = 0;
+    }
+
+    hideBootstrapTooltips();
+	hideModalSpinner(false);
+
+    $.ajax({
+        url: setnotificationstatusPath + "/app/" + app + "/resource/" + resource + "/entry/" + entry + "/notificationstatus/" + notificationstatus,
+        dataType: "json",
+        method: "GET"
+    })
+    .done(function(data) {
+        if ($.type(data) == "object" && data.hasOwnProperty("notificationStatus")) {
+        	button.data("notificationstatus", data["notificationStatus"]);
+        	var newClass = "btn-default";
+        	if (data["notificationStatus"] == 1) {
+        		newClass = "btn-warning";
+        	}
+        	button.removeClass("btn-default btn-warning").addClass(newClass);
+            enableBootstrapTooltips();
+            refreshTranslation = true;
+        } else {
+            addModalAlertMessage();
+        }
+    	hideModalSpinner(true);
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        addModalAlertMessage();
+    	hideModalSpinner(true);
+    });
+});
+
 $("#modalContainer").on("click", ".suggestionVote", function(event) {
     var button = $(this);
 

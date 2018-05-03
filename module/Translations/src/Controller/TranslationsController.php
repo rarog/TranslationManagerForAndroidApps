@@ -15,6 +15,7 @@
 namespace Translations\Controller;
 
 use ArrayObject;
+use RuntimeException;
 use Translations\Model\AppResourceTable;
 use Translations\Model\AppTable;
 use Translations\Model\EntryCommonTable;
@@ -144,7 +145,7 @@ class TranslationsController extends AbstractActionController
      */
     private function getResourceTypes()
     {
-        if (!is_array($this->resourceTypes)) {
+        if (! is_array($this->resourceTypes)) {
             $this->resourceTypes = [];
             foreach ($this->resourceTypeTable->fetchAll() as $resourceType) {
                 $this->resourceTypes[$resourceType->Id] = $resourceType->NodeName;
@@ -199,8 +200,19 @@ class TranslationsController extends AbstractActionController
      * @param Translator $translator
      * @param Renderer $renderer
      */
-    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, ResourceTypeTable $resourceTypeTable, ResourceFileEntryTable $resourceFileEntryTable, EntryCommonTable $entryCommonTable, EntryStringTable $entryStringTable, SuggestionTable $suggestionTable, SuggestionStringTable $suggestionStringTable, SuggestionVoteTable $suggestionVoteTable, Translator $translator, Renderer $renderer)
-    {
+    public function __construct(
+        AppTable $appTable,
+        AppResourceTable $appResourceTable,
+        ResourceTypeTable $resourceTypeTable,
+        ResourceFileEntryTable $resourceFileEntryTable,
+        EntryCommonTable $entryCommonTable,
+        EntryStringTable $entryStringTable,
+        SuggestionTable $suggestionTable,
+        SuggestionStringTable $suggestionStringTable,
+        SuggestionVoteTable $suggestionVoteTable,
+        Translator $translator,
+        Renderer $renderer
+    ) {
         $this->appTable = $appTable;
         $this->appResourceTable = $appResourceTable;
         $this->resourceTypeTable = $resourceTypeTable;
@@ -239,13 +251,13 @@ class TranslationsController extends AbstractActionController
 
         try {
             $entry = $this->resourceFileEntryTable->getResourceFileEntry($entryId);
-        } catch (\RuntimeException$e) {
+        } catch (RuntimeException $e) {
             return new JsonModel();
         }
 
         try {
             $type = $this->resourceTypeTable->getResourceType($entry->ResourceTypeId);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             return new JsonModel();
         }
 
@@ -265,7 +277,10 @@ class TranslationsController extends AbstractActionController
 
         switch ($type->Name) {
             case 'String':
-                $typedSuggestions = $this->suggestionStringTable->getAllSuggestionsForTranslations($typedEntry->id, $this->zfcUserAuthentication()->getIdentity()->getId());
+                $typedSuggestions = $this->suggestionStringTable->getAllSuggestionsForTranslations(
+                    $typedEntry->id,
+                    $this->zfcUserAuthentication()->getIdentity()->getId()
+                );
                 break;
         }
 
@@ -293,13 +308,19 @@ class TranslationsController extends AbstractActionController
 
         $apps = [];
         $resources = [];
-        $values = $this->appTable->getAllAppsAndResourcesAllowedToUser($this->zfcUserAuthentication()->getIdentity()->getId());
+        $values = $this->appTable->getAllAppsAndResourcesAllowedToUser(
+            $this->zfcUserAuthentication()->getIdentity()->getId()
+        );
         foreach ($values as $value) {
-            if (!array_key_exists($value['app_id'], $apps)) {
+            if (! array_key_exists($value['app_id'], $apps)) {
                 $apps[$value['app_id']] = $value['app_name'];
             }
 
-            $resources[$value['app_id']][$value['app_resource_id']] = sprintf('%s (%s)', $value['app_resource_name'], $localeNames[$value['locale']]);
+            $resources[$value['app_id']][$value['app_resource_id']] = sprintf(
+                '%s (%s)',
+                $value['app_resource_name'],
+                $localeNames[$value['locale']]
+            );
         }
 
         $appsAll = [];
@@ -307,14 +328,15 @@ class TranslationsController extends AbstractActionController
         if ($this->isGranted('team.viewAll')) {
             $values = $this->appTable->getAllAppsAndResourcesAllowedToUser(0);
             foreach ($values as $value) {
-                if (!array_key_exists($value['app_id'], $appsAll)) {
+                if (! array_key_exists($value['app_id'], $appsAll)) {
                     $appsAll[$value['app_id']] = $value['app_name'];
                 }
 
                 $resourcesAll[$value['app_id']][$value['app_resource_id']] = sprintf(
-                        '%s (%s)',
-                        $value['app_resource_name'],
-                        $localeNames[$value['locale']]);
+                    '%s (%s)',
+                    $value['app_resource_name'],
+                    $localeNames[$value['locale']]
+                );
             }
         }
 
@@ -360,15 +382,102 @@ class TranslationsController extends AbstractActionController
 
             $output[] = [
                 'defaultId' => sprintf('translation-%d', $entry['defaultId']),
-                'name' => $this->renderTemplate($viewModel, 'translations/translations/partial/listtranslations-name.phtml'),
-                'product' => $this->renderTemplate($viewModel, 'translations/translations/partial/listtranslations-product.phtml'),
-                'nameView' => $this->renderTemplate($viewModel, 'translations/translations/partial/listtranslations-nameView.phtml'),
-                'defaultValue' => $this->renderTemplate($viewModel, 'translations/translations/partial/listtranslations-defaultValue.phtml'),
-                'translatedValue' => $this->renderTemplate($viewModel, 'translations/translations/partial/listtranslations-translatedValue.phtml'),
-                'buttons' => $this->renderTemplate($viewModel, 'translations/translations/partial/listtranslations-buttons.phtml'),
+                'name' => $this->renderTemplate(
+                    $viewModel,
+                    'translations/translations/partial/listtranslations-name.phtml'
+                ),
+                'product' => $this->renderTemplate(
+                    $viewModel,
+                    'translations/translations/partial/listtranslations-product.phtml'
+                ),
+                'nameView' => $this->renderTemplate(
+                    $viewModel,
+                    'translations/translations/partial/listtranslations-nameView.phtml'
+                ),
+                'defaultValue' => $this->renderTemplate(
+                    $viewModel,
+                    'translations/translations/partial/listtranslations-defaultValue.phtml'
+                ),
+                'translatedValue' => $this->renderTemplate(
+                    $viewModel,
+                    'translations/translations/partial/listtranslations-translatedValue.phtml'
+                ),
+                'buttons' => $this->renderTemplate(
+                    $viewModel,
+                    'translations/translations/partial/listtranslations-buttons.phtml'
+                ),
             ];
         }
         return new JsonModel($output);
+    }
+
+    /**
+     * Translation entry notification status setting action
+     *
+     * @return JsonModel
+     */
+    public function setnotificationstatusAction()
+    {
+        $appId = (int) $this->params()->fromRoute('appId', 0);
+        $resourceId = (int) $this->params()->fromRoute('resourceId', 0);
+        $entryId = (int) $this->params()->fromRoute('entryId', 0);
+        $notificationStatus = (int) $this->params()->fromRoute('notificationStatus', 0);
+
+        $app = $this->getApp($appId);
+
+        if ($app === false) {
+            return new JsonModel();
+        }
+
+        $resource = $this->getResource($resourceId, $appId);
+
+        if ($resource === false) {
+            return new JsonModel();
+        }
+
+        try {
+            $entry = $this->resourceFileEntryTable->getResourceFileEntry($entryId);
+        } catch (RuntimeException $e) {
+            return new JsonModel();
+        }
+
+        try {
+            $type = $this->resourceTypeTable->getResourceType($entry->getResourceTypeId());
+        } catch (RuntimeException $e) {
+            return new JsonModel();
+        }
+
+        switch ($type->Name) {
+            case 'String':
+                $typedEntry = $this->entryStringTable->getAllEntryStringsForTranslations(
+                    $appId,
+                    $resourceId,
+                    $entryId
+                );
+                break;
+            default:
+                return new JsonModel();
+        }
+
+        if (count($typedEntry) == 1) {
+            $typedEntry = $typedEntry[0];
+        } else {
+            return new JsonModel();
+        }
+
+        try {
+            $entryCommon = $this->entryCommonTable->getEntryCommon($typedEntry->id);
+        } catch (RuntimeException $e) {
+            return new JsonModel();
+        }
+
+        $entryCommon->setNotificationStatus($notificationStatus);
+
+        $this->entryCommonTable->saveEntryCommon($entryCommon);
+
+        return new JsonModel([
+            'notificationStatus' => $notificationStatus,
+        ]);
     }
 
     /**
@@ -397,13 +506,13 @@ class TranslationsController extends AbstractActionController
 
         try {
             $entry = $this->resourceFileEntryTable->getResourceFileEntry($entryId);
-        } catch (\RuntimeException$e) {
+        } catch (RuntimeException $e) {
             return new JsonModel(['accepted' => false]);
         }
 
         try {
             $type = $this->resourceTypeTable->getResourceType($entry->ResourceTypeId);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             return new JsonModel(['accepted' => false]);
         }
 
@@ -424,7 +533,7 @@ class TranslationsController extends AbstractActionController
         if ($suggestionId !== 0) {
             try {
                 $entryCommon = $this->entryCommonTable->getEntryCommon($typedEntry->id);
-            } catch (\RuntimeException $e) {
+            } catch (RuntimeException $e) {
                 return new JsonModel(['accepted' => false]);
             }
 
@@ -432,13 +541,13 @@ class TranslationsController extends AbstractActionController
                 case 'String':
                     try {
                         $suggestionString = $this->suggestionStringTable->getSuggestionString($suggestionId);
-                    } catch (\RuntimeException $e) {
+                    } catch (RuntimeException $e) {
                         return new JsonModel(['accepted' => false]);
                     }
 
                     try {
                         $entryString = $this->entryStringTable->getEntryString($typedEntry->id);
-                    } catch (\RuntimeException $e) {
+                    } catch (RuntimeException $e) {
                         $entryString = new EntryString([
                             'entry_common_id' => $typedEntry->id,
                         ]);
@@ -453,7 +562,6 @@ class TranslationsController extends AbstractActionController
 
             $entryCommon->LastChange = time();
             $this->entryCommonTable->saveEntryCommon($entryCommon);
-
         }
 
         $this->suggestionTable->deleteSuggestionByEntryCommonId($typedEntry->id);
@@ -488,13 +596,13 @@ class TranslationsController extends AbstractActionController
 
         try {
             $entry = $this->resourceFileEntryTable->getResourceFileEntry($entryId);
-        } catch (\RuntimeException$e) {
+        } catch (RuntimeException $e) {
             return new JsonModel();
         }
 
         try {
             $type = $this->resourceTypeTable->getResourceType($entry->ResourceTypeId);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             return new JsonModel();
         }
 
@@ -515,7 +623,11 @@ class TranslationsController extends AbstractActionController
         if ($suggestionId !== 0) {
             switch ($type->Name) {
                 case 'String':
-                    $typedSuggestion = $this->suggestionStringTable->getAllSuggestionsForTranslations($typedEntry->id, $userId, $suggestionId);
+                    $typedSuggestion = $this->suggestionStringTable->getAllSuggestionsForTranslations(
+                        $typedEntry->id,
+                        $userId,
+                        $suggestionId
+                    );
                     break;
             }
 
@@ -565,13 +677,17 @@ class TranslationsController extends AbstractActionController
                     ]);
                     $this->suggestionStringTable->saveSuggestionString($suggestionString);
 
-                    $typedSuggestion = $this->suggestionStringTable->getAllSuggestionsForTranslations($typedEntry->id, $userId, $suggestion->Id);
+                    $typedSuggestion = $this->suggestionStringTable->getAllSuggestionsForTranslations(
+                        $typedEntry->id,
+                        $userId,
+                        $suggestion->Id
+                    );
                     break;
             }
         } else {
             try {
                 $suggestion = $this->suggestionTable->getSuggestion($suggestionId);
-            } catch (\RuntimeException $e) {
+            } catch (RuntimeException $e) {
                 return new JsonModel();
             }
 
@@ -582,14 +698,18 @@ class TranslationsController extends AbstractActionController
                 case 'String':
                     try {
                         $suggestionString = $this->suggestionStringTable->getSuggestionString($suggestionId);
-                    } catch (\RuntimeException $e) {
+                    } catch (RuntimeException $e) {
                         return new JsonModel();
                     }
 
                     $suggestionString->Value = $value;
                     $this->suggestionStringTable->saveSuggestionString($suggestionString);
 
-                    $typedSuggestion = $this->suggestionStringTable->getAllSuggestionsForTranslations($typedEntry->id, $userId, $suggestionId);
+                    $typedSuggestion = $this->suggestionStringTable->getAllSuggestionsForTranslations(
+                        $typedEntry->id,
+                        $userId,
+                        $suggestionId
+                    );
                     break;
             }
         }
@@ -610,10 +730,22 @@ class TranslationsController extends AbstractActionController
         return new JsonModel([
             'suggestion' => [
                 'suggestionId' => sprintf('suggestion-%d', $typedSuggestion->id),
-                'suggestion' => $this->renderTemplate($viewModel, 'translations/translations/partial/details-suggestion-suggestion.phtml'),
-                'username' => $this->renderTemplate($viewModel, 'translations/translations/partial/details-suggestion-username.phtml'),
-                'votes' => $this->renderTemplate($viewModel, 'translations/translations/partial/details-suggestion-vote.phtml'),
-                'buttons' => $this->renderTemplate($viewModel, 'translations/translations/partial/details-suggestion-buttons.phtml'),
+                'suggestion' => $this->renderTemplate(
+                    $viewModel,
+                    'translations/translations/partial/details-suggestion-suggestion.phtml'
+                ),
+                'username' => $this->renderTemplate(
+                    $viewModel,
+                    'translations/translations/partial/details-suggestion-username.phtml'
+                ),
+                'votes' => $this->renderTemplate(
+                    $viewModel,
+                    'translations/translations/partial/details-suggestion-vote.phtml'
+                ),
+                'buttons' => $this->renderTemplate(
+                    $viewModel,
+                    'translations/translations/partial/details-suggestion-buttons.phtml'
+                ),
             ],
         ]);
     }
@@ -646,13 +778,13 @@ class TranslationsController extends AbstractActionController
 
         try {
             $entry = $this->resourceFileEntryTable->getResourceFileEntry($entryId);
-        } catch (\RuntimeException$e) {
+        } catch (RuntimeException $e) {
             return new JsonModel(['deleted' => false]);
         }
 
         try {
             $type = $this->resourceTypeTable->getResourceType($entry->ResourceTypeId);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             return new JsonModel(['deleted' => false]);
         }
 
@@ -673,7 +805,11 @@ class TranslationsController extends AbstractActionController
         if ($suggestionId !== 0) {
             switch ($type->Name) {
                 case 'String':
-                    $typedSuggestion = $this->suggestionStringTable->getAllSuggestionsForTranslations($typedEntry->id, $userId, $suggestionId);
+                    $typedSuggestion = $this->suggestionStringTable->getAllSuggestionsForTranslations(
+                        $typedEntry->id,
+                        $userId,
+                        $suggestionId
+                    );
                     break;
             }
 
@@ -721,13 +857,13 @@ class TranslationsController extends AbstractActionController
 
         try {
             $entry = $this->resourceFileEntryTable->getResourceFileEntry($entryId);
-        } catch (\RuntimeException$e) {
+        } catch (RuntimeException $e) {
             return new JsonModel();
         }
 
         try {
             $type = $this->resourceTypeTable->getResourceType($entry->ResourceTypeId);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             return new JsonModel();
         }
 
@@ -748,7 +884,11 @@ class TranslationsController extends AbstractActionController
         // 1) Check if this is a valid suggestion.
         switch ($type->Name) {
             case 'String':
-                $typedSuggestion = $this->suggestionStringTable->getAllSuggestionsForTranslations($typedEntry->id, $userId, $suggestionId);
+                $typedSuggestion = $this->suggestionStringTable->getAllSuggestionsForTranslations(
+                    $typedEntry->id,
+                    $userId,
+                    $suggestionId
+                );
                 break;
         }
         if (count($typedSuggestion) != 1) {
@@ -769,7 +909,11 @@ class TranslationsController extends AbstractActionController
         // 3) Get new version of the suggestion with updated vote count.
         switch ($type->Name) {
             case 'String':
-                $typedSuggestion = $this->suggestionStringTable->getAllSuggestionsForTranslations($typedEntry->id, $userId, $suggestionId);
+                $typedSuggestion = $this->suggestionStringTable->getAllSuggestionsForTranslations(
+                    $typedEntry->id,
+                    $userId,
+                    $suggestionId
+                );
                 break;
         }
 
@@ -789,10 +933,22 @@ class TranslationsController extends AbstractActionController
         return new JsonModel([
             'suggestion' => [
                 'suggestionId' => sprintf('suggestion-%d', $typedSuggestion->id),
-                'suggestion' => $this->renderTemplate($viewModel, 'translations/translations/partial/details-suggestion-suggestion.phtml'),
-                'username' => $this->renderTemplate($viewModel, 'translations/translations/partial/details-suggestion-username.phtml'),
-                'votes' => $this->renderTemplate($viewModel, 'translations/translations/partial/details-suggestion-vote.phtml'),
-                'buttons' => $this->renderTemplate($viewModel, 'translations/translations/partial/details-suggestion-buttons.phtml'),
+                'suggestion' => $this->renderTemplate(
+                    $viewModel,
+                    'translations/translations/partial/details-suggestion-suggestion.phtml'
+                ),
+                'username' => $this->renderTemplate(
+                    $viewModel,
+                    'translations/translations/partial/details-suggestion-username.phtml'
+                ),
+                'votes' => $this->renderTemplate(
+                    $viewModel,
+                    'translations/translations/partial/details-suggestion-vote.phtml'
+                ),
+                'buttons' => $this->renderTemplate(
+                    $viewModel,
+                    'translations/translations/partial/details-suggestion-buttons.phtml'
+                ),
             ],
         ]);
     }

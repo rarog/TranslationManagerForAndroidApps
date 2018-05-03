@@ -231,6 +231,12 @@ return [
                         'suggestion.accept',
                     ],
                 ],
+                'translations/setnotificationstatus' => [
+                    'permissions' => [
+                        'translations.view',
+                        'translations.setnotificationstatus',
+                    ],
+                ],
                 'translations/suggestionaddedit' => [
                     'permissions' => [
                         'translations.view',
@@ -318,6 +324,7 @@ return [
                         'teammember.add',
                         'teammember.remove',
                         'teammember.view',
+                        'translations.setnotificationstatus',
                         'users.add',
                         'users.delete',
                         'users.edit',

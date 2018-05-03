@@ -1,5 +1,11 @@
 <?php
-$btnClass = ($entry->suggestionCount > 0) ? 'btn-info' : 'btn-default';
+if ($entry->suggestionCount > 0) {
+    $btnClass = 'btn-info';
+} elseif ($entry->notificationStatus == 1) {
+    $btnClass = 'btn-warning';
+} else {
+    $btnClass = 'btn-default';
+}
 $tooltip = sprintf($this->translatePlural('%d suggestion', '%d suggestions', $entry->suggestionCount), $entry->suggestionCount);
 ?>
 <div class="btn-group" role="group">

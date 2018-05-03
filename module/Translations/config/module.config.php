@@ -179,6 +179,21 @@ return [
                             ],
                         ],
                     ],
+                    'setnotificationstatus' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => '/setnotificationstatus[/app/:appId/resource/:resourceId/entry/:entryId/notificationstatus/:notificationStatus]',
+                            'constraints' => [
+                                'appId' => '[0-9]+',
+                                'resourceId' => '[0-9]+',
+                                'entryId' => '[0-9]+',
+                                'notificationStatus' => '[01]',
+                            ],
+                            'defaults' => [
+                                'action' => 'setnotificationstatus',
+                            ],
+                        ],
+                    ],
                     'suggestionaccept' => [
                         'type' => Segment::class,
                         'options' => [
