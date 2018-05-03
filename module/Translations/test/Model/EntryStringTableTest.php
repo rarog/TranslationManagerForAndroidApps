@@ -545,8 +545,8 @@ class EntryStringTableTest extends TestCase
                 $appId,
                 $appResourceId,
                 $entryId
-                )
-            );
+            )
+        );
         $this->assertEquals($expectedSql, $this->internalStatement->getSql());
         $this->assertEquals($expectedParameters, $this->internalStatement->getParameterContainer()->getNamedArray());
     }
