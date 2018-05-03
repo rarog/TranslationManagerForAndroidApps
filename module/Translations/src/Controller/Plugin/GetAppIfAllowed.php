@@ -18,6 +18,7 @@ use Translations\Model\AppResourceTable;
 use Translations\Model\AppTable;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use ZfcRbac\Service\AuthorizationService;
+use RuntimeException;
 
 class GetAppIfAllowed extends AbstractPlugin
 {
@@ -40,9 +41,14 @@ class GetAppIfAllowed extends AbstractPlugin
      * Constructor
      *
      * @param AppTable $appTable
+     * @param AppResourceTable $appResourceTable
+     * @param AuthorizationService $authorizationService
      */
-    public function __construct(AppTable $appTable, AppResourceTable $appResourceTable, AuthorizationService $authorizationService)
-    {
+    public function __construct(
+        AppTable $appTable,
+        AppResourceTable $appResourceTable,
+        AuthorizationService $authorizationService
+    ) {
         $this->appTable = $appTable;
         $this->appResourceTable = $appResourceTable;
         $this->authorizationService = $authorizationService;
@@ -57,23 +63,28 @@ class GetAppIfAllowed extends AbstractPlugin
     public function __invoke(int $appId, bool $checkHasDefaultValues = false)
     {
         if (0 === $appId) {
-            return false;;
+            return false;
         }
 
         try {
             $app = $this->appTable->getApp($appId);
-        } catch (\Exception $e) {
+        } catch (RuntimeException $e) {
             return false;
         }
 
-        if (! $this->authorizationService->isGranted('app.viewAll') && ! $this->appTable->hasUserPermissionForApp($this->getController()->zfcUserAuthentication()->getIdentity()->getId(), $app->Id)) {
+        if (! $this->authorizationService->isGranted('app.viewAll') &&
+            ! $this->appTable->hasUserPermissionForApp(
+                $this->getController()->zfcUserAuthentication()->getIdentity()->getId(),
+                $app->getId()
+            )
+        ) {
             return false;
         }
 
         if ($checkHasDefaultValues) {
             try {
-                $this->appResourceTable->getAppResourceByAppIdAndName($app->Id, 'values');
-            } catch (\RuntimeException $e) {
+                $this->appResourceTable->getAppResourceByAppIdAndName($app->getId(), 'values');
+            } catch (RuntimeException $e) {
                 return false;
             }
         }
