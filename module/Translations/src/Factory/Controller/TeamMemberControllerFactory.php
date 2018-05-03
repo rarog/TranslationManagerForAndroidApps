@@ -14,8 +14,14 @@
 
 namespace Translations\Factory\Controller;
 
+use Application\Model\UserTable;
 use Interop\Container\ContainerInterface;
+use Translations\Controller\TeamMemberController;
+use Translations\Model\TeamMemberTable;
+use Translations\Model\TeamTable;
+use Zend\Mvc\I18n\Translator;
 use Zend\ServiceManager\Factory\FactoryInterface;
+use Zend\View\Renderer\PhpRenderer;
 
 class TeamMemberControllerFactory implements FactoryInterface
 {
@@ -25,12 +31,12 @@ class TeamMemberControllerFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new \Translations\Controller\TeamMemberController(
-            $container->get(\Translations\Model\TeamMemberTable::class),
-            $container->get(\Translations\Model\TeamTable::class),
-            $container->get(\Application\Model\UserTable::class),
-            $container->get(\Zend\Mvc\I18n\Translator::class),
-            $container->get(\Zend\View\Renderer\PhpRenderer::class)
+        return new TeamMemberController(
+            $container->get(TeamMemberTable::class),
+            $container->get(TeamTable::class),
+            $container->get(UserTable::class),
+            $container->get(Translator::class),
+            $container->get(PhpRenderer::class)
         );
     }
 }
