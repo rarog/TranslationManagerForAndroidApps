@@ -12,7 +12,7 @@
  * @link      https://github.com/rarog/TranslationManagerForAndroidApps
  */
 
-namespace TranslationsTest\Controller\Plugin;
+namespace TranslationsTest\Factory\Controller\Plugin;
 
 use PHPUnit\Framework\TestCase;
 use Translations\Controller\Plugin\GetAppIfAllowed;

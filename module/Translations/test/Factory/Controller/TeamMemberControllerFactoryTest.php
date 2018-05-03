@@ -12,7 +12,7 @@
  * @link      https://github.com/rarog/TranslationManagerForAndroidApps
  */
 
-namespace TranslationsTest\Controller;
+namespace TranslationsTest\Factory\Controller;
 
 use Application\Model\UserTable;
 use PHPUnit\Framework\TestCase;
