@@ -12,7 +12,7 @@
  * @link      https://github.com/rarog/TranslationManagerForAndroidApps
  */
 
-namespace Translations\Factory\Model;
+namespace Translations\Factory\Parser;
 
 use Interop\Container\ContainerInterface;
 use Translations\Model\AppResourceFileTable;
