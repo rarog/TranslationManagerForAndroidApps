@@ -41,6 +41,7 @@ foreach ($suggestions as $suggestion) {
           <div class="col-lg-9">
 <?php if (($this->isGranted('translations.setnotificationstatus')) || ($this->isGranted('suggestion.accept'))) : ?>
             <div class="pull-right">
+              <div class="btn-group">
 <?php if ($this->isGranted('translations.setnotificationstatus')) : ?>
 <?php
 $btnClass = 'btn-default';
@@ -48,11 +49,12 @@ if ($entry->notificationStatus === 1) {
     $btnClass = 'btn-warning';
 }
 ?>
-              <button type="button" class="btn <?= $btnClass ?> toggleNotificationStatus" data-toggle="tooltip" data-placement="bottom" data-entryid="<?= $entry->defaultId ?>" data-notificationstatus="<?= $entry->notificationStatus ?>" title="<?= $this->escapeHtmlAttr($this->translate('Toggles notification status of translation')) ?>" role="button"><i class="fa fa-flag fa-fw" aria-hidden="true"></i></button>
+                <button type="button" class="btn <?= $btnClass ?> toggleNotificationStatus" data-toggle="tooltip" data-placement="bottom" data-entryid="<?= $entry->defaultId ?>" data-notificationstatus="<?= $entry->notificationStatus ?>" title="<?= $this->escapeHtmlAttr($this->translate('Toggles notification status of translation')) ?>" role="button"><i class="fa fa-flag fa-fw" aria-hidden="true"></i></button>
 <?php endif; ?>
 <?php if ($this->isGranted('suggestion.accept')) : ?>
-              <button type="button" class="btn btn-default suggestionAccept" data-toggle="tooltip" data-placement="bottom" data-suggestionid="0" title="<?= $this->escapeHtmlAttr($this->translate('Reject all suggestions and confirm the current value')) ?>" role="button"><i class="fa fa-check-square-o fa-fw" aria-hidden="true"></i></button>
+                <button type="button" class="btn btn-default suggestionAccept" data-toggle="tooltip" data-placement="bottom" data-suggestionid="0" title="<?= $this->escapeHtmlAttr($this->translate('Reject all suggestions and confirm the current value')) ?>" role="button"><i class="fa fa-check-square-o fa-fw" aria-hidden="true"></i></button>
 <?php endif; ?>
+              </div>
             </div>
 <?php endif; ?>
 <?php if ($type == 'String'): ?>
