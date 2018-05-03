@@ -15,10 +15,16 @@
 namespace TranslationsTest\Controller\Plugin;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Translations\Controller\Plugin\GetAppIfAllowed;
+use Translations\Model\App;
 use Translations\Model\AppResourceTable;
 use Translations\Model\AppTable;
+use Zend\Mvc\Controller\AbstractActionController;
 use ZfcRbac\Service\AuthorizationService;
+use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
+use ZfcUser\Entity\UserInterface;
+use RuntimeException;
 
 class GetAppIfAllowedTest extends TestCase
 {
@@ -49,5 +55,72 @@ class GetAppIfAllowedTest extends TestCase
     {
         $getAppIfAllowed = $this->getAppIfAllowed;
         $this->assertEquals(false, $getAppIfAllowed(0));
+    }
+
+    public function testInvokeAppTableThrowsException()
+    {
+        $appId = 42;
+
+        $this->appTable->getApp($appId)->willThrow(new RuntimeException());
+
+        $getAppIfAllowed = $this->getAppIfAllowed;
+        $this->assertEquals(false, $getAppIfAllowed($appId));
+    }
+
+    public function testInvokeNoPermissionToViewAllApps()
+    {
+        $appId = 42;
+        $userId = 10;
+
+        $this->appTable->getApp($appId)->willReturn(new App([
+            'id' => $appId,
+        ]));
+        $this->appTable->hasUserPermissionForApp($userId, $appId)->willReturn(false);
+        $this->authorizationService->isGranted('app.viewAll')->willReturn(false);
+
+        $user = $this->prophesize(UserInterface::class);
+        $user->getId()->willReturn($userId);
+
+        $zfcUserAuthentication = $this->prophesize(ZfcUserAuthentication::class);
+        $zfcUserAuthentication->setController(Argument::any())->shouldBeCalled();
+        $zfcUserAuthentication->getIdentity()->willReturn($user->reveal());
+
+        $controller = new class() extends AbstractActionController {
+        };
+        $controller->getPluginManager()->setService('zfcUserAuthentication', $zfcUserAuthentication->reveal());
+
+        $this->getAppIfAllowed->setController($controller);
+
+        $getAppIfAllowed = $this->getAppIfAllowed;
+        $this->assertEquals(false, $getAppIfAllowed($appId));
+    }
+
+    public function testInvokeReturnsApp()
+    {
+        $appId = 42;
+
+        $app = new App([
+            'id' => $appId,
+        ]);
+
+        $this->appTable->getApp($appId)->willReturn($app);
+        $this->authorizationService->isGranted('app.viewAll')->willReturn(true);
+
+        $getAppIfAllowed = $this->getAppIfAllowed;
+        $this->assertEquals($app, $getAppIfAllowed($appId));
+    }
+
+    public function testInvokeCheckHasDefaultValuesEqualsTrueReturnsFalse()
+    {
+        $appId = 42;
+
+        $this->appTable->getApp($appId)->willReturn(new App([
+            'id' => $appId,
+        ]));
+        $this->authorizationService->isGranted('app.viewAll')->willReturn(true);
+        $this->appResourceTable->getAppResourceByAppIdAndName($appId, 'values')->willThrow(new RuntimeException());
+
+        $getAppIfAllowed = $this->getAppIfAllowed;
+        $this->assertEquals(false, $getAppIfAllowed($appId, true));
     }
 }
