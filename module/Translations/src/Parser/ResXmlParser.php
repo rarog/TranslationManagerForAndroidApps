@@ -507,9 +507,10 @@ class ResXmlParser implements AppHelperInterface
             if ($entry->ResourceTypeId === array_search('string', $resourceTypes)) {
                 if (! array_key_exists($entry->Id, $entriesCommon)) {
                     $entryCommon = new EntryCommon();
-                    $entryCommon->AppResourceId = $resource->Id;
-                    $entryCommon->ResourceFileEntryId = $entry->Id;
-                    $entryCommon->LastChange = 0;
+                    $entryCommon->setAppResourceId($resource->Id);
+                    $entryCommon->setResourceFileEntryId($entry->Id);
+                    $entryCommon->setLastChange(0);
+                    $entryCommon->setNotificationStatus(0);
 
                     $this->entryCommonTable->saveEntryCommon($entryCommon);
 
@@ -518,14 +519,14 @@ class ResXmlParser implements AppHelperInterface
 
                 $entryCommon = $entriesCommon[$entry->Id];
 
-                if (! array_key_exists($entryCommon->Id, $entriesString)) {
+                if (! array_key_exists($entryCommon->getId(), $entriesString)) {
                     $entryString = new EntryString();
-                    $entryString->EntryCommonId = $entryCommon->Id;
+                    $entryString->setEntryCommonId($entryCommon->getId());
 
-                    $entriesString[$entryCommon->Id] = $entryString;
+                    $entriesString[$entryCommon->getId()] = $entryString;
                 }
 
-                $entryString = $entriesString[$entryCommon->Id];
+                $entryString = $entriesString[$entryCommon->getId()];
 
                 try {
                     $decodedString = $this->decodeAndroidTranslationString($node->textContent);
@@ -540,9 +541,12 @@ Exception trace:
                     $this->logger->err('An error during decoding of Android string', ['messageExtended' => $message]);
                 }
 
-                if ($entryString->Value !== $decodedString) {
-                    $entryString->Value = $decodedString;
-                    $entryCommon->LastChange = time();
+                if ($entryString->getValue() !== $decodedString) {
+                    if (! is_null($entryString->getValue())) {
+                        $entryCommon->setNotificationStatus(1);
+                    }
+                    $entryString->setValue($decodedString);
+                    $entryCommon->setLastChange(time());
 
                     $this->entryCommonTable->saveEntryCommon($entryCommon);
                     $this->entryStringTable->saveEntryString($entryString);
