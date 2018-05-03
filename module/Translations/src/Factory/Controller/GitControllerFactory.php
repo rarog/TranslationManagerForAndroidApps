@@ -15,6 +15,10 @@
 namespace Translations\Factory\Controller;
 
 use Interop\Container\ContainerInterface;
+use Translations\Controller\GitController;
+use Translations\Model\AppTable;
+use Translations\Model\Helper\EncryptionHelper;
+use Zend\Mvc\I18n\Translator;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
 class GitControllerFactory implements FactoryInterface
@@ -25,10 +29,10 @@ class GitControllerFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new \Translations\Controller\GitController(
-            $container->get(\Translations\Model\AppTable::class),
-            $container->get(\Zend\Mvc\I18n\Translator::class),
-            $container->get(\Translations\Model\Helper\EncryptionHelper::class)
+        return new GitController(
+            $container->get(AppTable::class),
+            $container->get(Translator::class),
+            $container->get(EncryptionHelper::class)
         );
     }
 }
