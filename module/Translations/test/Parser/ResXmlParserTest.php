@@ -23,29 +23,36 @@ use Translations\Model\ResourceFileEntry;
 use Translations\Parser\ResXmlParser;
 use Translations\Parser\ResXmlParserExportResult;
 use Translations\Parser\ResXmlParserImportResult;
+use ArrayObject;
+use ReflectionClass;
 use RuntimeException;
 
 class ResXmlParserTest extends TestCase
 {
-    // security_settings_fingerprint_preference_summary_none - https://github.com/android/platform_packages_apps_settings/blob/nougat-release/res/values/strings.xml
+    // security_settings_fingerprint_preference_summary_none
+    // https://github.com/android/platform_packages_apps_settings/blob/nougat-release/res/values/strings.xml
     private $emptyStringWithoutQuotes = '';
     private $emptyStringWithoutQuotesDecoded = '';
     private $emptyStringWithoutQuotesEncoded = '';
 
-    // ringtone_summary - https://github.com/android/platform_packages_apps_settings/blob/nougat-release/res/values/strings.xml
+    // ringtone_summary
+    // https://github.com/android/platform_packages_apps_settings/blob/nougat-release/res/values/strings.xml
     private $emptyStringWithQuotes = '""';
     private $emptyStringWithQuotesDecoded = '';
 
-    // create - https://github.com/android/platform_packages_apps_settings/blob/nougat-release/res/values/strings.xml
+    // create
+    // https://github.com/android/platform_packages_apps_settings/blob/nougat-release/res/values/strings.xml
     private $stringWithoutQuotes = 'Create';
     private $stringWithoutQuotesDecoded = 'Create';
     private $stringWithoutQuotesEncoded = 'Create';
 
-    // yes - https://github.com/android/platform_packages_apps_settings/blob/nougat-release/res/values/strings.xml
+    // yes
+    // https://github.com/android/platform_packages_apps_settings/blob/nougat-release/res/values/strings.xml
     private $stringWithQuotes = '"Yes"';
     private $stringWithQuotesDecoded = 'Yes';
 
-    // reset_network_desc - https://github.com/android/platform_packages_apps_settings/blob/nougat-release/res/values/strings.xml
+    // reset_network_desc
+    // https://github.com/android/platform_packages_apps_settings/blob/nougat-release/res/values/strings.xml
     private $brokenStringNotBeginnungButEndingWithQuote = 'This will reset all network settings, including:\n\n<li>Wi\u2011Fi</li>\n<li>Cellular data</li>\n<li>Bluetooth</li>"';
     private $brokenStringNotBeginnungButEndingWithQuoteDecoded = 'This will reset all network settings, including:' . "\n" .
         "\n" .
@@ -53,7 +60,8 @@ class ResXmlParserTest extends TestCase
         '<li>Cellular data</li>' . "\n" .
         '<li>Bluetooth</li>';
 
-    // font_size_preview_text_body - https://github.com/android/platform_packages_apps_settings/blob/nougat-release/res/values/strings.xml
+    // font_size_preview_text_body
+    // https://github.com/android/platform_packages_apps_settings/blob/nougat-release/res/values/strings.xml
     private $multilineStringWithRealNewlines = "\n" .
         '    Even with eyes protected by the green spectacles Dorothy and her friends were at first dazzled by the brilliancy of the wonderful City.' . "\n" .
         '    The streets were lined with beautiful houses all built of green marble and studded everywhere with sparkling emeralds.' . "\n" .
@@ -73,10 +81,12 @@ class ResXmlParserTest extends TestCase
         "\n" .
         'There seemed to be no horses nor animals of any kind; the men carried things around in little green carts, which they pushed before them. Everyone seeemed happy and contented and prosperous.';
 
-    // master_clear_accounts - https://github.com/android/platform_packages_apps_settings/blob/nougat-release/res/values-de/strings.xml
+    // master_clear_accounts
+    // https://github.com/android/platform_packages_apps_settings/blob/nougat-release/res/values-de/strings.xml
     private $badUndecodableStringLeadingToException = '\n\n"Du bist zurzeit in folgenden Konten angemeldet:\n"';
 
-    // Taken from https://developer.android.com/guide/topics/resources/string-resource.html - Escaping apostrophes and quotes
+    // Taken from https://developer.android.com/guide/topics/resources/string-resource.html
+    // Escaping apostrophes and quotes
     private $androidExampleStringWithApostrophesDecoded = 'This\'ll work';
     private $androidExampleStringWithApostrophesEncoded = 'This\\\'ll work';
     private $androidExampleStringWithQuotesDecoded = 'This is a "good string".';
@@ -119,9 +129,9 @@ class ResXmlParserTest extends TestCase
                 $this->createMock(\Translations\Model\EntryCommonTable::class),
                 $this->createMock(\Translations\Model\EntryStringTable::class),
                 $this->createMock(\Zend\Log\Logger::class)
-                );
+            );
 
-            $reflection = new \ReflectionClass($this->resXmlParser);
+            $reflection = new ReflectionClass($this->resXmlParser);
             $resourceTypes = $reflection->getProperty('resourceTypes');
             $resourceTypes->setAccessible(true);
             $resourceTypes->setValue($this->resXmlParser, [
@@ -153,9 +163,9 @@ class ResXmlParserTest extends TestCase
      * @param array  $parameters Array of parameters to pass into method.
      * @return mixed Method return.
      */
-    private function invokeMethod($object, $methodName, array $parameters = array())
+    private function invokeMethod($object, $methodName, array $parameters = [])
     {
-        $reflection = new \ReflectionClass(get_class($object));
+        $reflection = new ReflectionClass(get_class($object));
         $method = $reflection->getMethod($methodName);
         $method->setAccessible(true);
 
@@ -165,42 +175,66 @@ class ResXmlParserTest extends TestCase
     public function testDecodeEmptyStringWithoutQuotes()
     {
         $resXmlParser = $this->getResXmlParser();
-        $result = $this->invokeMethod($resXmlParser, 'decodeAndroidTranslationString', [$this->emptyStringWithoutQuotes]);
+        $result = $this->invokeMethod(
+            $resXmlParser,
+            'decodeAndroidTranslationString',
+            [$this->emptyStringWithoutQuotes]
+        );
         $this->assertEquals($this->emptyStringWithoutQuotesDecoded, $result);
     }
 
     public function testDecodeEmptyStringWithQuotes()
     {
         $resXmlParser = $this->getResXmlParser();
-        $result = $this->invokeMethod($resXmlParser, 'decodeAndroidTranslationString', [$this->emptyStringWithQuotes]);
+        $result = $this->invokeMethod(
+            $resXmlParser,
+            'decodeAndroidTranslationString',
+            [$this->emptyStringWithQuotes]
+        );
         $this->assertEquals($this->emptyStringWithQuotesDecoded, $result);
     }
 
     public function testDecodeStringWithoutQuotes()
     {
         $resXmlParser = $this->getResXmlParser();
-        $result = $this->invokeMethod($resXmlParser, 'decodeAndroidTranslationString', [$this->stringWithoutQuotes]);
+        $result = $this->invokeMethod(
+            $resXmlParser,
+            'decodeAndroidTranslationString',
+            [$this->stringWithoutQuotes]
+        );
         $this->assertEquals($this->stringWithoutQuotesDecoded, $result);
     }
 
     public function testDecodeStringWithQuotes()
     {
         $resXmlParser = $this->getResXmlParser();
-        $result = $this->invokeMethod($resXmlParser, 'decodeAndroidTranslationString', [$this->stringWithQuotes]);
+        $result = $this->invokeMethod(
+            $resXmlParser,
+            'decodeAndroidTranslationString',
+            [$this->stringWithQuotes]
+        );
         $this->assertEquals($this->stringWithQuotesDecoded, $result);
     }
 
     public function testDecodeBrokenStringNotBeginnungButEndingWithQuote()
     {
         $resXmlParser = $this->getResXmlParser();
-        $result = $this->invokeMethod($resXmlParser, 'decodeAndroidTranslationString', [$this->brokenStringNotBeginnungButEndingWithQuote]);
+        $result = $this->invokeMethod(
+            $resXmlParser,
+            'decodeAndroidTranslationString',
+            [$this->brokenStringNotBeginnungButEndingWithQuote]
+        );
         $this->assertEquals($this->brokenStringNotBeginnungButEndingWithQuoteDecoded, $result);
     }
 
     public function testDecodeMultilineStringWithRealNewlines()
     {
         $resXmlParser = $this->getResXmlParser();
-        $result = $this->invokeMethod($resXmlParser, 'decodeAndroidTranslationString', [$this->multilineStringWithRealNewlines]);
+        $result = $this->invokeMethod(
+            $resXmlParser,
+            'decodeAndroidTranslationString',
+            [$this->multilineStringWithRealNewlines]
+        );
         $this->assertEquals($this->multilineStringWithRealNewlinesDecoded, $result);
     }
 
@@ -209,34 +243,54 @@ class ResXmlParserTest extends TestCase
         $resXmlParser = $this->getResXmlParser();
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Android string couldn\'t be decoded');
-        $this->invokeMethod($resXmlParser, 'decodeAndroidTranslationString', [$this->badUndecodableStringLeadingToException]);
+        $this->invokeMethod(
+            $resXmlParser,
+            'decodeAndroidTranslationString',
+            [$this->badUndecodableStringLeadingToException]
+        );
     }
 
     public function testEncodeEmptyStringWithoutQuotes()
     {
         $resXmlParser = $this->getResXmlParser();
-        $result = $this->invokeMethod($resXmlParser, 'encodeAndroidTranslationString', [$this->emptyStringWithoutQuotesDecoded]);
+        $result = $this->invokeMethod(
+            $resXmlParser,
+            'encodeAndroidTranslationString',
+            [$this->emptyStringWithoutQuotesDecoded]
+        );
         $this->assertEquals($this->emptyStringWithoutQuotesEncoded, $result);
     }
 
     public function testEncodeStringWithoutQuotes()
     {
         $resXmlParser = $this->getResXmlParser();
-        $result = $this->invokeMethod($resXmlParser, 'encodeAndroidTranslationString', [$this->stringWithoutQuotesDecoded]);
+        $result = $this->invokeMethod(
+            $resXmlParser,
+            'encodeAndroidTranslationString',
+            [$this->stringWithoutQuotesDecoded]
+        );
         $this->assertEquals($this->stringWithoutQuotesEncoded, $result);
     }
 
     public function testEncodeAndroidExampleStringWithApostrophes()
     {
         $resXmlParser = $this->getResXmlParser();
-        $result = $this->invokeMethod($resXmlParser, 'encodeAndroidTranslationString', [$this->androidExampleStringWithApostrophesDecoded]);
+        $result = $this->invokeMethod(
+            $resXmlParser,
+            'encodeAndroidTranslationString',
+            [$this->androidExampleStringWithApostrophesDecoded]
+        );
         $this->assertEquals($this->androidExampleStringWithApostrophesEncoded, $result);
     }
 
     public function testEncodeAndroidExampleStringWithQuotes()
     {
         $resXmlParser = $this->getResXmlParser();
-        $result = $this->invokeMethod($resXmlParser, 'encodeAndroidTranslationString', [$this->androidExampleStringWithQuotesDecoded]);
+        $result = $this->invokeMethod(
+            $resXmlParser,
+            'encodeAndroidTranslationString',
+            [$this->androidExampleStringWithQuotesDecoded]
+        );
         $this->assertEquals($this->androidExampleStringWithQuotesEncoded, $result);
     }
 
@@ -244,7 +298,19 @@ class ResXmlParserTest extends TestCase
     {
         $resXmlParser = $this->getResXmlParser();
         $result = new ResXmlParserExportResult();
-        $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, new AppResource(), new \ArrayObject(), new \ArrayObject(), new \ArrayObject(), $result]);
+        $exportedXmlString = $this->invokeMethod(
+            $resXmlParser,
+            'exportXmlString',
+            [
+                '',
+                true,
+                new AppResource(),
+                new ArrayObject(),
+                new ArrayObject(),
+                new ArrayObject(),
+                $result,
+            ]
+        );
         $this->assertEquals($this->emptyResXML, $exportedXmlString);
         $this->assertEquals($result->entriesProcessed, 0);
         $this->assertEquals($result->entriesSkippedUnknownType, 0);
@@ -254,10 +320,22 @@ class ResXmlParserTest extends TestCase
     {
         $resXmlParser = $this->getResXmlParser();
         $result = new ResXmlParserExportResult();
-        $entries = new \ArrayObject([
+        $entries = new ArrayObject([
             $this->getInvalidResourceFileEntry(),
         ]);
-        $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, new AppResource(), $entries, new \ArrayObject(), new \ArrayObject(), $result]);
+        $exportedXmlString = $this->invokeMethod(
+            $resXmlParser,
+            'exportXmlString',
+            [
+                '',
+                true,
+                new AppResource(),
+                $entries,
+                new ArrayObject(),
+                new ArrayObject(),
+                $result,
+            ]
+        );
         $this->assertEquals($this->emptyResXML, $exportedXmlString);
         $this->assertEquals($result->entriesProcessed, 0);
         $this->assertEquals($result->entriesSkippedUnknownType, 1);
@@ -266,16 +344,31 @@ class ResXmlParserTest extends TestCase
     public function testExportUnknownResourceTypeSkipped2()
     {
         $resXmlParser = clone $this->getResXmlParser();
-        $reflection = new \ReflectionClass($resXmlParser);
+        $reflection = new ReflectionClass($resXmlParser);
         $resourceTypes = $reflection->getProperty('resourceTypes');
         $resourceTypes->setAccessible(true);
-        $resourceTypes->setValue($resXmlParser, $resourceTypes->getValue($resXmlParser) + [-1 => 'definitelyinvalidtype']);
+        $resourceTypes->setValue(
+            $resXmlParser,
+            $resourceTypes->getValue($resXmlParser) + [-1 => 'definitelyinvalidtype']
+        );
         $resourceTypes->setAccessible(false);
         $result = new ResXmlParserExportResult();
-        $entries = new \ArrayObject([
+        $entries = new ArrayObject([
             $this->getInvalidResourceFileEntry(),
         ]);
-        $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, new AppResource(), $entries, new \ArrayObject(), new \ArrayObject(), $result]);
+        $exportedXmlString = $this->invokeMethod(
+            $resXmlParser,
+            'exportXmlString',
+            [
+                '',
+                true,
+                new AppResource(),
+                $entries,
+                new ArrayObject(),
+                new ArrayObject(),
+                $result,
+            ]
+        );
         $this->assertEquals($this->emptyResXML, $exportedXmlString);
         $this->assertEquals($result->entriesProcessed, 0);
         $this->assertEquals($result->entriesSkippedUnknownType, 1);
@@ -292,24 +385,36 @@ class ResXmlParserTest extends TestCase
             'description' => 'Example description',
             'translatable' => 1,
         ]);
-        $entries = new \ArrayObject([$entry]);
+        $entries = new ArrayObject([$entry]);
         $entryCommon = new EntryCommon([
             'id' => 1,
             'resource_file_entry_id' => '1',
         ]);
-        $entriesCommon = new \ArrayObject([1 => $entryCommon]);
+        $entriesCommon = new ArrayObject([1 => $entryCommon]);
         $entryString = new EntryString([
             'entry_common_id' => 1,
             'value' => 'Example value',
         ]);
-        $entriesString = new \ArrayObject([1 => $entryString]);
+        $entriesString = new ArrayObject([1 => $entryString]);
         $result = new ResXmlParserExportResult();
 
         $expectedXmlString = '<?xml version="1.0" encoding="utf-8"?>' . "\n" .
             '<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">' . "\n" .
             '  <string name="example_string" product="default" description="Example description">Example value</string>' . "\n" .
             '</resources>' . "\n";
-        $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, $this->getAppResource(true), $entries, $entriesCommon, $entriesString, $result]);
+        $exportedXmlString = $this->invokeMethod(
+            $resXmlParser,
+            'exportXmlString',
+            [
+                '',
+                true,
+                $this->getAppResource(true),
+                $entries,
+                $entriesCommon,
+                $entriesString,
+                $result,
+            ]
+        );
         $this->assertEquals($expectedXmlString, $exportedXmlString);
         $this->assertEquals($result->entriesProcessed, 1);
         $this->assertEquals($result->entriesSkippedUnknownType, 0);
@@ -318,7 +423,19 @@ class ResXmlParserTest extends TestCase
             '<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">' . "\n" .
             '  <string name="example_string" product="default">Example value</string>' . "\n" .
             '</resources>' . "\n";
-        $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, $this->getAppResource(false), $entries, $entriesCommon, $entriesString, $result]);
+        $exportedXmlString = $this->invokeMethod(
+            $resXmlParser,
+            'exportXmlString',
+            [
+                '',
+                true,
+                $this->getAppResource(false),
+                $entries,
+                $entriesCommon,
+                $entriesString,
+                $result,
+            ]
+        );
         $this->assertEquals($expectedXmlString, $exportedXmlString);
         $this->assertEquals($result->entriesProcessed, 2);
         $this->assertEquals($result->entriesSkippedUnknownType, 0);
@@ -334,30 +451,54 @@ class ResXmlParserTest extends TestCase
             'product' => 'default',
             'translatable' => 0,
         ]);
-        $entries = new \ArrayObject([$entry]);
+        $entries = new ArrayObject([$entry]);
         $entryCommon = new EntryCommon([
             'id' => 1,
             'resource_file_entry_id' => '1',
         ]);
-        $entriesCommon = new \ArrayObject([1 => $entryCommon]);
+        $entriesCommon = new ArrayObject([1 => $entryCommon]);
         $entryString = new EntryString([
             'entry_common_id' => 1,
             'value' => 'Example value',
         ]);
-        $entriesString = new \ArrayObject([1 => $entryString]);
+        $entriesString = new ArrayObject([1 => $entryString]);
         $result = new ResXmlParserExportResult();
 
         $expectedXmlString = '<?xml version="1.0" encoding="utf-8"?>' . "\n" .
             '<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">' . "\n" .
             '  <string name="example_string" product="default">Example value</string>' . "\n" .
             '</resources>' . "\n";
-        $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, $this->getAppResource(true), $entries, $entriesCommon, $entriesString, $result]);
+        $exportedXmlString = $this->invokeMethod(
+            $resXmlParser,
+            'exportXmlString',
+            [
+                '',
+                true,
+                $this->getAppResource(true),
+                $entries,
+                $entriesCommon,
+                $entriesString,
+                $result,
+            ]
+        );
         $this->assertEquals($expectedXmlString, $exportedXmlString);
         $this->assertEquals($result->entriesProcessed, 1);
         $this->assertEquals($result->entriesSkippedUnknownType, 0);
         $this->assertEquals($result->oldEntriesPreservedUnknownType, 0);
 
-        $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', ['', true, $this->getAppResource(false), $entries, $entriesCommon, $entriesString, $result]);
+        $exportedXmlString = $this->invokeMethod(
+            $resXmlParser,
+            'exportXmlString',
+            [
+                '',
+                true,
+                $this->getAppResource(false),
+                $entries,
+                $entriesCommon,
+                $entriesString,
+                $result,
+            ]
+        );
         $this->assertEquals($this->emptyResXML, $exportedXmlString);
         $this->assertEquals($result->entriesProcessed, 1);
         $this->assertEquals($result->entriesSkippedUnknownType, 0);
@@ -374,17 +515,17 @@ class ResXmlParserTest extends TestCase
             'product' => 'default',
             'translatable' => 0,
         ]);
-        $entries = new \ArrayObject([$entry]);
+        $entries = new ArrayObject([$entry]);
         $entryCommon = new EntryCommon([
             'id' => 1,
             'resource_file_entry_id' => '1',
         ]);
-        $entriesCommon = new \ArrayObject([1 => $entryCommon]);
+        $entriesCommon = new ArrayObject([1 => $entryCommon]);
         $entryString = new EntryString([
             'entry_common_id' => 1,
             'value' => 'Example value',
         ]);
-        $entriesString = new \ArrayObject([1 => $entryString]);
+        $entriesString = new ArrayObject([1 => $entryString]);
         $result = new ResXmlParserExportResult();
 
         $oldXmlString = '<?xml version="1.0" encoding="utf-8"?>' . "\n" .
@@ -396,7 +537,19 @@ class ResXmlParserTest extends TestCase
             '<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">' . "\n" .
             '  <string name="example_string" product="default">Example value</string>' . "\n" .
             '</resources>' . "\n";
-        $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', [$oldXmlString, false, $this->getAppResource(true), $entries, $entriesCommon, $entriesString, $result]);
+        $exportedXmlString = $this->invokeMethod(
+            $resXmlParser,
+            'exportXmlString',
+            [
+                $oldXmlString,
+                false,
+                $this->getAppResource(true),
+                $entries,
+                $entriesCommon,
+                $entriesString,
+                $result,
+            ]
+        );
         $this->assertEquals($expectedXmlString, $exportedXmlString);
         $this->assertEquals($result->entriesProcessed, 1);
         $this->assertEquals($result->entriesSkippedUnknownType, 0);
@@ -413,17 +566,17 @@ class ResXmlParserTest extends TestCase
             'product' => 'default',
             'translatable' => 0,
         ]);
-        $entries = new \ArrayObject([$entry]);
+        $entries = new ArrayObject([$entry]);
         $entryCommon = new EntryCommon([
             'id' => 1,
             'resource_file_entry_id' => '1',
         ]);
-        $entriesCommon = new \ArrayObject([1 => $entryCommon]);
+        $entriesCommon = new ArrayObject([1 => $entryCommon]);
         $entryString = new EntryString([
             'entry_common_id' => 1,
             'value' => 'Example value',
         ]);
-        $entriesString = new \ArrayObject([1 => $entryString]);
+        $entriesString = new ArrayObject([1 => $entryString]);
         $result = new ResXmlParserExportResult();
 
         $oldXmlString = '<?xml version="1.0" encoding="utf-8"?>' . "\n" .
@@ -443,7 +596,19 @@ class ResXmlParserTest extends TestCase
             '  <string name="example_string" product="somethineElse">Alternative old example value</string>' . "\n" .
             '  <string name="example_string2" product="default">Example value2</string>' . "\n" .
             '</resources>' . "\n";
-        $exportedXmlString = $this->invokeMethod($resXmlParser, 'exportXmlString', [$oldXmlString, false, $this->getAppResource(true), $entries, $entriesCommon, $entriesString, $result]);
+        $exportedXmlString = $this->invokeMethod(
+            $resXmlParser,
+            'exportXmlString',
+            [
+                $oldXmlString,
+                false,
+                $this->getAppResource(true),
+                $entries,
+                $entriesCommon,
+                $entriesString,
+                $result,
+            ]
+        );
         $this->assertEquals($expectedXmlString, $exportedXmlString);
         $this->assertEquals($result->entriesProcessed, 1);
         $this->assertEquals($result->entriesSkippedUnknownType, 0);
@@ -462,7 +627,20 @@ class ResXmlParserTest extends TestCase
             '  <string name="the_name">The value</string>' . "\n" .
             '</wrongEndTag>' . "\n";
 
-        $exportedXmlString = $this->invokeMethod($resXmlParser, 'importXmlString', [$brokenXmlString, false, $this->getAppResource(true), new AppResourceFile(), new \ArrayObject([]), new \ArrayObject([]), new \ArrayObject([]), $result]);
+        $exportedXmlString = $this->invokeMethod(
+            $resXmlParser,
+            'importXmlString',
+            [
+                $brokenXmlString,
+                false,
+                $this->getAppResource(true),
+                new AppResourceFile(),
+                new ArrayObject([]),
+                new ArrayObject([]),
+                new ArrayObject([]),
+                $result,
+            ]
+        );
         $this->assertEquals($result->entriesProcessed, 0);
         $this->assertEquals($result->entriesUpdated, 0);
         $this->assertEquals($result->entriesSkippedExistOnlyInDb, 0);
