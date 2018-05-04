@@ -57,6 +57,11 @@ class AbstractDbTableEntryTest extends TestCase
         };
     }
 
+    protected function tearDown()
+    {
+        unset($this->abstractDbTableEntry);
+    }
+
     public function testSetInputFilter()
     {
         $inputFilter = $this->prophesize(InputFilterInterface::class);

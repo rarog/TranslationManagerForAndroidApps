@@ -100,6 +100,16 @@ class EntryStringTableTest extends TestCase
         );
     }
 
+    protected function tearDown()
+    {
+        unset($this->entryStringTable);
+        unset($this->mockDriver);
+        unset($this->statement);
+        unset($this->internalStatement);
+        unset($this->appResourceTable);
+        unset($this->tableGateway);
+    }
+
     public function testFetchAll()
     {
         $resultSet = $this->prophesize(ResultSetInterface::class)->reveal();

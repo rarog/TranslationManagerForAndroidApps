@@ -164,7 +164,7 @@ class TranslationsControllerTest extends AbstractHttpControllerTestCase
         $this->appTable->getAllAppsAndResourcesAllowedToUser($userId)->willReturn($returnArray);
     }
 
-    public function setUp()
+    protected function setUp()
     {
         $configOverrides = [];
 
@@ -176,6 +176,20 @@ class TranslationsControllerTest extends AbstractHttpControllerTestCase
         parent::setUp();
 
         $this->configureServiceManager($this->getApplicationServiceLocator());
+    }
+
+    protected function tearDown()
+    {
+        unset($this->suggestionVoteTable);
+        unset($this->appTable);
+        unset($this->appResourceTable);
+        unset($this->resourceTypeTable);
+        unset($this->resourceFileEntryTable);
+        unset($this->entryCommonTable);
+        unset($this->entryStringTable);
+        unset($this->suggestionTable);
+        unset($this->suggestionStringTable);
+        unset($this->authorizationService);
     }
 
     public function testIndexActionCantBeAccessedWithoutPermissions()

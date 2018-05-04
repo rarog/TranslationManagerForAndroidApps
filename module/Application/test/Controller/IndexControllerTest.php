@@ -70,7 +70,7 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
         return $config;
     }
 
-    public function setUp()
+    protected function setUp()
     {
         $configOverrides = [];
 
@@ -82,6 +82,11 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
         parent::setUp();
 
         $this->configureServiceManager($this->getApplicationServiceLocator());
+    }
+
+    protected function tearDown()
+    {
+        unset($this->authorizationService);
     }
 
     public function testAboutActionCantBeAccessedByNonUsers()

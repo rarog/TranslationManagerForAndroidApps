@@ -90,6 +90,14 @@ class EntryCommonTableTest extends TestCase
         $this->entryCommonTable = new EntryCommonTable($this->tableGateway->reveal());
     }
 
+    protected function tearDown()
+    {
+        unset($this->entryCommonTable);
+        unset($this->mockDriver);
+        unset($this->statement);
+        unset($this->tableGateway);
+    }
+
     public function testFetchAll()
     {
         $resultSet = $this->prophesize(ResultSetInterface::class)->reveal();

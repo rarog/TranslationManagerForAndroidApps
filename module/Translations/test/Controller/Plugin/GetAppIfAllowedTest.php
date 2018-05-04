@@ -51,6 +51,14 @@ class GetAppIfAllowedTest extends TestCase
         );
     }
 
+    protected function tearDown()
+    {
+        unset($this->getAppIfAllowed);
+        unset($this->authorizationService);
+        unset($this->appResourceTable);
+        unset($this->appTable);
+    }
+
     public function testInvokeAppEqualsZero()
     {
         $getAppIfAllowed = $this->getAppIfAllowed;
