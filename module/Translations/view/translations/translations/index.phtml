@@ -3,103 +3,105 @@ $title = $this->translate('Translations');
 $this->headTitle($title);
 $this->bootstrapSelectHelper();
 $this->dataTablesInitHelper([
-    'table'   => '#translations',
-    'options' => [
-        'columnDefs' => [
-            [
-                'data'       => 'name',
-                'orderable'  => false,
-                'searchable' => true,
-                'targets'    => 0,
-                'visible'    => false,
+    [
+        'table'   => '#translations',
+        'initOptions' => [
+            'columnDefs' => [
+                [
+                    'data'       => 'name',
+                    'orderable'  => false,
+                    'searchable' => true,
+                    'targets'    => 0,
+                    'visible'    => false,
+                ],
+                [
+                    'data'       => 'product',
+                    'orderable'  => false,
+                    'searchable' => true,
+                    'targets'    => 1,
+                    'visible'    => false,
+                ],
+                [
+                    'data'       => 'nameView',
+                    'orderable'  => true,
+                    'orderData'  => [0, 1],
+                    'searchable' => false,
+                    'targets'    => 2,
+                    'visible'    => true,
+                ],
+                [
+                    'data'       => 'defaultValue',
+                    'orderable'  => true,
+                    'searchable' => true,
+                    'targets'    => 3,
+                    'visible'    => true,
+                ],
+                [
+                    'data'       => 'translatedValue',
+                    'orderable'  => true,
+                    'searchable' => true,
+                    'targets'    => 4,
+                    'visible'    => true,
+                ],
+                [
+                    'data'       => 'buttons',
+                    'orderable'  => false,
+                    'searchable' => false,
+                    'targets'    => 5,
+                    'visible'    => true,
+                ],
             ],
-            [
-                'data'       => 'product',
-                'orderable'  => false,
-                'searchable' => true,
-                'targets'    => 1,
-                'visible'    => false,
+            'order' => [
+                [2, 'asc'],
             ],
-            [
-                'data'       => 'nameView',
-                'orderable'  => true,
-                'orderData'  => [0, 1],
-                'searchable' => false,
-                'targets'    => 2,
-                'visible'    => true,
-            ],
-            [
-                'data'       => 'defaultValue',
-                'orderable'  => true,
-                'searchable' => true,
-                'targets'    => 3,
-                'visible'    => true,
-            ],
-            [
-                'data'       => 'translatedValue',
-                'orderable'  => true,
-                'searchable' => true,
-                'targets'    => 4,
-                'visible'    => true,
-            ],
-            [
-                'data'       => 'buttons',
-                'orderable'  => false,
-                'searchable' => false,
-                'targets'    => 5,
-                'visible'    => true,
-            ],
+            'rowId' => 'defaultId',
+            'autoWidth' => false,
         ],
-        'order' => [
-            [2, 'asc'],
-        ],
-        'rowId' => 'defaultId',
     ],
+    [
+        'table'   => '#suggestions',
+        'initOptions' => [
+            'columnDefs' => [
+                [
+                    'data'       => 'suggestion',
+                    'orderable'  => true,
+                    'searchable' => true,
+                    'targets'    => 0,
+                    'visible'    => true,
+                ],
+                [
+                    'data'       => 'username',
+                    'orderable'  => true,
+                    'searchable' => true,
+                    'targets'    => 1,
+                    'visible'    => true,
+                    'width'      => '10%'
+                ],
+                [
+                    'data'       => 'votes',
+                    'orderable'  => true,
+                    'searchable' => true,
+                    'targets'    => 2,
+                    'visible'    => true,
+                    'width'      => '10%'
+                ],
+                [
+                    'data'       => 'buttons',
+                    'orderable'  => false,
+                    'searchable' => false,
+                    'targets'    => 3,
+                    'visible'    => true,
+                    'width'      => '10%'
+                ],
+            ],
+            'order' => [
+                [2, 'desc'],
+            ],
+            'rowId' => 'suggestionId',
+        ],
+        'functionName' => 'initSuggestions',
+    ]
 ]);
-
-$this->dataTablesInitHelper([
-    'table'   => '#suggestions',
-    'options' => [
-        'columnDefs' => [
-            [
-                'data'       => 'suggestion',
-                'orderable'  => true,
-                'searchable' => true,
-                'targets'    => 0,
-                'visible'    => true,
-            ],
-            [
-                'data'       => 'username',
-                'orderable'  => true,
-                'searchable' => true,
-                'targets'    => 1,
-                'visible'    => true,
-                'width'      => '10%'
-            ],
-            [
-                'data'       => 'votes',
-                'orderable'  => true,
-                'searchable' => true,
-                'targets'    => 2,
-                'visible'    => true,
-                'width'      => '10%'
-            ],
-            [
-                'data'       => 'buttons',
-                'orderable'  => false,
-                'searchable' => false,
-                'targets'    => 3,
-                'visible'    => true,
-                'width'      => '10%'
-            ],
-        ],
-        'order' => [
-            [2, 'desc'],
-        ],
-        'rowId' => 'suggestionId',
-        'autoWidth' => true,
-    ],
-], 'initSuggestions');
 
 $min = ($this->useMinified()) ? '.min' : '';
 

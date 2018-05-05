@@ -19,6 +19,13 @@ use Zend\View\Helper\AbstractHelper;
 class DataTablesInitHelper extends AbstractHelper
 {
     /**
+     * Tracks if headers have already been set.
+     *
+     * @var bool
+     */
+    private $headersSet = false;
+
+    /**
      * Prepares array for DataTables initialisation.
      *
      * @param array $array
@@ -47,54 +54,65 @@ class DataTablesInitHelper extends AbstractHelper
      * Injects JS and CSS for DataTables library.
      *
      * @param array $tablesToInit
-     * @param string $functionName If empty, DataTable is initialized, in $(document).ready(), else initialization will will happen on named function call
      */
-    public function __invoke(array $tablesToInit = null, string $functionName = '')
+    public function __invoke(array $tablesToInit = null)
     {
         $tablesToInit = $this->processArray($tablesToInit);
 
         if (! empty($tablesToInit)){
-            $this->view->headScript()->appendFile($this->view->basePath('/js/jquery.dataTables.min.js'));
-            $this->view->headScript()->appendFile($this->view->basePath('/js/dataTables.bootstrap.min.js'));
-            $this->view->headLink()->prependStylesheet($this->view->basePath('/css/dataTables.bootstrap.min.css'));
 
-            $initConf = [
-                'autoWidth' => false,
+            $initConfDefault = [
                 'language' => [
-                    'url' => $this->view->basePath('/js/dataTables.' . $this->view->plugin('translate')->getTranslator()->getFallbackLocale() . '.json'),
-                ],
-                'lengthMenu' => [
-                    [25, 50, 100, -1],
-                    [25, 50, 100, $this->view->translate('All')],
+                    'url' => $this->view->basePath(
+                        '/js/dataTables.' .
+                        $this->view->getLocaleForComponent(
+                            $this->view->plugin('translate')
+                            ->getTranslator()
+                            ->getFallbackLocale(), 'DataTables') . '.json'),
                 ],
                 'stateSave' => true,
             ];
 
-            if ($functionName === '') {
-                $functionBegin = '$(document).ready(function() {';
-                $functionEnd = '} );';
-                $headScript = true;
-            } else {
-                $functionBegin= 'function ' . $functionName . '() {';
-                $functionEnd = '}';
-                $headScript = false;
-            }
-
-            $initTable = $functionBegin;
+            $initTable = '';
             foreach ($tablesToInit as $table) {
-                $tableConf = (array_key_exists('options', $table) && is_array($table['options'])) ? array_merge($initConf, $table['options']) : $initConf;
+                if (! array_key_exists('table', $table) ||
+                    ! is_string($table['table']) ||
+                    strlen($tableName = trim($table['table'])) === 0
+                ) {
+                    continue;
+                }
 
-                $initTable .= '
-$("' . $table['table'] . '").DataTable(' . json_encode($tableConf) . ');';
-            }
-            $initTable .= '
-' . $functionEnd;
+                if (array_key_exists('initOptions', $table) && is_array($table['initOptions'])) {
+                    $initConf = array_merge($initConfDefault, $table['initOptions']);
+                } else {
+                    $initConf = $initConfDefault;
+                }
 
-            if ($headScript) {
-                $this->view->headScript()->appendScript($initTable);
-            } else {
-                $this->view->inlineScript()->appendScript($initTable);
+                if (array_key_exists('functionName', $table) ||
+                    ! is_string($table['functionName']) ||
+                    strlen($functionName = trim($table['functionName'])) > 0
+                ) {
+                    $prefix = 'function ' . $functionName . '() {';
+                    $suffix = '';
+                } else {
+                    $prefix = '';
+                    $suffix = '';
+                }
+
+                $initTable .= '$("' . $tableName . '").dataTable(' . json_encode($initConf).');';
             }
+
+            if ($initTable === '') {
+                return;
+            }
+
+            if (! $this->headersSet) {
+                $this->view->headScript()->appendFile($this->view->basePath('/js/jquery.dataTables.min.js'));
+                $this->view->headScript()->appendFile($this->view->basePath('/js/dataTables.bootstrap.min.js'));
+                $this->view->headLink()->prependStylesheet($this->view->basePath('/css/dataTables.bootstrap.min.css'));
+                $this->headersSet = true;
+            }
+            $this->view->inlineScript()->appendScript($initTable);
         }
     }
 }
