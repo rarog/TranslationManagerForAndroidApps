@@ -59,15 +59,14 @@ class DataTablesInitHelper extends AbstractHelper
     {
         $tablesToInit = $this->processArray($tablesToInit);
 
-        if (! empty($tablesToInit)){
-
+        if (! empty($tablesToInit)) {
             $initConfDefault = [
                 'language' => [
                     'url' => $this->view->basePath(
-                        '/js/dataTables.' .
-                        $this->view->plugin('translate')
-                        ->getTranslator()
-                        ->getFallbackLocale() . '.json'),
+                        '/js/dataTables.' . $this->view->plugin('translate')
+                            ->getTranslator()
+                            ->getFallbackLocale() . '.json'
+                    ),
                 ],
                 'stateSave' => true,
             ];
