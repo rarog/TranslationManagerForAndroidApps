@@ -57,7 +57,7 @@ class BootstrapSelectHelperTest extends TestCase
         unset($this->translator);
     }
 
-    public function testInvokeAppEqualsZero()
+    public function testInvoke()
     {
         $expectedHeadScript1 = new stdClass();
         $expectedHeadScript1->type = 'text/javascript';
