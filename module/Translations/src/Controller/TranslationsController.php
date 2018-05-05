@@ -103,17 +103,6 @@ class TranslationsController extends AbstractActionController
     private $resourceTypes;
 
     /**
-     * Check if current user has permission to the app and return it
-     *
-     * @param int $appId
-     * @return boolean|\Translations\Model\App
-     */
-    private function getApp(int $appId)
-    {
-        return $this->getAppIfAllowed($appId);
-    }
-
-    /**
      * Gets app resource
      *
      * @param int $resourceId
@@ -237,7 +226,7 @@ class TranslationsController extends AbstractActionController
         $resourceId = (int) $this->params()->fromRoute('resourceId', 0);
         $entryId = (int) $this->params()->fromRoute('entryId', 0);
 
-        $app = $this->getApp($appId);
+        $app = $this->getAppIfAllowed($appId);
 
         if ($app === false) {
             return new JsonModel();
@@ -359,7 +348,7 @@ class TranslationsController extends AbstractActionController
         $resourceId = (int) $this->params()->fromRoute('resourceId', 0);
         $entryId = (int) $this->params()->fromRoute('entryId', 0);
 
-        $app = $this->getApp($appId);
+        $app = $this->getAppIfAllowed($appId);
 
         if ($app === false) {
             return new JsonModel();
@@ -423,7 +412,7 @@ class TranslationsController extends AbstractActionController
         $entryId = (int) $this->params()->fromRoute('entryId', 0);
         $notificationStatus = (int) $this->params()->fromRoute('notificationStatus', 0);
 
-        $app = $this->getApp($appId);
+        $app = $this->getAppIfAllowed($appId);
 
         if ($app === false) {
             return new JsonModel();
@@ -492,7 +481,7 @@ class TranslationsController extends AbstractActionController
         $entryId = (int) $this->params()->fromRoute('entryId', 0);
         $suggestionId = (int) $this->params()->fromRoute('suggestionId', 0);
 
-        $app = $this->getApp($appId);
+        $app = $this->getAppIfAllowed($appId);
 
         if ($app === false) {
             return new JsonModel(['accepted' => false]);
@@ -582,7 +571,7 @@ class TranslationsController extends AbstractActionController
         $suggestionId = (int) $this->params()->fromRoute('suggestionId', 0);
         $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
 
-        $app = $this->getApp($appId);
+        $app = $this->getAppIfAllowed($appId);
 
         if ($app === false) {
             return new JsonModel();
@@ -764,7 +753,7 @@ class TranslationsController extends AbstractActionController
         $suggestionId = (int) $this->params()->fromRoute('suggestionId', 0);
         $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
 
-        $app = $this->getApp($appId);
+        $app = $this->getAppIfAllowed($appId);
 
         if ($app === false) {
             return new JsonModel(['deleted' => false]);
@@ -843,7 +832,7 @@ class TranslationsController extends AbstractActionController
         $vote = (bool) $this->params()->fromRoute('vote', 0);
         $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
 
-        $app = $this->getApp($appId);
+        $app = $this->getAppIfAllowed($appId);
 
         if ($app === false) {
             return new JsonModel();
