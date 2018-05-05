@@ -65,10 +65,9 @@ class DataTablesInitHelper extends AbstractHelper
                 'language' => [
                     'url' => $this->view->basePath(
                         '/js/dataTables.' .
-                        $this->view->getLocaleForComponent(
-                            $this->view->plugin('translate')
-                            ->getTranslator()
-                            ->getFallbackLocale(), 'DataTables') . '.json'),
+                        $this->view->plugin('translate')
+                        ->getTranslator()
+                        ->getFallbackLocale() . '.json'),
                 ],
                 'stateSave' => true,
             ];
@@ -88,18 +87,17 @@ class DataTablesInitHelper extends AbstractHelper
                     $initConf = $initConfDefault;
                 }
 
-                if (array_key_exists('functionName', $table) ||
-                    ! is_string($table['functionName']) ||
-                    strlen($functionName = trim($table['functionName'])) > 0
-                ) {
+                if (array_key_exists('functionName', $table) &&
+                    is_string($table['functionName']) &&
+                    (strlen($functionName = trim($table['functionName'])) > 0)) {
                     $prefix = 'function ' . $functionName . '() {';
-                    $suffix = '';
+                    $suffix = '}';
                 } else {
                     $prefix = '';
                     $suffix = '';
                 }
 
-                $initTable .= '$("' . $tableName . '").dataTable(' . json_encode($initConf).');';
+                $initTable .= $prefix . '$("' . $tableName . '").dataTable(' . json_encode($initConf).');' . $suffix;
             }
 
             if ($initTable === '') {
