@@ -1,7 +1,12 @@
 <?php
 $title = sprintf($this->translate('Members of team "%s"'), $team->Name);
 $this->headTitle($title);
-$this->dataTablesInitHelper(['table' => '#teamMembers']);
+$this->dataTablesInitHelper([
+    'table' => '#teamMembers',
+    'initOptions' => [
+        'autoWidth' => false,
+    ],
+]);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
 <?php if ($this->isGranted('teammember.add')) : ?>

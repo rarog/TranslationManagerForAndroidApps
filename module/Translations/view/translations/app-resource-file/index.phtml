@@ -1,7 +1,12 @@
 <?php
 $title = sprintf($this->translate('Resource files of app "%s"'), $app->name);
 $this->headTitle($title);
-$this->dataTablesInitHelper(['table' => '#appResourceFiles']);
+$this->dataTablesInitHelper([
+    'table' => '#appResourceFiles',
+    'initOptions' => [
+        'autoWidth' => false,
+    ],
+]);
 $count = count($appResourceFiles);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>

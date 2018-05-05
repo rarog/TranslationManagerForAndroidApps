@@ -1,7 +1,12 @@
 <?php
 $title = $this->translate('Apps');
 $this->headTitle($title);
-$this->dataTablesInitHelper(['table' => '#apps']);
+$this->dataTablesInitHelper([
+    'table' => '#apps',
+    'initOptions' => [
+        'autoWidth' => false,
+    ],
+]);
 $printTeams = count($teams) > 1;
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>

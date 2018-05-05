@@ -1,7 +1,12 @@
 <?php
 $title = sprintf($this->translate('Resources of app "%s"'), $app->Name);
 $this->headTitle($title);
-$this->dataTablesInitHelper(['table' => '#appResources']);
+$this->dataTablesInitHelper([
+    'table' => '#appResources',
+    'initOptions' => [
+        'autoWidth' => false,
+    ],
+]);
 $count = count($appResources);
 $disable = !$hasDefaultValues;
 ?>

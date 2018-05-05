@@ -1,7 +1,12 @@
 <?php
 $title = $this->translate('Users');
 $this->headTitle($title);
-$this->dataTablesInitHelper(['table' => '#users']);
+$this->dataTablesInitHelper([
+    'table' => '#users',
+    'initOptions' => [
+        'autoWidth' => false,
+    ],
+]);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
 <?php if ($this->isGranted('users.add')) : ?>
