@@ -28,7 +28,7 @@ class UseMinifiedHelperFactory implements FactoryInterface
     {
         $useMinified = false;
 
-        $config = $container->get('Config');
+        $config = $container->get('config');
         if (array_key_exists('tmfaa', $config) &&
             array_key_exists('use_minified', $config['tmfaa']) &&
             is_bool($config['tmfaa']['use_minified'])) {

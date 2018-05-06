@@ -97,7 +97,7 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
         $container->remoteAddr    = $request->getServer()->get('REMOTE_ADDR');
         $container->httpUserAgent = $request->getServer()->get('HTTP_USER_AGENT');
 
-        $config = $serviceManager->get('Config');
+        $config = $serviceManager->get('config');
         if (! isset($config['session'])) {
             return;
         }
@@ -136,7 +136,7 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
         $serviceManager = $e->getApplication()->getServiceManager();
 
         $translatorCache = null;
-        $config = $serviceManager->get('Config');
+        $config = $serviceManager->get('config');
         if (isset($config) &&
             isset($config['settings']) &&
             isset($config['settings']['translator_cache']) &&
