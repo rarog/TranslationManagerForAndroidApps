@@ -244,13 +244,17 @@ return [
         ],
     ],
     'view_helpers' => [
-        'factories' => [
-            'useMinified' => Factory\View\Helper\UseMinifiedHelperFactory::class,
-        ],
-        'invokables' => [
+        'aliases' => [
             'bootstrapSelectHelper' => View\Helper\BootstrapSelectHelper::class,
             'dataTablesInitHelper' => View\Helper\DataTablesInitHelper::class,
             'multilevelNavigationMenu' => View\Helper\MultilevelNavigationMenu::class,
+            'useMinified' => View\Helper\UseMinifiedHelper::class,
+        ],
+        'factories' => [
+            View\Helper\BootstrapSelectHelper::class => InvokableFactory::class,
+            View\Helper\DataTablesInitHelper::class => InvokableFactory::class,
+            View\Helper\MultilevelNavigationMenu::class => InvokableFactory::class,
+            View\Helper\UseMinifiedHelper::class => Factory\View\Helper\UseMinifiedHelperFactory::class,
         ],
     ],
     'view_manager' => [
