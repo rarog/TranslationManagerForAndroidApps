@@ -26,7 +26,7 @@ class DatabaseHelperFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         return new DatabaseHelper(
-            new Config($container->get('config')),
+            new Config($container->has('config') ? $container->get('config') : []),
             new AdapterProviderHelper(),
             $container->get(Translator::class),
             $container->get('zfcuser_module_options')

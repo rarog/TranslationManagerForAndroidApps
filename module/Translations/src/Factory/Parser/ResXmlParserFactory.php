@@ -43,7 +43,7 @@ class ResXmlParserFactory implements FactoryInterface
             $container->get(Logger::class)
         );
 
-        $config = $container->get('config');
+        $config = $container->has('config') ? $container->get('config') : [];
         if (isset($config['tmfaa']) && isset($config['tmfaa']['app_dir'])) {
             $resXmlParser->setAppDirectory($config['tmfaa']['app_dir']);
         }

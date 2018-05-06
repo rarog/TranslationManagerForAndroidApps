@@ -22,7 +22,7 @@ class EncryptionHelperFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         return new \Translations\Model\Helper\EncryptionHelper(
-            new \Zend\Config\Config($container->get('config'))
+            new \Zend\Config\Config($container->has('config') ? $container->get('config') : [])
         );
     }
 }

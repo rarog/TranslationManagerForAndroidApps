@@ -27,7 +27,7 @@ class CleanCacheFactory implements FactoryInterface
     {
         $cacheArray = [];
 
-        $config = $container->get('config');
+        $config = $container->has('config') ? $container->get('config') : [];
         if (array_key_exists('caches', $config)) {
             foreach ($config['caches'] as $key => $val) {
                 if ($container->has($key) && (($cache = $container->get($key)) instanceof \Zend\Cache\Storage\FlushableInterface)) {

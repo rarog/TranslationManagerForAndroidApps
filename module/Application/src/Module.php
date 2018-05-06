@@ -242,7 +242,7 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
                     return new TableGateway('user_settings', $dbAdapter, null, $resultSetPrototype);
                 },
                 SessionManager::class => function (ContainerInterface $container) {
-                    $config = $container->get('config');
+                    $config = $container->has('config') ? $container->get('config') : [];
                     if (! isset($config['session'])) {
                         $sessionManager = new SessionManager();
                         Container::setDefaultManager($sessionManager);
