@@ -13,10 +13,11 @@
  */
 namespace Application\Command;
 
-use Zend\Cache\Storage\FlushableInterface as FlushableCache;
-use Zend\Console\Adapter\AdapterInterface;
-use Zend\Console\ColorInterface;
 use ZF\Console\Route;
+use Zend\Cache\Storage\FlushableInterface;
+use Zend\Console\ColorInterface;
+use Zend\Console\Adapter\AdapterInterface;
+use Zend\ModuleManager\Listener\ListenerOptions;
 
 class CleanCache
 {
@@ -28,38 +29,28 @@ class CleanCache
     private $cacheAdapters;
 
     /**
-     * Removes a directory recursively
+     * Listener options from application.config.php
      *
-     * @param string $dir
-     * @return boolean
+     * @var ListenerOptions
      */
-    private function rmdirRecursive(string $dir)
-    {
-        $files = array_diff(scandir($dir), [
-            '.',
-            '..',
-        ]);
-        foreach ($files as $file) {
-            $file = $dir . DIRECTORY_SEPARATOR . $file;
-            (is_dir($file)) ? rmdirRecursive($file) : unlink($file);
-        }
-
-        return rmdir($dir);
-    }
+    private $listenerOptions;
 
     /**
      * Constructor
      *
      * @param array $cacheAdapters
+     * @param ListenerOptions $listenerOptions
      */
-    public function __construct(array $cacheAdapters)
+    public function __construct(array $cacheAdapters, ListenerOptions $listenerOptions)
     {
         $this->cacheAdapters = [];
         foreach ($cacheAdapters as $adapter) {
-            if ($adapter instanceof FlushableCache) {
+            if ($adapter instanceof FlushableInterface) {
                 $this->cacheAdapters[] = $adapter;
             }
         }
+
+        $this->listenerOptions = $listenerOptions;
     }
 
     /**
@@ -74,29 +65,20 @@ class CleanCache
             $adapter->flush();
         }
 
-        $appConfig = include ('config/application.config.php');
-        if (is_array($appConfig) && array_key_exists('module_listener_options', $appConfig) && is_array($appConfig['module_listener_options']) && array_key_exists('cache_dir', $appConfig['module_listener_options']) && is_string($appConfig['module_listener_options']['cache_dir'])) {
-            $cacheDir = $appConfig['module_listener_options']['cache_dir'];
-            if ($handle = opendir($cacheDir)) {
-                $cacheDir = realpath($cacheDir);
+        $cacheDir = $this->listenerOptions->getCacheDir();
+        if (! is_null($cacheDir)) {
+            $cacheDir = realpath($cacheDir);
 
-                if (!is_dir($cacheDir)) {
-                    exit();
+            if (is_dir($cacheDir)) {
+                $configCacheFile = $this->listenerOptions->getConfigCacheFile();
+                if (is_file($configCacheFile)) {
+                    unlink($configCacheFile);
                 }
 
-                while (false !== ($entry = readdir($handle))) {
-                    if (($entry === '.') || ($entry === '..')) {
-                        continue;
-                    }
-
-                    $path = $cacheDir . '/' . $entry;
-                    if (is_file($path) && (substr($entry, - 4, 4) === '.php') && ((substr($entry, 0, 22) === 'module-classmap-cache.') || (substr($entry, 0, 20) === 'module-config-cache.'))) {
-                        unlink($path);
-                    }
+                $moduleMapCacheFile = $this->listenerOptions->getModuleMapCacheFile();
+                if (is_file($moduleMapCacheFile)) {
+                    unlink($moduleMapCacheFile);
                 }
-
-                closedir($handle);
-
             }
         }
 

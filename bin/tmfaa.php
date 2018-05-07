@@ -14,6 +14,8 @@
 
 use Application\Module;
 use Zend\Console\Console;
+use Zend\Stdlib\ArrayUtils;
+use Zend\Mvc\Application as MvcApplication;
 use ZF\Console\Application;
 use ZF\Console\Dispatcher;
 
@@ -21,7 +23,10 @@ chdir(dirname(__DIR__));
 
 require 'vendor/autoload.php';
 
-$appConfig = include 'config/application.config.php';
+$appConfig = require 'config/application.config.php';
+if (file_exists('config/development.config.php')) {
+    $appConfig = ArrayUtils::merge($appConfig, require 'config/development.config.php');
+}
 
 // Disable module and config cache usage for console apps
 if (is_array($appConfig) && is_array($appConfig['module_listener_options'])) {
@@ -33,7 +38,7 @@ if (is_array($appConfig) && is_array($appConfig['module_listener_options'])) {
     }
 }
 
-$mvcApplication = \Zend\Mvc\Application::init($appConfig);
+$mvcApplication = MvcApplication::init($appConfig);
 $serviceManager = $mvcApplication->getServiceManager();
 $dispatcher = new Dispatcher($serviceManager);
 
