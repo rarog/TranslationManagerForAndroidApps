@@ -23,8 +23,9 @@
  * file.
  */
 
-use Zend\Cache\Storage\Plugin;
 use Zend\Session;
+use Zend\Cache\Storage\Plugin;
+use Zend\Cache\Storage\Adapter\Filesystem;
 
 // Little helper function to generate list of locales.
 if (!function_exists('getLocaleNamesInLocale')) {
@@ -45,7 +46,7 @@ if (!function_exists('getLocaleNamesInLocale')) {
 return [
     'caches' => [
         'Cache\Persistent' => [
-            'adapter' => 'filesystem',
+            'adapter' => Filesystem::class,
             'options' => [
                 'cache_dir' => __DIR__ . '/../../data/cache/',
                 'ttl' => 86400,
