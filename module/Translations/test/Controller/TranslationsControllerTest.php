@@ -190,6 +190,8 @@ class TranslationsControllerTest extends AbstractHttpControllerTestCase
         unset($this->suggestionTable);
         unset($this->suggestionStringTable);
         unset($this->authorizationService);
+
+        parent::tearDown();
     }
 
     public function testIndexActionCantBeAccessedWithoutPermissions()

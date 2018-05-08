@@ -66,7 +66,6 @@ class CleanCacheTest extends TestCase
 
     protected function setUp()
     {
-
         $this->route = $this->prophesize(Route::class);
 
         $consoleWriteLineCall = [];

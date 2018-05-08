@@ -172,6 +172,24 @@ class ResXmlParserTest extends TestCase
         return $method->invokeArgs($object, $parameters);
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \PHPUnit\Framework\TestCase::setUp()
+     */
+    protected function setUp()
+    {
+        $this->resXmlParser = null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \PHPUnit\Framework\TestCase::tearDown()
+     */
+    protected function tearDown()
+    {
+        unset($this->resXmlParser);
+    }
+
     public function testDecodeEmptyStringWithoutQuotes()
     {
         $resXmlParser = $this->getResXmlParser();

@@ -87,6 +87,8 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
     protected function tearDown()
     {
         unset($this->authorizationService);
+
+        parent::tearDown();
     }
 
     public function testAboutActionCantBeAccessedByNonUsers()
