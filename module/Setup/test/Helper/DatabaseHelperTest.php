@@ -70,6 +70,10 @@ class DatabaseHelperTest extends TestCase
 
     private $adapterProvider;
 
+    /**
+     * {@inheritDoc}
+     * @see \PHPUnit\Framework\TestCase::setUp()
+     */
     protected function setUp()
     {
         $select = $this->prophesize(Select::class);
@@ -94,6 +98,15 @@ class DatabaseHelperTest extends TestCase
             $this->getDbDriverName()->willReturn($args[0]['driver']);
         });
         $this->adapterProvider->getSql()->willReturn($sql->reveal());
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \PHPUnit\Framework\TestCase::tearDown()
+     */
+    protected function tearDown()
+    {
+        unset($this->adapterProvider);
     }
 
     /**

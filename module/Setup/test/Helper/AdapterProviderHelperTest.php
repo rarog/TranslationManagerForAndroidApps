@@ -49,6 +49,10 @@ class AdapterProviderHelperTest extends TestCase
 
     private $adapter;
 
+    /**
+     * {@inheritDoc}
+     * @see \PHPUnit\Framework\TestCase::setUp()
+     */
     protected function setUp()
     {
         $this->adapterProviderHelper = new AdapterProviderHelper();
@@ -67,6 +71,19 @@ class AdapterProviderHelperTest extends TestCase
         $this->adapter = $this->prophesize(Adapter::class);
         $this->adapter->getDriver()->willReturn($this->driver);
         $this->adapter->getDriver()->willReturn($this->driver);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \PHPUnit\Framework\TestCase::tearDown()
+     */
+    protected function tearDown()
+    {
+        unset($this->adapter);
+        unset($this->driver);
+        unset($this->connection);
+        unset($this->dbAdapterProperty);
+        unset($this->adapterProviderHelper);
     }
 
     public function testSetDbAdapterEmptyArray()

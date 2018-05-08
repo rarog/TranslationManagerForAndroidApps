@@ -33,6 +33,10 @@ class FileHelperTest extends TestCase
 
     private $getConfigWriterMethod;
 
+    /**
+     * {@inheritDoc}
+     * @see \PHPUnit\Framework\TestCase::setUp()
+     */
     protected function setUp()
     {
         $this->fileHelper = new FileHelper();
@@ -53,6 +57,19 @@ class FileHelperTest extends TestCase
 
         $this->getConfigWriterMethod = $reflection->getMethod('getConfigWriter');
         $this->getConfigWriterMethod->setAccessible(true);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \PHPUnit\Framework\TestCase::tearDown()
+     */
+    protected function tearDown()
+    {
+        unset($this->getConfigWriterMethod);
+        unset($this->configWriterProperty);
+        unset($this->phpArray);
+        unset($this->phpArrayToFileConfigParam);
+        unset($this->fileHelper);
     }
 
     public function testGetConfigWriter()

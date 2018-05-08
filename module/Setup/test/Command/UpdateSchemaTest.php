@@ -34,6 +34,10 @@ class UpdateSchemaTest extends TestCase
 
     private $updateSchema;
 
+    /**
+     * {@inheritDoc}
+     * @see \PHPUnit\Framework\TestCase::setUp()
+     */
     protected function setUp()
     {
         $this->databaseHelper = $this->prophesize(DatabaseHelper::class);
@@ -52,6 +56,19 @@ class UpdateSchemaTest extends TestCase
         );
 
         $this->updateSchema = new UpdateSchema($this->databaseHelper->reveal());
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \PHPUnit\Framework\TestCase::tearDown()
+     */
+    protected function tearDown()
+    {
+        unset($this->updateSchema);
+        unset($this->console);
+        unset($this->consoleWriteLineCall);
+        unset($this->route);
+        unset($this->databaseHelper);
     }
 
     public function testSetupIncompleteStatus()
