@@ -20,11 +20,12 @@ use Zend\ServiceManager\Factory\DelegatorFactoryInterface;
 
 class TranslatorDelegator implements DelegatorFactoryInterface
 {
-	/**
-	 * {@inheritDoc}
-	 * @see \Zend\ServiceManager\Factory\DelegatorFactoryInterface::__invoke()
-	 */
-	public function __invoke(ContainerInterface $container, $name, callable $callback, array $options = null) {
+    /**
+     * {@inheritDoc}
+     * @see \Zend\ServiceManager\Factory\DelegatorFactoryInterface::__invoke()
+     */
+    public function __invoke(ContainerInterface $container, $name, callable $callback, array $options = null)
+    {
         $translator = $callback();
 
         $translator->addTranslationFilePattern(
@@ -39,5 +40,5 @@ class TranslatorDelegator implements DelegatorFactoryInterface
         );
 
         return $translator;
-	}
+    }
 }
