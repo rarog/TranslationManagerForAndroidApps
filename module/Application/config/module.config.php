@@ -14,6 +14,9 @@
 
 namespace Application;
 
+use Zend\Log\Logger;
+use Zend\Mvc\I18n\Translator;
+use Zend\Navigation\Service\DefaultNavigationFactory;
 use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;
 use Zend\ServiceManager\Factory\InvokableFactory;
@@ -220,17 +223,17 @@ return [
     ],
     'service_manager' => [
         'delegators' => [
-            \Zend\Mvc\I18n\Translator::class => [
+            Translator::class => [
                 Delegator\TranslatorDelegator::class,
             ],
         ],
         'factories' => [
-            'navigation' => \Zend\Navigation\Service\DefaultNavigationFactory::class,
+            'navigation' => DefaultNavigationFactory::class,
             Command\CleanCache::class => Factory\Command\CleanCacheFactory::class,
             Listener\RbacListener::class => Factory\Listener\RbacListenerFactory::class,
             Listener\SetupListener::class => Factory\Listener\SetupListenerFactory::class,
             View\Strategy\SetupAwareRedirectStrategy::class => Factory\View\Strategy\SetupAwareRedirectStrategyFactory::class,
-            \Zend\Log\Logger::class => Factory\Log\LoggerFactory::class,
+            Logger::class => Factory\Log\LoggerFactory::class,
         ],
     ],
     'translator' => [
