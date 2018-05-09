@@ -12,7 +12,7 @@
  * @link      https://github.com/rarog/TranslationManagerForAndroidApps
  */
 
-namespace SetupTest\Helper;
+namespace ApplicationTest\Helper;
 
 use Application\Command\CleanCache;
 use PHPUnit\Framework\TestCase;

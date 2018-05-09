@@ -12,7 +12,7 @@
  * @link      https://github.com/rarog/TranslationManagerForAndroidApps
  */
 
-namespace TranslationsTest\Factory\Controller;
+namespace ApplicationTest\Factory\Controller;
 
 use Application\Factory\View\Helper\UseMinifiedHelperFactory;
 use Application\View\Helper\UseMinifiedHelper;
