@@ -247,7 +247,7 @@ class ModuleTest extends TestCase
         ]);
     }
 
-    public function testBootstrapSessionThrowsExceptionIsInited()
+    public function testBootstrapSessionThrowsExceptionIsInitedAndReactsToAuthenticateSuccessEvent()
     {
         $sessionStartExceptionThrown = false;
         $sessionUnsetCalledTimes = 0;
@@ -279,8 +279,10 @@ class ModuleTest extends TestCase
             );
         $mockSessionUnset = $builder->build();
 
+        $adapterChain = new AdapterChain();
+        $this->serviceManager->setService('ZfcUser\Authentication\Adapter\AdapterChain', $adapterChain);
+
         $this->serviceManager->setService(SessionManager::class, $sessionManager->reveal());
-        $this->serviceManager->setService('ZfcUser\Authentication\Adapter\AdapterChain', new AdapterChain());
 
         try {
             $mockSessionUnset->enable();
@@ -296,5 +298,17 @@ class ModuleTest extends TestCase
 
         $this->assertTrue($sessionStartExceptionThrown);
         $this->assertEquals(1, $sessionUnsetCalledTimes);
+
+        $storage = $this->prophesize(SessionArrayStorage::class);
+        $storage->clear('userSettings')->shouldBeCalledTimes(1);
+
+        $container = new Container();
+        $usedStorage = $container->getManager()->getStorage();
+        try {
+            $container->getManager()->setStorage($storage->reveal());
+            $adapterChain->getEventManager()->trigger('authenticate.success', $adapterChain->getEvent());
+        } finally {
+            $container->getManager()->setStorage($usedStorage);
+        }
     }
 }
