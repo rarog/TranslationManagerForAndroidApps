@@ -16,19 +16,42 @@ namespace ApplicationTest\View\Helper;
 
 use Application\Module;
 use PHPUnit\Framework\TestCase;
-use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use ReflectionClass;
-use Zend\ModuleManager\Feature\ServiceProviderInterface;
-use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\Console\Console;
-use Zend\EventManager\Event;
 use Zend\EventManager\EventInterface;
+use Zend\ModuleManager\Feature\BootstrapListenerInterface;
+use Zend\ModuleManager\Feature\ConfigProviderInterface;
+use Zend\ModuleManager\Feature\ServiceProviderInterface;
+use Zend\Mvc\MvcEvent;
+use ReflectionClass;
+use Zend\Mvc\Application;
+use Zend\ServiceManager\ServiceManager;
+use Zend\EventManager\EventManager;
+use Zend\Http\Request;
+use Zend\Http\Response;
+use Application\View\Strategy\SetupAwareRedirectStrategy;
+use Application\Listener\RbacListener;
 
 class ModuleTest extends TestCase
 {
+    /**
+     * @var Module
+     */
     private $module;
 
+    /**
+     * @var ReflectionClass
+     */
     private $moduleReflection;
+
+    /**
+     * @var ServiceManager
+     */
+    private $serviceManager;
+
+    /**
+     * @var MvcEvent
+     */
+    private $event;
 
     /**
      * {@inheritDoc}
@@ -38,6 +61,12 @@ class ModuleTest extends TestCase
     {
         $this->module = new Module();
         $this->moduleReflection = new ReflectionClass(Module::class);
+        $this->serviceManager = new ServiceManager();
+
+        $application = new Application($this->serviceManager, new EventManager(), new Request(), new Response());
+
+        $this->event = new MvcEvent();
+        $this->event->setApplication($application);
     }
 
     /**
@@ -46,6 +75,8 @@ class ModuleTest extends TestCase
      */
     protected function tearDown()
     {
+        unset($this->event);
+        unset($this->serviceManager);
         unset($this->moduleReflection);
         unset($this->module);
     }
@@ -99,19 +130,18 @@ class ModuleTest extends TestCase
             }
         };
         $moduleMock2 = clone $moduleMock1;
-        $event = new Event();
 
         $usedConsoleBackup = Console::isConsole();
         try {
             Console::overrideIsConsole(true);
-            $moduleMock1->onBootstrap($event);
+            $moduleMock1->onBootstrap($this->event);
             $this->assertFalse($moduleMock1->bootstrapLateListenersCalled);
             $this->assertFalse($moduleMock1->bootstrapSessionCalled);
             $this->assertFalse($moduleMock1->bootstrapTranslatorCalled);
             $this->assertFalse($moduleMock1->bootstrapUserSettingsCalled);
 
             Console::overrideIsConsole(false);
-            $moduleMock2->onBootstrap($event);
+            $moduleMock2->onBootstrap($this->event);
             $this->assertTrue($moduleMock2->bootstrapLateListenersCalled);
             $this->assertTrue($moduleMock2->bootstrapSessionCalled);
             $this->assertTrue($moduleMock2->bootstrapTranslatorCalled);
@@ -119,5 +149,25 @@ class ModuleTest extends TestCase
         } finally {
             Console::overrideIsConsole($usedConsoleBackup);
         }
+    }
+
+    public function testBootstrapLateListeners()
+    {
+        $eventManager = $this->event->getApplication()->getEventManager();
+
+        $setupAwareRedirectStrategy = $this->prophesize(SetupAwareRedirectStrategy::class);
+        $setupAwareRedirectStrategy->attach($eventManager)->shouldBeCalledTimes(1);
+        $this->serviceManager->setService(SetupAwareRedirectStrategy::class, $setupAwareRedirectStrategy->reveal());
+
+        $rbacListener = $this->prophesize(RbacListener::class);
+        $rbacListener->attach($eventManager)->shouldBeCalledTimes(1);
+        $this->serviceManager->setService(RbacListener::class, $rbacListener->reveal());
+
+        $bootstrapLateListenersMethod = $this->moduleReflection->getMethod('bootstrapLateListeners');
+        $bootstrapLateListenersMethod->setAccessible(true);
+        $bootstrapLateListenersMethod->invokeArgs($this->module, [
+            $this->event,
+        ]);
+        //
     }
 }
