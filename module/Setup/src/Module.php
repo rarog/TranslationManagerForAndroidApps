@@ -53,7 +53,12 @@ class Module implements ConfigProviderInterface, InitProviderInterface
 
         // Setting ttl of the setup cache, which is used for internal session storage, if value is provided.
         // Minimum value = 60 seconds
-        if (array_key_exists('setup', $config) && array_key_exists('setup_session_timeout', $config['setup']) && is_int($config['setup']['setup_session_timeout']) && array_key_exists('caches', $config) && array_key_exists('SetupCache', $config['caches']) && array_key_exists('options', $config['caches']['SetupCache'])) {
+        if (array_key_exists('setup', $config) &&
+            array_key_exists('setup_session_timeout', $config['setup']) &&
+            is_int($config['setup']['setup_session_timeout']) &&
+            array_key_exists('caches', $config) &&
+            array_key_exists('SetupCache', $config['caches']) &&
+            array_key_exists('options', $config['caches']['SetupCache'])) {
             $config['caches']['SetupCache']['options']['ttl'] = max(60, $config['setup']['setup_session_timeout']);
         }
 
