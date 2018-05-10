@@ -28,7 +28,7 @@ use Zend\Cache\Storage\Plugin;
 use Zend\Cache\Storage\Adapter\Filesystem;
 
 // Little helper function to generate list of locales.
-if (!function_exists('getLocaleNamesInLocale')) {
+if (! function_exists('getLocaleNamesInLocale')) {
     function getLocaleNamesInLocale($inLocale, $primaryOnly = false)
     {
         $locales = [];
@@ -72,15 +72,15 @@ return [
                 'name' => 'tmfaa:session',
             ],
         ],
-        'storage'    => Session\Storage\SessionArrayStorage::class,
+        'storage' => Session\Storage\SessionArrayStorage::class,
         'validators' => [
             Session\Validator\RemoteAddr::class,
             Session\Validator\HttpUserAgent::class,
         ],
     ],
     'session_config' => [
-        'gc_maxlifetime'      => 900,
-        'name'                => 'tmfaa:session',
+        'gc_maxlifetime' => 900,
+        'name' => 'tmfaa:session',
         'remember_me_seconds' => 900,
     ],
     'session_manager' => [
