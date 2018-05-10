@@ -33,14 +33,18 @@ use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
 use Zend\ServiceManager\ServiceManager;
+use Zend\Session\Container;
 use Zend\Session\SessionManager;
 use Zend\Session\Config\SessionConfig;
+use Zend\Session\Exception\RuntimeException as SessionRuntimeException;
 use Zend\Session\SaveHandler\Cache;
 use Zend\Session\Storage\SessionArrayStorage;
 use Zend\Session\Validator\HttpUserAgent;
 use Zend\Session\Validator\RemoteAddr;
+use ZfcUser\Authentication\Adapter\AdapterChain;
 use ZfcUser\Mapper\User as UserMapper;
 use ReflectionClass;
+use phpmock\MockBuilder;
 
 class ModuleTest extends TestCase
 {
@@ -241,6 +245,56 @@ class ModuleTest extends TestCase
         $bootstrapLateListenersMethod->invokeArgs($this->module, [
             $this->event,
         ]);
-        //
+    }
+
+    public function testBootstrapSessionThrowsExceptionIsInited()
+    {
+        $sessionStartExceptionThrown = false;
+        $sessionUnsetCalledTimes = 0;
+
+        $container = new Container('initialized');
+        $container->exchangeArray([
+            'init' => 1,
+        ]);
+
+        $sessionManager = $this->prophesize(SessionManager::class);
+        $sessionManager->start()->will(function () use (&$sessionStartExceptionThrown) {
+            if (! $sessionStartExceptionThrown) {
+                $sessionStartExceptionThrown = true;
+                throw new SessionRuntimeException();
+            }
+            return true;
+        })->shouldBeCalledTimes(2);
+        $sessionManager->regenerateId(true)->shouldNotBeCalled();
+        $sessionManager->getValidatorChain()->shouldNotBeCalled();
+
+        $builder = new MockBuilder();
+        $builder->setNamespace($this->moduleReflection->getNamespaceName())
+            ->setName('session_unset')
+            ->setFunction(
+                function () use (&$sessionUnsetCalledTimes) {
+                    $sessionUnsetCalledTimes++;
+                    return true;
+                }
+            );
+        $mockSessionUnset = $builder->build();
+
+        $this->serviceManager->setService(SessionManager::class, $sessionManager->reveal());
+        $this->serviceManager->setService('ZfcUser\Authentication\Adapter\AdapterChain', new AdapterChain());
+
+        try {
+            $mockSessionUnset->enable();
+
+            $bootstrapSession = $this->moduleReflection->getMethod('bootstrapSession');
+            $bootstrapSession->setAccessible(true);
+            $bootstrapSession->invokeArgs($this->module, [
+                $this->event,
+            ]);
+        } finally {
+            $mockSessionUnset->disable();
+        }
+
+        $this->assertTrue($sessionStartExceptionThrown);
+        $this->assertEquals(1, $sessionUnsetCalledTimes);
     }
 }
