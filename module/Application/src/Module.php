@@ -36,14 +36,14 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
     /**
      * @var Container
      */
-    private $userSettings;
+    protected $userSettings;
 
     /**
      * Sets up listeners, that shouldn't be initialised via config.
      *
      * @param EventInterface $e
      */
-    private function bootstrapLateListeners(EventInterface $e)
+    protected function bootstrapLateListeners(EventInterface $e)
     {
         $application  = $e->getApplication();
         $eventManager = $application->getEventManager();
@@ -63,7 +63,7 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
      *
      * @param EventInterface $e
      */
-    private function bootstrapSession(EventInterface $e)
+    protected function bootstrapSession(EventInterface $e)
     {
         $serviceManager = $e->getApplication()->getServiceManager();
 
@@ -79,7 +79,7 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
         // Clearing user data after login.
         // Attaching directly to the according event without dedicated listener.
         $adapterChain = $serviceManager->get('ZfcUser\Authentication\Adapter\AdapterChain');
-        $adapterChain->getEventManager()->attach('authenticate.success', function($e) {
+        $adapterChain->getEventManager()->attach('authenticate.success', function ($e) {
             $container = new Container();
             $container->getManager()->getStorage()->clear('userSettings');
         });
@@ -131,7 +131,7 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
      *
      * @param EventInterface $e
      */
-    private function bootstrapTranslator(EventInterface $e)
+    protected function bootstrapTranslator(EventInterface $e)
     {
         $serviceManager = $e->getApplication()->getServiceManager();
 
@@ -140,7 +140,7 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
         if (isset($config) &&
             isset($config['settings']) &&
             isset($config['settings']['translator_cache']) &&
-            !empty($cacheName = trim($config['settings']['translator_cache'])) &&
+            ! empty($cacheName = trim($config['settings']['translator_cache'])) &&
             $serviceManager->has($cacheName)) {
             try {
                 $translatorCache = $serviceManager->get($cacheName);
@@ -156,7 +156,7 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
         }
 
         $translator->setFallbackLocale(\Locale::getPrimaryLanguage($translator->getLocale()));
-        if (!is_null($translatorCache)) {
+        if (! is_null($translatorCache)) {
             $translator->setCache($translatorCache);
         }
         \Zend\Validator\AbstractValidator::setDefaultTranslator($translator);
@@ -167,7 +167,7 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
      *
      * @param EventInterface $e
      */
-    private function bootstrapUserSettings(EventInterface $e)
+    protected function bootstrapUserSettings(EventInterface $e)
     {
         $serviceManager = $e->getApplication()->getServiceManager();
         $auth = $serviceManager->get('zfcuser_auth_service');
@@ -254,11 +254,11 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
                     $sessionConfig = null;
                     if (isset($session['config'])) {
                         $class = isset($session['config']['class'])
-                            ?  $session['config']['class']
+                            ? $session['config']['class']
                             : SessionConfig::class;
 
                         $options = isset($session['config']['options'])
-                            ?  $session['config']['options']
+                            ? $session['config']['options']
                             : [];
 
                         $sessionConfig = new $class();
