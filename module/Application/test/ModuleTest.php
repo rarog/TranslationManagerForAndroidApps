@@ -15,21 +15,32 @@
 namespace ApplicationTest\View\Helper;
 
 use Application\Module;
+use Application\Listener\RbacListener;
+use Application\Model\UserLanguagesTable;
+use Application\Model\UserSettingsTable;
+use Application\Model\UserTable;
+use Application\View\Strategy\SetupAwareRedirectStrategy;
 use PHPUnit\Framework\TestCase;
 use Zend\Console\Console;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\EventManager\EventInterface;
-use Zend\ModuleManager\Feature\BootstrapListenerInterface;
-use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Zend\ModuleManager\Feature\ServiceProviderInterface;
-use Zend\Mvc\MvcEvent;
-use ReflectionClass;
-use Zend\Mvc\Application;
-use Zend\ServiceManager\ServiceManager;
 use Zend\EventManager\EventManager;
 use Zend\Http\Request;
 use Zend\Http\Response;
-use Application\View\Strategy\SetupAwareRedirectStrategy;
-use Application\Listener\RbacListener;
+use Zend\ModuleManager\Feature\BootstrapListenerInterface;
+use Zend\ModuleManager\Feature\ConfigProviderInterface;
+use Zend\ModuleManager\Feature\ServiceProviderInterface;
+use Zend\Mvc\Application;
+use Zend\Mvc\MvcEvent;
+use Zend\ServiceManager\ServiceManager;
+use Zend\Session\SessionManager;
+use Zend\Session\Config\SessionConfig;
+use Zend\Session\SaveHandler\Cache;
+use Zend\Session\Storage\SessionArrayStorage;
+use Zend\Session\Validator\HttpUserAgent;
+use Zend\Session\Validator\RemoteAddr;
+use ZfcUser\Mapper\User as UserMapper;
+use ReflectionClass;
 
 class ModuleTest extends TestCase
 {
@@ -98,7 +109,69 @@ class ModuleTest extends TestCase
     {
         $this->assertInstanceOf(ServiceProviderInterface::class, $this->module);
         $this->assertTrue($this->moduleReflection->hasMethod('getServiceConfig'));
-        $this->assertInternalType('array', $this->module->getServiceConfig());
+
+        $serviceConfig = $this->module->getServiceConfig();
+        $this->assertInternalType('array', $serviceConfig);
+
+        $this->serviceManager->configure($serviceConfig);
+        $this->serviceManager->setService(
+            AdapterInterface::class,
+            $this->prophesize(AdapterInterface::class)->reveal()
+        );
+        $this->serviceManager->setService(
+            'zfcuser_user_mapper',
+            $this->prophesize(UserMapper::class)->reveal()
+        );
+
+        $this->assertTrue($this->serviceManager->has(UserTable::class));
+        $this->assertInstanceOf(UserTable::class, $this->serviceManager->get(UserTable::class));
+
+        $this->assertTrue($this->serviceManager->has(UserLanguagesTable::class));
+        $this->assertInstanceOf(UserLanguagesTable::class, $this->serviceManager->get(UserLanguagesTable::class));
+
+        $this->assertTrue($this->serviceManager->has(UserSettingsTable::class));
+        $this->assertInstanceOf(UserSettingsTable::class, $this->serviceManager->get(UserSettingsTable::class));
+
+        // Testing SessionManager with empty configuration, rest is done in separate function.
+        $this->assertTrue($this->serviceManager->has(SessionManager::class));
+
+        $sessionManager = $this->serviceManager->get(SessionManager::class);
+
+        $this->assertInstanceOf(SessionManager::class, $sessionManager);
+        $this->assertNull($sessionManager->getSaveHandler());
+    }
+
+    public function testImplementsServiceProviderInterfaceSessionManager()
+    {
+        $sessionConfig = [
+            'session' => [
+                'config' => [
+                    'class' => SessionConfig::class,
+                    'options' => [
+                        'name' => 'tmfaa:session',
+                    ],
+                ],
+                'save_handler' => Cache::class,
+                'storage' => SessionArrayStorage::class,
+                'validators' => [
+                    RemoteAddr::class,
+                    HttpUserAgent::class,
+                ],
+            ],
+        ];
+
+        $this->serviceManager->configure($this->module->getServiceConfig());
+        $this->serviceManager->setService('config', $sessionConfig);
+
+        $saveHandler = $this->prophesize(Cache::class)->reveal();
+        $this->serviceManager->setService(Cache::class, $saveHandler);
+
+        $this->assertTrue($this->serviceManager->has(SessionManager::class));
+
+        $sessionManager = $this->serviceManager->get(SessionManager::class);
+
+        $this->assertInstanceOf(SessionManager::class, $sessionManager);
+        $this->assertSame($saveHandler, $sessionManager->getSaveHandler());
     }
 
     public function testOnBootstrap()
