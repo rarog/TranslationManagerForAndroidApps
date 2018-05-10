@@ -15,6 +15,7 @@
 namespace Application;
 
 use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerExceptionInterface;
 use Zend\Console\Console;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\ResultSet\ResultSet;
@@ -28,6 +29,10 @@ use Zend\Session\Container;
 use Zend\Session\SessionManager;
 use Zend\Session\Validator;
 use Zend\Session\Config\SessionConfig;
+use Zend\Session\Exception\RuntimeException as SessionRuntimeException;
+use Zend\Validator\AbstractValidator;
+use Locale;
+use RuntimeException;
 
 class Module implements BootstrapListenerInterface, ConfigProviderInterface, ServiceProviderInterface
 {
@@ -71,7 +76,7 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
 
         try {
             $session->start();
-        } catch (\Exception $e) {
+        } catch (SessionRuntimeException $e) {
             session_unset();
             $session->start();
         }
@@ -79,7 +84,7 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
         // Clearing user data after login.
         // Attaching directly to the according event without dedicated listener.
         $adapterChain = $serviceManager->get('ZfcUser\Authentication\Adapter\AdapterChain');
-        $adapterChain->getEventManager()->attach('authenticate.success', function ($e) {
+        $adapterChain->getEventManager()->attach('authenticate.success', function (EventInterface $e) {
             $container = new Container();
             $container->getManager()->getStorage()->clear('userSettings');
         });
@@ -93,8 +98,8 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
         $request = $serviceManager->get('Request');
 
         $session->regenerateId(true);
-        $container->init          = 1;
-        $container->remoteAddr    = $request->getServer()->get('REMOTE_ADDR');
+        $container->init = 1;
+        $container->remoteAddr = $request->getServer()->get('REMOTE_ADDR');
         $container->httpUserAgent = $request->getServer()->get('HTTP_USER_AGENT');
 
         $config = $serviceManager->get('config');
@@ -144,7 +149,7 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
             $serviceManager->has($cacheName)) {
             try {
                 $translatorCache = $serviceManager->get($cacheName);
-            } catch (\Exception $e) {
+            } catch (ContainerExceptionInterface $e) {
                 $translatorCache = null;
             }
         }
@@ -155,11 +160,11 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
             $translator->setLocale($this->userSettings->locale);
         }
 
-        $translator->setFallbackLocale(\Locale::getPrimaryLanguage($translator->getLocale()));
+        $translator->setFallbackLocale(Locale::getPrimaryLanguage($translator->getLocale()));
         if (! is_null($translatorCache)) {
             $translator->setCache($translatorCache);
         }
-        \Zend\Validator\AbstractValidator::setDefaultTranslator($translator);
+        AbstractValidator::setDefaultTranslator($translator);
     }
 
     /**
@@ -179,10 +184,10 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
                 return;
             }
 
-            $userSettingsTable = $serviceManager->get(\Application\Model\UserSettingsTable::class);
+            $userSettingsTable = $serviceManager->get(Model\UserSettingsTable::class);
             try {
                 $userSettings = $userSettingsTable->getUserSettings($auth->getIdentity()->getId());
-            } catch (\RuntimeException $e) {
+            } catch (RuntimeException $e) {
                 $this->userSettings = null;
                 return;
             }
