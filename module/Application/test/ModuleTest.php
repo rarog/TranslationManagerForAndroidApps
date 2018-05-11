@@ -25,7 +25,6 @@ use Zend\Console\Console;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\EventManager;
-use Zend\Http\Request;
 use Zend\Http\Response;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
@@ -45,6 +44,7 @@ use ZfcUser\Authentication\Adapter\AdapterChain;
 use ZfcUser\Mapper\User as UserMapper;
 use ReflectionClass;
 use phpmock\MockBuilder;
+use Zend\Http\PhpEnvironment\Request;
 
 class ModuleTest extends TestCase
 {
@@ -280,8 +280,8 @@ class ModuleTest extends TestCase
         $mockSessionUnset = $builder->build();
 
         $adapterChain = new AdapterChain();
-        $this->serviceManager->setService('ZfcUser\Authentication\Adapter\AdapterChain', $adapterChain);
 
+        $this->serviceManager->setService('ZfcUser\Authentication\Adapter\AdapterChain', $adapterChain);
         $this->serviceManager->setService(SessionManager::class, $sessionManager->reveal());
 
         try {
@@ -310,5 +310,40 @@ class ModuleTest extends TestCase
         } finally {
             $container->getManager()->setStorage($usedStorage);
         }
+    }
+
+    public function testBootstrapSessionThrowsExceptionNotInitedNoConfigSet()
+    {
+        $remoteAddr = '127.0.0.1';
+        $httpUserAgent = 'Mozilla/4.5 [en] (X11; U; Linux 2.2.9 i586)';
+        $expectedContainer = [
+            'init' => 1,
+            'remoteAddr' => $remoteAddr,
+            'httpUserAgent' => $httpUserAgent,
+        ];
+
+        $container = new Container('initialized');
+        $container->exchangeArray([]);
+
+        $sessionManager = $this->prophesize(SessionManager::class);
+        $sessionManager->start()->shouldBeCalledTimes(1);
+        $sessionManager->regenerateId(true)->shouldBeCalledTimes(1);
+        $sessionManager->getValidatorChain()->shouldNotBeCalled();
+
+        $request = new Request();
+        $request->getServer()->set('REMOTE_ADDR', $remoteAddr);
+        $request->getServer()->set('HTTP_USER_AGENT', $httpUserAgent);
+
+        $this->serviceManager->setService('ZfcUser\Authentication\Adapter\AdapterChain', new AdapterChain());
+        $this->serviceManager->setService('Request', $request);
+        $this->serviceManager->setService(SessionManager::class, $sessionManager->reveal());
+
+        $bootstrapSession = $this->moduleReflection->getMethod('bootstrapSession');
+        $bootstrapSession->setAccessible(true);
+        $bootstrapSession->invokeArgs($this->module, [
+            $this->event,
+        ]);
+
+        $this->assertEquals($expectedContainer, $container->getArrayCopy());
     }
 }

@@ -102,20 +102,19 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
         $container->remoteAddr = $request->getServer()->get('REMOTE_ADDR');
         $container->httpUserAgent = $request->getServer()->get('HTTP_USER_AGENT');
 
-        $config = $serviceManager->get('config');
-        if (! isset($config['session'])) {
-            return;
-        }
-
-        $sessionConfig = $config['session'];
-
-        if (! isset($sessionConfig['validators'])) {
+        $config = ($serviceManager->has('config')) ? $serviceManager->get('config') : [];
+        if (! is_array($config) ||
+            ! array_key_exists('session', $config) ||
+            ! is_array($config['session']) ||
+            ! array_key_exists('validators', $config['session']) ||
+            ! is_array($config['session']['validators']) ||
+            (count($config['session']['validators']) === 0) ) {
             return;
         }
 
         $chain = $session->getValidatorChain();
 
-        foreach ($sessionConfig['validators'] as $validator) {
+        foreach ($config['session']['validators'] as $validator) {
             switch ($validator) {
                 case Validator\HttpUserAgent::class:
                     $validator = new $validator($container->httpUserAgent);
