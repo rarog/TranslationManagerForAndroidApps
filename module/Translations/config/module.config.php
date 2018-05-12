@@ -182,7 +182,8 @@ return [
                     'setnotificationstatus' => [
                         'type' => Segment::class,
                         'options' => [
-                            'route' => '/setnotificationstatus[/app/:appId/resource/:resourceId/entry/:entryId/notificationstatus/:notificationStatus]',
+                            'route' => '/setnotificationstatus[/app/:appId/resource/:resourceId/entry/:entryId/' .
+                                'notificationstatus/:notificationStatus]',
                             'constraints' => [
                                 'appId' => '[0-9]+',
                                 'resourceId' => '[0-9]+',
@@ -197,7 +198,8 @@ return [
                     'suggestionaccept' => [
                         'type' => Segment::class,
                         'options' => [
-                            'route' => '/suggestionaccept[/app/:appId/resource/:resourceId/entry/:entryId/suggestion/:suggestionId]',
+                            'route' => '/suggestionaccept[/app/:appId/resource/:resourceId/entry/:entryId/' .
+                                'suggestion/:suggestionId]',
                             'constraints' => [
                                 'appId' => '[0-9]+',
                                 'resourceId' => '[0-9]+',
@@ -212,7 +214,8 @@ return [
                     'suggestionaddedit' => [
                         'type' => Segment::class,
                         'options' => [
-                            'route' => '/suggestionaddedit[/app/:appId/resource/:resourceId/entry/:entryId/suggestion/:suggestionId]',
+                            'route' => '/suggestionaddedit[/app/:appId/resource/:resourceId/entry/:entryId/' .
+                                'suggestion/:suggestionId]',
                             'constraints' => [
                                 'appId' => '[0-9]+',
                                 'resourceId' => '[0-9]+',
@@ -227,7 +230,8 @@ return [
                     'suggestiondelete' => [
                         'type' => Segment::class,
                         'options' => [
-                            'route' => '/suggestiondelete[/app/:appId/resource/:resourceId/entry/:entryId/suggestion/:suggestionId]',
+                            'route' => '/suggestiondelete[/app/:appId/resource/:resourceId/entry/:entryId/' .
+                                'suggestion/:suggestionId]',
                             'constraints' => [
                                 'appId' => '[0-9]+',
                                 'resourceId' => '[0-9]+',
@@ -242,7 +246,8 @@ return [
                     'suggestionvote' => [
                         'type' => Segment::class,
                         'options' => [
-                            'route' => '/suggestionvote[/app/:appId/resource/:resourceId/entry/:entryId/suggestion/:suggestionId/vote/:vote]',
+                            'route' => '/suggestionvote[/app/:appId/resource/:resourceId/entry/:entryId/' .
+                                'suggestion/:suggestionId/vote/:vote]',
                             'constraints' => [
                                 'appId' => '[0-9]+',
                                 'resourceId' => '[0-9]+',

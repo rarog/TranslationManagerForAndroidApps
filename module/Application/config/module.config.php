@@ -232,7 +232,8 @@ return [
             Command\CleanCache::class => Factory\Command\CleanCacheFactory::class,
             Listener\RbacListener::class => Factory\Listener\RbacListenerFactory::class,
             Listener\SetupListener::class => Factory\Listener\SetupListenerFactory::class,
-            View\Strategy\SetupAwareRedirectStrategy::class => Factory\View\Strategy\SetupAwareRedirectStrategyFactory::class,
+            View\Strategy\SetupAwareRedirectStrategy::class =>
+                Factory\View\Strategy\SetupAwareRedirectStrategyFactory::class,
             Logger::class => Factory\Log\LoggerFactory::class,
         ],
     ],
