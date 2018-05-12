@@ -21,6 +21,7 @@ use Application\Model\UserSettingsTable;
 use Application\Model\UserTable;
 use Application\View\Strategy\SetupAwareRedirectStrategy;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Zend\Console\Console;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\EventManager\EventInterface;
@@ -34,11 +35,13 @@ use Zend\Mvc\MvcEvent;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Session\Container;
 use Zend\Session\SessionManager;
+use Zend\Session\ValidatorChain;
 use Zend\Session\Config\SessionConfig;
 use Zend\Session\Exception\RuntimeException as SessionRuntimeException;
 use Zend\Session\SaveHandler\Cache;
 use Zend\Session\Storage\SessionArrayStorage;
 use Zend\Session\Validator\HttpUserAgent;
+use Zend\Session\Validator\Id;
 use Zend\Session\Validator\RemoteAddr;
 use ZfcUser\Authentication\Adapter\AdapterChain;
 use ZfcUser\Mapper\User as UserMapper;
@@ -345,5 +348,41 @@ class ModuleTest extends TestCase
         ]);
 
         $this->assertEquals($expectedContainer, $container->getArrayCopy());
+    }
+
+    public function testBootstrapSessionConfigSetAttachingValidators()
+    {
+        $config = [
+            'session' => [
+                'validators' => [
+                    RemoteAddr::class,
+                    HttpUserAgent::class,
+                    Id::class,
+                    'AnInvalidClassName',
+                ],
+            ],
+        ];
+
+        $container = new Container('initialized');
+        $container->exchangeArray([]);
+
+        $validatorChain = $this->prophesize(ValidatorChain::class);
+        $validatorChain->attach('session.validate', Argument::type('array'))->shouldBeCalledTimes(3);
+
+        $sessionManager = $this->prophesize(SessionManager::class);
+        $sessionManager->start()->shouldBeCalledTimes(1);
+        $sessionManager->regenerateId(true)->shouldBeCalledTimes(1);
+        $sessionManager->getValidatorChain()->willReturn($validatorChain->reveal())->shouldBeCalledTimes(1);
+
+        $this->serviceManager->setService('config', $config);
+        $this->serviceManager->setService('ZfcUser\Authentication\Adapter\AdapterChain', new AdapterChain());
+        $this->serviceManager->setService('Request', new Request());
+        $this->serviceManager->setService(SessionManager::class, $sessionManager->reveal());
+
+        $bootstrapSession = $this->moduleReflection->getMethod('bootstrapSession');
+        $bootstrapSession->setAccessible(true);
+        $bootstrapSession->invokeArgs($this->module, [
+            $this->event,
+        ]);
     }
 }

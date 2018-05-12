@@ -29,6 +29,7 @@ use Zend\Session\Container;
 use Zend\Session\SessionManager;
 use Zend\Session\Validator;
 use Zend\Session\Config\SessionConfig;
+use Zend\Session\Validator\ValidatorInterface;
 use Zend\Session\Exception\RuntimeException as SessionRuntimeException;
 use Zend\Validator\AbstractValidator;
 use Locale;
@@ -115,6 +116,15 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
         $chain = $session->getValidatorChain();
 
         foreach ($config['session']['validators'] as $validator) {
+            if (! ($validator instanceof ValidatorInterface) &&
+                ! (
+                    class_exists($validator) &&
+                    ($implements = class_implements($validator)) &&
+                    in_array(ValidatorInterface::class, $implements))
+                ) {
+                continue;
+            }
+
             switch ($validator) {
                 case Validator\HttpUserAgent::class:
                     $validator = new $validator($container->httpUserAgent);
