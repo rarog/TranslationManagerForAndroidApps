@@ -27,11 +27,14 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\EventManager;
 use Zend\Http\Response;
+use Zend\Http\PhpEnvironment\Request;
+use Zend\I18n\Translator\Translator as I18nTranslator;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
+use Zend\Mvc\I18n\Translator;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Session\Container;
 use Zend\Session\SessionManager;
@@ -43,11 +46,11 @@ use Zend\Session\Storage\SessionArrayStorage;
 use Zend\Session\Validator\HttpUserAgent;
 use Zend\Session\Validator\Id;
 use Zend\Session\Validator\RemoteAddr;
+use Zend\Validator\AbstractValidator;
 use ZfcUser\Authentication\Adapter\AdapterChain;
 use ZfcUser\Mapper\User as UserMapper;
 use ReflectionClass;
 use phpmock\MockBuilder;
-use Zend\Http\PhpEnvironment\Request;
 
 class ModuleTest extends TestCase
 {
@@ -379,10 +382,38 @@ class ModuleTest extends TestCase
         $this->serviceManager->setService('Request', new Request());
         $this->serviceManager->setService(SessionManager::class, $sessionManager->reveal());
 
+
         $bootstrapSession = $this->moduleReflection->getMethod('bootstrapSession');
         $bootstrapSession->setAccessible(true);
         $bootstrapSession->invokeArgs($this->module, [
             $this->event,
         ]);
+    }
+
+    public function testBootstrapTranslatorServiceManagerThrowsException()
+    {
+        $config = [
+            'settings' => [
+                'translator_cache' => 'translatorCache',
+            ],
+        ];
+
+        $i18ntranslator = $this->prophesize(I18nTranslator::class);
+        $i18ntranslator->getLocale()->willReturn('en_US')->shouldBeCalledTimes(1);
+        $i18ntranslator->setFallbackLocale('en')->shouldBeCalledTimes(1);
+        $i18ntranslator->setCache(Argument::any())->shouldNotBeCalled();
+
+        $this->serviceManager->setService('config', $config);
+        $this->serviceManager->setAlias('MvcTranslator', Translator::class);
+        $this->serviceManager->setService(Translator::class, new Translator($i18ntranslator->reveal()));
+        $this->serviceManager->setFactory('translatorCache', \stdClass::class);
+
+        $bootstrapTranslator = $this->moduleReflection->getMethod('bootstrapTranslator');
+        $bootstrapTranslator->setAccessible(true);
+        $bootstrapTranslator->invokeArgs($this->module, [
+            $this->event,
+        ]);
+
+        $this->assertSame($i18ntranslator->reveal(), AbstractValidator::getDefaultTranslator()->getTranslator());
     }
 }

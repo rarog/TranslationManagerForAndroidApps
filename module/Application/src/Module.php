@@ -16,6 +16,7 @@ namespace Application;
 
 use Interop\Container\ContainerInterface;
 use Psr\Container\ContainerExceptionInterface;
+use Zend\Cache\Storage\Adapter\AbstractAdapter;
 use Zend\Console\Console;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\ResultSet\ResultSet;
@@ -29,8 +30,8 @@ use Zend\Session\Container;
 use Zend\Session\SessionManager;
 use Zend\Session\Validator;
 use Zend\Session\Config\SessionConfig;
-use Zend\Session\Validator\ValidatorInterface;
 use Zend\Session\Exception\RuntimeException as SessionRuntimeException;
+use Zend\Session\Validator\ValidatorInterface;
 use Zend\Validator\AbstractValidator;
 use Locale;
 use RuntimeException;
@@ -150,14 +151,19 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
         $serviceManager = $e->getApplication()->getServiceManager();
 
         $translatorCache = null;
-        $config = $serviceManager->get('config');
-        if (isset($config) &&
-            isset($config['settings']) &&
-            isset($config['settings']['translator_cache']) &&
+        $config = ($serviceManager->has('config')) ? $serviceManager->get('config') : [];
+        if (is_array($config) &&
+            array_key_exists('settings', $config) &&
+            is_array($config['settings']) &&
+            array_key_exists('translator_cache', $config['settings']) &&
+            is_string($config['settings']['translator_cache']) &&
             ! empty($cacheName = trim($config['settings']['translator_cache'])) &&
             $serviceManager->has($cacheName)) {
             try {
                 $translatorCache = $serviceManager->get($cacheName);
+                if (! $translatorCache instanceof AbstractAdapter) {
+                    $translatorCache = null;
+                }
             } catch (ContainerExceptionInterface $e) {
                 $translatorCache = null;
             }
@@ -166,12 +172,12 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
         $translator = $serviceManager->get('MvcTranslator');
 
         if ($this->userSettings) {
-            $translator->setLocale($this->userSettings->locale);
+            $translator->getTranslator()->setLocale($this->userSettings->locale);
         }
 
-        $translator->setFallbackLocale(Locale::getPrimaryLanguage($translator->getLocale()));
+        $translator->setFallbackLocale(Locale::getPrimaryLanguage($translator->getTranslator()->getLocale()));
         if (! is_null($translatorCache)) {
-            $translator->setCache($translatorCache);
+            $translator->getTranslator()->setCache($translatorCache);
         }
         AbstractValidator::setDefaultTranslator($translator);
     }
