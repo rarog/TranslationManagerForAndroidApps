@@ -171,7 +171,7 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
 
         $translator = $serviceManager->get('MvcTranslator');
 
-        if ($this->userSettings) {
+        if ($this->userSettings && $this->userSettings->locale) {
             $translator->getTranslator()->setLocale($this->userSettings->locale);
         }
 

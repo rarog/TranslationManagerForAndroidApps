@@ -22,6 +22,7 @@ use Application\Model\UserTable;
 use Application\View\Strategy\SetupAwareRedirectStrategy;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Zend\Cache\Storage\Adapter\AbstractAdapter;
 use Zend\Console\Console;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\EventManager\EventInterface;
@@ -51,6 +52,7 @@ use ZfcUser\Authentication\Adapter\AdapterChain;
 use ZfcUser\Mapper\User as UserMapper;
 use ReflectionClass;
 use phpmock\MockBuilder;
+use stdClass;
 
 class ModuleTest extends TestCase
 {
@@ -400,13 +402,83 @@ class ModuleTest extends TestCase
 
         $i18ntranslator = $this->prophesize(I18nTranslator::class);
         $i18ntranslator->getLocale()->willReturn('en_US')->shouldBeCalledTimes(1);
+        $i18ntranslator->setLocale(Argument::type('string'))->shouldNotBeCalled();
         $i18ntranslator->setFallbackLocale('en')->shouldBeCalledTimes(1);
-        $i18ntranslator->setCache(Argument::any())->shouldNotBeCalled();
+        $i18ntranslator->setCache(Argument::type(AbstractAdapter::class))->shouldNotBeCalled();
 
         $this->serviceManager->setService('config', $config);
         $this->serviceManager->setAlias('MvcTranslator', Translator::class);
         $this->serviceManager->setService(Translator::class, new Translator($i18ntranslator->reveal()));
-        $this->serviceManager->setFactory('translatorCache', \stdClass::class);
+        $this->serviceManager->setFactory('translatorCache', stdClass::class);
+
+        $bootstrapTranslator = $this->moduleReflection->getMethod('bootstrapTranslator');
+        $bootstrapTranslator->setAccessible(true);
+        $bootstrapTranslator->invokeArgs($this->module, [
+            $this->event,
+        ]);
+
+        $this->assertSame($i18ntranslator->reveal(), AbstractValidator::getDefaultTranslator()->getTranslator());
+    }
+
+    public function testBootstrapTranslatorServiceManagerReturnsInvalidCache()
+    {
+        $config = [
+            'settings' => [
+                'translator_cache' => 'translatorCache',
+            ],
+        ];
+
+        $i18ntranslator = $this->prophesize(I18nTranslator::class);
+        $i18ntranslator->getLocale()->willReturn('en_US')->shouldBeCalledTimes(1);
+        $i18ntranslator->setLocale(Argument::type('string'))->shouldNotBeCalled();
+        $i18ntranslator->setFallbackLocale('en')->shouldBeCalledTimes(1);
+        $i18ntranslator->setCache(Argument::type(AbstractAdapter::class))->shouldNotBeCalled();
+
+        $this->serviceManager->setService('config', $config);
+        $this->serviceManager->setAlias('MvcTranslator', Translator::class);
+        $this->serviceManager->setService(Translator::class, new Translator($i18ntranslator->reveal()));
+        $this->serviceManager->setService('translatorCache', stdClass::class);
+
+        $bootstrapTranslator = $this->moduleReflection->getMethod('bootstrapTranslator');
+        $bootstrapTranslator->setAccessible(true);
+        $bootstrapTranslator->invokeArgs($this->module, [
+            $this->event,
+        ]);
+
+        $this->assertSame($i18ntranslator->reveal(), AbstractValidator::getDefaultTranslator()->getTranslator());
+    }
+
+    public function testBootstrapTranslatorServiceManagerSetsLocaleAndCache()
+    {
+        $config = [
+            'settings' => [
+                'translator_cache' => 'translatorCache',
+            ],
+        ];
+        $locale = 'de_DE';
+        $fallbackLocale = 'de';
+
+        $translatorCache = $this->prophesize(AbstractAdapter::class);
+
+        $i18ntranslator = $this->prophesize(I18nTranslator::class);
+        $i18ntranslator->getLocale()->willReturn('en_US')->shouldBeCalledTimes(1);
+        $i18ntranslator->setLocale($locale)->shouldBeCalledTimes(1)->will(function () use ($locale) {
+            $this->getLocale()->willReturn($locale);
+        });
+        $i18ntranslator->setFallbackLocale($fallbackLocale)->shouldBeCalledTimes(1);
+        $i18ntranslator->setCache($translatorCache->reveal())->shouldBeCalledTimes(1);
+
+        $this->serviceManager->setService('config', $config);
+        $this->serviceManager->setAlias('MvcTranslator', Translator::class);
+        $this->serviceManager->setService(Translator::class, new Translator($i18ntranslator->reveal()));
+        $this->serviceManager->setService('translatorCache', $translatorCache->reveal());
+
+        $userSettings = new Container('userSettings');
+        $userSettings->locale = $locale;
+
+        $userSettingsProperty = $this->moduleReflection->getProperty('userSettings');
+        $userSettingsProperty->setAccessible(true);
+        $userSettingsProperty->setValue($this->module, $userSettings);
 
         $bootstrapTranslator = $this->moduleReflection->getMethod('bootstrapTranslator');
         $bootstrapTranslator->setAccessible(true);
