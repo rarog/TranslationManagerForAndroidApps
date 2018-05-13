@@ -63,15 +63,17 @@ class User extends AbstractDbTableEntry implements ArraySerializableInterface, I
     /**
      * @return null|int
      */
-    public function getUserId() {
+    public function getUserId()
+    {
         return $this->userId;
     }
 
     /**
      * @param null|int $userId
      */
-    public function setUserId($userId) {
-        if (!is_null($userId)) {
+    public function setUserId($userId)
+    {
+        if (! is_null($userId)) {
             $userId = (int) $userId;
         }
         $this->userId = $userId;
@@ -80,15 +82,17 @@ class User extends AbstractDbTableEntry implements ArraySerializableInterface, I
     /**
      * @return null|string
      */
-    public function getUsername() {
+    public function getUsername()
+    {
         return $this->username;
     }
 
     /**
      * @param null|string $username
      */
-    public function setUsername($username) {
-        if (!is_null($username)) {
+    public function setUsername($username)
+    {
+        if (! is_null($username)) {
             $username = (string) $username;
         }
         $this->username = $username;
@@ -97,15 +101,17 @@ class User extends AbstractDbTableEntry implements ArraySerializableInterface, I
     /**
      * @return null|string
      */
-    public function getEmail() {
+    public function getEmail()
+    {
         return $this->email;
     }
 
     /**
      * @param null|string $email
      */
-    public function setEmail($email) {
-        if (!is_null($email)) {
+    public function setEmail($email)
+    {
+        if (! is_null($email)) {
             $email = (string) $email;
         }
         $this->email = $email;
@@ -114,15 +120,17 @@ class User extends AbstractDbTableEntry implements ArraySerializableInterface, I
     /**
      * @return null|string
      */
-    public function getDisplayName() {
+    public function getDisplayName()
+    {
         return $this->displayName;
     }
 
     /**
      * @param null|string $displayName
      */
-    public function setDisplayName($displayName) {
-        if (!is_null($displayName)) {
+    public function setDisplayName($displayName)
+    {
+        if (! is_null($displayName)) {
             $displayName = (string) $displayName;
         }
         $this->displayName = $displayName;
@@ -131,15 +139,17 @@ class User extends AbstractDbTableEntry implements ArraySerializableInterface, I
     /**
      * @return null|string
      */
-    public function getPassword() {
+    public function getPassword()
+    {
         return $this->password;
     }
 
     /**
      * @param null|string $password
      */
-    public function setPassword($password) {
-        if (!is_null($password)) {
+    public function setPassword($password)
+    {
+        if (! is_null($password)) {
             $password = (string) $password;
         }
         $this->password = $password;
@@ -148,15 +158,17 @@ class User extends AbstractDbTableEntry implements ArraySerializableInterface, I
     /**
      * @return null|string
      */
-    public function getPasswordVerify() {
+    public function getPasswordVerify()
+    {
         return $this->passwordVerify;
     }
 
     /**
      * @param null|string $passwordVerify
      */
-    public function setPasswordVerify($passwordVerify) {
-        if (!is_null($passwordVerify)) {
+    public function setPasswordVerify($passwordVerify)
+    {
+        if (! is_null($passwordVerify)) {
             $passwordVerify = (string) $passwordVerify;
         }
         $this->passwordVerify = $passwordVerify;
@@ -182,37 +194,37 @@ class User extends AbstractDbTableEntry implements ArraySerializableInterface, I
             ],
         ]);
         $inputFilter->add([
-            'name'       => 'username',
-            'required'   => true,
-            'filters'    => [
+            'name' => 'username',
+            'required' => true,
+            'filters' => [
                 ['name' => StripTags::class],
                 ['name' => StringTrim::class],
             ],
             'validators' => [
                 [
-                    'name'    => StringLength::class,
+                    'name' => StringLength::class,
                     'options' => [
                         'encoding' => 'UTF-8',
-                        'min'      => 3,
-                        'max'      => 255,
+                        'min' => 3,
+                        'max' => 255,
                     ],
                 ],
             ],
         ]);
         $inputFilter->add([
-            'name'       => 'email',
-            'required'   => true,
-            'filters'    => [
+            'name' => 'email',
+            'required' => true,
+            'filters' => [
                 ['name' => StripTags::class],
                 ['name' => StringTrim::class],
             ],
             'validators' => [
                 [
-                    'name'    => StringLength::class,
+                    'name' => StringLength::class,
                     'options' => [
                         'encoding' => 'UTF-8',
-                        'min'      => 1,
-                        'max'      => 255,
+                        'min' => 1,
+                        'max' => 255,
                     ],
                 ],
                 [
@@ -221,57 +233,57 @@ class User extends AbstractDbTableEntry implements ArraySerializableInterface, I
             ],
         ]);
         $inputFilter->add([
-            'name'       => 'display_name',
-            'required'   => true,
-            'filters'    => [
+            'name' => 'display_name',
+            'required' => true,
+            'filters' => [
                 ['name' => StripTags::class],
                 ['name' => StringTrim::class],
             ],
             'validators' => [
                 [
-                    'name'    => StringLength::class,
+                    'name' => StringLength::class,
                     'options' => [
                         'encoding' => 'UTF-8',
-                        'min'      => 3,
-                        'max'      => 50,
+                        'min' => 3,
+                        'max' => 50,
                     ],
                 ],
             ],
         ]);
         $inputFilter->add([
-            'name'       => 'password',
-            'required'   => true,
-            'filters'    => [
+            'name' => 'password',
+            'required' => true,
+            'filters' => [
                 ['name' => StripTags::class],
                 ['name' => StringTrim::class],
             ],
             'validators' => [
                 [
-                    'name'    => StringLength::class,
+                    'name' => StringLength::class,
                     'options' => [
                         'encoding' => 'UTF-8',
-                        'min'      => 6,
+                        'min' => 6,
                     ],
                 ],
             ],
         ]);
         $inputFilter->add([
-            'name'       => 'passwordVerify',
-            'required'   => true,
-            'filters'    => [
+            'name' => 'passwordVerify',
+            'required' => true,
+            'filters' => [
                 ['name' => StripTags::class],
                 ['name' => StringTrim::class],
             ],
             'validators' => [
                 [
-                    'name'    => StringLength::class,
+                    'name' => StringLength::class,
                     'options' => [
                         'encoding' => 'UTF-8',
-                        'min'      => 6,
+                        'min' => 6,
                     ],
                 ],
                 [
-                    'name'    => 'Identical',
+                    'name' => 'Identical',
                     'options' => [
                         'token' => 'password',
                     ],
@@ -289,12 +301,12 @@ class User extends AbstractDbTableEntry implements ArraySerializableInterface, I
      */
     public function exchangeArray(array $array)
     {
-        $this->UserId = !empty($array['user_id']) ? $array['user_id'] : null;
-        $this->Username = !empty($array['username']) ? $array['username'] : null;
-        $this->Email = !empty($array['email']) ? $array['email'] : null;
-        $this->DisplayName = !empty($array['display_name']) ? $array['display_name'] : null;
-        $this->Password = !empty($array['password']) ? $array['password'] : null;
-        $this->PasswordVerify = !empty($array['password_verify']) ? $array['password_verify'] : null;
+        $this->setUserId(isset($array['user_id']) ? $array['user_id'] : null);
+        $this->setUsername(isset($array['username']) ? $array['username'] : null);
+        $this->setEmail(isset($array['email']) ? $array['email'] : null);
+        $this->setDisplayName(isset($array['display_name']) ? $array['display_name'] : null);
+        $this->setPassword(isset($array['password']) ? $array['password'] : null);
+        $this->setPasswordVerify(isset($array['password_verify']) ? $array['password_verify'] : null);
     }
 
     /**
@@ -304,12 +316,12 @@ class User extends AbstractDbTableEntry implements ArraySerializableInterface, I
     public function getArrayCopy()
     {
         return [
-            'user_id' => $this->UserId,
-            'username' => $this->Username,
-            'email' => $this->Email,
-            'display_name' => $this->DisplayName,
-            'password' => $this->Password,
-            'password_verify' => $this->PasswordVerify,
+            'user_id' => $this->getUserId(),
+            'username' => $this->getUsername(),
+            'email' => $this->getEmail(),
+            'display_name' => $this->getDisplayName(),
+            'password' => $this->getPassword(),
+            'password_verify' => $this->getPasswordVerify(),
         ];
     }
 }
