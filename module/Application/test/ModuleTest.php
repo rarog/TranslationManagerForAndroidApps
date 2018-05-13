@@ -17,6 +17,7 @@ namespace ApplicationTest\View\Helper;
 use Application\Module;
 use Application\Listener\RbacListener;
 use Application\Model\UserLanguagesTable;
+use Application\Model\UserSettings;
 use Application\Model\UserSettingsTable;
 use Application\Model\UserTable;
 use Application\View\Strategy\SetupAwareRedirectStrategy;
@@ -53,10 +54,9 @@ use ZfcUser\Authentication\Adapter\AdapterChain;
 use ZfcUser\Entity\UserInterface;
 use ZfcUser\Mapper\User as UserMapper;
 use ReflectionClass;
-use phpmock\MockBuilder;
-use stdClass;
-use Application\Model\UserSettings;
 use RuntimeException;
+use stdClass;
+use phpmock\MockBuilder;
 
 class ModuleTest extends TestCase
 {
