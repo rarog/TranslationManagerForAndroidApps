@@ -22,6 +22,7 @@ use Application\Model\UserTable;
 use Application\View\Strategy\SetupAwareRedirectStrategy;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Zend\Authentication\AuthenticationService;
 use Zend\Cache\Storage\Adapter\AbstractAdapter;
 use Zend\Console\Console;
 use Zend\Db\Adapter\AdapterInterface;
@@ -49,10 +50,13 @@ use Zend\Session\Validator\Id;
 use Zend\Session\Validator\RemoteAddr;
 use Zend\Validator\AbstractValidator;
 use ZfcUser\Authentication\Adapter\AdapterChain;
+use ZfcUser\Entity\UserInterface;
 use ZfcUser\Mapper\User as UserMapper;
 use ReflectionClass;
 use phpmock\MockBuilder;
 use stdClass;
+use Application\Model\UserSettings;
+use RuntimeException;
 
 class ModuleTest extends TestCase
 {
@@ -487,5 +491,96 @@ class ModuleTest extends TestCase
         ]);
 
         $this->assertSame($i18ntranslator->reveal(), AbstractValidator::getDefaultTranslator()->getTranslator());
+    }
+
+    public function testBootstrapUserSettings()
+    {
+        $userId = 12;
+
+        $userSettings = [
+            'user_id' => $userId,
+            'locale' => 'de_DE',
+        ];
+
+        $user = $this->prophesize(UserInterface::class);
+        $user->getId()->willReturn($userId)->shouldBeCalledTimes(1);
+
+        $authenticationService = $this->prophesize(AuthenticationService::class);
+        $authenticationService->hasIdentity()
+            ->willReturn(true)
+            ->shouldBeCalledTimes(2);
+        $authenticationService->getIdentity()
+            ->willReturn($user->reveal())
+            ->shouldBeCalledTimes(1);
+
+        $userSettingsTable = $this->prophesize(UserSettingsTable::class);
+        $userSettingsTable->getUserSettings($userId)
+            ->willReturn(new UserSettings($userSettings))
+            ->shouldBeCalledTimes(1);
+
+        $this->serviceManager->setService('zfcuser_auth_service', $authenticationService->reveal());
+        $this->serviceManager->setService(UserSettingsTable::class, $userSettingsTable->reveal());
+
+        $userSettingsProperty = $this->moduleReflection->getProperty('userSettings');
+        $userSettingsProperty->setAccessible(true);
+        $this->assertNull($userSettingsProperty->getValue($this->module));
+
+        $bootstrapUserSettings = $this->moduleReflection->getMethod('bootstrapUserSettings');
+        $bootstrapUserSettings->setAccessible(true);
+
+        // 1st call
+        $bootstrapUserSettings->invokeArgs($this->module, [
+            $this->event,
+        ]);
+
+        $userSettingsContainer = $userSettingsProperty->getValue($this->module);
+        $this->assertInstanceOf(Container::class, $userSettingsContainer);
+        $this->assertEquals(array_merge([
+            'init' => 1
+        ], $userSettings), $userSettingsContainer->getArrayCopy());
+
+        // 2nd call
+        $bootstrapUserSettings->invokeArgs($this->module, [
+            $this->event,
+        ]);
+    }
+
+    public function testBootstrapUserSettingsUserSettingsTableThrowsException()
+    {
+        $userId = 12;
+
+        $user = $this->prophesize(UserInterface::class);
+        $user->getId()->willReturn($userId)->shouldBeCalledTimes(1);
+
+        $authenticationService = $this->prophesize(AuthenticationService::class);
+        $authenticationService->hasIdentity()
+            ->willReturn(true)
+            ->shouldBeCalledTimes(1);
+        $authenticationService->getIdentity()
+            ->willReturn($user->reveal())
+            ->shouldBeCalledTimes(1);
+
+        $userSettingsTable = $this->prophesize(UserSettingsTable::class);
+        $userSettingsTable->getUserSettings($userId)
+            ->willThrow(new RuntimeException())
+            ->shouldBeCalledTimes(1);
+
+        $this->serviceManager->setService('zfcuser_auth_service', $authenticationService->reveal());
+        $this->serviceManager->setService(UserSettingsTable::class, $userSettingsTable->reveal());
+
+        $userSettingsProperty = $this->moduleReflection->getProperty('userSettings');
+        $userSettingsProperty->setAccessible(true);
+        $this->assertNull($userSettingsProperty->getValue($this->module));
+
+        $userSettings = new Container('userSettings');
+        $userSettings->exchangeArray([]);
+
+        $bootstrapUserSettings = $this->moduleReflection->getMethod('bootstrapUserSettings');
+        $bootstrapUserSettings->setAccessible(true);
+        $bootstrapUserSettings->invokeArgs($this->module, [
+            $this->event,
+        ]);
+
+        $this->assertNull($userSettingsProperty->getValue($this->module));
     }
 }

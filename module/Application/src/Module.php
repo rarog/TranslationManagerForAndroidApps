@@ -202,7 +202,7 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Ser
             $userSettingsTable = $serviceManager->get(Model\UserSettingsTable::class);
             try {
                 $userSettings = $userSettingsTable->getUserSettings($auth->getIdentity()->getId());
-            } catch (RuntimeException $e) {
+            } catch (RuntimeException $e) {echo $e->getMessage();
                 $this->userSettings = null;
                 return;
             }
