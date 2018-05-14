@@ -66,12 +66,12 @@ class UserTable
     {
         $select = new Select();
         $select->columns([
-            'user_id',
-        ])
+                'user_id',
+            ])
             ->from('team_member')
             ->where([
-            'team_id' => $teamId,
-        ]);
+                'team_id' => $teamId,
+            ]);
 
         $where = new Where();
         $where->notIn('user_id', $select);
@@ -82,18 +82,26 @@ class UserTable
     /**
      * Get entry
      *
-     * @param int $id
+     * @param int $userId
      * @throws RuntimeException
-     * @return \ZfcUser\Entity\User
+     * @return \Application\Model\User
      */
-    public function getUser(int $id)
+    public function getUser(int $userId)
     {
-        $row = $this->userMapper->findById($id);
-        if (! $row) {
-            throw new RuntimeException(sprintf('Could not find row with identifier %d', $id));
+        $zfcUser = $this->userMapper->findById($userId);
+        if (! $zfcUser) {
+            throw new RuntimeException(sprintf('Could not find row with identifier %d', $userId));
         }
 
-        return $row;
+        $user = new User();
+        $user->setUserId($zfcUser->getId());
+        $user->setUsername($zfcUser->getUsername());
+        $user->setEmail($zfcUser->getEmail());
+        $user->setDisplayName($zfcUser->getDisplayName());
+        $user->setPassword($zfcUser->getPassword());
+        $user->setState($zfcUser->getState());
+
+        return $user;
     }
 
     /**
@@ -109,20 +117,20 @@ class UserTable
     {
         $select = new Select();
         $select->columns([
-            'userId' => 'user_id',
-            'username',
-            'email',
-            'displayName' => 'display_name',
-            'state',
-        ])
+                'userId' => 'user_id',
+                'username',
+                'email',
+                'displayName' => 'display_name',
+                'state',
+            ])
             ->from($this->tableGateway->table)
             ->join('user_role_linker', 'user_role_linker.user_id = user.user_id', [
-            'roleId' => 'role_id'
-        ], Select::JOIN_INNER)
+                'roleId' => 'role_id'
+            ], Select::JOIN_INNER)
             ->join('team_member', 'team_member.user_id = user.user_id', [], Select::JOIN_LEFT)
             ->join('team', 'team.id = team_member.team_id', [
-            'teamName' => 'name',
-        ], Select::JOIN_LEFT);
+                'teamName' => 'name',
+            ], Select::JOIN_LEFT);
 
         if ($limitToActiveUsers) {
             $select->where('state = 1');
