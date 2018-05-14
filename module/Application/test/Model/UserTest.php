@@ -28,6 +28,7 @@ class UserTest extends TestCase
         'display_name' => 'A user',
         'password' => 123456789,
         'password_verify' => 123456789,
+        'state' => 1,
     ];
 
     public function testConstructor()
@@ -40,6 +41,7 @@ class UserTest extends TestCase
         $this->assertNull($user->getDisplayName());
         $this->assertNull($user->getPassword());
         $this->assertNull($user->getPasswordVerify());
+        $this->assertNull($user->getState());
 
         $user = new User($this->exampleArrayData);
 
@@ -67,6 +69,10 @@ class UserTest extends TestCase
             $this->exampleArrayData['password_verify'],
             $user->getPasswordVerify()
         );
+        $this->assertEquals(
+            $this->exampleArrayData['state'],
+            $user->getState()
+        );
     }
 
     public function testSetterAndGetters()
@@ -78,6 +84,7 @@ class UserTest extends TestCase
         $user->setDisplayName($this->exampleArrayData['display_name']);
         $user->setPassword($this->exampleArrayData['password']);
         $user->setPasswordVerify($this->exampleArrayData['password_verify']);
+        $user->setState($this->exampleArrayData['state']);
 
         $this->assertEquals(
             $this->exampleArrayData['user_id'],
@@ -98,10 +105,14 @@ class UserTest extends TestCase
         $this->assertEquals(
             $this->exampleArrayData['password'],
             $user->getPassword()
-            );
+        );
         $this->assertEquals(
             $this->exampleArrayData['password_verify'],
             $user->getPasswordVerify()
+        );
+        $this->assertEquals(
+            $this->exampleArrayData['state'],
+            $user->getState()
         );
     }
 

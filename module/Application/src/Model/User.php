@@ -26,34 +26,39 @@ use Zend\Validator\StringLength;
 class User extends AbstractDbTableEntry implements ArraySerializableInterface, InputFilterAwareInterface
 {
     /**
-     * @var int
+     * @var null|int
      */
     private $userId;
 
     /**
-     * @var string
+     * @var null|string
      */
     private $username;
 
     /**
-     * @var string
+     * @var null|string
      */
     private $email;
 
     /**
-     * @var string
+     * @var null|string
      */
     private $displayName;
 
     /**
-     * @var string
+     * @var null|string
      */
     private $password;
 
     /**
-     * @var string
+     * @var null|string
      */
     private $passwordVerify;
+
+    /**
+     * @var null|int
+     */
+    private $state;
 
     /**
      * @var InputFilter
@@ -175,6 +180,25 @@ class User extends AbstractDbTableEntry implements ArraySerializableInterface, I
     }
 
     /**
+     * @return null|int
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * @param null|string $state
+     */
+    public function setState($state)
+    {
+        if (! is_null($state)) {
+            $state = (int) $state;
+        }
+        $this->state = $state;
+    }
+
+    /**
      * {@inheritDoc}
      * @see \Zend\InputFilter\InputFilterAwareInterface::getInputFilter()
      */
@@ -187,9 +211,9 @@ class User extends AbstractDbTableEntry implements ArraySerializableInterface, I
         $inputFilter = new InputFilter();
 
         $inputFilter->add([
-            'name'     => 'user_id',
+            'name' => 'user_id',
             'required' => true,
-            'filters'  => [
+            'filters' => [
                 ['name' => ToInt::class],
             ],
         ]);
@@ -290,6 +314,15 @@ class User extends AbstractDbTableEntry implements ArraySerializableInterface, I
                 ],
             ],
         ]);
+        $inputFilter->add([
+            'name' => 'state',
+            'required' => false,
+            'filters' => [
+                [
+                    'name' => ToInt::class,
+                ],
+            ],
+        ]);
 
         $this->inputFilter = $inputFilter;
         return $this->inputFilter;
@@ -307,6 +340,7 @@ class User extends AbstractDbTableEntry implements ArraySerializableInterface, I
         $this->setDisplayName(isset($array['display_name']) ? $array['display_name'] : null);
         $this->setPassword(isset($array['password']) ? $array['password'] : null);
         $this->setPasswordVerify(isset($array['password_verify']) ? $array['password_verify'] : null);
+        $this->setState(isset($array['state']) ? $array['state'] : null);
     }
 
     /**
@@ -322,6 +356,7 @@ class User extends AbstractDbTableEntry implements ArraySerializableInterface, I
             'display_name' => $this->getDisplayName(),
             'password' => $this->getPassword(),
             'password_verify' => $this->getPasswordVerify(),
+            'state' => $this->getState(),
         ];
     }
 }
