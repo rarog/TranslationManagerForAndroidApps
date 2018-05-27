@@ -25,10 +25,11 @@ class AbstractDbTableEntryTest extends TestCase
 
     private $testValue = 'someValue';
 
-    protected function setUp()
+    private function getNewAbstractDbTableEntry(array $data = null)
     {
-        $this->abstractDbTableEntry = new class extends AbstractDbTableEntry {
+        return new class($data) extends AbstractDbTableEntry {
             private $someProperty;
+            public $exchangeArrayParameter;
 
             public function getSomeProperty()
             {
@@ -42,24 +43,45 @@ class AbstractDbTableEntryTest extends TestCase
 
             public function getInputFilter()
             {
-
             }
 
             public function exchangeArray(array $array)
             {
-
+                $this->exchangeArrayParameter = $array;
             }
 
             public function getArrayCopy()
             {
-
             }
         };
+    }
+
+    protected function setUp()
+    {
+        $this->abstractDbTableEntry = $this->getNewAbstractDbTableEntry();
     }
 
     protected function tearDown()
     {
         unset($this->abstractDbTableEntry);
+    }
+
+    public function testConstructor()
+    {
+        $abstractDbTableEntry1 = $this->getNewAbstractDbTableEntry();
+        $this->assertNull($abstractDbTableEntry1->exchangeArrayParameter);
+
+        $array1 = [
+            'someProperty' => 'someValue',
+        ];
+        $abstractDbTableEntry2 = $this->getNewAbstractDbTableEntry($array1);
+        $this->assertEquals($array1, $abstractDbTableEntry2->exchangeArrayParameter);
+
+        $array2 = [
+            'anotherProperty' => 'anotherValue',
+        ];
+        $abstractDbTableEntry3 = $this->getNewAbstractDbTableEntry($array2);
+        $this->assertEquals($array2, $abstractDbTableEntry3->exchangeArrayParameter);
     }
 
     public function testSetInputFilter()

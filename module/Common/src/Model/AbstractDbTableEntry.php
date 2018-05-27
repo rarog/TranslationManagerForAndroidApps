@@ -16,7 +16,9 @@ namespace Common\Model;
 
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
-use Zend\Stdlib\ArraySerializableInterface;
+use Zend\Stdlib\ArraySerializableInterface;#
+use DomainException;
+use RuntimeException;
 
 abstract class AbstractDbTableEntry implements ArraySerializableInterface, InputFilterAwareInterface
 {
@@ -34,14 +36,14 @@ abstract class AbstractDbTableEntry implements ArraySerializableInterface, Input
 
     /**
      * @param string $name
-     * @throws \Exception
+     * @throws RuntimeException
      * @return mixed
      */
     public function __get(string $name)
     {
         $method = 'get' . $name;
-        if (!method_exists($this, $method)) {
-            throw new \Exception('Invalid property');
+        if (! method_exists($this, $method)) {
+            throw new RuntimeException('Invalid property');
         }
         return $this->$method();
     }
@@ -49,13 +51,13 @@ abstract class AbstractDbTableEntry implements ArraySerializableInterface, Input
     /**
      * @param string $name
      * @param mixed $value
-     * @throws \Exception
+     * @throws RuntimeException
      */
     public function __set(string $name, $value)
     {
         $method = 'set' . $name;
-        if (!method_exists($this, $method)) {
-            throw new \Exception('Invalid property');
+        if (! method_exists($this, $method)) {
+            throw new RuntimeException('Invalid property');
         }
         $this->$method($value);
     }
@@ -66,7 +68,7 @@ abstract class AbstractDbTableEntry implements ArraySerializableInterface, Input
      */
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
-        throw new \DomainException(sprintf(
+        throw new DomainException(sprintf(
             '%s does not allow injection of an alternate input filter.',
             __CLASS__
         ));
