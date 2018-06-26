@@ -23,7 +23,9 @@ use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\Stdlib\ArraySerializableInterface;
 use Zend\Validator\StringLength;
 
-class UserLanguages extends AbstractDbTableEntry implements ArraySerializableInterface, InputFilterAwareInterface
+class UserLanguages extends AbstractDbTableEntry implements
+    ArraySerializableInterface,
+    InputFilterAwareInterface
 {
     /**
      * @var int
@@ -36,22 +38,19 @@ class UserLanguages extends AbstractDbTableEntry implements ArraySerializableInt
     private $locale;
 
     /**
-     * @var InputFilter
-     */
-    private $inputFilter;
-
-    /**
      * @return null|int
      */
-    public function getUserId() {
+    public function getUserId()
+    {
         return $this->userId;
     }
 
     /**
      * @param null|int $userId
      */
-    public function setUserId($userId) {
-        if (!is_null($userId)) {
+    public function setUserId($userId)
+    {
+        if (! is_null($userId)) {
             $userId = (int) $userId;
         }
         $this->userId = $userId;
@@ -60,15 +59,17 @@ class UserLanguages extends AbstractDbTableEntry implements ArraySerializableInt
     /**
      * @return null|string
      */
-    public function getLocale() {
+    public function getLocale()
+    {
         return $this->locale;
     }
 
     /**
      * @param null|string $locale
      */
-    public function setLocale($locale) {
-        if (!is_null($locale)) {
+    public function setLocale($locale)
+    {
+        if (! is_null($locale)) {
             $locale = (string) $locale;
         }
         $this->locale = $locale;
@@ -87,26 +88,26 @@ class UserLanguages extends AbstractDbTableEntry implements ArraySerializableInt
         $inputFilter = new InputFilter();
 
         $inputFilter->add([
-            'name'     => 'user_id',
+            'name' => 'user_id',
             'required' => true,
-            'filters'  => [
+            'filters' => [
                 ['name' => ToInt::class],
             ],
         ]);
         $inputFilter->add([
-            'name'       => 'username',
-            'required'   => true,
-            'filters'    => [
+            'name' => 'username',
+            'required' => true,
+            'filters' => [
                 ['name' => StripTags::class],
                 ['name' => StringTrim::class],
             ],
             'validators' => [
                 [
-                    'name'    => StringLength::class,
+                    'name' => StringLength::class,
                     'options' => [
                         'encoding' => 'UTF-8',
-                        'min'      => 1,
-                        'max'      => 20,
+                        'min' => 1,
+                        'max' => 20,
                     ],
                 ],
             ],
@@ -122,8 +123,8 @@ class UserLanguages extends AbstractDbTableEntry implements ArraySerializableInt
      */
     public function exchangeArray(array $array)
     {
-        $this->UserId = !empty($array['user_id']) ? $array['user_id'] : null;
-        $this->Locale = !empty($array['locale']) ? $array['locale'] : null;
+        $this->setUserId(isset($array['user_id']) ? $array['user_id'] : null);
+        $this->setLocale(isset($array['locale']) ? $array['locale'] : null);
     }
 
     /**
@@ -133,8 +134,8 @@ class UserLanguages extends AbstractDbTableEntry implements ArraySerializableInt
     public function getArrayCopy()
     {
         return [
-            'user_id' => $this->UserId,
-            'locale' => $this->Locale,
+            'user_id' => $this->getUserId(),
+            'locale' => $this->getLocale(),
         ];
     }
 }

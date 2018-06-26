@@ -27,7 +27,10 @@ use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\Stdlib\ArraySerializableInterface;
 use Zend\Validator\StringLength;
 
-class AppResourceFile extends AbstractDbTableEntry implements AdapterAwareInterface, ArraySerializableInterface, InputFilterAwareInterface
+class AppResourceFile extends AbstractDbTableEntry implements
+    AdapterAwareInterface,
+    ArraySerializableInterface,
+    InputFilterAwareInterface
 {
     use AdapterAwareTrait;
 
@@ -47,22 +50,19 @@ class AppResourceFile extends AbstractDbTableEntry implements AdapterAwareInterf
     private $name;
 
     /**
-     * @var InputFilter
-     */
-    private $inputFilter;
-
-    /**
      * @return null|int
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
     /**
      * @param null|int $id
      */
-    public function setId($id) {
-        if (!is_null($id)) {
+    public function setId($id)
+    {
+        if (! is_null($id)) {
             $id = (int) $id;
         }
         $this->id = $id;
@@ -71,15 +71,17 @@ class AppResourceFile extends AbstractDbTableEntry implements AdapterAwareInterf
     /**
      * @return null|int
      */
-    public function getAppId() {
+    public function getAppId()
+    {
         return $this->appId;
     }
 
     /**
      * @param null|int $appId
      */
-    public function setAppId($appId) {
-        if (!is_null($appId)) {
+    public function setAppId($appId)
+    {
+        if (! is_null($appId)) {
             $appId = (int) $appId;
         }
         $this->appId = $appId;
@@ -88,15 +90,17 @@ class AppResourceFile extends AbstractDbTableEntry implements AdapterAwareInterf
     /**
      * @return null|string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
     /**
      * @param null|string $name
      */
-    public function setName($name) {
-        if (!is_null($name)) {
+    public function setName($name)
+    {
+        if (! is_null($name)) {
             $name = (string) $name;
         }
         $this->name = $name;
@@ -164,9 +168,9 @@ class AppResourceFile extends AbstractDbTableEntry implements AdapterAwareInterf
      */
     public function exchangeArray(array $array)
     {
-        $this->Id = !empty($array['id']) ? $array['id'] : null;
-        $this->AppId = !empty($array['app_id']) ? (int) $array['app_id'] : null;
-        $this->Name = !empty($array['name']) ? (string) $array['name'] : null;
+        $this->setId(isset($array['id']) ? $array['id'] : null);
+        $this->setAppId(isset($array['app_id']) ? (int) $array['app_id'] : null);
+        $this->setName(isset($array['name']) ? (string) $array['name'] : null);
     }
 
     /**
@@ -176,9 +180,9 @@ class AppResourceFile extends AbstractDbTableEntry implements AdapterAwareInterf
     public function getArrayCopy()
     {
         return [
-            'id' => $this->Id,
-            'app_id' => $this->AppId,
-            'name' => $this->Name,
+            'id' => $this->getId(),
+            'app_id' => $this->getAppId(),
+            'name' => $this->getName(),
         ];
     }
 }

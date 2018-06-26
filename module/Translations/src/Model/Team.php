@@ -23,7 +23,9 @@ use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\Stdlib\ArraySerializableInterface;
 use Zend\Validator\StringLength;
 
-class Team extends AbstractDbTableEntry implements ArraySerializableInterface, InputFilterAwareInterface
+class Team extends AbstractDbTableEntry implements
+    ArraySerializableInterface,
+    InputFilterAwareInterface
 {
     /**
      * @var null|int
@@ -36,22 +38,19 @@ class Team extends AbstractDbTableEntry implements ArraySerializableInterface, I
     private $name;
 
     /**
-     * @var InputFilter
-     */
-    private $inputFilter;
-
-    /**
      * @return null|int
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
     /**
      * @param null|int $id
      */
-    public function setId($id) {
-        if (!is_null($id)) {
+    public function setId($id)
+    {
+        if (! is_null($id)) {
             $id = (int) $id;
         }
         $this->id = $id;
@@ -60,15 +59,17 @@ class Team extends AbstractDbTableEntry implements ArraySerializableInterface, I
     /**
      * @return null|string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
     /**
      * @param null|string $name
      */
-    public function setName($name) {
-        if (!is_null($name)) {
+    public function setName($name)
+    {
+        if (! is_null($name)) {
             $name = (string) $name;
         }
         $this->name = $name;
@@ -122,8 +123,8 @@ class Team extends AbstractDbTableEntry implements ArraySerializableInterface, I
      */
     public function exchangeArray(array $array)
     {
-        $this->Id = !empty($array['id']) ? $array['id'] : null;
-        $this->Name = !empty($array['name']) ? $array['name'] : null;
+        $this->setId(isset($array['id']) ? $array['id'] : null);
+        $this->setName(isset($array['name']) ? $array['name'] : null);
     }
 
     /**
@@ -133,8 +134,8 @@ class Team extends AbstractDbTableEntry implements ArraySerializableInterface, I
     public function getArrayCopy()
     {
         return [
-            'id' => $this->Id,
-            'name' => $this->Name,
+            'id' => $this->getId(),
+            'name' => $this->getName(),
         ];
     }
 }

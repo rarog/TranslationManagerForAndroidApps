@@ -23,7 +23,9 @@ use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\Stdlib\ArraySerializableInterface;
 use Zend\Validator\StringLength;
 
-class SuggestionString extends AbstractDbTableEntry implements ArraySerializableInterface, InputFilterAwareInterface
+class SuggestionString extends AbstractDbTableEntry implements
+    ArraySerializableInterface,
+    InputFilterAwareInterface
 {
     /**
      * @var null|int
@@ -36,21 +38,18 @@ class SuggestionString extends AbstractDbTableEntry implements ArraySerializable
     private $value;
 
     /**
-     * @var InputFilter
-     */
-    private $inputFilter;
-
-    /**
      * @return null|int
      */
-    public function getSuggestionId() {
+    public function getSuggestionId()
+    {
         return $this->suggestionId;
     }
 
     /**
      * @param null|int $suggestionId
      */
-    public function setSuggestionId($suggestionId) {
+    public function setSuggestionId($suggestionId)
+    {
         if (! is_null($suggestionId)) {
             $suggestionId = (int) $suggestionId;
         }
@@ -60,14 +59,16 @@ class SuggestionString extends AbstractDbTableEntry implements ArraySerializable
     /**
      * @return null|string
      */
-    public function getValue() {
+    public function getValue()
+    {
         return $this->value;
     }
 
     /**
      * @param null|string $value
      */
-    public function setValue($value) {
+    public function setValue($value)
+    {
         if (! is_null($value)) {
             $value = (string) $value;
         }
@@ -122,8 +123,8 @@ class SuggestionString extends AbstractDbTableEntry implements ArraySerializable
      */
     public function exchangeArray(array $array)
     {
-        $this->SuggestionId = !empty($array['suggestion_id']) ? $array['suggestion_id'] : null;
-        $this->Value = !empty($array['value']) ? $array['value'] : null;
+        $this->setSuggestionId(isset($array['suggestion_id']) ? $array['suggestion_id'] : null);
+        $this->setValue(isset($array['value']) ? $array['value'] : null);
     }
 
     /**
@@ -133,8 +134,8 @@ class SuggestionString extends AbstractDbTableEntry implements ArraySerializable
     public function getArrayCopy()
     {
         return [
-            'suggestion_id' => $this->SuggestionId,
-            'value' => $this->Value,
+            'suggestion_id' => $this->getSuggestionId(),
+            'value' => $this->getValue(),
         ];
     }
 }

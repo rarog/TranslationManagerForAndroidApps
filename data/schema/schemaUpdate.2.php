@@ -34,4 +34,40 @@ return [
             ],
         ],
     ],
+    'setting' => [
+        'commandName' => 'CreateTable',
+        'tableName' => 'setting',
+        'addColumn' => [
+            [
+                'type' => 'BigInteger',
+                'name' => 'id',
+                'options' => [
+                    'autoincrement' => true,
+                ],
+            ],
+            [
+                'type' => 'Varchar',
+                'name' => 'path',
+                'length' => 255,
+            ],
+            [
+                'type' => 'Text',
+                'name' => 'value',
+                'length' => 255,
+                'nullable' => true,
+            ],
+        ],
+        'addConstraint' =>[
+            [
+                'type' => 'PrimaryKey',
+                'column' => 'id',
+                'name' => 'setting_pk',
+            ],
+            [
+                'type' => 'UniqueKey',
+                'column' => 'path',
+                'name' => 'setting_uk1',
+            ],
+        ],
+    ],
 ];

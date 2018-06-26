@@ -23,7 +23,9 @@ use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\Stdlib\ArraySerializableInterface;
 use Zend\Validator\StringLength;
 
-class ResourceType extends AbstractDbTableEntry implements ArraySerializableInterface, InputFilterAwareInterface
+class ResourceType extends AbstractDbTableEntry implements
+    ArraySerializableInterface,
+    InputFilterAwareInterface
 {
     /**
      * @var null|int
@@ -41,22 +43,19 @@ class ResourceType extends AbstractDbTableEntry implements ArraySerializableInte
     private $nodeName;
 
     /**
-     * @var InputFilter
-     */
-    private $inputFilter;
-
-    /**
      * @return null|int
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
     /**
      * @param null|int $id
      */
-    public function setId($id) {
-        if (!is_null($id)) {
+    public function setId($id)
+    {
+        if (! is_null($id)) {
             $id = (int) $id;
         }
         $this->id = $id;
@@ -65,15 +64,17 @@ class ResourceType extends AbstractDbTableEntry implements ArraySerializableInte
     /**
      * @return null|string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
     /**
      * @param null|string $name
      */
-    public function setName($name) {
-        if (!is_null($name)) {
+    public function setName($name)
+    {
+        if (! is_null($name)) {
             $name = (string) $name;
         }
         $this->name = $name;
@@ -82,15 +83,17 @@ class ResourceType extends AbstractDbTableEntry implements ArraySerializableInte
     /**
      * @return null|string
      */
-    public function getNodeName() {
+    public function getNodeName()
+    {
         return $this->nodeName;
     }
 
     /**
      * @param null|string $nodeName
      */
-    public function setNodeName($nodeName) {
-        if (!is_null($nodeName)) {
+    public function setNodeName($nodeName)
+    {
+        if (! is_null($nodeName)) {
             $nodeName = (string) $nodeName;
         }
         $this->nodeName = $nodeName;
@@ -162,9 +165,9 @@ class ResourceType extends AbstractDbTableEntry implements ArraySerializableInte
      */
     public function exchangeArray(array $array)
     {
-        $this->Id = !empty($array['id']) ? $array['id'] : null;
-        $this->Name = !empty($array['name']) ? $array['name'] : null;
-        $this->NodeName = !empty($array['node_name']) ? $array['node_name'] : null;
+        $this->setId(isset($array['id']) ? $array['id'] : null);
+        $this->setName(isset($array['name']) ? $array['name'] : null);
+        $this->setNodeName(isset($array['node_name']) ? $array['node_name'] : null);
     }
 
     /**
@@ -174,9 +177,9 @@ class ResourceType extends AbstractDbTableEntry implements ArraySerializableInte
     public function getArrayCopy()
     {
         return [
-            'id' => $this->Id,
-            'name' => $this->Name,
-            'node_name' => $this->NodeName,
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'node_name' => $this->getNodeName(),
         ];
     }
 }

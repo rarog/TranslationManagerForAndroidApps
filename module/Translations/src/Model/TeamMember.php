@@ -20,7 +20,9 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\Stdlib\ArraySerializableInterface;
 
-class TeamMember extends AbstractDbTableEntry implements ArraySerializableInterface, InputFilterAwareInterface
+class TeamMember extends AbstractDbTableEntry implements
+    ArraySerializableInterface,
+    InputFilterAwareInterface
 {
     /**
      * @var null|int
@@ -57,22 +59,19 @@ class TeamMember extends AbstractDbTableEntry implements ArraySerializableInterf
     private $teamName;
 
     /**
-     * @var InputFilter
-     */
-    private $inputFilter;
-
-    /**
      * @return null|int
      */
-    public function getUserId() {
+    public function getUserId()
+    {
         return $this->userId;
     }
 
     /**
      * @param null|int $userId
      */
-    public function setUserId($userId) {
-        if (!is_null($userId)) {
+    public function setUserId($userId)
+    {
+        if (! is_null($userId)) {
             $userId = (int) $userId;
         }
         $this->userId = $userId;
@@ -81,15 +80,17 @@ class TeamMember extends AbstractDbTableEntry implements ArraySerializableInterf
     /**
      * @return null|int
      */
-    public function getTeamId() {
+    public function getTeamId()
+    {
         return $this->teamId;
     }
 
     /**
      * @param null|int $teamId
      */
-    public function setTeamId($teamId) {
-        if (!is_null($teamId)) {
+    public function setTeamId($teamId)
+    {
+        if (! is_null($teamId)) {
             $teamId = (int) $teamId;
         }
         $this->teamId = $teamId;
@@ -98,15 +99,17 @@ class TeamMember extends AbstractDbTableEntry implements ArraySerializableInterf
     /**
      * @return null|string
      */
-    public function getUsername() {
+    public function getUsername()
+    {
         return $this->username;
     }
 
     /**
      * @param null|string $username
      */
-    public function setUsername($username) {
-        if (!is_null($username)) {
+    public function setUsername($username)
+    {
+        if (! is_null($username)) {
             $username = (string) $username;
         }
         $this->username = $username;
@@ -115,15 +118,17 @@ class TeamMember extends AbstractDbTableEntry implements ArraySerializableInterf
     /**
      * @return null|string
      */
-    public function getEmail() {
+    public function getEmail()
+    {
         return $this->email;
     }
 
     /**
      * @param null|string $email
      */
-    public function setEmail($email) {
-        if (!is_null($email)) {
+    public function setEmail($email)
+    {
+        if (! is_null($email)) {
             $email = (string) $email;
         }
         $this->email = $email;
@@ -132,15 +137,17 @@ class TeamMember extends AbstractDbTableEntry implements ArraySerializableInterf
     /**
      * @return null|string
      */
-    public function getDisplayName() {
+    public function getDisplayName()
+    {
         return $this->displayName;
     }
 
     /**
      * @param null|string $displayName
      */
-    public function setDisplayName($displayName) {
-        if (!is_null($displayName)) {
+    public function setDisplayName($displayName)
+    {
+        if (! is_null($displayName)) {
             $displayName = (string) $displayName;
         }
         $this->displayName = $displayName;
@@ -149,15 +156,17 @@ class TeamMember extends AbstractDbTableEntry implements ArraySerializableInterf
     /**
      * @return null|string
      */
-    public function getTeamName() {
+    public function getTeamName()
+    {
         return $this->teamName;
     }
 
     /**
      * @param null|string $teamName
      */
-    public function setTeamName($teamName) {
-        if (!is_null($teamName)) {
+    public function setTeamName($teamName)
+    {
+        if (! is_null($teamName)) {
             $teamName = (string) $teamName;
         }
         $this->teamName = $teamName;
@@ -200,12 +209,12 @@ class TeamMember extends AbstractDbTableEntry implements ArraySerializableInterf
      */
     public function exchangeArray(array $array)
     {
-        $this->UserId = !empty($array['user_id']) ? $array['user_id'] : null;
-        $this->TeamId = !empty($array['team_id']) ? $array['team_id'] : null;
-        $this->Username = !empty($array['username']) ? $array['username'] : null;
-        $this->Email = !empty($array['email']) ? $array['email'] : null;
-        $this->DisplayName = !empty($array['display_name']) ? $array['display_name'] : null;
-        $this->TeamName = !empty($array['team_name']) ? $array['team_name'] : null;
+        $this->setUserId(isset($array['user_id']) ? $array['user_id'] : null);
+        $this->setTeamId(isset($array['team_id']) ? $array['team_id'] : null);
+        $this->setUsername(isset($array['username']) ? $array['username'] : null);
+        $this->setEmail(isset($array['email']) ? $array['email'] : null);
+        $this->setDisplayName(isset($array['display_name']) ? $array['display_name'] : null);
+        $this->setTeamName(isset($array['team_name']) ? $array['team_name'] : null);
     }
 
     /**
@@ -215,12 +224,12 @@ class TeamMember extends AbstractDbTableEntry implements ArraySerializableInterf
     public function getArrayCopy()
     {
         return [
-            'user_id' => $this->UserId,
-            'team_id' => $this->TeamId,
-            'username' => $this->Username,
-            'email' => $this->Email,
-            'display_name' => $this->DisplayName,
-            'team_name' => $this->TeamName,
+            'user_id' => $this->getUserId(),
+            'team_id' => $this->getTeamId(),
+            'username' => $this->getUsername(),
+            'email' => $this->getEmail(),
+            'display_name' => $this->getDisplayName(),
+            'team_name' => $this->getTeamName(),
         ];
     }
 }

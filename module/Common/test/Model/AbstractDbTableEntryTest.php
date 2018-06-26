@@ -18,13 +18,24 @@ use Common\Model\AbstractDbTableEntry;
 use PHPUnit\Framework\TestCase;
 use Zend\InputFilter\InputFilterInterface;
 use DomainException;
+use RuntimeException;
 
 class AbstractDbTableEntryTest extends TestCase
 {
+    /**
+     * @var AbstractDbTableEntry
+     */
     private $abstractDbTableEntry;
 
+    /**
+     * @var string
+     */
     private $testValue = 'someValue';
 
+    /**
+     * @param array $data
+     * @return anonymous class instance
+     */
     private function getNewAbstractDbTableEntry(array $data = null)
     {
         return new class($data) extends AbstractDbTableEntry {
@@ -56,16 +67,27 @@ class AbstractDbTableEntryTest extends TestCase
         };
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \PHPUnit\Framework\TestCase::setUp()
+     */
     protected function setUp()
     {
         $this->abstractDbTableEntry = $this->getNewAbstractDbTableEntry();
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \PHPUnit\Framework\TestCase::tearDown()
+     */
     protected function tearDown()
     {
         unset($this->abstractDbTableEntry);
     }
 
+    /**
+     * @covers Common\Model\AbstractDbTableEntry::__construct
+     */
     public function testConstructor()
     {
         $abstractDbTableEntry1 = $this->getNewAbstractDbTableEntry();
@@ -84,6 +106,9 @@ class AbstractDbTableEntryTest extends TestCase
         $this->assertEquals($array2, $abstractDbTableEntry3->exchangeArrayParameter);
     }
 
+    /**
+     * @covers Common\Model\AbstractDbTableEntry::setInputFilter
+     */
     public function testSetInputFilter()
     {
         $inputFilter = $this->prophesize(InputFilterInterface::class);
@@ -95,23 +120,33 @@ class AbstractDbTableEntryTest extends TestCase
         $this->abstractDbTableEntry->exchangeArray([]);
     }
 
+    /**
+     * @covers Common\Model\AbstractDbTableEntry::__get
+     * @covers Common\Model\AbstractDbTableEntry::__set
+     */
     public function testGetSetMagic()
     {
         $this->abstractDbTableEntry->SomeProperty = $this->testValue;
         $this->assertEquals($this->testValue, $this->abstractDbTableEntry->SomeProperty);
     }
 
+    /**
+     * @covers Common\Model\AbstractDbTableEntry::__get
+     */
     public function testGetMagicException()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Invalid property');
 
         $gettingValue = $this->abstractDbTableEntry->NonexistantProperty;
     }
 
+    /**
+     * @covers Common\Model\AbstractDbTableEntry::__set
+     */
     public function testSetMagicException()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Invalid property');
 
         $this->abstractDbTableEntry->NonexistantProperty = $this->testValue;

@@ -27,7 +27,10 @@ use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\Stdlib\ArraySerializableInterface;
 use Zend\Validator\StringLength;
 
-class AppResource extends AbstractDbTableEntry implements AdapterAwareInterface, ArraySerializableInterface, InputFilterAwareInterface
+class AppResource extends AbstractDbTableEntry implements
+    AdapterAwareInterface,
+    ArraySerializableInterface,
+    InputFilterAwareInterface
 {
     use AdapterAwareTrait;
 
@@ -57,22 +60,19 @@ class AppResource extends AbstractDbTableEntry implements AdapterAwareInterface,
     private $description;
 
     /**
-     * @var InputFilter
-     */
-    private $inputFilter;
-
-    /**
      * @return null|int
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
     /**
      * @param null|int $id
      */
-    public function setId($id) {
-        if (!is_null($id)) {
+    public function setId($id)
+    {
+        if (! is_null($id)) {
             $id = (int) $id;
         }
         $this->id = $id;
@@ -81,15 +81,17 @@ class AppResource extends AbstractDbTableEntry implements AdapterAwareInterface,
     /**
      * @return null|int
      */
-    public function getAppId() {
+    public function getAppId()
+    {
         return $this->appId;
     }
 
     /**
      * @param null|int $appId
      */
-    public function setAppId($appId) {
-        if (!is_null($appId)) {
+    public function setAppId($appId)
+    {
+        if (! is_null($appId)) {
             $appId = (int) $appId;
         }
         $this->appId = $appId;
@@ -98,15 +100,17 @@ class AppResource extends AbstractDbTableEntry implements AdapterAwareInterface,
     /**
      * @return null|string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
     /**
      * @param null|string $name
      */
-    public function setName($name) {
-        if (!is_null($name)) {
+    public function setName($name)
+    {
+        if (! is_null($name)) {
             $name = (string) $name;
         }
         $this->name = $name;
@@ -115,15 +119,17 @@ class AppResource extends AbstractDbTableEntry implements AdapterAwareInterface,
     /**
      * @return null|string
      */
-    public function getLocale() {
+    public function getLocale()
+    {
         return $this->locale;
     }
 
     /**
      * @param null|string $locale
      */
-    public function setLocale($locale) {
-        if (!is_null($locale)) {
+    public function setLocale($locale)
+    {
+        if (! is_null($locale)) {
             $locale = (string) $locale;
         }
         $this->locale = $locale;
@@ -132,15 +138,17 @@ class AppResource extends AbstractDbTableEntry implements AdapterAwareInterface,
     /**
      * @return null|string
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return $this->description;
     }
 
     /**
      * @param null|string $description
      */
-    public function setDescription($description) {
-        if (!is_null($description)) {
+    public function setDescription($description)
+    {
+        if (! is_null($description)) {
             $description = (string) $description;
         }
         $this->description = $description;
@@ -244,11 +252,11 @@ class AppResource extends AbstractDbTableEntry implements AdapterAwareInterface,
      */
     public function exchangeArray(array $array)
     {
-        $this->Id = !empty($array['id']) ? $array['id'] : null;
-        $this->AppId = !empty($array['app_id']) ? $array['app_id'] : null;
-        $this->Name = !empty($array['name']) ? $array['name'] : null;
-        $this->Locale = !empty($array['locale']) ? $array['locale'] : null;
-        $this->Description = !empty($array['description']) ? $array['description'] : null;
+        $this->setId(isset($array['id']) ? $array['id'] : null);
+        $this->setAppId(isset($array['app_id']) ? $array['app_id'] : null);
+        $this->setName(isset($array['name']) ? $array['name'] : null);
+        $this->setLocale(isset($array['locale']) ? $array['locale'] : null);
+        $this->setDescription(isset($array['description']) ? $array['description'] : null);
     }
 
     /**
@@ -258,11 +266,11 @@ class AppResource extends AbstractDbTableEntry implements AdapterAwareInterface,
     public function getArrayCopy()
     {
         return [
-            'id' => $this->Id,
-            'app_id' => $this->AppId,
-            'name' => $this->Name,
-            'locale' => $this->Locale,
-            'description' => $this->Description,
+            'id' => $this->getId(),
+            'app_id' => $this->getAppId(),
+            'name' => $this->getName(),
+            'locale' => $this->getLocale(),
+            'description' => $this->getDescription(),
         ];
     }
 }

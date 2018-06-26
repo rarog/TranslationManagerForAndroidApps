@@ -20,7 +20,9 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\Stdlib\ArraySerializableInterface;
 
-class Suggestion extends AbstractDbTableEntry implements ArraySerializableInterface, InputFilterAwareInterface
+class Suggestion extends AbstractDbTableEntry implements
+    ArraySerializableInterface,
+    InputFilterAwareInterface
 {
     /**
      * @var null|int
@@ -43,21 +45,18 @@ class Suggestion extends AbstractDbTableEntry implements ArraySerializableInterf
     private $lastChange;
 
     /**
-     * @var InputFilter
-     */
-    private $inputFilter;
-
-    /**
      * @return null|int
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
     /**
      * @param null|int $id
      */
-    public function setId($id) {
+    public function setId($id)
+    {
         if (! is_null($id)) {
             $id = (int) $id;
         }
@@ -67,14 +66,16 @@ class Suggestion extends AbstractDbTableEntry implements ArraySerializableInterf
     /**
      * @return null|int
      */
-    public function getEntryCommonId() {
+    public function getEntryCommonId()
+    {
         return $this->entryCommonId;
     }
 
     /**
      * @param null|int $entryCommonId
      */
-    public function setEntryCommonId($entryCommonId) {
+    public function setEntryCommonId($entryCommonId)
+    {
         if (! is_null($entryCommonId)) {
             $entryCommonId = (int) $entryCommonId;
         }
@@ -84,14 +85,16 @@ class Suggestion extends AbstractDbTableEntry implements ArraySerializableInterf
     /**
      * @return null|int
      */
-    public function getUserId() {
+    public function getUserId()
+    {
         return $this->userId;
     }
 
     /**
      * @param null|int $userId
      */
-    public function setUserId($userId) {
+    public function setUserId($userId)
+    {
         if (! is_null($userId)) {
             $userId = (int) $userId;
         }
@@ -101,21 +104,24 @@ class Suggestion extends AbstractDbTableEntry implements ArraySerializableInterf
     /**
      * @return null|string
      */
-    public function getValue() {
+    public function getValue()
+    {
         return $this->value;
     }
 
     /**
      * @return null|int
      */
-    public function getLastChange() {
+    public function getLastChange()
+    {
         return $this->lastChange;
     }
 
     /**
      * @param null|int $lastChange
      */
-    public function setLastChange($lastChange) {
+    public function setLastChange($lastChange)
+    {
         if (! is_null($lastChange)) {
             $lastChange = (int) $lastChange;
         }
@@ -173,10 +179,10 @@ class Suggestion extends AbstractDbTableEntry implements ArraySerializableInterf
      */
     public function exchangeArray(array $array)
     {
-        $this->Id = !empty($array['id']) ? $array['id'] : null;
-        $this->EntryCommonId = !empty($array['entry_common_id']) ? $array['entry_common_id'] : null;
-        $this->UserId = !empty($array['user_id']) ? $array['user_id'] : null;
-        $this->LastChange = !empty($array['last_change']) ? $array['last_change'] : null;
+        $this->setId(isset($array['id']) ? $array['id'] : null);
+        $this->setIEntryCommonId(isset($array['entry_common_id']) ? $array['entry_common_id'] : null);
+        $this->setIUserId(isset($array['user_id']) ? $array['user_id'] : null);
+        $this->setILastChange(isset($array['last_change']) ? $array['last_change'] : null);
     }
 
     /**
@@ -186,10 +192,10 @@ class Suggestion extends AbstractDbTableEntry implements ArraySerializableInterf
     public function getArrayCopy()
     {
         return [
-            'id' => $this->Id,
-            'entry_common_id' => $this->EntryCommonId,
-            'user_id' => $this->UserId,
-            'last_change' => $this->LastChange,
+            'id' => $this->getId(),
+            'entry_common_id' => $this->getEntryCommonId(),
+            'user_id' => $this->getUserId(),
+            'last_change' => $this->getLastChange(),
         ];
     }
 }

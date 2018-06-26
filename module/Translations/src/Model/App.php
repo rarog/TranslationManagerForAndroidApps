@@ -25,7 +25,9 @@ use Zend\Validator\EmailAddress;
 use Zend\Validator\StringLength;
 use Zend\Validator\Uri;
 
-class App extends AbstractDbTableEntry implements ArraySerializableInterface, InputFilterAwareInterface
+class App extends AbstractDbTableEntry implements
+    ArraySerializableInterface,
+    InputFilterAwareInterface
 {
     /**
      * @var null|int
@@ -85,22 +87,19 @@ class App extends AbstractDbTableEntry implements ArraySerializableInterface, In
     private $resourceFileCount;
 
     /**
-     * @var InputFilter
-     */
-    private $inputFilter;
-
-    /**
      * @return null|int
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
     /**
      * @param null|int $id
      */
-    public function setId($id) {
-        if (!is_null($id)) {
+    public function setId($id)
+    {
+        if (! is_null($id)) {
             $id = (int) $id;
         }
         $this->id = $id;
@@ -109,15 +108,17 @@ class App extends AbstractDbTableEntry implements ArraySerializableInterface, In
     /**
      * @return null|int
      */
-    public function getTeamId() {
+    public function getTeamId()
+    {
         return $this->teamId;
     }
 
     /**
      * @param null|int $teamId
      */
-    public function setTeamId($teamId) {
-        if (!is_null($teamId)) {
+    public function setTeamId($teamId)
+    {
+        if (! is_null($teamId)) {
             $teamId = (int) $teamId;
         }
         $this->teamId = $teamId;
@@ -126,15 +127,17 @@ class App extends AbstractDbTableEntry implements ArraySerializableInterface, In
     /**
      * @return null|string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
     /**
      * @param null|string $name
      */
-    public function setName($name) {
-        if (!is_null($name)) {
+    public function setName($name)
+    {
+        if (! is_null($name)) {
             $name = (string) $name;
         }
         $this->name = $name;
@@ -143,15 +146,17 @@ class App extends AbstractDbTableEntry implements ArraySerializableInterface, In
     /**
      * @return null|string
      */
-    public function getPathToResFolder() {
+    public function getPathToResFolder()
+    {
         return $this->pathToResFolder;
     }
 
     /**
      * @param null|string $pathToResFolder
      */
-    public function setPathToResFolder($pathToResFolder) {
-        if (!is_null($pathToResFolder)) {
+    public function setPathToResFolder($pathToResFolder)
+    {
+        if (! is_null($pathToResFolder)) {
             $pathToResFolder = (string) $pathToResFolder;
         }
         $this->pathToResFolder = $pathToResFolder;
@@ -160,15 +165,17 @@ class App extends AbstractDbTableEntry implements ArraySerializableInterface, In
     /**
      * @return null|string
      */
-    public function getGitRepository() {
+    public function getGitRepository()
+    {
         return $this->gitRepository;
     }
 
     /**
      * @param null|string $gitRepository
      */
-    public function setGitRepository($gitRepository) {
-        if (!is_null($gitRepository)) {
+    public function setGitRepository($gitRepository)
+    {
+        if (! is_null($gitRepository)) {
             $gitRepository = (string) $gitRepository;
         }
         $this->gitRepository = $gitRepository;
@@ -177,15 +184,17 @@ class App extends AbstractDbTableEntry implements ArraySerializableInterface, In
     /**
      * @return null|string
      */
-    public function getGitUsername() {
+    public function getGitUsername()
+    {
         return $this->gitUsername;
     }
 
     /**
      * @param null|string $gitUsername
      */
-    public function setGitUsername($gitUsername) {
-        if (!is_null($gitUsername)) {
+    public function setGitUsername($gitUsername)
+    {
+        if (! is_null($gitUsername)) {
             $gitUsername = (string) $gitUsername;
         }
         $this->gitUsername = $gitUsername;
@@ -194,15 +203,17 @@ class App extends AbstractDbTableEntry implements ArraySerializableInterface, In
     /**
      * @return null|string
      */
-    public function getGitPassword() {
+    public function getGitPassword()
+    {
         return $this->gitPassword;
     }
 
     /**
      * @param null|string $gitPassword
      */
-    public function setGitPassword($gitPassword) {
-        if (!is_null($gitPassword)) {
+    public function setGitPassword($gitPassword)
+    {
+        if (! is_null($gitPassword)) {
             $gitPassword = (string) $gitPassword;
         }
         $this->gitPassword = $gitPassword;
@@ -211,15 +222,17 @@ class App extends AbstractDbTableEntry implements ArraySerializableInterface, In
     /**
      * @return null|string
      */
-    public function getGitUser() {
+    public function getGitUser()
+    {
         return $this->gitUser;
     }
 
     /**
      * @param null|string $gitUser
      */
-    public function setGitUser($gitUser) {
-        if (!is_null($gitUser)) {
+    public function setGitUser($gitUser)
+    {
+        if (! is_null($gitUser)) {
             $gitUser = (string) $gitUser;
         }
         $this->gitUser = $gitUser;
@@ -228,15 +241,17 @@ class App extends AbstractDbTableEntry implements ArraySerializableInterface, In
     /**
      * @return null|string
      */
-    public function getGitEmail() {
+    public function getGitEmail()
+    {
         return $this->gitEmail;
     }
 
     /**
      * @param null|string $gitEmail
      */
-    public function setGitEmail($gitEmail) {
-        if (!is_null($gitEmail)) {
+    public function setGitEmail($gitEmail)
+    {
+        if (! is_null($gitEmail)) {
             $gitEmail = (string) $gitEmail;
         }
         $this->gitEmail = $gitEmail;
@@ -245,15 +260,17 @@ class App extends AbstractDbTableEntry implements ArraySerializableInterface, In
     /**
      * @return null|int
      */
-    public function getResourceCount() {
+    public function getResourceCount()
+    {
         return $this->resourceCount;
     }
 
     /**
      * @param null|int $resourceCount
      */
-    public function setResourceCount($resourceCount) {
-        if (!is_null($resourceCount)) {
+    public function setResourceCount($resourceCount)
+    {
+        if (! is_null($resourceCount)) {
             $resourceCount = (int) $resourceCount;
         }
         $this->resourceCount = $resourceCount;
@@ -262,15 +279,17 @@ class App extends AbstractDbTableEntry implements ArraySerializableInterface, In
     /**
      * @return null|int
      */
-    public function getResourceFileCount() {
+    public function getResourceFileCount()
+    {
         return $this->resourceFileCount;
     }
 
     /**
      * @param null|int $resourceFileCount
      */
-    public function setResourceFileCount($resourceFileCount) {
-        if (!is_null($resourceFileCount)) {
+    public function setResourceFileCount($resourceFileCount)
+    {
+        if (! is_null($resourceFileCount)) {
             $resourceFileCount = (int) $resourceFileCount;
         }
         $this->resourceFileCount = $resourceFileCount;
@@ -449,17 +468,17 @@ class App extends AbstractDbTableEntry implements ArraySerializableInterface, In
      */
     public function exchangeArray(array $array)
     {
-        $this->Id = !empty($array['id']) ? $array['id'] : null;
-        $this->TeamId = !empty($array['team_id']) ? $array['team_id'] : null;
-        $this->Name = !empty($array['name']) ? $array['name'] : null;
-        $this->PathToResFolder = !empty($array['path_to_res_folder']) ? $array['path_to_res_folder'] : null;
-        $this->GitRepository = !empty($array['git_repository']) ? $array['git_repository'] : null;
-        $this->GitUsername = !empty($array['git_username']) ? $array['git_username'] : null;
-        $this->GitPassword = !empty($array['git_password']) ? $array['git_password'] : null;
-        $this->GitUser = !empty($array['git_user']) ? $array['git_user'] : null;
-        $this->GitEmail = !empty($array['git_email']) ? $array['git_email'] : null;
-        $this->ResourceCount = !empty($array['resource_count']) ? $array['resource_count'] : null;
-        $this->ResourceFileCount = !empty($array['resource_file_count']) ? $array['resource_file_count'] : null;
+        $this->setId(isset($array['id']) ? $array['id'] : null);
+        $this->setTeamId(isset($array['team_id']) ? $array['team_id'] : null);
+        $this->setName(isset($array['name']) ? $array['name'] : null);
+        $this->setPathToResFolder(isset($array['path_to_res_folder']) ? $array['path_to_res_folder'] : null);
+        $this->setGitRepository(isset($array['git_repository']) ? $array['git_repository'] : null);
+        $this->setGitUsername(isset($array['git_username']) ? $array['git_username'] : null);
+        $this->setGitPassword(isset($array['git_password']) ? $array['git_password'] : null);
+        $this->setGitUser(isset($array['git_user']) ? $array['git_user'] : null);
+        $this->setGitEmail(isset($array['git_email']) ? $array['git_email'] : null);
+        $this->setResourceCount(isset($array['resource_count']) ? $array['resource_count'] : null);
+        $this->setResourceFileCount(isset($array['resource_file_count']) ? $array['resource_file_count'] : null);
     }
 
     /**
@@ -469,17 +488,17 @@ class App extends AbstractDbTableEntry implements ArraySerializableInterface, In
     public function getArrayCopy()
     {
         return [
-            'id' => $this->Id,
-            'team_id' => $this->TeamId,
-            'name' => $this->Name,
-            'path_to_res_folder' => $this->PathToResFolder,
-            'git_repository' => $this->GitRepository,
-            'git_username' => $this->GitUsername,
-            'git_password' => $this->GitPassword,
-            'git_user' => $this->GitUser,
-            'git_email' => $this->GitEmail,
-            'resource_count' => $this->ResourceCount,
-            'resource_file_count' => $this->ResourceFileCount,
+            'id' => $this->getId(),
+            'team_id' => $this->getTeamId(),
+            'name' => $this->getName(),
+            'path_to_res_folder' => $this->getPathToResFolder(),
+            'git_repository' => $this->getGitRepository(),
+            'git_username' => $this->getGitUsername(),
+            'git_password' => $this->getGitPassword(),
+            'git_user' => $this->getGitUser(),
+            'git_email' => $this->getGitEmail(),
+            'resource_count' => $this->getResourceCount(),
+            'resource_file_count' => $this->getResourceFileCount(),
         ];
     }
 }

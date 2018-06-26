@@ -23,7 +23,9 @@ use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\Stdlib\ArraySerializableInterface;
 use Zend\Validator\StringLength;
 
-class EntryString extends AbstractDbTableEntry implements ArraySerializableInterface, InputFilterAwareInterface
+class EntryString extends AbstractDbTableEntry implements
+    ArraySerializableInterface,
+    InputFilterAwareInterface
 {
     /**
      * @var null|int
@@ -34,11 +36,6 @@ class EntryString extends AbstractDbTableEntry implements ArraySerializableInter
      * @var null|string
      */
     private $value;
-
-    /**
-     * @var InputFilter
-     */
-    private $inputFilter;
 
     /**
      * @return null|int

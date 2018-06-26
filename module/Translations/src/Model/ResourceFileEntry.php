@@ -25,7 +25,9 @@ use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\Stdlib\ArraySerializableInterface;
 use Zend\Validator\StringLength;
 
-class ResourceFileEntry extends AbstractDbTableEntry implements ArraySerializableInterface, InputFilterAwareInterface
+class ResourceFileEntry extends AbstractDbTableEntry implements
+    ArraySerializableInterface,
+    InputFilterAwareInterface
 {
     /**
      * @var null|int
@@ -68,22 +70,19 @@ class ResourceFileEntry extends AbstractDbTableEntry implements ArraySerializabl
     private $translatable;
 
     /**
-     * @var InputFilter
-     */
-    private $inputFilter;
-
-    /**
      * @return null|int
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
     /**
      * @param null|int $id
      */
-    public function setId($id) {
-        if (!is_null($id)) {
+    public function setId($id)
+    {
+        if (! is_null($id)) {
             $id = (int) $id;
         }
         $this->id = $id;
@@ -92,15 +91,17 @@ class ResourceFileEntry extends AbstractDbTableEntry implements ArraySerializabl
     /**
      * @return null|int
      */
-    public function getAppResourceFileId() {
+    public function getAppResourceFileId()
+    {
         return $this->appResourceFileId;
     }
 
     /**
      * @param null|int $appResourceFileId
      */
-    public function setAppResourceFileId($appResourceFileId) {
-        if (!is_null($appResourceFileId)) {
+    public function setAppResourceFileId($appResourceFileId)
+    {
+        if (! is_null($appResourceFileId)) {
             $appResourceFileId = (int) $appResourceFileId;
         }
         $this->appResourceFileId = $appResourceFileId;
@@ -109,15 +110,17 @@ class ResourceFileEntry extends AbstractDbTableEntry implements ArraySerializabl
     /**
      * @return null|int
      */
-    public function getResourceTypeId() {
+    public function getResourceTypeId()
+    {
         return $this->resourceTypeId;
     }
 
     /**
      * @param null|int $resourceTypeId
      */
-    public function setResourceTypeId($resourceTypeId) {
-        if (!is_null($resourceTypeId)) {
+    public function setResourceTypeId($resourceTypeId)
+    {
+        if (! is_null($resourceTypeId)) {
             $resourceTypeId = (int) $resourceTypeId;
         }
         $this->resourceTypeId = $resourceTypeId;
@@ -133,8 +136,9 @@ class ResourceFileEntry extends AbstractDbTableEntry implements ArraySerializabl
     /**
      * @param null|string $name
      */
-    public function setName($name) {
-        if (!is_null($name)) {
+    public function setName($name)
+    {
+        if (! is_null($name)) {
             $name = (string) $name;
         }
         $this->name = $name;
@@ -143,15 +147,17 @@ class ResourceFileEntry extends AbstractDbTableEntry implements ArraySerializabl
     /**
      * @return null|string
      */
-    public function getProduct() {
+    public function getProduct()
+    {
         return $this->product;
     }
 
     /**
      * @param null|string $product
      */
-    public function setProduct($product) {
-        if (!is_null($product)) {
+    public function setProduct($product)
+    {
+        if (! is_null($product)) {
             $product = (string) $product;
         }
         $this->product = $product;
@@ -160,15 +166,17 @@ class ResourceFileEntry extends AbstractDbTableEntry implements ArraySerializabl
     /**
      * @return null|string
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return $this->description;
     }
 
     /**
      * @param null|string $description
      */
-    public function setDescription($description) {
-        if (!is_null($description)) {
+    public function setDescription($description)
+    {
+        if (! is_null($description)) {
             $description = (string) $description;
         }
         $this->description = $description;
@@ -177,7 +185,8 @@ class ResourceFileEntry extends AbstractDbTableEntry implements ArraySerializabl
     /**
      * @return boolean
      */
-    public function getDeleted() {
+    public function getDeleted()
+    {
         if (is_null($this->deleted)) {
             $this->deleted = false;
         }
@@ -187,14 +196,16 @@ class ResourceFileEntry extends AbstractDbTableEntry implements ArraySerializabl
     /**
      * @param null|boolean $deleted
      */
-    public function setDeleted($deleted) {
+    public function setDeleted($deleted)
+    {
         $this->deleted = (boolean) $deleted;
     }
 
     /**
      * @return null|boolean
      */
-    public function getTranslatable() {
+    public function getTranslatable()
+    {
         if (is_null($this->translatable)) {
             $this->translatable = false;
         }
@@ -204,7 +215,8 @@ class ResourceFileEntry extends AbstractDbTableEntry implements ArraySerializabl
     /**
      * @param null|boolean $translatable
      */
-    public function setTranslatable($translatable) {
+    public function setTranslatable($translatable)
+    {
         $translatable = (boolean) $translatable;
 
         $this->translatable = $translatable;
@@ -325,14 +337,14 @@ class ResourceFileEntry extends AbstractDbTableEntry implements ArraySerializabl
      */
     public function exchangeArray(array $array)
     {
-        $this->Id = !empty($array['id']) ? $array['id'] : null;
-        $this->AppResourceFileId = !empty($array['app_resource_file_id']) ? $array['app_resource_file_id'] : null;
-        $this->ResourceTypeId = !empty($array['resource_type_id']) ? $array['resource_type_id'] : null;
-        $this->Name = !empty($array['name']) ? $array['name'] : null;
-        $this->Product = !empty($array['product']) ? $array['product'] : null;
-        $this->Description = !empty($array['description']) ? $array['description'] : null;
-        $this->Deleted = !empty($array['deleted']) ? $array['deleted'] : null;
-        $this->Translatable = !empty($array['translatable']) ? $array['translatable'] : null;
+        $this->setId(isset($array['id']) ? $array['id'] : null);
+        $this->setAppResourceFileId(isset($array['app_resource_file_id']) ? $array['app_resource_file_id'] : null);
+        $this->setResourceTypeId(isset($array['resource_type_id']) ? $array['resource_type_id'] : null);
+        $this->setName(isset($array['name']) ? $array['name'] : null);
+        $this->setProduct(isset($array['product']) ? $array['product'] : null);
+        $this->setDescription(isset($array['description']) ? $array['description'] : null);
+        $this->setDeleted(isset($array['deleted']) ? $array['deleted'] : null);
+        $this->setTranslatable(isset($array['translatable']) ? $array['translatable'] : null);
     }
 
     /**
@@ -342,14 +354,14 @@ class ResourceFileEntry extends AbstractDbTableEntry implements ArraySerializabl
     public function getArrayCopy()
     {
         return [
-            'id'  => $this->Id,
-            'app_resource_file_id' => $this->AppResourceFileId,
-            'resource_type_id' => $this->ResourceTypeId,
-            'name' => $this->Name,
-            'product' => $this->Product,
-            'description' => $this->Description,
-            'deleted' => $this->Deleted,
-            'translatable' => $this->Translatable,
+            'id'  => $this->getId(),
+            'app_resource_file_id' => $this->getAppResourceFileId(),
+            'resource_type_id' => $this->getResourceTypeId(),
+            'name' => $this->getName(),
+            'product' => $this->getProduct(),
+            'description' => $this->getDescription(),
+            'deleted' => $this->getDeleted(),
+            'translatable' => $this->getTranslatable(),
         ];
     }
 }

@@ -20,8 +20,15 @@ use Zend\Stdlib\ArraySerializableInterface;#
 use DomainException;
 use RuntimeException;
 
-abstract class AbstractDbTableEntry implements ArraySerializableInterface, InputFilterAwareInterface
+abstract class AbstractDbTableEntry implements
+    ArraySerializableInterface,
+    InputFilterAwareInterface
 {
+    /**
+     * @var InputFilterInterface
+     */
+    protected $inputFilter = null;
+
     /**
      * Constructor
      *
@@ -78,17 +85,17 @@ abstract class AbstractDbTableEntry implements ArraySerializableInterface, Input
      * {@inheritDoc}
      * @see \Zend\InputFilter\InputFilterAwareInterface::getInputFilter()
      */
-    public abstract function getInputFilter();
+    abstract public function getInputFilter();
 
     /**
      * {@inheritDoc}
      * @see \Zend\Stdlib\ArraySerializableInterface::exchangeArray()
      */
-    public abstract function exchangeArray(array $array);
+    abstract public function exchangeArray(array $array);
 
     /**
      * {@inheritDoc}
      * @see \Zend\Stdlib\ArraySerializableInterface::getArrayCopy()
      */
-    public abstract function getArrayCopy();
+    abstract public function getArrayCopy();
 }

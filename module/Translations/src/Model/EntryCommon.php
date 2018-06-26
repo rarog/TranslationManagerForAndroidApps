@@ -20,7 +20,9 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\Stdlib\ArraySerializableInterface;
 
-class EntryCommon extends AbstractDbTableEntry implements ArraySerializableInterface, InputFilterAwareInterface
+class EntryCommon extends AbstractDbTableEntry implements
+    ArraySerializableInterface,
+    InputFilterAwareInterface
 {
     /**
      * @var null|int
@@ -46,11 +48,6 @@ class EntryCommon extends AbstractDbTableEntry implements ArraySerializableInter
      * @var null|int
      */
     private $notificationStatus;
-
-    /**
-     * @var InputFilter
-     */
-    private $inputFilter;
 
     /**
      * @return null|int
