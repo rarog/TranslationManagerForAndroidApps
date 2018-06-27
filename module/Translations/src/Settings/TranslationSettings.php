@@ -108,10 +108,8 @@ class TranslationSettings extends AbstractSettingsSet implements
         $inputFilter->add([
             'name' => 'markapprovedtranslationsgreen',
             'required' => false,
-            'validators' => [
-                [
-                    'name' => Boolean::class,
-                ],
+            'filters' => [
+                ['name' => Boolean::class],
             ],
         ]);
 
@@ -130,7 +128,7 @@ class TranslationSettings extends AbstractSettingsSet implements
         }
 
         try {
-            $this->markApprovedTranslationsGreen = $this->settingsTable->getSettingByPath(self::PATH_MARKAPPROVEDTRANSLATIONSGREEN);
+            $this->markApprovedTranslationsGreen = $this->settingTable->getSettingByPath(self::PATH_MARKAPPROVEDTRANSLATIONSGREEN);
         } catch (RuntimeException $e) {
             $this->markApprovedTranslationsGreen = null;
         }
@@ -145,7 +143,7 @@ class TranslationSettings extends AbstractSettingsSet implements
     public function save()
     {
         if (! is_null($this->markApprovedTranslationsGreen)) {
-            $this->settingsTable->saveSetting($this->markApprovedTranslationsGreen);
+            $this->settingTable->saveSetting($this->markApprovedTranslationsGreen);
         }
     }
 }

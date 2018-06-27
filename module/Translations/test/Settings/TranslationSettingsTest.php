@@ -14,11 +14,12 @@
 
 namespace TranslationsTest\Settings;
 
+use Common\Model\Setting;
 use Common\Model\SettingTable;
 use PHPUnit\Framework\TestCase;
 use Translations\Settings\TranslationSettings;
+use Zend\InputFilter\InputFilterInterface;
 use ReflectionClass;
-use Common\Model\Setting;
 
 class TranslationSettingsTest extends TestCase
 {
@@ -153,5 +154,61 @@ class TranslationSettingsTest extends TestCase
         $property->setValue($this->translationSettings, $setting->reveal());
 
         $this->translationSettings->setMarkApprovedTranslationsGreen(true);
+    }
+
+    /**
+     * @covers Translations\Settings\TranslationSettings::exchangeArray
+     * @covers Translations\Settings\TranslationSettings::getArrayCopy
+     */
+    public function testArraySerializableInterface()
+    {
+        $emptyArray = [
+            'mark_approved_translations_green' => false,
+        ];
+        $newArray = [
+            'mark_approved_translations_green' => true,
+        ];
+
+        $property = $this->getTranslationSettingsProperty('markApprovedTranslationsGreen');
+        $this->assertNull($property->getValue($this->translationSettings));
+        $this->assertEquals($emptyArray, $this->translationSettings->getArrayCopy());
+
+        $this->translationSettings->exchangeArray($newArray);
+        $this->assertEquals($newArray, $this->translationSettings->getArrayCopy());
+    }
+
+    /**
+     * @covers Translations\Settings\TranslationSettings::getInputFilter
+     */
+    public function testGetInputFilter()
+    {
+        $property = $this->getTranslationSettingsProperty('inputFilter');
+
+        $this->assertNull($property->getValue($this->translationSettings));
+
+        $inputFilter = $this->translationSettings->getInputFilter();
+        $this->assertInstanceOf(InputFilterInterface::class, $inputFilter);
+        $this->assertSame($property->getValue($this->translationSettings), $inputFilter);
+        $this->assertSame($inputFilter, $this->translationSettings->getInputFilter());
+    }
+
+    /**
+     * @covers Translations\Settings\TranslationSettings::load
+     */
+    public function testLoad()
+    {
+        $property = $this->getTranslationSettingsProperty('loaded');
+
+        $this->assertEquals(false, $property->getValue($this->translationSettings));
+
+        $this->settingTable
+            ->getSettingByPath(TranslationSettings::PATH_MARKAPPROVEDTRANSLATIONSGREEN)
+            ->willReturn('1')
+            ->shouldBeCalledTimes(1);
+
+        $this->translationSettings->load();
+        $this->assertEquals(true, $property->getValue($this->translationSettings));
+
+        $this->translationSettings->load();
     }
 }
