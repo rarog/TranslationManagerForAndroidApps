@@ -14,9 +14,13 @@
 
 namespace Common\Model;
 
+use Zend\Filter\StringTrim;
+use Zend\Filter\StripTags;
+use Zend\Filter\ToInt;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\Stdlib\ArraySerializableInterface;
+use Zend\Validator\StringLength;
 
 class Setting extends AbstractDbTableEntry implements
     ArraySerializableInterface,
@@ -140,19 +144,19 @@ class Setting extends AbstractDbTableEntry implements
             'name' => 'id',
             'required' => true,
             'filters' => [
-                ['name' => 'ToInt'],
+                ['name' => ToInt::class],
             ],
         ]);
         $inputFilter->add([
             'name' => 'path',
             'required' => true,
             'filters' => [
-                ['name' => 'StripTags'],
-                ['name' => 'StringTrim'],
+                ['name' => StripTags::class],
+                ['name' => StringTrim::class],
             ],
             'validators' => [
                 [
-                    'name' => 'StringLength',
+                    'name' => StringLength::class,
                     'options' => [
                         'encoding' => 'UTF-8',
                         'min' => 1,
