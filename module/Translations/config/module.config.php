@@ -188,7 +188,7 @@ return [
                                 'appId' => '[0-9]+',
                                 'resourceId' => '[0-9]+',
                                 'entryId' => '[0-9]+',
-                                'notificationStatus' => '[01]',
+                                'notificationStatus' => '[012]',
                             ],
                             'defaults' => [
                                 'action' => 'setnotificationstatus',
