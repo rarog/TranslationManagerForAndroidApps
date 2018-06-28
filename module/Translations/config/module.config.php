@@ -268,6 +268,7 @@ return [
         'factories' => [
             Model\Helper\EncryptionHelper::class => Factory\Model\EncryptionHelperFactory::class,
             Parser\ResXmlParser::class => Factory\Parser\ResXmlParserFactory::class,
+            Settings\TranslationSettings::class => Factory\Settings\TranslationSettingsFactory::class,
         ],
     ],
     'translator' => [
