@@ -20,6 +20,8 @@ use PHPUnit\Framework\TestCase;
 use Translations\Settings\TranslationSettings;
 use Zend\InputFilter\InputFilterInterface;
 use ReflectionClass;
+use RuntimeException;
+use Prophecy\Argument;
 
 class TranslationSettingsTest extends TestCase
 {
@@ -210,5 +212,40 @@ class TranslationSettingsTest extends TestCase
         $this->assertEquals(true, $property->getValue($this->translationSettings));
 
         $this->translationSettings->load();
+    }
+
+    /**
+     * @covers Translations\Settings\TranslationSettings::load
+     */
+    public function testLoadPropertyNullOnException()
+    {
+        $property = $this->getTranslationSettingsProperty('markApprovedTranslationsGreen');
+
+        $this->settingTable
+            ->getSettingByPath(TranslationSettings::PATH_MARKAPPROVEDTRANSLATIONSGREEN)
+            ->willThrow(new RuntimeException())
+            ->shouldBeCalledTimes(1);
+
+        $this->translationSettings->load();
+        $this->assertNull($property->getValue($this->translationSettings));
+    }
+
+    /**
+     * @covers Translations\Settings\TranslationSettings::save
+     */
+    public function testSave()
+    {
+        $property = $this->getTranslationSettingsProperty('markApprovedTranslationsGreen');
+        $property->setValue($this->translationSettings, new Setting());
+
+        $this->settingTable
+            ->saveSetting(Argument::type(Setting::class))
+            ->shouldBeCalledTimes(1);
+
+        $this->assertNotNull(true, $property->getValue($this->translationSettings));
+        $this->translationSettings->save();
+
+        $property->setValue($this->translationSettings, null);
+        $this->translationSettings->save();
     }
 }

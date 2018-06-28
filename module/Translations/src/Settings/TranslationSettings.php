@@ -128,7 +128,9 @@ class TranslationSettings extends AbstractSettingsSet implements
         }
 
         try {
-            $this->markApprovedTranslationsGreen = $this->settingTable->getSettingByPath(self::PATH_MARKAPPROVEDTRANSLATIONSGREEN);
+            $this->markApprovedTranslationsGreen = $this->settingTable->getSettingByPath(
+                self::PATH_MARKAPPROVEDTRANSLATIONSGREEN
+            );
         } catch (RuntimeException $e) {
             $this->markApprovedTranslationsGreen = null;
         }
