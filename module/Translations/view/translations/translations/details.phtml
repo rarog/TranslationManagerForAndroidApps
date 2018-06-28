@@ -47,7 +47,7 @@ foreach ($suggestions as $suggestion) {
 $btnClass = 'btn-default';
 if ($entry->notificationStatus === 1) {
     $btnClass = 'btn-warning';
-} elseif ($entry->notificationStatus === 2) {
+} elseif (($entry->notificationStatus === 2) && $markApprovedTranslationsGreen) {
     $btnClass = 'btn-success';
 }
 ?>

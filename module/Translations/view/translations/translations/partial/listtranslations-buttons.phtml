@@ -1,7 +1,7 @@
 <?php
 if ($entry->suggestionCount > 0) {
     $btnClass = 'btn-info';
-} elseif ($entry->notificationStatus == 2) {
+} elseif (($entry->notificationStatus == 2) && $markApprovedTranslationsGreen) {
     $btnClass = 'btn-success';
 } elseif ($entry->notificationStatus == 1) {
     $btnClass = 'btn-warning';

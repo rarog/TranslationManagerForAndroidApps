@@ -282,9 +282,12 @@ class TranslationsController extends AbstractActionController
                 break;
         }
 
+        $this->translationSettings->load();
+
         $viewModel = $this->getViewModel();
         $viewModel->setVariables([
             'entry' => $typedEntry,
+            'markApprovedTranslationsGreen' => $this->translationSettings->getMarkApprovedTranslationsGreen(),
             'suggestions' => $typedSuggestions,
             'type' => $type->Name,
         ]);
@@ -372,12 +375,15 @@ class TranslationsController extends AbstractActionController
             return new JsonModel();
         }
 
+        $this->translationSettings->load();
+
         $output = [];
         $entries = $this->entryStringTable->getAllEntryStringsForTranslations($appId, $resourceId, $entryId);
         foreach ($entries as $entry) {
             $viewModel = $this->getViewModel();
             $viewModel->setVariables([
                 'entry' => new ArrayObject($entry, ArrayObject::ARRAY_AS_PROPS),
+                'markApprovedTranslationsGreen' => $this->translationSettings->getMarkApprovedTranslationsGreen(),
                 'resourceTypes' => $this->getResourceTypes(),
             ]);
 
@@ -472,6 +478,12 @@ class TranslationsController extends AbstractActionController
             return new JsonModel();
         }
 
+        if ($notificationStatus === 2) {
+            $this->translationSettings->load();
+            if (! $this->translationSettings->getMarkApprovedTranslationsGreen()) {
+                $notificationStatus = 0;
+            }
+        }
         $entryCommon->setNotificationStatus($notificationStatus);
 
         $this->entryCommonTable->saveEntryCommon($entryCommon);
