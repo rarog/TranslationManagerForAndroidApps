@@ -25,6 +25,7 @@ use Translations\Model\ResourceTypeTable;
 use Translations\Model\SuggestionStringTable;
 use Translations\Model\SuggestionTable;
 use Translations\Model\SuggestionVoteTable;
+use Translations\Settings\TranslationSettings;
 use Zend\Mvc\I18n\Translator;
 use Zend\ServiceManager\Factory\FactoryInterface;
 use Zend\View\Renderer\PhpRenderer;
@@ -47,6 +48,7 @@ class TranslationsControllerFactory implements FactoryInterface
             $container->get(SuggestionTable::class),
             $container->get(SuggestionStringTable::class),
             $container->get(SuggestionVoteTable::class),
+            $container->get(TranslationSettings::class),
             $container->get(Translator::class),
             $container->get(PhpRenderer::class)
         );

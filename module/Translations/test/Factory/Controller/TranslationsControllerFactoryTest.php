@@ -29,6 +29,7 @@ use Translations\Model\SuggestionVoteTable;
 use Zend\Mvc\I18n\Translator;
 use Zend\ServiceManager\ServiceManager;
 use Zend\View\Renderer\PhpRenderer;
+use Translations\Settings\TranslationSettings;
 
 class TranslationsControllerFactoryTest extends TestCase
 {
@@ -64,6 +65,9 @@ class TranslationsControllerFactoryTest extends TestCase
 
         $suggestionVoteTable = $this->prophesize(SuggestionVoteTable::class);
         $serviceManager->setService(SuggestionVoteTable::class, $suggestionVoteTable->reveal());
+
+        $translationSettings = $this->prophesize(TranslationSettings::class);
+        $serviceManager->setService(TranslationSettings::class, $translationSettings->reveal());
 
         $translator = $this->prophesize(Translator::class);
         $serviceManager->setService(Translator::class, $translator->reveal());

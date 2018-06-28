@@ -14,11 +14,10 @@
 
 namespace Translations\Controller;
 
-use ArrayObject;
-use RuntimeException;
 use Translations\Model\AppResourceTable;
 use Translations\Model\AppTable;
 use Translations\Model\EntryCommonTable;
+use Translations\Model\EntryString;
 use Translations\Model\EntryStringTable;
 use Translations\Model\ResourceFileEntryTable;
 use Translations\Model\ResourceTypeTable;
@@ -28,12 +27,14 @@ use Translations\Model\SuggestionStringTable;
 use Translations\Model\SuggestionTable;
 use Translations\Model\SuggestionVote;
 use Translations\Model\SuggestionVoteTable;
+use Translations\Settings\TranslationSettings;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\I18n\Translator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer as Renderer;
-use Translations\Model\EntryString;
+use ArrayObject;
+use RuntimeException;
 
 class TranslationsController extends AbstractActionController
 {
@@ -81,6 +82,11 @@ class TranslationsController extends AbstractActionController
      * @var SuggestionVoteTable
      */
     private $suggestionVoteTable;
+
+    /**
+     * @var TranslationSettings
+     */
+    private $translationSettings;
 
     /**
      * @var Translator
@@ -186,6 +192,7 @@ class TranslationsController extends AbstractActionController
      * @param SuggestionTable $suggestionTable
      * @param SuggestionStringTable $suggestionStringTable
      * @param SuggestionVoteTable $suggestionVoteTable
+     * @param TranslationSettings $translationSettings
      * @param Translator $translator
      * @param Renderer $renderer
      */
@@ -199,6 +206,7 @@ class TranslationsController extends AbstractActionController
         SuggestionTable $suggestionTable,
         SuggestionStringTable $suggestionStringTable,
         SuggestionVoteTable $suggestionVoteTable,
+        TranslationSettings $translationSettings,
         Translator $translator,
         Renderer $renderer
     ) {
@@ -211,6 +219,7 @@ class TranslationsController extends AbstractActionController
         $this->suggestionTable = $suggestionTable;
         $this->suggestionStringTable = $suggestionStringTable;
         $this->suggestionVoteTable = $suggestionVoteTable;
+        $this->translationSettings = $translationSettings;
         $this->translator = $translator;
         $this->renderer = $renderer;
     }
