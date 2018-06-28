@@ -109,6 +109,7 @@ $this->inlineScript()->appendScript('var apps = ' . json_encode($apps) . ';
 var resources = ' . json_encode($resources) . ';
 var appsAll = ' . json_encode($appsAll) . ';
 var resourcesAll = ' . json_encode($resourcesAll) . ';
+var markApprovedTranslationsGreen = ' . (($markApprovedTranslationsGreen) ? 'true' : 'false') . ';
 var translationsPath = "' . $this->url('translations/listtranslations'). '";
 var detailsPath = "' . $this->url('translations/details'). '";
 var setnotificationstatusPath = "' . $this->url('translations/setnotificationstatus'). '";

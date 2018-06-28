@@ -250,12 +250,14 @@ $("#modalContainer").on("click", ".toggleNotificationStatus", function(event) {
 
     if (notificationstatus < 0) {
     	notificationstatus = 0;
-    } else if (notificationstatus > 1) {
-    	notificationstatus = 1;
+    } else if (notificationstatus > 2) {
+    	notificationstatus = 2;
     }
 
     if (notificationstatus == 0) {
     	notificationstatus = 1;
+    } else if ((notificationstatus == 1) && markApprovedTranslationsGreen) {
+    	notificationstatus = 2;
     } else {
     	notificationstatus = 0;
     }
@@ -274,8 +276,10 @@ $("#modalContainer").on("click", ".toggleNotificationStatus", function(event) {
         	var newClass = "btn-default";
         	if (data["notificationStatus"] == 1) {
         		newClass = "btn-warning";
+        	} else if (data["notificationStatus"] == 2) {
+        		newClass = "btn-success";
         	}
-        	button.removeClass("btn-default btn-warning").addClass(newClass);
+        	button.removeClass("btn-default btn-warning btn-success").addClass(newClass);
             enableBootstrapTooltips();
             refreshTranslation = true;
         } else {

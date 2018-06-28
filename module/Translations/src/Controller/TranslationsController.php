@@ -338,9 +338,12 @@ class TranslationsController extends AbstractActionController
             }
         }
 
+        $this->translationSettings->load();
+
         return [
             'apps' => $apps,
             'appsAll' => $appsAll,
+            'markApprovedTranslationsGreen' => $this->translationSettings->getMarkApprovedTranslationsGreen(),
             'resources' => $resources,
             'resourcesAll' => $resourcesAll,
         ];
@@ -551,14 +554,18 @@ class TranslationsController extends AbstractActionController
                         ]);
                     }
 
-                    $entryString->Value = $suggestionString->Value;
+                    $entryString->setValue($suggestionString->getValue());
                     $this->entryStringTable->saveEntryString($entryString);
                     break;
                 default:
                     return new JsonModel(['accepted' => false]);
             }
 
-            $entryCommon->LastChange = time();
+            $this->translationSettings->load();
+            if ($this->translationSettings->getMarkApprovedTranslationsGreen()) {
+                $entryCommon->setNotificationStatus(2);
+            }
+            $entryCommon->setLastChange(time());
             $this->entryCommonTable->saveEntryCommon($entryCommon);
         }
 
