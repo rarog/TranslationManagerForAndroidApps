@@ -678,10 +678,10 @@ class TranslationsController extends AbstractActionController
                 'user_id' => $userId,
                 'last_change' => time(),
             ]);
-            $suggestion = $this->suggestionTable->saveSuggestion($suggestion);
+            $this->suggestionTable->saveSuggestion($suggestion);
 
             $suggestionVote = new SuggestionVote([
-                'suggestion_id' => $suggestion->Id,
+                'suggestion_id' => $suggestion->getId(),
                 'user_id' => $userId,
             ]);
             $this->suggestionVoteTable->saveSuggestionVote($suggestionVote);
@@ -689,7 +689,7 @@ class TranslationsController extends AbstractActionController
             switch ($type->Name) {
                 case 'String':
                     $suggestionString = new SuggestionString([
-                        'suggestion_id' => $suggestion->Id,
+                        'suggestion_id' => $suggestion->getId(),
                         'value' => $value,
                     ]);
                     $this->suggestionStringTable->saveSuggestionString($suggestionString);
@@ -697,7 +697,7 @@ class TranslationsController extends AbstractActionController
                     $typedSuggestion = $this->suggestionStringTable->getAllSuggestionsForTranslations(
                         $typedEntry->id,
                         $userId,
-                        $suggestion->Id
+                        $suggestion->getId()
                     );
                     break;
             }
@@ -708,7 +708,7 @@ class TranslationsController extends AbstractActionController
                 return new JsonModel();
             }
 
-            $suggestion->LastChange = time();
+            $suggestion->setLastChange(time());
             $this->suggestionTable->saveSuggestion($suggestion);
 
             switch ($type->Name) {

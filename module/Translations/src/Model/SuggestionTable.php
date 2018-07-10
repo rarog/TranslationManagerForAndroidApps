@@ -14,37 +14,11 @@
 
 namespace Translations\Model;
 
+use Common\Model\AbstractDbTable;
 use RuntimeException;
-use Zend\Db\TableGateway\TableGateway;
 
-class SuggestionTable
+class SuggestionTable extends AbstractDbTable
 {
-    /**
-     * @var TableGateway
-     */
-    private $tableGateway;
-
-    /**
-     * Constructor
-     *
-     * @param TableGateway $tableGateway
-     */
-    public function __construct(TableGateway $tableGateway)
-    {
-        $this->tableGateway = $tableGateway;
-    }
-
-    /**
-     * Gets all entries
-     *
-     * @param \Zend\Db\Sql\Where|\Closure|string|array $where
-     * @return \Zend\Db\ResultSet\ResultSet
-     */
-    public function fetchAll($where = null)
-    {
-        return $this->tableGateway->select($where);
-    }
-
     /**
      * Get entry
      *
@@ -68,7 +42,6 @@ class SuggestionTable
      *
      * @param Suggestion $suggestion
      * @throws RuntimeException
-     * @return \Translations\Model\Suggestion
      */
     public function saveSuggestion(Suggestion $suggestion)
     {
@@ -82,16 +55,20 @@ class SuggestionTable
 
         if ($id === 0) {
             $this->tableGateway->insert($data);
-            $suggestion->Id = $this->tableGateway->getLastInsertValue();
-            return $suggestion;
+            $suggestion->setId($this->tableGateway->getLastInsertValue());
+            return;
         }
 
-        if (! $this->getSuggestion($id)) {
-            throw new RuntimeException(sprintf('Cannot update row with identifier %d; does not exist', $id));
+        try {
+            if ($this->getSuggestion($id)) {
+                $this->tableGateway->update($data, ['id' => $id]);
+            }
+        } catch (RuntimeException $e) {
+            throw new RuntimeException(sprintf(
+                'Cannot update row with identifier %d; does not exist',
+                $id
+            ));
         }
-
-        $this->tableGateway->update($data, ['id' => $id]);
-        return $suggestion;
     }
 
     /**
