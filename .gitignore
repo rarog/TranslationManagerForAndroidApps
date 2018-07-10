@@ -25,4 +25,4 @@ data/DoctrineORMModule/cache/
 
 # Other
 .vagrant/
-phpunit.xml
+build/
