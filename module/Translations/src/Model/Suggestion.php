@@ -102,14 +102,6 @@ class Suggestion extends AbstractDbTableEntry implements
     }
 
     /**
-     * @return null|string
-     */
-    public function getValue()
-    {
-        return $this->value;
-    }
-
-    /**
      * @return null|int
      */
     public function getLastChange()
@@ -148,7 +140,7 @@ class Suggestion extends AbstractDbTableEntry implements
             ],
         ]);
         $inputFilter->add([
-            'name'     => 'resource_file_entry_string_id',
+            'name'     => 'entry_common_id',
             'required' => true,
             'filters'  => [
                 ['name' => ToInt::class],
@@ -180,9 +172,9 @@ class Suggestion extends AbstractDbTableEntry implements
     public function exchangeArray(array $array)
     {
         $this->setId(isset($array['id']) ? $array['id'] : null);
-        $this->setIEntryCommonId(isset($array['entry_common_id']) ? $array['entry_common_id'] : null);
-        $this->setIUserId(isset($array['user_id']) ? $array['user_id'] : null);
-        $this->setILastChange(isset($array['last_change']) ? $array['last_change'] : null);
+        $this->setEntryCommonId(isset($array['entry_common_id']) ? $array['entry_common_id'] : null);
+        $this->setUserId(isset($array['user_id']) ? $array['user_id'] : null);
+        $this->setLastChange(isset($array['last_change']) ? $array['last_change'] : null);
     }
 
     /**
