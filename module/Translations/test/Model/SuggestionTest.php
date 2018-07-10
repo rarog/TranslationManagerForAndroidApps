@@ -21,6 +21,9 @@ use ReflectionClass;
 
 class SuggestionTest extends TestCase
 {
+    /**
+     * @var array
+     */
     private $exampleArrayData = [
         'id' => 42,
         'entry_common_id' => 12,
@@ -28,6 +31,9 @@ class SuggestionTest extends TestCase
         'last_change' => 12345654,
     ];
 
+    /**
+     * @covers Translations\Model\Suggestion::__construct
+     */
     public function testConstructor()
     {
         $suggestion = new Suggestion();
@@ -57,6 +63,16 @@ class SuggestionTest extends TestCase
         );
     }
 
+    /**
+     * @covers Translations\Model\Suggestion::getId
+     * @covers Translations\Model\Suggestion::setId
+     * @covers Translations\Model\Suggestion::getEntryCommonId
+     * @covers Translations\Model\Suggestion::setEntryCommonId
+     * @covers Translations\Model\Suggestion::getUserId
+     * @covers Translations\Model\Suggestion::setUserId
+     * @covers Translations\Model\Suggestion::getLastChange
+     * @covers Translations\Model\Suggestion::setLastChange
+     */
     public function testSetterAndGetters()
     {
         $suggestion = new Suggestion();
@@ -83,6 +99,9 @@ class SuggestionTest extends TestCase
         );
     }
 
+    /**
+     * @covers Translations\Model\Suggestion::getInputFilter
+     */
     public function testGetInputFilter()
     {
         $suggestion = new Suggestion();
@@ -99,6 +118,10 @@ class SuggestionTest extends TestCase
         $this->assertSame($inputFilter, $suggestion->getInputFilter());
     }
 
+    /**
+     * @covers Translations\Model\Suggestion::getArrayCopy
+     * @covers Translations\Model\Suggestion::exchangeArray
+     */
     public function testArraySerializableImplementations()
     {
         $suggestion = new Suggestion();

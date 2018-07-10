@@ -26,7 +26,6 @@ use Zend\Db\Adapter\Platform\Sql92;
 use Zend\Db\ResultSet\ResultSetInterface;
 use Zend\Db\TableGateway\TableGateway;
 use RuntimeException;
-use phpmock\MockBuilder;
 
 class SuggestionTableTest extends TestCase
 {
@@ -51,7 +50,7 @@ class SuggestionTableTest extends TestCase
     private $statement;
 
     /**
-     * @var MockBuilder
+     * @var \phpmock\MockBuilder
      */
     private $mockDriver;
 
